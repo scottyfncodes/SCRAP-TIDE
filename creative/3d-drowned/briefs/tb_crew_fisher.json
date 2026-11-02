@@ -1,0 +1,41 @@
+{
+ "asset_id": "tb_crew_fisher",
+ "template": "deckhand",
+ "params": {
+  "colors": {
+   "skin": "Skin Warm",
+   "shirt": "Oxide Teal",
+   "vest": "Kelp Green",
+   "pants": "Bleached Timber",
+   "bandana": "Sea Foam"
+  },
+  "weapon": false,
+  "clips": [
+   "Idle",
+   "Walk",
+   "Interact",
+   "Attack"
+  ],
+  "seed": 48
+ },
+ "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-drowned-palette.json",
+ "material_prefix": "TBC",
+ "out_dir": "/home/user/TIDEBREAKERS/creative/3d-drowned/crew_fisher",
+ "profiles": [
+  "three-web-toon"
+ ],
+ "preview": {
+  "size": 420,
+  "views": [
+   "three_quarter",
+   "front"
+  ],
+  "poses": [
+   {
+    "clip": "Interact",
+    "at": "mid"
+   }
+  ]
+ },
+ "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json"
+}

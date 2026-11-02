@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_fuel</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <polygon points="14,18 40,18 50,28 50,54 14,54" fill="#ff00fe"/>
+    <polygon points="40,18 50,28 40,28" fill="#00feff"/>
+    <path d="M20 10 L28 10 C29.105 10 30 10.895 30 12 L30 16 C30 17.105 29.105 18 28 18 L20 18 C18.895 18 18 17.105 18 16 L18 12 C18 10.895 18.895 10 20 10 Z" fill="#00feff"/>
+    <path d="M22 34 L42 48 M42 34 L22 48" fill="none" stroke="#00feff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

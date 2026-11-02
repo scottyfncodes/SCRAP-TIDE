@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_photo</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M14 10 L50 10 C51.105 10 52 10.895 52 12 L52 54 C52 55.105 51.105 56 50 56 L14 56 C12.895 56 12 55.105 12 54 L12 12 C12 10.895 12.895 10 14 10 Z" fill="#ff00fe"/>
+    <rect x="16" y="14" width="32" height="30" fill="#8cc9e8"/>
+    <path d="M16 34 C24 30 34.667 30 48 34 L48 44 L16 44 Z" fill="#00feff"/>
+    <circle cx="40" cy="22" r="4" fill="#f2b825"/>
+    <path d="M22 34 L22 28 M22 28 C22 25.333 23.333 24.333 26 25" fill="none" stroke="#3a4148" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

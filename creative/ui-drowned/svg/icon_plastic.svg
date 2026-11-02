@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_plastic</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M22 16 L30 16 C34.418 16 38 19.582 38 24 L38 44 C38 48.418 34.418 52 30 52 L22 52 C17.582 52 14 48.418 14 44 L14 24 C14 19.582 17.582 16 22 16 Z" fill="#ff00fe"/>
+    <path d="M22 10 L30 10 C31.105 10 32 10.895 32 12 L32 16 C32 17.105 31.105 18 30 18 L22 18 C20.895 18 20 17.105 20 16 L20 12 C20 10.895 20.895 10 22 10 Z" fill="#00feff"/>
+    <polygon points="38,30 54,38 46,54 32,48" fill="#00feff"/>
+    <line x1="18" y1="24" x2="18" y2="44" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  </g>
+</svg>

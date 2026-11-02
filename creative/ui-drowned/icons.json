@@ -1,0 +1,32 @@
+{
+ "tool": "GITCRAFT VectorCraft (headless MCP)",
+ "icons": [
+  "watch",
+  "diamond",
+  "chart",
+  "record",
+  "photo",
+  "badge",
+  "radio",
+  "sign",
+  "light",
+  "shipbottle",
+  "seed",
+  "globe",
+  "duck",
+  "scrap",
+  "wire",
+  "plastic",
+  "chip",
+  "oil",
+  "fuel",
+  "gear",
+  "plate",
+  "patch",
+  "fish"
+ ],
+ "placeholders": {
+  "a": "#FF00FE",
+  "b": "#00FEFF"
+ }
+}

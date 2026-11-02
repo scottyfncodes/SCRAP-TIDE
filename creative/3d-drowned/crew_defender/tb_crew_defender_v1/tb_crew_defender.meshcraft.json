@@ -1,0 +1,368 @@
+{
+ "asset_id": "tb_crew_defender",
+ "brief": {
+  "asset_id": "tb_crew_defender",
+  "out_dir": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft",
+  "parent_job": "job-20261102-221008-728d60",
+  "template": "deckhand",
+  "params": {
+   "seed": 37,
+   "colors": {
+    "skin": "#7A4B32",
+    "shirt": "#06182E",
+    "vest": "#C8352A",
+    "pants": "#3A4148",
+    "bandana": "#C8352A"
+   },
+   "weapon": true,
+   "clips": [
+    "Idle",
+    "Walk",
+    "Interact",
+    "Attack"
+   ]
+  },
+  "palette": "/root/.gitcraft/runtime/forgecraft/palettes/tidebreakers-palette.json",
+  "title": "tb_crew_defender",
+  "tags": [
+   "tidebreakers",
+   "crew",
+   "defender"
+  ],
+  "profiles": [
+   "three-web-toon"
+  ],
+  "preview": {
+   "size": 512,
+   "views": [
+    "three_quarter",
+    "front",
+    "side",
+    "top"
+   ],
+   "poses": [
+    {
+     "clip": "Attack",
+     "at": "end"
+    }
+   ]
+  }
+ },
+ "steps": [
+  {
+   "step": "build",
+   "ok": true,
+   "seconds": 0.33
+  },
+  {
+   "step": "preview",
+   "ok": true,
+   "seconds": 17.55
+  },
+  {
+   "step": "validate_scene",
+   "ok": true,
+   "seconds": 0.0
+  },
+  {
+   "step": "export",
+   "ok": true,
+   "seconds": 0.62
+  },
+  {
+   "step": "contact_sheet",
+   "ok": true,
+   "seconds": 0.31
+  }
+ ],
+ "build": {
+  "blend": {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/source/tb_crew_defender.blend",
+   "kind": "blend",
+   "bytes": 148458,
+   "sha256": "34556f04f5e4ab84d9ead588f6d7261a3c1a88ced5408415ff212a5b3265b577"
+  },
+  "seconds": 0.21,
+  "roles": {
+   "skin_7a4b32": "#7A4B32",
+   "cloth_06182e": "#06182E",
+   "cloth_c8352a": "#C8352A",
+   "cloth_3a4148": "#3A4148",
+   "plain_5e331b": "#5E331B",
+   "metal_f4c542_m9": "#F4C542",
+   "plain_1b1b1f": "#1B1B1F",
+   "metal_f4f4f0_m10": "#F4F4F0"
+  },
+  "objects": [
+   "tb_crew_defender",
+   "tb_crew_defender_mesh",
+   "tb_crew_defender_rig"
+  ],
+  "actions": [
+   "Attack",
+   "Idle",
+   "Interact",
+   "Walk"
+  ],
+  "contract": {
+   "root": "tb_crew_defender",
+   "ground": true,
+   "clips": [
+    "Idle",
+    "Walk",
+    "Interact",
+    "Attack"
+   ]
+  },
+  "expect": {
+   "base_z": 0.0
+  }
+ },
+ "previews": [
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_three_quarter.png",
+   "kind": "preview",
+   "bytes": 125991,
+   "sha256": "e28a5fe8826ff6b6d353db0b5fa88b2c488ccc795744529edf4d554f69d0cc32",
+   "view": "three_quarter",
+   "clip": null,
+   "pose": null,
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_front.png",
+   "kind": "preview",
+   "bytes": 128839,
+   "sha256": "d201537386b16f9c5db9234c07ddde4d3c908f194027f30da0fc8a8df5511654",
+   "view": "front",
+   "clip": null,
+   "pose": null,
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_side.png",
+   "kind": "preview",
+   "bytes": 107798,
+   "sha256": "95d81c4c5d6cd3313a02240cf215b326f369ff52322ac0a40fed631d84a712be",
+   "view": "side",
+   "clip": null,
+   "pose": null,
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_top.png",
+   "kind": "preview",
+   "bytes": 80503,
+   "sha256": "5d1aaf702415bf2c824fafc6282c6e1c2e722e15ede10a98b321c29ea67c7af7",
+   "view": "top",
+   "clip": null,
+   "pose": null,
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_three_quarter_Attack-end.png",
+   "kind": "preview",
+   "bytes": 125991,
+   "sha256": "7d498c041e5c5f4ce4b6f23dc3115476af728e5d4a52a6f3dd533c5d30d57523",
+   "view": "three_quarter",
+   "clip": "Attack",
+   "pose": "end",
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_sheet.png",
+   "kind": "contact_sheet",
+   "bytes": 99084,
+   "sha256": "8ca8daee50e76348c1c04c9fbef04e9000ff344f791d8c0eb9b8f1d1bf1a48b0"
+  }
+ ],
+ "exports": [
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/exports/tb_crew_defender.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 241996,
+   "sha256": "bf31c4c70b6317e896e9ce2f0ad14a23aa4f6be7d3fc88cd9e30e7f0a4c3ad4c",
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "extras": [
+    {
+     "kind": "lod",
+     "skipped": "asset has skinned meshes; decimating them would break their weights (author LODs by hand or per template)"
+    },
+    {
+     "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/exports/tb_crew_defender.three-web-toon.collision.glb",
+     "kind": "collision",
+     "bytes": 9084,
+     "sha256": "6efdd6474f6655ee21f9f7b01df6d8c7588ffdd482334ef1097c42edb6275bd6",
+     "shape": "convex_hull",
+     "triangles": 116
+    }
+   ],
+   "sidecars": [
+    {
+     "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/exports/tb_crew_defender.three-web-toon.collision.glb",
+     "kind": "sidecar",
+     "bytes": 9084,
+     "sha256": "6efdd6474f6655ee21f9f7b01df6d8c7588ffdd482334ef1097c42edb6275bd6"
+    }
+   ],
+   "roundtrip": {
+    "path": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/exports/tb_crew_defender.three-web-toon.glb",
+    "objects": [
+     "Icosphere (MESH)",
+     "tb_crew_defender (EMPTY)",
+     "tb_crew_defender_mesh (MESH)",
+     "tb_crew_defender_rig (ARMATURE)"
+    ],
+    "triangles": 1488,
+    "materials": [
+     "GC_Cloth_06182e",
+     "GC_Cloth_3a4148",
+     "GC_Cloth_c8352a",
+     "GC_Metal_f4c542_m9",
+     "GC_Metal_f4f4f0_m10",
+     "GC_Plain_1b1b1f",
+     "GC_Plain_5e331b",
+     "GC_Skin_7a4b32"
+    ],
+    "actions": [
+     "Attack",
+     "Idle",
+     "Interact",
+     "Walk"
+    ],
+    "armatures": 1,
+    "size_m": [
+     1.432,
+     0.44,
+     1.798
+    ],
+    "min_z": -0.0
+   }
+  }
+ ],
+ "validation": {
+  "checks": [
+   {
+    "check": "has_meshes",
+    "level": "pass",
+    "detail": "1 mesh objects"
+   },
+   {
+    "check": "triangle_budget",
+    "level": "pass",
+    "detail": "1488 triangles (budget 6000)",
+    "tris": 1488
+   },
+   {
+    "check": "degenerate_faces",
+    "level": "pass",
+    "detail": "0 zero-area faces"
+   },
+   {
+    "check": "non_manifold_edges",
+    "level": "info",
+    "detail": "14 non-manifold edges (expected for kit-bashed props built from closed parts)"
+   },
+   {
+    "check": "applied_scale",
+    "level": "pass",
+    "detail": "all mesh scales are 1"
+   },
+   {
+    "check": "naming",
+    "level": "pass",
+    "detail": "no default object names"
+   },
+   {
+    "check": "origin_base",
+    "level": "pass",
+    "detail": "lowest point at z=0.000 m (expected 0.0; the asset sits on its origin)",
+    "min_z": 0.0
+   },
+   {
+    "check": "origin_centered",
+    "level": "warn",
+    "detail": "footprint centre (-0.293, 0.000)"
+   },
+   {
+    "check": "materials_assigned",
+    "level": "pass",
+    "detail": "every mesh has materials"
+   },
+   {
+    "check": "vertex_colors",
+    "level": "pass",
+    "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+   },
+   {
+    "check": "textures_resolvable",
+    "level": "pass",
+    "detail": "no missing texture files"
+   },
+   {
+    "check": "animation_clips",
+    "level": "pass",
+    "detail": "actions: ['Attack', 'Idle', 'Interact', 'Walk']",
+    "clips": [
+     "Attack",
+     "Idle",
+     "Interact",
+     "Walk"
+    ]
+   },
+   {
+    "check": "skinning:tb_crew_defender_rig",
+    "level": "pass",
+    "detail": "22 bones, 1 skinned meshes, 0 unweighted verts, 0 verts with >4 influences"
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_crew_defender.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_crew_defender.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "25 nodes, 1 meshes, 8 primitives, 8 materials, 4 animations, 1 skins, 0 images",
+    "animations": [
+     "Attack",
+     "Idle",
+     "Interact",
+     "Walk"
+    ],
+    "file": "tb_crew_defender.three-web-toon.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 1 warnings, 0 infos",
+    "messages": [
+     "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh."
+    ],
+    "file": "tb_crew_defender.three-web-toon.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_crew_defender.three-web-toon.glb: 1488 tris, size [1.432, 0.44, 1.798] m, clips ['Attack', 'Idle', 'Interact', 'Walk']",
+    "file": "tb_crew_defender.three-web-toon.glb"
+   }
+  ],
+  "summary": {
+   "pass": 15,
+   "warn": 1,
+   "fail": 0,
+   "info": 2
+  }
+ },
+ "seconds": 19.5
+}
