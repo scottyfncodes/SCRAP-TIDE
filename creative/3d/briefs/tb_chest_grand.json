@@ -1,0 +1,27 @@
+{
+  "asset_id": "tb_chest_grand",
+  "template": "chest",
+  "params": {
+    "tier": "grand"
+  },
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+    "/home/user/TIDEBREAKERS/creative/ships/ship_04_grand-tidebreaker.png",
+    "/home/user/TIDEBREAKERS/creative/ui/kit/nav/cargo.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/chest_grand",
+  "profiles": [
+    "three-web-toon"
+  ],
+  "preview": {
+    "size": 640,
+    "poses": [
+      {
+        "clip": "lid_open",
+        "at": "end"
+      }
+    ]
+  }
+}

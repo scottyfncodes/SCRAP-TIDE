@@ -1,0 +1,48 @@
+[
+ {
+  "label": "rest",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "7/7 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_node:figurehead",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:figurehead_mesh",
+    "level": "pass",
+    "detail": "found"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -0.47,
+    -0.06,
+    -0.22
+   ],
+   "max": [
+    0.47,
+    0.981,
+    0.093
+   ],
+   "size": [
+    0.94,
+    1.042,
+    0.313
+   ]
+  },
+  "clips": [],
+  "triangles": 1960,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/engine/tb_figurehead_sun_three_rest.png"
+ }
+]

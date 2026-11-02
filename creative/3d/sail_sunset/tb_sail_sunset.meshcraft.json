@@ -1,0 +1,363 @@
+{
+ "asset_id": "tb_sail_sunset",
+ "brief": {
+  "asset_id": "tb_sail_sunset",
+  "template": "sail",
+  "params": {
+   "pattern": "sunset"
+  },
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+   "/home/user/TIDEBREAKERS/creative/ships/custom/sail_sunset.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset",
+  "profiles": [
+   "three-web-toon"
+  ],
+  "preview": {
+   "size": 640,
+   "poses": [
+    {
+     "clip": "fill",
+     "at": "end"
+    }
+   ]
+  }
+ },
+ "steps": [
+  {
+   "step": "build",
+   "ok": true,
+   "seconds": 0.1
+  },
+  {
+   "step": "preview",
+   "ok": true,
+   "seconds": 29.87
+  },
+  {
+   "step": "validate_scene",
+   "ok": true,
+   "seconds": 0.0
+  },
+  {
+   "step": "export",
+   "ok": true,
+   "seconds": 0.15
+  },
+  {
+   "step": "contact_sheet",
+   "ok": true,
+   "seconds": 0.48
+  },
+  {
+   "step": "manifest",
+   "ok": true,
+   "seconds": 0.01
+  }
+ ],
+ "build": {
+  "blend": {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/source/tb_sail_sunset.blend",
+   "kind": "blend",
+   "bytes": 112950,
+   "sha256": "76409313a4798b62e4b6eb85a960a7a469b03726d372faf4a8b8b8d888975a76"
+  },
+  "seconds": 0.02,
+  "roles": {
+   "cloth": "#FFCF7A",
+   "accent": "#FF6B4A",
+   "yard": "#9A5A2E",
+   "rope": "#D9954F"
+  },
+  "objects": [
+   "ref_0_sail_sunset.png",
+   "sail",
+   "sail_cloth",
+   "sail_yard"
+  ],
+  "actions": [
+   "fill",
+   "luff"
+  ],
+  "contract": {
+   "ground": false,
+   "nodes": {
+    "root": "sail",
+    "yard": "sail_yard",
+    "cloth": "sail_cloth"
+   },
+   "clips": [
+    "fill",
+    "luff"
+   ],
+   "morph_targets": [
+    "billow"
+   ],
+   "origin": "yard centre; cloth hangs down -Y, belly toward +Z (downwind = forward)"
+  },
+  "expect": {
+   "top_z": null,
+   "centered": true
+  }
+ },
+ "previews": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/previews/tb_sail_sunset_three_quarter.png",
+   "kind": "preview",
+   "bytes": 190442,
+   "sha256": "c412bffa12c5180a3d57449ba768f8d9919603fea3d7680aabc2cdfef22c1483",
+   "view": "three_quarter",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/previews/tb_sail_sunset_front.png",
+   "kind": "preview",
+   "bytes": 182574,
+   "sha256": "45b71fc13885432f994f8ce1fdc598bca6a7c5d17cdcb6e31b7f909d9591dcda",
+   "view": "front",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/previews/tb_sail_sunset_side.png",
+   "kind": "preview",
+   "bytes": 124407,
+   "sha256": "d1befbd70ad2c970a132942fc35c1a6ca2f5a1fb3725d63a49fb64e0be31fb8f",
+   "view": "side",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/previews/tb_sail_sunset_top.png",
+   "kind": "preview",
+   "bytes": 104565,
+   "sha256": "562eaf32be90b0bbeeb842c526d24519489cc6de2a0f0139f59ac44bb372f0f6",
+   "view": "top",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/previews/tb_sail_sunset_three_quarter_fill-end.png",
+   "kind": "preview",
+   "bytes": 195791,
+   "sha256": "03a64a956d92376389013ffb398dcc92cadb8750a5374bc4704ef43949922fef",
+   "view": "three_quarter",
+   "clip": "fill",
+   "pose": "end",
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/previews/tb_sail_sunset_sheet.png",
+   "kind": "contact_sheet",
+   "bytes": 152761,
+   "sha256": "fc7d40b1a89acc427ced00f7cc8a05d3e7e9d9094b55fd145f325874353f7209"
+  }
+ ],
+ "exports": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 111380,
+   "sha256": "d13fc57a23c1a10979cdecf675f7b3bc0ca10d32ea1e84ab076a19a8432b1c9a",
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "extras": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.lod50.glb",
+     "kind": "lod",
+     "bytes": 29844,
+     "sha256": "285bcd59783a83f5e5924dd69c4a38d411bc66b98da277c3cae3389f9dea3545",
+     "ratio": 0.5,
+     "triangles": 470
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.lod25.glb",
+     "kind": "lod",
+     "bytes": 16020,
+     "sha256": "b3b8d6d75ee8a0160f0318177b7b4c3eaf38815a6c07412a567077caa23741d1",
+     "ratio": 0.25,
+     "triangles": 234
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.collision.glb",
+     "kind": "collision",
+     "bytes": 4976,
+     "sha256": "f14627e89773cb6a4e45034103f87b812ee009a07d082d021dc5c1efb74d2b92",
+     "shape": "convex_hull",
+     "triangles": 68
+    }
+   ],
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.collision.glb",
+     "kind": "sidecar",
+     "bytes": 4976,
+     "sha256": "f14627e89773cb6a4e45034103f87b812ee009a07d082d021dc5c1efb74d2b92"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.lod25.glb",
+     "kind": "sidecar",
+     "bytes": 16020,
+     "sha256": "b3b8d6d75ee8a0160f0318177b7b4c3eaf38815a6c07412a567077caa23741d1"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.lod50.glb",
+     "kind": "sidecar",
+     "bytes": 29844,
+     "sha256": "285bcd59783a83f5e5924dd69c4a38d411bc66b98da277c3cae3389f9dea3545"
+    }
+   ],
+   "roundtrip": {
+    "path": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.glb",
+    "objects": [
+     "sail (EMPTY)",
+     "sail_cloth (MESH)",
+     "sail_yard (MESH)"
+    ],
+    "triangles": 940,
+    "materials": [
+     "TB_Accent",
+     "TB_Cloth",
+     "TB_Rope",
+     "TB_Yard"
+    ],
+    "actions": [
+     "fill",
+     "luff"
+    ],
+    "armatures": 0,
+    "size_m": [
+     2.821,
+     0.133,
+     2.03
+    ],
+    "min_z": -1.96
+   }
+  }
+ ],
+ "validation": {
+  "checks": [
+   {
+    "check": "has_meshes",
+    "level": "pass",
+    "detail": "2 mesh objects"
+   },
+   {
+    "check": "triangle_budget",
+    "level": "pass",
+    "detail": "940 triangles (budget 4000)",
+    "tris": 940
+   },
+   {
+    "check": "degenerate_faces",
+    "level": "pass",
+    "detail": "0 zero-area faces"
+   },
+   {
+    "check": "non_manifold_edges",
+    "level": "info",
+    "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+   },
+   {
+    "check": "applied_scale",
+    "level": "pass",
+    "detail": "all mesh scales are 1"
+   },
+   {
+    "check": "naming",
+    "level": "pass",
+    "detail": "no default object names"
+   },
+   {
+    "check": "origin_centered",
+    "level": "pass",
+    "detail": "footprint centre (0.000, 0.000)"
+   },
+   {
+    "check": "materials_assigned",
+    "level": "pass",
+    "detail": "every mesh has materials"
+   },
+   {
+    "check": "vertex_colors",
+    "level": "pass",
+    "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+   },
+   {
+    "check": "textures_resolvable",
+    "level": "pass",
+    "detail": "no missing texture files"
+   },
+   {
+    "check": "animation_clips",
+    "level": "pass",
+    "detail": "actions: ['fill', 'luff']",
+    "clips": [
+     "fill",
+     "luff"
+    ]
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_sail_sunset.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_sail_sunset.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "3 nodes, 2 meshes, 4 primitives, 4 materials, 2 animations, 0 skins, 0 images",
+    "animations": [
+     "fill",
+     "luff"
+    ],
+    "file": "tb_sail_sunset.three-web-toon.glb"
+   },
+   {
+    "check": "contract_nodes",
+    "level": "pass",
+    "detail": "nodes present: ['sail', 'sail_cloth', 'sail_yard']",
+    "file": "tb_sail_sunset.three-web-toon.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 0 warnings, 0 infos",
+    "messages": [],
+    "file": "tb_sail_sunset.three-web-toon.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_sail_sunset.three-web-toon.glb: 940 tris, size [2.821, 0.133, 2.03] m, clips ['fill', 'luff']",
+    "file": "tb_sail_sunset.three-web-toon.glb"
+   }
+  ],
+  "summary": {
+   "pass": 15,
+   "warn": 0,
+   "fail": 0,
+   "info": 2
+  }
+ },
+ "manifest": {
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "items": 455
+ },
+ "seconds": 30.9
+}

@@ -1,0 +1,26 @@
+{
+  "asset_id": "tb_chest_sea",
+  "template": "chest",
+  "params": {
+    "tier": "sea"
+  },
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+    "/home/user/TIDEBREAKERS/creative/environments/env_05_wreck-of-the-wren_concept_v1.jpg"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/chest_sea",
+  "profiles": [
+    "three-web-toon"
+  ],
+  "preview": {
+    "size": 640,
+    "poses": [
+      {
+        "clip": "lid_open",
+        "at": "end"
+      }
+    ]
+  }
+}

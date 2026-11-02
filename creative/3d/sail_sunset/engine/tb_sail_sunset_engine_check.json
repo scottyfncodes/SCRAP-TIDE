@@ -1,0 +1,158 @@
+[
+ {
+  "label": "rest",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "4/4 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_node:sail",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:sail_yard",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:sail_cloth",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_clip:fill",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:luff",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -1.411,
+    -1.981,
+    -0.465
+   ],
+   "max": [
+    1.411,
+    0.07,
+    0.45
+   ],
+   "size": [
+    2.821,
+    2.051,
+    0.915
+   ]
+  },
+  "clips": [
+   {
+    "name": "fill",
+    "seconds": 0.633,
+    "tracks": [
+     "sail_cloth001.morphTargetInfluences",
+     "sail_cloth001_1.morphTargetInfluences"
+    ]
+   },
+   {
+    "name": "luff",
+    "seconds": 1.033,
+    "tracks": [
+     "sail_cloth001.morphTargetInfluences",
+     "sail_cloth001_1.morphTargetInfluences"
+    ]
+   }
+  ],
+  "triangles": 940,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/engine/tb_sail_sunset_three_rest.png"
+ },
+ {
+  "label": "anim",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "4/4 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_node:sail",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:sail_yard",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:sail_cloth",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_clip:fill",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:luff",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -1.411,
+    -1.981,
+    -0.465
+   ],
+   "max": [
+    1.411,
+    0.07,
+    0.45
+   ],
+   "size": [
+    2.821,
+    2.051,
+    0.915
+   ]
+  },
+  "clips": [
+   {
+    "name": "fill",
+    "seconds": 0.633,
+    "tracks": [
+     "sail_cloth001.morphTargetInfluences",
+     "sail_cloth001_1.morphTargetInfluences"
+    ]
+   },
+   {
+    "name": "luff",
+    "seconds": 1.033,
+    "tracks": [
+     "sail_cloth001.morphTargetInfluences",
+     "sail_cloth001_1.morphTargetInfluences"
+    ]
+   }
+  ],
+  "triangles": 940,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset/engine/tb_sail_sunset_three_anim.png"
+ }
+]

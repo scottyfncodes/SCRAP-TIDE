@@ -1,0 +1,27 @@
+{
+  "asset_id": "tb_flag_tidebreaker",
+  "template": "flag",
+  "params": {
+    "design": "tidebreaker"
+  },
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+    "/home/user/TIDEBREAKERS/creative/ships/custom/flag_tidebreaker.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker",
+  "profiles": [
+    "three-web-toon",
+    "unity-fbx"
+  ],
+  "preview": {
+    "size": 640,
+    "poses": [
+      {
+        "clip": "wave",
+        "at": "mid"
+      }
+    ]
+  }
+}

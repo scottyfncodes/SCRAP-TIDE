@@ -1,0 +1,366 @@
+{
+ "asset_id": "tb_flag_tidebreaker",
+ "brief": {
+  "asset_id": "tb_flag_tidebreaker",
+  "template": "flag",
+  "params": {
+   "design": "tidebreaker"
+  },
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+   "/home/user/TIDEBREAKERS/creative/ships/custom/flag_tidebreaker.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker",
+  "profiles": [
+   "three-web-toon",
+   "unity-fbx"
+  ],
+  "preview": {
+   "size": 640,
+   "poses": [
+    {
+     "clip": "wave",
+     "at": "mid"
+    }
+   ]
+  }
+ },
+ "steps": [
+  {
+   "step": "build",
+   "ok": true,
+   "seconds": 0.14
+  },
+  {
+   "step": "preview",
+   "ok": true,
+   "seconds": 29.89
+  },
+  {
+   "step": "validate_scene",
+   "ok": true,
+   "seconds": 0.01
+  },
+  {
+   "step": "export",
+   "ok": true,
+   "seconds": 0.21
+  },
+  {
+   "step": "contact_sheet",
+   "ok": true,
+   "seconds": 0.26
+  },
+  {
+   "step": "manifest",
+   "ok": true,
+   "seconds": 0.01
+  }
+ ],
+ "build": {
+  "blend": {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/source/tb_flag_tidebreaker.blend",
+   "kind": "blend",
+   "bytes": 151971,
+   "sha256": "5695725dc991d9cc0aa1e2508f409ca7571fb35637fd0e5c0b9b7241e739f3ff"
+  },
+  "seconds": 0.07,
+  "roles": {
+   "field": "#0E3B66",
+   "emblem": "#F6EAD0",
+   "stripe": "#1FB5B0",
+   "pole": "#9A5A2E",
+   "finial": "#F4C542"
+  },
+  "objects": [
+   "flag",
+   "flag_cloth",
+   "flag_pole",
+   "flag_rig",
+   "ref_0_flag_tidebreaker.png"
+  ],
+  "actions": [
+   "wave"
+  ],
+  "contract": {
+   "nodes": {
+    "root": "flag",
+    "pole": "flag_pole",
+    "rig": "flag_rig",
+    "cloth": "flag_cloth"
+   },
+   "clips": [
+    "wave"
+   ],
+   "bones": [
+    "flag_0",
+    "flag_1",
+    "flag_2",
+    "flag_3"
+   ],
+   "origin": "pole base"
+  },
+  "expect": {
+   "base_z": 0.0,
+   "centered": false
+  }
+ },
+ "previews": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/previews/tb_flag_tidebreaker_three_quarter.png",
+   "kind": "preview",
+   "bytes": 170226,
+   "sha256": "76e74cbe9a6f9ffcb4119882ac2d21f308e9e543a62a954f6333ab2e9d8ed180",
+   "view": "three_quarter",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/previews/tb_flag_tidebreaker_front.png",
+   "kind": "preview",
+   "bytes": 173256,
+   "sha256": "b663cb7ddd4bc103f4d20a5e4433e79c42a1fcfd794067a964c12f5a92f4af06",
+   "view": "front",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/previews/tb_flag_tidebreaker_side.png",
+   "kind": "preview",
+   "bytes": 143923,
+   "sha256": "0d3cee1ef902b128f85bf7813f09b3bcf79ff44a3b0d097a63efc52a176adf31",
+   "view": "side",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/previews/tb_flag_tidebreaker_top.png",
+   "kind": "preview",
+   "bytes": 96635,
+   "sha256": "419ff2b2e5e66b0101aaa8026bf0113820c1709f8e9a6e5eadf67693a2aed0ac",
+   "view": "top",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/previews/tb_flag_tidebreaker_three_quarter_wave-mid.png",
+   "kind": "preview",
+   "bytes": 165289,
+   "sha256": "8b67fdbf7fbe19737af5bd686cef64ab87701d56f0fdeb83cfe42fdb3daa6a2a",
+   "view": "three_quarter",
+   "clip": "wave",
+   "pose": "mid",
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/previews/tb_flag_tidebreaker_sheet.png",
+   "kind": "contact_sheet",
+   "bytes": 99452,
+   "sha256": "5c87569db3cf6dd8524963062d65a17e0264d82728446de91d35da4ce3e5e10b"
+  }
+ ],
+ "exports": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/exports/tb_flag_tidebreaker.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 349176,
+   "sha256": "f2b4159b77e91e2c95fc8d4a093b9db8eb6a731f8a4b52c24fc11491e4eca934",
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "extras": [
+    {
+     "kind": "lod",
+     "skipped": "asset has skinned meshes; decimating them would break their weights (author LODs by hand or per template)"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/exports/tb_flag_tidebreaker.three-web-toon.collision.glb",
+     "kind": "collision",
+     "bytes": 5044,
+     "sha256": "7454ee17117ce48dba5043e0c1cfa59073650d5afd4059dec95152de5c951120",
+     "shape": "convex_hull",
+     "triangles": 66
+    }
+   ],
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/exports/tb_flag_tidebreaker.three-web-toon.collision.glb",
+     "kind": "sidecar",
+     "bytes": 5044,
+     "sha256": "7454ee17117ce48dba5043e0c1cfa59073650d5afd4059dec95152de5c951120"
+    }
+   ],
+   "roundtrip": {
+    "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/exports/tb_flag_tidebreaker.three-web-toon.glb",
+    "objects": [
+     "Icosphere (MESH)",
+     "flag (EMPTY)",
+     "flag_cloth (MESH)",
+     "flag_pole (MESH)",
+     "flag_rig (ARMATURE)"
+    ],
+    "triangles": 3096,
+    "materials": [
+     "TB_Emblem",
+     "TB_Field",
+     "TB_Finial",
+     "TB_Pole",
+     "TB_Stripe"
+    ],
+    "actions": [
+     "wave"
+    ],
+    "armatures": 1,
+    "size_m": [
+     1.282,
+     0.329,
+     2.3
+    ],
+    "min_z": 0.0
+   }
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/exports/tb_flag_tidebreaker.unity-fbx.fbx",
+   "kind": "export",
+   "bytes": 114748,
+   "sha256": "14a429f6cff3c7d326faaa645865b3e5364047819baf227252da0c5bde25a0ea",
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/flag_tidebreaker/exports/tb_flag_tidebreaker.unity-fbx.atlas.png",
+     "kind": "sidecar",
+     "bytes": 287,
+     "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+    }
+   ]
+  }
+ ],
+ "validation": {
+  "checks": [
+   {
+    "check": "has_meshes",
+    "level": "pass",
+    "detail": "2 mesh objects"
+   },
+   {
+    "check": "triangle_budget",
+    "level": "pass",
+    "detail": "3096 triangles (budget 4000)",
+    "tris": 3096
+   },
+   {
+    "check": "degenerate_faces",
+    "level": "pass",
+    "detail": "0 zero-area faces"
+   },
+   {
+    "check": "non_manifold_edges",
+    "level": "info",
+    "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+   },
+   {
+    "check": "applied_scale",
+    "level": "pass",
+    "detail": "all mesh scales are 1"
+   },
+   {
+    "check": "naming",
+    "level": "pass",
+    "detail": "no default object names"
+   },
+   {
+    "check": "origin_base",
+    "level": "pass",
+    "detail": "lowest point at z=0.000 m (expected 0.0; the asset sits on its origin)",
+    "min_z": 0.0
+   },
+   {
+    "check": "materials_assigned",
+    "level": "pass",
+    "detail": "every mesh has materials"
+   },
+   {
+    "check": "vertex_colors",
+    "level": "pass",
+    "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+   },
+   {
+    "check": "textures_resolvable",
+    "level": "pass",
+    "detail": "no missing texture files"
+   },
+   {
+    "check": "animation_clips",
+    "level": "pass",
+    "detail": "actions: ['wave']",
+    "clips": [
+     "wave"
+    ]
+   },
+   {
+    "check": "skinning:flag_rig",
+    "level": "pass",
+    "detail": "4 bones, 1 skinned meshes, 0 unweighted verts, 0 verts with >4 influences"
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_flag_tidebreaker.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_flag_tidebreaker.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "8 nodes, 2 meshes, 5 primitives, 5 materials, 1 animations, 1 skins, 0 images",
+    "animations": [
+     "wave"
+    ],
+    "file": "tb_flag_tidebreaker.three-web-toon.glb"
+   },
+   {
+    "check": "contract_nodes",
+    "level": "pass",
+    "detail": "nodes present: ['flag', 'flag_cloth', 'flag_pole', 'flag_rig']",
+    "file": "tb_flag_tidebreaker.three-web-toon.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 0 warnings, 0 infos",
+    "messages": [],
+    "file": "tb_flag_tidebreaker.three-web-toon.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_flag_tidebreaker.three-web-toon.glb: 3096 tris, size [1.282, 0.329, 2.3] m, clips ['wave']",
+    "file": "tb_flag_tidebreaker.three-web-toon.glb"
+   }
+  ],
+  "summary": {
+   "pass": 16,
+   "warn": 0,
+   "fail": 0,
+   "info": 2
+  }
+ },
+ "manifest": {
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "items": 455
+ },
+ "seconds": 31.0
+}

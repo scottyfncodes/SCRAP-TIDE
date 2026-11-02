@@ -1,0 +1,350 @@
+{
+ "asset_id": "tb_figurehead_sun",
+ "brief": {
+  "asset_id": "tb_figurehead_sun",
+  "template": "sun_figurehead",
+  "params": {},
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+   "/home/user/TIDEBREAKERS/creative/ships/custom/figurehead_sun.png",
+   "/home/user/TIDEBREAKERS/creative/branding/emblem_grinning-sun_v2.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun",
+  "profiles": [
+   "three-web-toon",
+   "unity-fbx"
+  ],
+  "preview": {
+   "size": 640,
+   "poses": []
+  }
+ },
+ "steps": [
+  {
+   "step": "build",
+   "ok": true,
+   "seconds": 0.18
+  },
+  {
+   "step": "preview",
+   "ok": true,
+   "seconds": 23.89
+  },
+  {
+   "step": "validate_scene",
+   "ok": true,
+   "seconds": 0.0
+  },
+  {
+   "step": "export",
+   "ok": true,
+   "seconds": 0.2
+  },
+  {
+   "step": "contact_sheet",
+   "ok": true,
+   "seconds": 0.58
+  },
+  {
+   "step": "manifest",
+   "ok": true,
+   "seconds": 0.01
+  }
+ ],
+ "build": {
+  "blend": {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/source/tb_figurehead_sun.blend",
+   "kind": "blend",
+   "bytes": 130780,
+   "sha256": "df9e543811622dbfff50f1550a1bf1ef4f279f82984145371115bf0968b6d427"
+  },
+  "seconds": 0.11,
+  "roles": {
+   "face": "#F4C542",
+   "rays": "#FF9F2E",
+   "ink": "#0E3B66",
+   "tooth": "#F6EAD0",
+   "cheek": "#E0607E",
+   "bracket": "#9A5A2E",
+   "eye_hi": "#FFFFFF"
+  },
+  "objects": [
+   "figurehead",
+   "figurehead_mesh",
+   "ref_0_figurehead_sun.png",
+   "ref_1_emblem_grinning-sun_v2.png"
+  ],
+  "actions": [],
+  "contract": {
+   "ground": false,
+   "nodes": {
+    "root": "figurehead",
+    "mesh": "figurehead_mesh"
+   },
+   "origin": "mounting point on the bow; face looks +Z"
+  },
+  "expect": {
+   "base_z": null,
+   "centered": true
+  }
+ },
+ "previews": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/previews/tb_figurehead_sun_three_quarter.png",
+   "kind": "preview",
+   "bytes": 200961,
+   "sha256": "27665ba5faeffbad5ce6d631b14ebe4173c6c50e34ef7540b9fdf219820f27f5",
+   "view": "three_quarter",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/previews/tb_figurehead_sun_front.png",
+   "kind": "preview",
+   "bytes": 210714,
+   "sha256": "a7eb3e694d20e8bb99df142b6c3df8d788c17987ad62369dfec0fdabe123a5bc",
+   "view": "front",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/previews/tb_figurehead_sun_side.png",
+   "kind": "preview",
+   "bytes": 157891,
+   "sha256": "949ad0f739205c4704663990fd86317526132f514f691a9a7845175ef4be4548",
+   "view": "side",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/previews/tb_figurehead_sun_top.png",
+   "kind": "preview",
+   "bytes": 136040,
+   "sha256": "1cd1956bbac13f63df394aa25a5407bdfe76f5e68aae083f802ee424883b6af6",
+   "view": "top",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/previews/tb_figurehead_sun_sheet.png",
+   "kind": "contact_sheet",
+   "bytes": 264239,
+   "sha256": "c3ad80339adcca4e23d524c41049590a0443b12678ee7ef4be722e80cf054083"
+  }
+ ],
+ "exports": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 144592,
+   "sha256": "f9d8761265a6ac612e1af67b084e4467da299418f5f90747107b2f675118ac5b",
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "extras": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.lod50.glb",
+     "kind": "lod",
+     "bytes": 49216,
+     "sha256": "158cec299bb3f73ea18b8a56c44f5b701ed3f325db48007c68c07fb615017330",
+     "ratio": 0.5,
+     "triangles": 980
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.lod25.glb",
+     "kind": "lod",
+     "bytes": 22784,
+     "sha256": "20f040826dfa948a348046bc3e48ff61577c06ac4f7d9c2102e4071d0c231fe7",
+     "ratio": 0.25,
+     "triangles": 490
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.collision.glb",
+     "kind": "collision",
+     "bytes": 10428,
+     "sha256": "88be98309596baf705d393e13d807c44e8aa0371507f48df5f9c4f4679ed483d",
+     "shape": "convex_hull",
+     "triangles": 128
+    }
+   ],
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.collision.glb",
+     "kind": "sidecar",
+     "bytes": 10428,
+     "sha256": "88be98309596baf705d393e13d807c44e8aa0371507f48df5f9c4f4679ed483d"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.lod25.glb",
+     "kind": "sidecar",
+     "bytes": 22784,
+     "sha256": "20f040826dfa948a348046bc3e48ff61577c06ac4f7d9c2102e4071d0c231fe7"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.lod50.glb",
+     "kind": "sidecar",
+     "bytes": 49216,
+     "sha256": "158cec299bb3f73ea18b8a56c44f5b701ed3f325db48007c68c07fb615017330"
+    }
+   ],
+   "roundtrip": {
+    "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.glb",
+    "objects": [
+     "figurehead (EMPTY)",
+     "figurehead_mesh (MESH)"
+    ],
+    "triangles": 1960,
+    "materials": [
+     "TB_Bracket",
+     "TB_Cheek",
+     "TB_Eye_hi",
+     "TB_Face",
+     "TB_Ink",
+     "TB_Rays",
+     "TB_Tooth"
+    ],
+    "actions": [],
+    "armatures": 0,
+    "size_m": [
+     0.94,
+     0.511,
+     1.09
+    ],
+    "min_z": -0.0928
+   }
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.unity-fbx.fbx",
+   "kind": "export",
+   "bytes": 74460,
+   "sha256": "158b9effa2945a45a174d6bf1106db59ff0a411e1edfe5ca1a87f2dda0e8ee9a",
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun/exports/tb_figurehead_sun.unity-fbx.atlas.png",
+     "kind": "sidecar",
+     "bytes": 287,
+     "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+    }
+   ]
+  }
+ ],
+ "validation": {
+  "checks": [
+   {
+    "check": "has_meshes",
+    "level": "pass",
+    "detail": "1 mesh objects"
+   },
+   {
+    "check": "triangle_budget",
+    "level": "pass",
+    "detail": "1960 triangles (budget 8000)",
+    "tris": 1960
+   },
+   {
+    "check": "degenerate_faces",
+    "level": "pass",
+    "detail": "0 zero-area faces"
+   },
+   {
+    "check": "non_manifold_edges",
+    "level": "info",
+    "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+   },
+   {
+    "check": "applied_scale",
+    "level": "pass",
+    "detail": "all mesh scales are 1"
+   },
+   {
+    "check": "naming",
+    "level": "pass",
+    "detail": "no default object names"
+   },
+   {
+    "check": "origin_centered",
+    "level": "pass",
+    "detail": "footprint centre (-0.000, 0.086)"
+   },
+   {
+    "check": "materials_assigned",
+    "level": "pass",
+    "detail": "every mesh has materials"
+   },
+   {
+    "check": "vertex_colors",
+    "level": "pass",
+    "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+   },
+   {
+    "check": "textures_resolvable",
+    "level": "pass",
+    "detail": "no missing texture files"
+   },
+   {
+    "check": "animation_clips",
+    "level": "pass",
+    "detail": "actions: []",
+    "clips": []
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_figurehead_sun.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_figurehead_sun.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "2 nodes, 1 meshes, 7 primitives, 7 materials, 0 animations, 0 skins, 0 images",
+    "animations": [],
+    "file": "tb_figurehead_sun.three-web-toon.glb"
+   },
+   {
+    "check": "contract_nodes",
+    "level": "pass",
+    "detail": "nodes present: ['figurehead', 'figurehead_mesh']",
+    "file": "tb_figurehead_sun.three-web-toon.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 0 warnings, 0 infos",
+    "messages": [],
+    "file": "tb_figurehead_sun.three-web-toon.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_figurehead_sun.three-web-toon.glb: 1960 tris, size [0.94, 0.511, 1.09] m, clips []",
+    "file": "tb_figurehead_sun.three-web-toon.glb"
+   }
+  ],
+  "summary": {
+   "pass": 15,
+   "warn": 0,
+   "fail": 0,
+   "info": 2
+  }
+ },
+ "manifest": {
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "items": 455
+ },
+ "seconds": 25.2
+}

@@ -1,0 +1,169 @@
+[
+ {
+  "label": "rest",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "13/13 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_base_on_ground",
+    "level": "pass",
+    "detail": "lowest point y=-0.006 m"
+   },
+   {
+    "check": "engine_node:chest_grand",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:chest_body",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:chest_lid",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:glow_anchor",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_lid_hinge",
+    "level": "pass",
+    "detail": "lid pivot at 0,1.2,-0.675 (expected 0,1.2,-0.675)"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -1.087,
+    -0.006,
+    -0.727
+   ],
+   "max": [
+    1.087,
+    1.908,
+    0.75
+   ],
+   "size": [
+    2.175,
+    1.914,
+    1.477
+   ]
+  },
+  "clips": [
+   {
+    "name": "lid_close",
+    "seconds": 0.767,
+    "tracks": [
+     "chest_lid.quaternion"
+    ]
+   },
+   {
+    "name": "lid_open",
+    "seconds": 0.767,
+    "tracks": [
+     "chest_lid.quaternion"
+    ]
+   }
+  ],
+  "triangles": 2456,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/chest_grand/engine/tb_chest_grand_three_rest.png"
+ },
+ {
+  "label": "anim",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "13/13 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_base_on_ground",
+    "level": "pass",
+    "detail": "lowest point y=-0.006 m"
+   },
+   {
+    "check": "engine_node:chest_grand",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:chest_body",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:chest_lid",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:glow_anchor",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_lid_hinge",
+    "level": "pass",
+    "detail": "lid pivot at 0,1.2,-0.675 (expected 0,1.2,-0.675)"
+   },
+   {
+    "check": "engine_lid_open_rotation",
+    "level": "pass",
+    "detail": "lid rotation.x = -1.9 at end of lid_open (game uses -1.9)"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -1.087,
+    -0.006,
+    -1.806
+   ],
+   "max": [
+    1.087,
+    2.597,
+    0.738
+   ],
+   "size": [
+    2.175,
+    2.603,
+    2.544
+   ]
+  },
+  "clips": [
+   {
+    "name": "lid_close",
+    "seconds": 0.767,
+    "tracks": [
+     "chest_lid.quaternion"
+    ]
+   },
+   {
+    "name": "lid_open",
+    "seconds": 0.767,
+    "tracks": [
+     "chest_lid.quaternion"
+    ]
+   }
+  ],
+  "triangles": 2456,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/chest_grand/engine/tb_chest_grand_three_anim.png"
+ }
+]

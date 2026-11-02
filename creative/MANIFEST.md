@@ -385,3 +385,122 @@ Status key: **game-ready**: drop-in asset in a format the game can load · **fin
 | `ui/source/panel_sailcloth.vectorcraft` | 36 KB |  | DesignCraft / VectorCraft | source |
 | `ui/source/ui_screens_v1.designcraft` | 1242 KB |  | DesignCraft / VectorCraft | source |
 | `ui/source/ui_screens_v1.pdf` | 1326 KB |  | DesignCraft / VectorCraft | source |
+
+## 3d/ (112 files, added by MeshCraft)
+
+Written by GITCRAFT MeshCraft's `update_manifest` (fields include `sha256`). Status: `source` (editable .blend), `game-ready` (exports, LODs, collision), `preview`.
+
+| File | Size | Tools | Status | Notes |
+|---|---|---|---|---|
+| `3d/biscuit/exports/tb_biscuit.godot-glb.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | godot-glb sidecar |
+| `3d/biscuit/exports/tb_biscuit.godot-glb.glb` | 276 KB | MeshCraft (Blender) | game-ready | godot-glb export (Godot 4 (glTF import)) |
+| `3d/biscuit/exports/tb_biscuit.three-web-toon.collision.glb` | 10 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/biscuit/exports/tb_biscuit.three-web-toon.glb` | 251 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/biscuit/exports/tb_biscuit.unity-fbx.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | unity-fbx sidecar |
+| `3d/biscuit/exports/tb_biscuit.unity-fbx.fbx` | 222 KB | MeshCraft (Blender) | game-ready | unity-fbx export (Unity / Unreal (FBX)) |
+| `3d/biscuit/previews/tb_biscuit_front.png` | 172 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/biscuit/previews/tb_biscuit_sheet.png` | 159 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/biscuit/previews/tb_biscuit_side.png` | 154 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/biscuit/previews/tb_biscuit_three_quarter.png` | 180 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/biscuit/previews/tb_biscuit_three_quarter_snap-5.png` | 206 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/biscuit/previews/tb_biscuit_three_quarter_wave-14.png` | 191 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/biscuit/previews/tb_biscuit_top.png` | 174 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/biscuit/source/tb_biscuit.blend` | 135 KB | MeshCraft (Blender) | source | Editable Blender source |
+| `3d/chest_grand/exports/tb_chest_grand.three-web-toon.collision.glb` | 11 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/chest_grand/exports/tb_chest_grand.three-web-toon.glb` | 183 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/chest_grand/exports/tb_chest_grand.three-web-toon.lod25.glb` | 71 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (25% triangles) |
+| `3d/chest_grand/exports/tb_chest_grand.three-web-toon.lod50.glb` | 128 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (50% triangles) |
+| `3d/chest_grand/previews/tb_chest_grand_front.png` | 221 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_grand/previews/tb_chest_grand_sheet.png` | 281 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_grand/previews/tb_chest_grand_side.png` | 184 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_grand/previews/tb_chest_grand_three_quarter.png` | 279 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_grand/previews/tb_chest_grand_three_quarter_lid_open-end.png` | 252 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_grand/previews/tb_chest_grand_top.png` | 178 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_grand/source/tb_chest_grand.blend` | 143 KB | MeshCraft (Blender) | source | Editable Blender source |
+| `3d/chest_sea/exports/tb_chest_sea.three-web-toon.collision.glb` | 11 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/chest_sea/exports/tb_chest_sea.three-web-toon.glb` | 216 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/chest_sea/exports/tb_chest_sea.three-web-toon.lod25.glb` | 80 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (25% triangles) |
+| `3d/chest_sea/exports/tb_chest_sea.three-web-toon.lod50.glb` | 147 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (50% triangles) |
+| `3d/chest_sea/previews/tb_chest_sea_front.png` | 229 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_sea/previews/tb_chest_sea_sheet.png` | 313 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_sea/previews/tb_chest_sea_side.png` | 182 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_sea/previews/tb_chest_sea_three_quarter.png` | 289 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_sea/previews/tb_chest_sea_three_quarter_lid_open-end.png` | 259 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_sea/previews/tb_chest_sea_top.png` | 180 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_sea/source/tb_chest_sea.blend` | 153 KB | MeshCraft (Blender) | source | Editable Blender source |
+| `3d/chest_small/exports/tb_chest_small.godot-glb.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | godot-glb sidecar |
+| `3d/chest_small/exports/tb_chest_small.godot-glb.glb` | 211 KB | MeshCraft (Blender) | game-ready | godot-glb export (Godot 4 (glTF import)) |
+| `3d/chest_small/exports/tb_chest_small.obj-static.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | obj-static sidecar |
+| `3d/chest_small/exports/tb_chest_small.obj-static.mtl` | 0 KB | MeshCraft (Blender) | game-ready | obj-static sidecar |
+| `3d/chest_small/exports/tb_chest_small.obj-static.obj` | 154 KB | MeshCraft (Blender) | game-ready | obj-static export (Any DCC / static mesh interchange) |
+| `3d/chest_small/exports/tb_chest_small.three-web-atlas.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | three-web-atlas sidecar |
+| `3d/chest_small/exports/tb_chest_small.three-web-atlas.glb` | 211 KB | MeshCraft (Blender) | game-ready | three-web-atlas export (Three.js / any glTF engine — single palette-atlas texture) |
+| `3d/chest_small/exports/tb_chest_small.three-web-toon.collision.glb` | 11 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/chest_small/exports/tb_chest_small.three-web-toon.glb` | 183 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/chest_small/exports/tb_chest_small.three-web-toon.lod25.glb` | 71 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (25% triangles) |
+| `3d/chest_small/exports/tb_chest_small.three-web-toon.lod50.glb` | 128 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (50% triangles) |
+| `3d/chest_small/exports/tb_chest_small.unity-fbx.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | unity-fbx sidecar |
+| `3d/chest_small/exports/tb_chest_small.unity-fbx.fbx` | 94 KB | MeshCraft (Blender) | game-ready | unity-fbx export (Unity / Unreal (FBX)) |
+| `3d/chest_small/previews/tb_chest_small_front.png` | 220 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_small/previews/tb_chest_small_sheet.png` | 279 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_small/previews/tb_chest_small_side.png` | 183 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_small/previews/tb_chest_small_three_quarter.png` | 275 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_small/previews/tb_chest_small_three_quarter_lid_open-end.png` | 249 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_small/previews/tb_chest_small_top.png` | 176 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/chest_small/source/tb_chest_small.blend` | 143 KB | MeshCraft (Blender) | source | Editable Blender source |
+| `3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.collision.glb` | 10 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.glb` | 141 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.lod25.glb` | 22 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (25% triangles) |
+| `3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.lod50.glb` | 48 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (50% triangles) |
+| `3d/figurehead_sun/exports/tb_figurehead_sun.unity-fbx.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | unity-fbx sidecar |
+| `3d/figurehead_sun/exports/tb_figurehead_sun.unity-fbx.fbx` | 73 KB | MeshCraft (Blender) | game-ready | unity-fbx export (Unity / Unreal (FBX)) |
+| `3d/figurehead_sun/previews/tb_figurehead_sun_front.png` | 206 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/figurehead_sun/previews/tb_figurehead_sun_sheet.png` | 258 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/figurehead_sun/previews/tb_figurehead_sun_side.png` | 154 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/figurehead_sun/previews/tb_figurehead_sun_three_quarter.png` | 196 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/figurehead_sun/previews/tb_figurehead_sun_top.png` | 133 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/figurehead_sun/source/tb_figurehead_sun.blend` | 128 KB | MeshCraft (Blender) | source | Editable Blender source |
+| `3d/flag_tidebreaker/exports/tb_flag_tidebreaker.three-web-toon.collision.glb` | 5 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/flag_tidebreaker/exports/tb_flag_tidebreaker.three-web-toon.glb` | 341 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/flag_tidebreaker/exports/tb_flag_tidebreaker.unity-fbx.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | unity-fbx sidecar |
+| `3d/flag_tidebreaker/exports/tb_flag_tidebreaker.unity-fbx.fbx` | 112 KB | MeshCraft (Blender) | game-ready | unity-fbx export (Unity / Unreal (FBX)) |
+| `3d/flag_tidebreaker/previews/tb_flag_tidebreaker_front.png` | 169 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_tidebreaker/previews/tb_flag_tidebreaker_sheet.png` | 97 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_tidebreaker/previews/tb_flag_tidebreaker_side.png` | 141 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_tidebreaker/previews/tb_flag_tidebreaker_three_quarter.png` | 166 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_tidebreaker/previews/tb_flag_tidebreaker_three_quarter_wave-mid.png` | 161 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_tidebreaker/previews/tb_flag_tidebreaker_top.png` | 94 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_tidebreaker/source/tb_flag_tidebreaker.blend` | 148 KB | MeshCraft (Blender) | source | Editable Blender source |
+| `3d/flag_wren/exports/tb_flag_wren.three-web-toon.collision.glb` | 5 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/flag_wren/exports/tb_flag_wren.three-web-toon.glb` | 340 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/flag_wren/previews/tb_flag_wren_front.png` | 169 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_wren/previews/tb_flag_wren_sheet.png` | 94 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_wren/previews/tb_flag_wren_side.png` | 141 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_wren/previews/tb_flag_wren_three_quarter.png` | 164 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_wren/previews/tb_flag_wren_three_quarter_wave-mid.png` | 159 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_wren/previews/tb_flag_wren_top.png` | 94 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/flag_wren/source/tb_flag_wren.blend` | 147 KB | MeshCraft (Blender) | source | Editable Blender source |
+| `3d/lantern/exports/tb_lantern.three-web-toon.collision.glb` | 4 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/lantern/exports/tb_lantern.three-web-toon.glb` | 36 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/lantern/exports/tb_lantern.three-web-toon.lod25.glb` | 14 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (25% triangles) |
+| `3d/lantern/exports/tb_lantern.three-web-toon.lod50.glb` | 22 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (50% triangles) |
+| `3d/lantern/exports/tb_lantern.unity-fbx.atlas.png` | 0 KB | MeshCraft (Blender) | game-ready | unity-fbx sidecar |
+| `3d/lantern/exports/tb_lantern.unity-fbx.fbx` | 37 KB | MeshCraft (Blender) | game-ready | unity-fbx export (Unity / Unreal (FBX)) |
+| `3d/lantern/previews/tb_lantern_front.png` | 180 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/lantern/previews/tb_lantern_sheet.png` | 160 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/lantern/previews/tb_lantern_side.png` | 189 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/lantern/previews/tb_lantern_three_quarter.png` | 198 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/lantern/previews/tb_lantern_three_quarter_swing-mid.png` | 193 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/lantern/previews/tb_lantern_top.png` | 154 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/lantern/source/tb_lantern.blend` | 100 KB | MeshCraft (Blender) | source | Editable Blender source |
+| `3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.collision.glb` | 5 KB | MeshCraft (Blender) | game-ready | three-web-toon collision (convex hull) |
+| `3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.glb` | 109 KB | MeshCraft (Blender) | game-ready | three-web-toon export (Three.js (GLTFLoader) — vertex-colour toon pipeline) |
+| `3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.lod25.glb` | 16 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (25% triangles) |
+| `3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.lod50.glb` | 29 KB | MeshCraft (Blender) | game-ready | three-web-toon lod (50% triangles) |
+| `3d/sail_sunset/previews/tb_sail_sunset_front.png` | 178 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/sail_sunset/previews/tb_sail_sunset_sheet.png` | 149 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/sail_sunset/previews/tb_sail_sunset_side.png` | 121 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/sail_sunset/previews/tb_sail_sunset_three_quarter.png` | 186 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/sail_sunset/previews/tb_sail_sunset_three_quarter_fill-end.png` | 191 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/sail_sunset/previews/tb_sail_sunset_top.png` | 102 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
+| `3d/sail_sunset/source/tb_sail_sunset.blend` | 110 KB | MeshCraft (Blender) | source | Editable Blender source |

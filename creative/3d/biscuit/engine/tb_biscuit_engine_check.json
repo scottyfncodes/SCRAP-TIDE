@@ -1,0 +1,326 @@
+[
+ {
+  "label": "rest",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "7/7 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_base_on_ground",
+    "level": "pass",
+    "detail": "lowest point y=0 m"
+   },
+   {
+    "check": "engine_node:biscuit",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:biscuit_rig",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:biscuit_mesh",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_clip:idle",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:wave",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:snap",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -0.45,
+    0,
+    -0.26
+   ],
+   "max": [
+    0.45,
+    0.51,
+    0.26
+   ],
+   "size": [
+    0.9,
+    0.51,
+    0.52
+   ]
+  },
+  "clips": [
+   {
+    "name": "idle",
+    "seconds": 2.033,
+    "tracks": [
+     "root.position",
+     "root.quaternion",
+     "root.scale",
+     "body.position",
+     "body.quaternion",
+     "body.scale",
+     "arm_L.position",
+     "arm_L.quaternion",
+     "arm_L.scale",
+     "claw_L.position",
+     "claw_L.quaternion",
+     "claw_L.scale",
+     "arm_R.position",
+     "arm_R.quaternion",
+     "arm_R.scale",
+     "claw_R.position",
+     "claw_R.quaternion",
+     "claw_R.scale",
+     "eye_L.position",
+     "eye_L.quaternion",
+     "eye_L.scale",
+     "eye_R.position",
+     "eye_R.quaternion",
+     "eye_R.scale"
+    ]
+   },
+   {
+    "name": "snap",
+    "seconds": 0.567,
+    "tracks": [
+     "root.position",
+     "root.quaternion",
+     "root.scale",
+     "body.position",
+     "body.quaternion",
+     "body.scale",
+     "arm_L.position",
+     "arm_L.quaternion",
+     "arm_L.scale",
+     "claw_L.position",
+     "claw_L.quaternion",
+     "claw_L.scale",
+     "arm_R.position",
+     "arm_R.quaternion",
+     "arm_R.scale",
+     "claw_R.position",
+     "claw_R.quaternion",
+     "claw_R.scale",
+     "eye_L.position",
+     "eye_L.quaternion",
+     "eye_L.scale",
+     "eye_R.position",
+     "eye_R.quaternion",
+     "eye_R.scale"
+    ]
+   },
+   {
+    "name": "wave",
+    "seconds": 1.133,
+    "tracks": [
+     "root.position",
+     "root.quaternion",
+     "root.scale",
+     "body.position",
+     "body.quaternion",
+     "body.scale",
+     "arm_L.position",
+     "arm_L.quaternion",
+     "arm_L.scale",
+     "claw_L.position",
+     "claw_L.quaternion",
+     "claw_L.scale",
+     "arm_R.position",
+     "arm_R.quaternion",
+     "arm_R.scale",
+     "claw_R.position",
+     "claw_R.quaternion",
+     "claw_R.scale",
+     "eye_L.position",
+     "eye_L.quaternion",
+     "eye_L.scale",
+     "eye_R.position",
+     "eye_R.quaternion",
+     "eye_R.scale"
+    ]
+   }
+  ],
+  "triangles": 2132,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/biscuit/engine/tb_biscuit_three_rest.png"
+ },
+ {
+  "label": "anim",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "7/7 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_base_on_ground",
+    "level": "pass",
+    "detail": "lowest point y=0 m"
+   },
+   {
+    "check": "engine_node:biscuit",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:biscuit_rig",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:biscuit_mesh",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_clip:idle",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:wave",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:snap",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -0.45,
+    0,
+    -0.26
+   ],
+   "max": [
+    0.298,
+    0.612,
+    0.26
+   ],
+   "size": [
+    0.748,
+    0.612,
+    0.52
+   ]
+  },
+  "clips": [
+   {
+    "name": "idle",
+    "seconds": 2.033,
+    "tracks": [
+     "root.position",
+     "root.quaternion",
+     "root.scale",
+     "body.position",
+     "body.quaternion",
+     "body.scale",
+     "arm_L.position",
+     "arm_L.quaternion",
+     "arm_L.scale",
+     "claw_L.position",
+     "claw_L.quaternion",
+     "claw_L.scale",
+     "arm_R.position",
+     "arm_R.quaternion",
+     "arm_R.scale",
+     "claw_R.position",
+     "claw_R.quaternion",
+     "claw_R.scale",
+     "eye_L.position",
+     "eye_L.quaternion",
+     "eye_L.scale",
+     "eye_R.position",
+     "eye_R.quaternion",
+     "eye_R.scale"
+    ]
+   },
+   {
+    "name": "snap",
+    "seconds": 0.567,
+    "tracks": [
+     "root.position",
+     "root.quaternion",
+     "root.scale",
+     "body.position",
+     "body.quaternion",
+     "body.scale",
+     "arm_L.position",
+     "arm_L.quaternion",
+     "arm_L.scale",
+     "claw_L.position",
+     "claw_L.quaternion",
+     "claw_L.scale",
+     "arm_R.position",
+     "arm_R.quaternion",
+     "arm_R.scale",
+     "claw_R.position",
+     "claw_R.quaternion",
+     "claw_R.scale",
+     "eye_L.position",
+     "eye_L.quaternion",
+     "eye_L.scale",
+     "eye_R.position",
+     "eye_R.quaternion",
+     "eye_R.scale"
+    ]
+   },
+   {
+    "name": "wave",
+    "seconds": 1.133,
+    "tracks": [
+     "root.position",
+     "root.quaternion",
+     "root.scale",
+     "body.position",
+     "body.quaternion",
+     "body.scale",
+     "arm_L.position",
+     "arm_L.quaternion",
+     "arm_L.scale",
+     "claw_L.position",
+     "claw_L.quaternion",
+     "claw_L.scale",
+     "arm_R.position",
+     "arm_R.quaternion",
+     "arm_R.scale",
+     "claw_R.position",
+     "claw_R.quaternion",
+     "claw_R.scale",
+     "eye_L.position",
+     "eye_L.quaternion",
+     "eye_L.scale",
+     "eye_R.position",
+     "eye_R.quaternion",
+     "eye_R.scale"
+    ]
+   }
+  ],
+  "triangles": 2132,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/biscuit/engine/tb_biscuit_three_anim.png"
+ }
+]

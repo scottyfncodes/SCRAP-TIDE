@@ -1,0 +1,30 @@
+{
+  "asset_id": "tb_biscuit",
+  "template": "crab",
+  "params": {},
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+    "/home/user/TIDEBREAKERS/creative/characters/char_biscuit.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/biscuit",
+  "profiles": [
+    "three-web-toon",
+    "godot-glb",
+    "unity-fbx"
+  ],
+  "preview": {
+    "size": 640,
+    "poses": [
+      {
+        "clip": "wave",
+        "at": 14
+      },
+      {
+        "clip": "snap",
+        "at": 5
+      }
+    ]
+  }
+}
