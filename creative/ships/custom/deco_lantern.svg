@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="260" viewBox="0 0 200 260">
+  <defs>
+    <filter id="filter-1" filterUnits="userSpaceOnUse" x="-32.25" y="-2.25" width="264.5" height="296.5" data-vc-blend="screen" color-interpolation-filters="sRGB"><feComponentTransfer in="SourceAlpha"><feFuncA type="linear" slope="255"/></feComponentTransfer><feMorphology operator="dilate" radius="0.25"/><feGaussianBlur stdDeviation="32" result="glow"/><feFlood flood-color="#ffc35a" flood-opacity="0.9"/><feComposite in2="glow" operator="in" result="paint"/><feMerge><feMergeNode in="paint"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <title>lantern</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <line x1="100" y1="62" x2="100" y2="98" fill="none" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <g filter="url(#filter-1)">
+      <path id="lantern" d="M88 98 L112 98 C125.333 98 132 104.667 132 118 L132 174 C132 187.333 125.333 194 112 194 L88 194 C74.667 194 68 187.333 68 174 L68 118 C68 104.667 74.667 98 88 98 Z" fill="#ff9f2e" stroke="#0e3b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <path id="flame" d="M84.8 146 C84.8 132.74 91.61 122 100 122 C108.39 122 115.2 132.74 115.2 146 C115.2 159.26 108.39 170 100 170 C91.61 170 84.8 159.26 84.8 146 Z" fill="#fff3c0"/>
+  </g>
+</svg>

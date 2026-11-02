@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <linearGradient id="linear-gradient-1" x1="603.6" y1="725" x2="603.6" y2="790" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7fe3d6"/>
+      <stop offset="0.25" stop-color="#1fb5b0"/>
+      <stop offset="1" stop-color="#1a7fa8"/>
+    </linearGradient>
+  </defs>
+  <title>ship_01_leaky-dinghy</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path id="rigging" d="M610 356 L786 646 M610 356 L430 648" fill="none" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+    <polygon id="mast" points="604,658 605.8,352 614.2,352 616,658" fill="#9a5a2e" stroke="#0e3b66" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line id="mast_hi" x1="611.44" y1="652" x2="610.96" y2="358" fill="none" stroke="#d9954f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+    <path id="yard" d="M519.5 363.5 L700.5 363.5 C703.5 363.5 705 365 705 368 L705 368 C705 371 703.5 372.5 700.5 372.5 L519.5 372.5 C516.5 372.5 515 371 515 368 L515 368 C515 365 516.5 363.5 519.5 363.5 Z" fill="#9a5a2e" stroke="#0e3b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="sail_o" d="M520 368 L700 368 C714.667 434.667 712.267 501.333 692.8 568 C643.467 578.267 588.267 578.267 527.2 568 C527.533 501.333 525.133 434.667 520 368 Z" fill="#f3e7d2" stroke="#0e3b66" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="sail" d="M520 368 L700 368 C714.667 434.667 712.267 501.333 692.8 568 C643.467 578.267 588.267 578.267 527.2 568 C527.533 501.333 525.133 434.667 520 368 Z" fill="#f3e7d2"/>
+    <path id="seams" d="M550 571.391 L550 368 L552.5 368 L552.5 571.708 C551.668 571.604 550.834 571.499 550 571.391 Z M580 574.427 L580 368 L582.5 368 L582.5 574.602 C581.668 574.545 580.835 574.487 580 574.427 Z M610 575.678 L610 368 L612.5 368 L612.5 575.696 C611.668 575.692 610.835 575.687 610 575.678 Z M640 574.939 L640 368 L642.5 368 L642.5 574.78 C641.668 574.835 640.835 574.888 640 574.939 Z M670 571.956 L670 368 L672.5 368 L672.5 571.597 C671.668 571.719 670.835 571.839 670 571.956 Z" fill="#ecdab4"/>
+    <path id="sail_shade" d="M662.694 572.904 C694.537 494.457 684.172 426.155 631.6 368 L700 368 C714.667 434.667 712.267 501.333 692.8 568 C682.996 570.04 672.961 571.675 662.694 572.904 Z" fill="#3b2350" opacity="0.16"/>
+    <path id="sail_hi" d="M556 392 C565.6 442.667 565.6 493.333 556 544" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    <path id="sail_line" d="M520 368 L700 368 C714.667 434.667 712.267 501.333 692.8 568 C643.467 578.267 588.267 578.267 527.2 568 C527.533 501.333 525.133 434.667 520 368 Z" fill="none" stroke="#0e3b66" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="gull_hole" d="M570 442 C579.333 432.667 588 432.667 596 442 C604 432.667 612.667 432.667 622 442 C612.667 448.667 604 450.667 596 448 C588 452 579.333 450 570 442 Z" fill="#7ccbf2" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="sail_patch" d="M634 492 L666 492 C668.667 492 670 493.333 670 496 L670 522 C670 524.667 668.667 526 666 526 L634 526 C631.333 526 630 524.667 630 522 L630 496 C630 493.333 631.333 492 634 492 Z" fill="#e0607e" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M634 498 L666 520 M666 498 L634 520" fill="none" stroke="#0e3b66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+    <path id="hull_outline" d="M420 633.8 C528 655.9 672 655.9 798 626 C783.6 694.9 765.6 753.8 693.6 764 L477.6 764 C430.8 764 407.4 714.4 420 633.8 Z" fill="#d9954f" stroke="#0e3b66" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="hull" d="M420 633.8 C528 655.9 672 655.9 798 626 C783.6 694.9 765.6 753.8 693.6 764 L477.6 764 C430.8 764 407.4 714.4 420 633.8 Z" fill="#d9954f"/>
+    <path id="hull_shadow" d="M773.792 705.514 C758.518 736.195 734.975 758.139 693.6 764 L477.6 764 C447.381 764 426.918 743.32 419.604 706.968 C539.262 708.847 654.301 708.526 773.792 705.514 Z" fill="#3b2350" opacity="0.32"/>
+    <path id="plank" d="M427.4 655.64 C530.16 677.74 669.84 677.74 789.6 647.84" fill="none" stroke="#0e3b66" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+    <path id="plank-2" data-name="plank" d="M427.4 672.8 C530.16 694.9 669.84 694.9 789.6 665" fill="none" stroke="#0e3b66" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+    <path id="trim" d="M422 644.72 C528 666.82 672 666.82 795 636.92" fill="none" stroke="#e0b276" stroke-width="10.14" stroke-linejoin="round"/>
+    <path id="patch" d="M532 687.1 L567.2 687.1 C569.867 687.1 571.2 688.433 571.2 691.1 L571.2 706.5 C571.2 709.167 569.867 710.5 567.2 710.5 L532 710.5 C529.333 710.5 528 709.167 528 706.5 L528 691.1 C528 688.433 529.333 687.1 532 687.1 Z" fill="#d9954f" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="nails" d="M532 691.1 L535 691.1 M564.2 691.1 L567.2 691.1 M532 698.9 L535 698.9 M564.2 698.9 L567.2 698.9 M532 706.7 L535 706.7 M564.2 706.7 L567.2 706.7" fill="none" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="patch-2" data-name="patch" d="M647.2 702.7 L671.6 702.7 C674.267 702.7 675.6 704.033 675.6 706.7 L675.6 718.2 C675.6 720.867 674.267 722.2 671.6 722.2 L647.2 722.2 C644.533 722.2 643.2 720.867 643.2 718.2 L643.2 706.7 C643.2 704.033 644.533 702.7 647.2 702.7 Z" fill="#d9954f" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="nails-2" data-name="nails" d="M647.2 706.7 L650.2 706.7 M668.6 706.7 L671.6 706.7 M647.2 713.2 L650.2 713.2 M668.6 713.2 L671.6 713.2 M647.2 719.7 L650.2 719.7 M668.6 719.7 L671.6 719.7" fill="none" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="rail_line" d="M422 633.8 C528 655.9 672 655.9 795 626" fill="none" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <line id="oar" x1="390" y1="760" x2="540" y2="592" fill="none" stroke="#9a5a2e" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="oar_blade" d="M374 776 C383.333 756 394.667 752.667 408 766 C404 780.667 392.667 784 374 776 Z" fill="#d9954f" stroke="#0e3b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <polygon id="bucket" points="490,646 498,606 538,606 546,646" fill="#1a7fa8" stroke="#0e3b66" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M490 606 C508.667 590 527.333 590 546 606" fill="none" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="water" d="M355.2 734 C375.9 735.333 396.6 734.667 417.3 732 C438 722.667 458.7 722.667 479.4 732 C500.1 734.667 520.8 734.667 541.5 732 C562.2 722.667 582.9 722.667 603.6 732 C624.3 734.667 645 734.667 665.7 732 C686.4 722.667 707.1 722.667 727.8 732 C748.5 734.667 769.2 734.667 789.9 732 C810.6 722.667 831.3 722.667 852 732 C838.667 766.667 790.667 786 708 790 L492 790 C414.133 786 368.533 767.333 355.2 734 Z" fill="url(#linear-gradient-1)" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="foam" d="M420 740 C456 734.667 492 734.667 528 740 M618 744 C654 738.667 690 738.667 726 744 M546 764 C582 758.667 618 758.667 654 764" fill="none" stroke="#e9fbf6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="splash" d="M742.8 734 C760.133 704.667 782.133 694.667 808.8 704 C794.133 712 800.8 721.333 828.8 732 C804.8 740 776.133 740.667 742.8 734 Z" fill="#e9fbf6" stroke="#0e3b66" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="wake" d="M442 736 C415.333 728 382 728.667 342 738 C375.333 743.333 408.667 742.667 442 736 Z" fill="#e9fbf6" stroke="#0e3b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="leak_bubble" d="M634 716 C634 712.69 636.69 710 640 710 C643.31 710 646 712.69 646 716 C646 719.31 643.31 722 640 722 C636.69 722 634 719.31 634 716 Z" fill="#e9fbf6" stroke="#0e3b66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="leak_bubble-2" data-name="leak_bubble" d="M662 700 C662 695.58 665.58 692 670 692 C674.42 692 678 695.58 678 700 C678 704.42 674.42 708 670 708 C665.58 708 662 704.42 662 700 Z" fill="#e9fbf6" stroke="#0e3b66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="leak_bubble-3" data-name="leak_bubble" d="M685 710 C685 704.48 689.48 700 695 700 C700.52 700 705 704.48 705 710 C705 715.52 700.52 720 695 720 C689.48 720 685 715.52 685 710 Z" fill="#e9fbf6" stroke="#0e3b66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

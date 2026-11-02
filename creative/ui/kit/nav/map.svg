@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>map</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <polygon points="18,30 48,20 80,30 110,20 110,98 80,108 48,98 18,108" fill="#ecdab4" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M48 20 L48 98 M80 30 L80 108" fill="none" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    <path d="M82 56 L96 70 M96 56 L82 70" fill="none" stroke="#c0392b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M30 84 C43.333 64 58 59.333 74 70" fill="none" stroke="#c0392b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 6"/>
+  </g>
+</svg>

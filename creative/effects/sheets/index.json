@@ -1,0 +1,93 @@
+{
+ "fx_treasure_sparkle": {
+  "image": "fx_treasure_sparkle_sheet.png",
+  "frameWidth": 128,
+  "frameHeight": 128,
+  "frames": 24,
+  "columns": 5,
+  "rows": 5,
+  "fps": 24,
+  "loop": true,
+  "premultiplied": false,
+  "blend": "normal",
+  "use": "Loop on treasure/dig spots, item icons"
+ },
+ "fx_discovery_burst": {
+  "image": "fx_discovery_burst_sheet.png",
+  "frameWidth": 512,
+  "frameHeight": 512,
+  "frames": 45,
+  "columns": 7,
+  "rows": 7,
+  "fps": 30,
+  "loop": false,
+  "premultiplied": false,
+  "blend": "normal",
+  "use": "Play once behind the New Discovery card"
+ },
+ "fx_collectible_glow": {
+  "image": "fx_collectible_glow_sheet.png",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "frames": 24,
+  "columns": 5,
+  "rows": 5,
+  "fps": 24,
+  "loop": true,
+  "premultiplied": false,
+  "blend": "normal",
+  "use": "Loop under glowing collectibles in the world"
+ },
+ "fx_water_splash": {
+  "image": "fx_water_splash_sheet.png",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "frames": 18,
+  "columns": 5,
+  "rows": 4,
+  "fps": 24,
+  "loop": false,
+  "premultiplied": false,
+  "blend": "normal",
+  "use": "Play once on anchor drop, item tossed, bow slam"
+ },
+ "fx_impact_poof": {
+  "image": "fx_impact_poof_sheet.png",
+  "frameWidth": 384,
+  "frameHeight": 384,
+  "frames": 19,
+  "columns": 5,
+  "rows": 4,
+  "fps": 24,
+  "loop": false,
+  "premultiplied": false,
+  "blend": "normal",
+  "use": "Play once for hits, chest bursts, cannon impacts (stylised, no gore)"
+ },
+ "fx_wake_foam": {
+  "image": "fx_wake_foam_sheet.png",
+  "frameWidth": 256,
+  "frameHeight": 128,
+  "frames": 24,
+  "columns": 5,
+  "rows": 5,
+  "fps": 24,
+  "loop": true,
+  "premultiplied": false,
+  "blend": "normal",
+  "use": "Scrolling foam sprite at the stern; spawn along wake"
+ },
+ "fx_dust_motes": {
+  "image": "fx_dust_motes_sheet.png",
+  "frameWidth": 512,
+  "frameHeight": 512,
+  "frames": 48,
+  "columns": 7,
+  "rows": 7,
+  "fps": 24,
+  "loop": true,
+  "premultiplied": false,
+  "blend": "additive",
+  "use": "Screen-space atmosphere overlay in jungle/cove (additive)"
+ }
+}

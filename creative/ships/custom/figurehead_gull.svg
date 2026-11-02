@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="300" viewBox="0 0 400 300">
+  <title>gull</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M40 260 C120 220 183.333 180 230 140" fill="none" stroke="#0e3b66" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M40 260 C120 220 183.333 180 230 140" fill="none" stroke="#9a5a2e" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M178 140 C226 76 274 68 322 116 C290 148 242 156 178 140 Z" fill="#ffffff" stroke="#0e3b66" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <polygon points="317.2,111.2 360.4,120.8 322,135.2" fill="#ff9f2e" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M226 106.4 C194 48.8 154 28 106 44 C154 92 194 112.8 226 106.4 Z" fill="#e8eef2" stroke="#0e3b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M286 101.6 C286 97.62 289.22 94.4 293.2 94.4 C297.18 94.4 300.4 97.62 300.4 101.6 C300.4 105.58 297.18 108.8 293.2 108.8 C289.22 108.8 286 105.58 286 101.6 Z" fill="#0e3b66"/>
+  </g>
+</svg>

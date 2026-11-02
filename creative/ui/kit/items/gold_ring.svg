@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>gold_ring</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M30 78 C30 62.54 45.22 50 64 50 C82.78 50 98 62.54 98 78 C98 93.46 82.78 106 64 106 C45.22 106 30 93.46 30 78 Z" fill="none" stroke="#0e3b66" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M30 78 C30 62.54 45.22 50 64 50 C82.78 50 98 62.54 98 78 C98 93.46 82.78 106 64 106 C45.22 106 30 93.46 30 78 Z" fill="none" stroke="#f4c542" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M54 18 L74 18 C79.333 18 82 20.667 82 26 L82 40 C82 45.333 79.333 48 74 48 L54 48 C48.667 48 46 45.333 46 40 L46 26 C46 20.667 48.667 18 54 18 Z" fill="#f4c542" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="64" cy="33" r="9" fill="#c0392b" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

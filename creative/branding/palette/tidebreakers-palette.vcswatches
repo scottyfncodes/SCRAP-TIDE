@@ -1,0 +1,349 @@
+{
+  "format": "vcswatches",
+  "version": 1,
+  "name": "palette",
+  "swatches": [],
+  "groups": [
+    {
+      "name": "TIDEBREAKERS Sunlit Shallows",
+      "swatches": [
+        {
+          "name": "Lagoon Teal",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.12156863,
+              "g": 0.70980394,
+              "b": 0.6901961
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Shallows Aqua",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.49803922,
+              "g": 0.8901961,
+              "b": 0.8392157
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Sea Blue",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.101960786,
+              "g": 0.49803922,
+              "b": 0.65882355
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Deep Tide",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.05490196,
+              "g": 0.23137255,
+              "b": 0.4
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Midnight Swell",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.039215688,
+              "g": 0.12941177,
+              "b": 0.25882354
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Doubloon Gold",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.95686275,
+              "g": 0.77254903,
+              "b": 0.25882354
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Gold Deep",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.7882353,
+              "g": 0.5411765,
+              "b": 0.07058824
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Sunlit Amber",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 1.0,
+              "g": 0.62352943,
+              "b": 0.18039216
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Coral Flame",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 1.0,
+              "g": 0.41960785,
+              "b": 0.2901961
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Harbor Crimson",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.7529412,
+              "g": 0.22352941,
+              "b": 0.16862746
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Hibiscus",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.8784314,
+              "g": 0.3764706,
+              "b": 0.49411765
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Sailcloth Cream",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.9647059,
+              "g": 0.91764706,
+              "b": 0.8156863
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Parchment",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.9254902,
+              "g": 0.85490197,
+              "b": 0.7058824
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Palm Green",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.24705882,
+              "g": 0.64705884,
+              "b": 0.3529412
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Jungle Deep",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.11764706,
+              "g": 0.41960785,
+              "b": 0.30588236
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Honey Timber",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.8509804,
+              "g": 0.58431375,
+              "b": 0.30980393
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Timber",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.6039216,
+              "g": 0.3529412,
+              "b": 0.18039216
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Deep Timber",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.36862746,
+              "g": 0.2,
+              "b": 0.105882354
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Plum Shadow",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.23137255,
+              "g": 0.13725491,
+              "b": 0.3137255
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Dusk",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.41568628,
+              "g": 0.29803923,
+              "b": 0.5764706
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Sky",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.4862745,
+              "g": 0.79607844,
+              "b": 0.9490196
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Sky High",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.8117647,
+              "g": 0.94509804,
+              "b": 1.0
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Beach Sand",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.96862745,
+              "g": 0.8509804,
+              "b": 0.627451
+            }
+          },
+          "global": true,
+          "spot": false
+        },
+        {
+          "name": "Sea Foam",
+          "paint": {
+            "type": "solid",
+            "color": {
+              "model": "rgb",
+              "r": 0.9137255,
+              "g": 0.9843137,
+              "b": 0.9647059
+            }
+          },
+          "global": true,
+          "spot": false
+        }
+      ]
+    }
+  ]
+}

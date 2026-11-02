@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>settings</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <polygon points="64,16 75.12,29.76 92.21,25.17 93.12,42.84 109.65,49.17 100,64 109.65,78.83 93.12,85.16 92.21,102.83 75.12,98.24 64,112 52.88,98.24 35.79,102.83 34.88,85.16 18.35,78.83 28,64 18.35,49.17 34.88,42.84 35.79,25.17 52.88,29.76" fill="#f6ead0" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 64 C50 56.27 56.27 50 64 50 C71.73 50 78 56.27 78 64 C78 71.73 71.73 78 64 78 C56.27 78 50 71.73 50 64 Z" fill="#1a7fa8" stroke="#0e3b66" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

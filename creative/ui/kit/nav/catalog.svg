@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>catalog</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M34 18 L94 18 C100.667 18 104 21.333 104 28 L104 100 C104 106.667 100.667 110 94 110 L34 110 C27.333 110 24 106.667 24 100 L24 28 C24 21.333 27.333 18 34 18 Z" fill="#1a7fa8" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M40 18 L98 18 C102 18 104 20 104 24 L104 98 C104 102 102 104 98 104 L40 104 C36 104 34 102 34 98 L34 24 C34 20 36 18 40 18 Z" fill="#f6ead0" stroke="#0e3b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M32 18 L38 18 C43.333 18 46 20.667 46 26 L46 102 C46 107.333 43.333 110 38 110 L32 110 C26.667 110 24 107.333 24 102 L24 26 C24 20.667 26.667 18 32 18 Z" fill="#1a7fa8" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M72 38 C74.933 48.4 81.6 55.067 92 58 C81.6 60.933 74.933 67.6 72 78 C69.067 67.6 62.4 60.933 52 58 C62.4 55.067 69.067 48.4 72 38 Z" fill="#f4c542" stroke="#0e3b66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

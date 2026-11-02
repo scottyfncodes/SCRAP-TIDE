@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="linear-gradient-1" x1="32.581" y1="9.581" x2="95.419" y2="118.419" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff3b8"/>
+      <stop offset="0.5" stop-color="#f4c542"/>
+      <stop offset="1" stop-color="#ff9f2e"/>
+    </linearGradient>
+  </defs>
+  <title>doubloon</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M18 70 C18 44.59 38.59 24 64 24 C89.41 24 110 44.59 110 70 C110 95.41 89.41 116 64 116 C38.59 116 18 95.41 18 70 Z" fill="#c98a12" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M18 64 C18 38.59 38.59 18 64 18 C89.41 18 110 38.59 110 64 C110 89.41 89.41 110 64 110 C38.59 110 18 89.41 18 64 Z" fill="url(#linear-gradient-1)" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M31 64 C31 45.77 45.77 31 64 31 C82.23 31 97 45.77 97 64 C97 82.23 82.23 97 64 97 C45.77 97 31 82.23 31 64 Z" fill="none" stroke="#c98a12" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="rays" d="M61.37 50.45 C57.037 46.457 57.913 42.873 64 39.7 C65.42 43.633 66.297 47.217 66.63 50.45 Z M68.95 51.12 C66.283 46.867 67.953 45.407 73.96 46.74 C73.713 49.247 73.287 51.427 72.68 53.28 Z M74.41 54.95 C75.71 49.197 79.253 48.163 85.04 51.85 C82.347 55.043 79.683 57.597 77.05 59.51 Z M77.63 61.84 C79.977 57.407 82.077 58.127 83.93 64 C81.63 65.04 79.53 65.76 77.63 66.16 Z M77.05 68.49 C82.677 66.743 85.34 69.297 85.04 76.15 C80.927 75.417 77.383 74.383 74.41 73.05 Z M72.68 74.72 C77.693 74.54 78.12 76.72 73.96 81.26 C71.913 79.787 70.243 78.327 68.95 76.88 Z M66.63 77.55 C70.963 81.543 70.087 85.127 64 88.3 C62.58 84.367 61.703 80.783 61.37 77.55 Z M59.05 76.88 C61.717 81.133 60.047 82.593 54.04 81.26 C54.287 78.753 54.713 76.573 55.32 74.72 Z M53.59 73.05 C52.29 78.803 48.747 79.837 42.96 76.15 C45.653 72.957 48.317 70.403 50.95 68.49 Z M50.37 66.16 C48.023 70.593 45.923 69.873 44.07 64 C46.37 62.96 48.47 62.24 50.37 61.84 Z M50.95 59.51 C45.323 61.257 42.66 58.703 42.96 51.85 C47.073 52.583 50.617 53.617 53.59 54.95 Z M55.32 53.28 C50.307 53.46 49.88 51.28 54.04 46.74 C56.087 48.213 57.757 49.673 59.05 51.12 Z" fill="#c98a12"/>
+    <path id="face" d="M49 64 C49 55.72 55.72 49 64 49 C72.28 49 79 55.72 79 64 C79 72.28 72.28 79 64 79 C55.72 79 49 72.28 49 64 Z" fill="#c98a12"/>
+    <path id="eye" d="M67.45 62.2 C67.45 60.79 68.32 59.65 69.4 59.65 C70.48 59.65 71.35 60.79 71.35 62.2 C71.35 63.61 70.48 64.75 69.4 64.75 C68.32 64.75 67.45 63.61 67.45 62.2 Z" fill="#ffe89a"/>
+    <path id="brow" d="M66.4 57.4 C68.4 55.8 70.4 55.9 72.4 57.7" fill="none" stroke="#ffe89a" stroke-width="1.238" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="strap" d="M49.3 56.5 C59.1 60.3 68.9 59.7 78.7 54.7" fill="none" stroke="#ffe89a" stroke-width="1.012" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="patch" d="M55 60.4 C57.4 59.6 59.8 59.7 62.2 60.7 C62 63.9 60.8 65.7 58.6 66.1 C56.2 65.7 55 63.8 55 60.4 Z" fill="#ffe89a"/>
+    <path id="grin" d="M56.8 68.2 C61.1 73.2 66.1 72.7 71.8 66.7 C67.6 69.5 62.6 70 56.8 68.2 Z" fill="#ffe89a" stroke="#ffe89a" stroke-width="0.675" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

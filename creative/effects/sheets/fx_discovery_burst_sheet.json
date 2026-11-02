@@ -1,0 +1,13 @@
+{
+ "image": "fx_discovery_burst_sheet.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "frames": 45,
+ "columns": 7,
+ "rows": 7,
+ "fps": 30,
+ "loop": false,
+ "premultiplied": false,
+ "blend": "normal",
+ "use": "Play once behind the New Discovery card"
+}

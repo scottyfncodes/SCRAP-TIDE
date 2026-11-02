@@ -1,0 +1,13 @@
+{
+ "image": "fx_treasure_sparkle_sheet.png",
+ "frameWidth": 128,
+ "frameHeight": 128,
+ "frames": 24,
+ "columns": 5,
+ "rows": 5,
+ "fps": 24,
+ "loop": true,
+ "premultiplied": false,
+ "blend": "normal",
+ "use": "Loop on treasure/dig spots, item icons"
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>dig</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <line x1="28" y1="24" x2="80" y2="78" fill="none" stroke="#0e3b66" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="28" y1="24" x2="80" y2="78" fill="none" stroke="#9a5a2e" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M72 70 L94 58 L114 94 C100.667 108.667 87.333 113.333 74 108 Z" fill="#1a7fa8" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>spyglass</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <line x1="14" y1="94" x2="104" y2="30" fill="none" stroke="#0e3b66" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="14" y1="94" x2="104" y2="30" fill="none" stroke="#f4c542" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="14" y1="94" x2="50" y2="68" fill="none" stroke="#9a5a2e" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M94 28 C94 20.27 100.27 14 108 14 C115.73 14 122 20.27 122 28 C122 35.73 115.73 42 108 42 C100.27 42 94 35.73 94 28 Z" fill="#7ccbf2" stroke="#0e3b66" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
