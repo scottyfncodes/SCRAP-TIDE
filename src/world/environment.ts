@@ -278,8 +278,8 @@ export class Environment {
     // shops along the waterfront (decorative, each matches a harbor service)
     const shops: { x: number; name: string; wall: string; roof: string; awning: [string, string]; sign: string }[] = [
       { x: -42, name: 'SHIPWRIGHT', wall: '#d4b48a', roof: '#7a4a2a', awning: ['#2f6fb0', '#f2ead8'], sign: '⚓' },
-      { x: -20, name: 'APPRAISER', wall: '#f0d8a8', roof: '#b0472f', awning: ['#e0a92a', '#fff4d6'], sign: '⚖' },
-      { x: 20, name: 'MAPS', wall: '#cfe0d2', roof: '#3d6b5a', awning: ['#2e8b7a', '#f2ead8'], sign: '⌖' },
+      { x: -20, name: 'TRADER', wall: '#f0d8a8', roof: '#b0472f', awning: ['#e0a92a', '#fff4d6'], sign: '⚖' },
+      { x: 20, name: 'CHARTS', wall: '#cfe0d2', roof: '#3d6b5a', awning: ['#2e8b7a', '#f2ead8'], sign: '⌖' },
       { x: 42, name: 'CURIOS', wall: '#f2c9c0', roof: '#6b3a5a', awning: ['#c0392b', '#fff4d6'], sign: '✦' },
     ];
     for (const s of shops) {

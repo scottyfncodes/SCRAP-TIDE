@@ -1,6 +1,10 @@
 // DOM UI: HUD, touch controls, panels (harbor, catalog, maps, ship, cargo, settings), reveals.
 import { ITEMS, CATALOG_ITEMS, ITEM_MAP, RARITY_COLOR, RARITY_LABEL, RARITY_ORDER, CATEGORY_LABEL, item, type Category } from '../data/items';
-import { UPGRADES, VESSELS, COSMETICS, COSMETIC_MAP, SLOT_LABEL, UPGRADE_MAP, type Cost, type UpgradeSlot } from '../data/ship';
+import { UPGRADES, VESSELS, COSMETICS, COSMETIC_MAP, SLOT_LABEL, SLOT_ORDER, UPGRADE_MAP, type Cost } from '../data/ship';
+import { RECIPES } from '../data/crafting';
+import { CREW, CREW_MAP, ROLE_INFO } from '../data/crew';
+import { GOALS } from '../data/progress';
+import { SETTLEMENT_MAP, type SettlementDef } from '../data/world';
 import { MILESTONES, FIRST_VOYAGE } from '../data/progress';
 import { TREASURE_MAPS, FRAGMENT_MAP, ISLAND_MAP } from '../data/world';
 import { iconSVG } from './icons';
@@ -23,8 +27,22 @@ export interface GameAPI {
   setShowcase(on: boolean): void;
   shipState(): { x: number; z: number; heading: number };
   isDocked(): boolean;
+  dockedSettlement(): SettlementDef | null;
   resetSave(): void;
   start(): void;
+  toggleEngine(): void;
+  craft(id: string): void;
+  refuel(): void;
+  buyFuel(): void;
+  repair(withKit: boolean): void;
+  recruit(id: string): void;
+  dismiss(id: string): void;
+  chartExtras(): import('./mapArt').ChartExtras;
+}
+
+export interface StatusInfo {
+  fuel: number; fuelCap: number; hull: number; hullMax: number; clock: string; phase: string; weather: string;
+  engine: boolean; engineOn: boolean; sailing: boolean;
 }
 
 export interface Action {
@@ -55,7 +73,7 @@ const el = (html: string) => {
 };
 
 function costHTML(store: Store, c: Cost) {
-  const parts = [`<span class="${store.data.gold < c.gold ? 'lack' : ''}"><span class="pill-coin" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f4c542;border:1px solid #b8860b"></span>${c.gold}</span>`];
+  const parts = !c.gold ? [] : [`<span class="${store.data.gold < c.gold ? 'lack' : ''}"><span class="pill-coin" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f4c542;border:1px solid #b8860b"></span>${c.gold}</span>`];
   for (const m of c.mats ?? []) {
     const have = store.countOwned(m.id);
     parts.push(`<span class="${have < m.n ? 'lack' : ''}">${iconSVG(m.id, { size: 16 })}${have}/${m.n} ${item(m.id).name}</span>`);
@@ -64,10 +82,19 @@ function costHTML(store: Store, c: Cost) {
 }
 
 const NPCS = {
-  pip: { name: 'Pip Farthing', role: 'Treasure Appraiser', color: '#f4d06f', face: '\u{1F9D0}' },
-  marlo: { name: 'Marlo Keelhart', role: 'Shipwright', color: '#9ec5e8', face: '\u{1F9D4}' },
-  wren: { name: 'Old Wren', role: 'Cartographer', color: '#a8d5ba', face: '\u{1F475}' },
-  odessa: { name: 'Odessa Brightly', role: 'Curio & Decor', color: '#f2b5c4', face: '\u{1F469}‍\u{1F3A8}' },
+  pip: { name: 'Pip Farthing', role: 'Trader', color: '#f4d06f', face: '\u{1F9D0}' },
+  marlo: { name: 'Marlo Keelhart', role: 'Shipwright & Mechanic', color: '#9ec5e8', face: '\u{1F9D4}' },
+  wren: { name: 'Old Wren', role: 'Charts & Rumours', color: '#a8d5ba', face: '\u{1F475}' },
+  odessa: { name: 'Odessa Brightly', role: 'Paint, Sails & Curios', color: '#f2b5c4', face: '\u{1F469}‍\u{1F3A8}' },
+  sal: { name: 'Old Sal', role: 'Fish Trader', color: '#9fd8c8', face: '\u{1F3A3}' },
+  nori: { name: 'Nori Kettle', role: 'Raft-wright', color: '#d8c49f', face: '\u{1F6E0}' },
+  dace: { name: 'Foreman Dace', role: 'Rig Trader', color: '#f2b825', face: '\u{1F477}' },
+  vik: { name: 'Vik Ashby', role: 'Rig Mechanic', color: '#ff9f45', face: '\u{1F527}' },
+};
+const SETTLEMENT_NPCS: Record<string, { trader: keyof typeof NPCS; wright: keyof typeof NPCS }> = {
+  driftholm: { trader: 'pip', wright: 'marlo' },
+  hollow: { trader: 'sal', wright: 'nori' },
+  helios: { trader: 'dace', wright: 'vik' },
 };
 
 export class UI {
@@ -76,6 +103,9 @@ export class UI {
   onAction: (id: string) => void = () => {};
   private hud!: HTMLElement;
   private goldEl!: HTMLElement;
+  private engineEl!: HTMLElement;
+  private radarEl!: HTMLElement;
+  private lastStatus = '';
   private cargoEl!: HTMLElement;
   private questEl!: HTMLElement;
   private actionsEl!: HTMLElement;
@@ -113,13 +143,15 @@ export class UI {
   private buildHUD() {
     this.hud = el(`<div class="hud" style="position:absolute;inset:0;pointer-events:none"></div>`);
     const top = el(`<div class="hud-top">
-      <div class="stats"><div class="pill gold-pill"><span class="coin"></span><span class="gold">0</span></div><div class="pill cargo-pill">⛵ <span class="cargo">0/6</span></div></div>
+      <div class="stats"><div class="pill gold-pill"><span class="coin"></span><span class="gold">0</span></div><div class="pill cargo-pill">⛵ <span class="cargo">0/6</span></div>
+        <div class="status"><div class="gauge fuel"><i></i><span>FUEL</span></div><div class="gauge hull"><i></i><span>HULL</span></div><div class="clock"></div></div></div>
       <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-hint"></div></div>
       <div class="menu-btns">
         <button class="icon-btn" data-p="catalog">${ICON.catalog}<span>CATALOG</span></button>
         <button class="icon-btn" data-p="maps">${ICON.maps}<span>MAPS</span></button>
         <button class="icon-btn" data-p="ship">${ICON.ship}<span>SHIP</span></button>
         <button class="icon-btn" data-p="cargo">${ICON.cargo}<span>CARGO</span></button>
+        <button class="icon-btn" data-p="settings">${ICON.settings}<span>MENU</span></button>
       </div>
     </div>`);
     this.goldEl = top.querySelector('.gold')!;
@@ -132,9 +164,7 @@ export class UI {
         this.openPanel(b.dataset.p!);
       })
     );
-    const settings = el(`<button class="icon-btn" style="position:absolute;left:calc(var(--safe-l) + 10px);top:calc(var(--safe-t) + 96px);width:40px;height:40px">${ICON.settings}</button>`);
-    settings.addEventListener('click', () => this.openPanel('settings'));
-    this.hud.append(top, settings);
+    this.hud.append(top);
 
     // joystick
     const stick = el(`<div class="stick">${WHEEL_SVG}<div class="knob"></div><div class="stick-label">STEER</div></div>`);
@@ -186,7 +216,14 @@ export class UI {
     this.digEl = el(`<div class="dig-meter" style="opacity:0"><div class="dm-text"></div><div class="dm-bar"><div class="dm-fill"></div></div></div>`);
     this.bannerEl = el(`<div class="region-banner"><div class="rb-inner"><div class="rb-title"></div><div class="rb-sub"></div></div></div>`);
     this.fadeEl = el(`<div class="fade"></div>`);
-    this.hud.append(this.actionsEl, this.toastsEl, this.wpEl, this.compassEl, this.speedEl, this.digEl, this.bannerEl);
+    this.engineEl = el(`<button class="engine-btn none"><b>⚙</b>ENGINE</button>`);
+    this.engineEl.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      audio.unlock();
+      this.game.toggleEngine();
+    });
+    this.radarEl = el(`<div class="radar"><canvas width="208" height="208"></canvas><div class="rl">RADAR</div></div>`);
+    this.hud.append(this.actionsEl, this.toastsEl, this.wpEl, this.compassEl, this.speedEl, this.digEl, this.bannerEl, this.engineEl, this.radarEl);
     this.root.append(this.hud, this.fadeEl);
 
     // keyboard for desktop testing
@@ -210,6 +247,7 @@ export class UI {
         b?.click();
       }
       if (k === 'escape') this.closePanel();
+      if (k === 'q') this.game.toggleEngine();
     });
     window.addEventListener('keyup', (e) => {
       keys.delete(e.key.toLowerCase());
@@ -225,7 +263,8 @@ export class UI {
     const cap = s.stats.cargo;
     this.cargoEl.textContent = `${used}/${cap}`;
     this.cargoEl.parentElement!.classList.toggle('full', used >= cap);
-    const q = FIRST_VOYAGE.find((q) => q.id === s.data.quest)!;
+    let q: { text: string; hint: string } = FIRST_VOYAGE.find((q) => q.id === s.data.quest)!;
+    if (s.data.quest === 'free') q = GOALS[s.data.goal];
     const qt = this.questEl.querySelector('.q-text')!;
     if (qt.textContent !== q.text) {
       qt.textContent = q.text;
@@ -234,7 +273,7 @@ export class UI {
       this.questEl.classList.add('pulse');
     }
     this.questEl.querySelector('.q-hint')!.textContent = q.hint;
-    this.questEl.querySelector('.q-label')!.textContent = s.data.quest === 'free' ? 'Captain’s Log' : `First Voyage · ${s.questIndex() + 1}/${FIRST_VOYAGE.length - 1}`;
+    this.questEl.querySelector('.q-label')!.textContent = s.data.quest === 'free' ? `Captain’s Log · ${s.data.goal + 1}/${GOALS.length}` : `First Voyage · ${s.questIndex() + 1}/${FIRST_VOYAGE.length - 1}`;
   }
 
   setHUDVisible(v: boolean) {
@@ -282,14 +321,158 @@ export class UI {
     this.compassEl.querySelector('.cl')!.textContent = label;
   }
 
-  setSpeed(knots: number | null, windAngle: number, eff: number) {
+  setSpeed(knots: number | null, windAngle: number, eff: number, motoring = false) {
     if (knots === null) {
       this.speedEl.style.display = 'none';
       return;
     }
     this.speedEl.style.display = '';
     (this.speedEl.querySelector('.wind svg') as SVGElement).style.transform = `rotate(${windAngle}rad)`;
-    this.speedEl.querySelector('.kn')!.textContent = `${knots.toFixed(1)} kn · ${eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind'}`;
+    this.speedEl.querySelector('.kn')!.textContent = `${knots.toFixed(1)} kn · ${motoring ? 'under power' : eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind'}`;
+  }
+
+  setStatus(st: StatusInfo) {
+    const key = `${Math.round(st.fuel)}|${Math.round(st.fuelCap)}|${Math.round(st.hull)}|${Math.round(st.hullMax)}|${st.clock}|${st.weather}|${st.engine}|${st.engineOn}|${st.sailing}`;
+    if (key === this.lastStatus) return;
+    this.lastStatus = key;
+    const fuel = this.hud.querySelector('.gauge.fuel') as HTMLElement;
+    const hull = this.hud.querySelector('.gauge.hull') as HTMLElement;
+    const fk = st.fuel / st.fuelCap, hk = st.hull / st.hullMax;
+    (fuel.firstElementChild as HTMLElement).style.width = `${Math.round(fk * 100)}%`;
+    (hull.firstElementChild as HTMLElement).style.width = `${Math.round(hk * 100)}%`;
+    fuel.lastElementChild!.textContent = `FUEL ${Math.round(st.fuel)}/${Math.round(st.fuelCap)}`;
+    hull.lastElementChild!.textContent = `HULL ${Math.round(st.hull)}/${Math.round(st.hullMax)}`;
+    fuel.classList.toggle('low', fk < 0.2 && st.engine);
+    hull.classList.toggle('low', hk < 0.3);
+    fuel.style.display = st.engine ? '' : 'none';
+    this.hud.querySelector('.clock')!.textContent = `${st.clock} · ${st.phase} · ${st.weather}`;
+    this.engineEl.classList.toggle('on', st.engineOn);
+    this.engineEl.classList.toggle('none', !st.engine);
+    this.engineEl.style.display = st.sailing ? '' : 'none';
+  }
+
+  /** Minimap: blips relative to the player, rotated so "up" is the camera's forward. */
+  setRadar(blips: { x: number; z: number; kind: string }[], range: number, heading: number, camYaw: number, hasRadar: boolean) {
+    const c = this.radarEl.querySelector('canvas') as HTMLCanvasElement;
+    const ctx = c.getContext('2d')!;
+    const W = c.width, R = W / 2;
+    ctx.clearRect(0, 0, W, W);
+    ctx.strokeStyle = 'rgba(127,227,214,.25)';
+    ctx.lineWidth = 2;
+    for (const k of [0.33, 0.66]) {
+      ctx.beginPath();
+      ctx.arc(R, R, R * k, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    if (hasRadar) {
+      const sweep = (performance.now() / 1000) * 2.2;
+      const g = ctx.createConicGradient ? ctx.createConicGradient(sweep, R, R) : null;
+      if (g) {
+        g.addColorStop(0, 'rgba(127,227,214,.35)');
+        g.addColorStop(0.12, 'rgba(127,227,214,0)');
+        g.addColorStop(1, 'rgba(127,227,214,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(R, R, R, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    const cos = Math.cos(camYaw), sin = Math.sin(camYaw);
+    const col: Record<string, string> = { site: '#f2b825', site_done: 'rgba(242,184,37,.35)', town: '#7fe3d6', cache: '#9be36b', raider: '#ff4a3a', castaway: '#ffffff' };
+    for (const b of blips) {
+      // world → screen: camera forward is up
+      const fx = b.x * sin + b.z * cos; // forward component
+      const rx = -b.x * cos + b.z * sin; // right component
+      let px = rx / range, py = -fx / range;
+      const len = Math.hypot(px, py);
+      if (len > 0.92) {
+        px *= 0.92 / len;
+        py *= 0.92 / len;
+      }
+      ctx.fillStyle = col[b.kind] ?? '#fff';
+      ctx.beginPath();
+      const r = b.kind === 'town' ? 8 : b.kind === 'raider' ? 7 : 6;
+      if (b.kind === 'raider') {
+        ctx.moveTo(R + px * R, R + py * R - r);
+        ctx.lineTo(R + px * R + r, R + py * R + r);
+        ctx.lineTo(R + px * R - r, R + py * R + r);
+      } else ctx.arc(R + px * R, R + py * R, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // player arrow
+    const rel = heading - camYaw;
+    ctx.save();
+    ctx.translate(R, R);
+    ctx.rotate(-rel);
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(0, -11);
+    ctx.lineTo(7, 8);
+    ctx.lineTo(0, 4);
+    ctx.lineTo(-7, 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    this.radarEl.querySelector('.rl')!.textContent = hasRadar ? `RADAR · ${range}m` : 'LOOKOUT';
+  }
+
+  /** Winch mini-game: tap REEL while the needle is in the green. Resolves hits (0..pulls), or -1 if cancelled. */
+  openWinch(o: { title: string; sub: string; window: number; speed: number; pulls: number }): Promise<number> {
+    return new Promise((resolve) => {
+      this.panelOpen = true;
+      const wrap = el(`<div class="winch-wrap"><div class="winch"><h3>${o.title}</h3><div class="w-sub">${o.sub}</div>
+        <div class="w-track"><div class="w-zone"></div><div class="w-needle"></div></div>
+        <div class="w-pips">${'<i></i>'.repeat(o.pulls)}</div>
+        <button class="act w-reel">REEL IN!</button><div class="w-msg">Tap when the needle is in the green</div>
+        <button class="btn ghost w-cancel" style="margin-top:6px">Cut the line</button></div></div>`);
+      this.root.append(wrap);
+      const zone = wrap.querySelector('.w-zone') as HTMLElement;
+      const needle = wrap.querySelector('.w-needle') as HTMLElement;
+      const msg = wrap.querySelector('.w-msg') as HTMLElement;
+      const pips = [...wrap.querySelectorAll('.w-pips i')] as HTMLElement[];
+      let zx = 0.5, hits = 0, pull = 0, t = Math.random() * 3, raf = 0, lock = false;
+      const place = () => {
+        zx = 0.15 + Math.random() * (0.7 - o.window);
+        zone.style.left = `${zx * 100}%`;
+        zone.style.width = `${o.window * 100}%`;
+      };
+      place();
+      let last = performance.now();
+      const pos = () => 0.5 + 0.48 * Math.sin(t * o.speed * 2.4) * Math.cos(t * o.speed * 0.7);
+      const tick = (now: number) => {
+        t += (now - last) / 1000;
+        last = now;
+        if (!lock) needle.style.left = `${pos() * 100}%`;
+        raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+      const done = (v: number) => {
+        cancelAnimationFrame(raf);
+        wrap.remove();
+        this.panelOpen = false;
+        resolve(v);
+      };
+      wrap.querySelector('.w-reel')!.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        if (lock) return;
+        const p = pos();
+        const ok = p >= zx && p <= zx + o.window;
+        pips[pull].classList.add(ok ? 'hit' : 'miss');
+        if (ok) hits++;
+        pull++;
+        audio.reel(ok);
+        if (navigator.vibrate && this.store.data.settings.haptics) navigator.vibrate(ok ? 25 : [10, 30, 10]);
+        msg.textContent = ok ? ['Got a bite of steel!', 'It’s coming up!', 'Heavy… heavy… YES!'][hits - 1] ?? 'Hauled!' : 'Line slipped!';
+        msg.style.color = ok ? '#2c7a6f' : '#c8352a';
+        lock = true;
+        setTimeout(() => {
+          lock = false;
+          if (pull >= o.pulls) done(hits);
+          else place();
+        }, 550);
+      });
+      wrap.querySelector('.w-cancel')!.addEventListener('click', () => done(-1));
+    });
   }
 
   setDigMeter(heat: number | null, text = '') {
@@ -416,7 +599,7 @@ export class UI {
     this.setHUDVisible(false);
     const node = el(`<div class="title-screen"><div class="ts-inner">
       <div class="ts-logo">TIDEBREAKERS</div>
-      <div class="ts-sub">The ocean is full of secrets.</div>
+      <div class="ts-sub">The world drowned. You didn’t.</div>
       <button class="act glow">${isNew ? 'Set Sail' : 'Continue Voyage'}</button>
       <div class="ts-small">${isNew ? 'Best with sound on · Add to Home Screen for full-screen' : `${this.store.discoveryCount} discoveries · ${this.store.data.gold} gold · ${VESSELS[this.store.data.vessel].name}`}</div>
     </div></div>`);
@@ -494,30 +677,109 @@ export class UI {
         return this.cartographerPanel();
       case 'curios':
         return this.curiosPanel();
+      case 'workbench':
+        return this.workbenchPanel();
+      case 'crewboard':
+        return this.crewBoardPanel();
     }
   }
 
-  // Harbor hub
+  // Settlement hub (Driftholm, Rooftop Hollow, Rig Helios)
   harborPanel() {
-    const { body } = this.openSheet('Port Saltwhistle', 'Home port · your cargo is unloaded into the vault');
+    const sett = this.game.dockedSettlement() ?? SETTLEMENT_MAP.driftholm;
+    const home = sett.id === 'driftholm';
+    const { body } = this.openSheet(sett.name, home ? 'Home raft-town · your cargo is unloaded into the vault' : `${sett.kind} · trade straight from your hold`);
     const s = this.store;
+    const npc = SETTLEMENT_NPCS[sett.id];
     const vaultCount = s.data.vault.reduce((a, b) => a + b.n, 0);
-    const sellable = s.data.vault.filter((v) => item(v.id).category !== 'resource').length;
-    body.innerHTML = `
-      ${this.npcCard('pip', 'appraiser', sellable ? `“Ooh, what have you brought me? Let’s have a look!”` : '“Bring me treasure and I’ll bring you gold.”')}
-      ${this.npcCard('marlo', 'shipwright', '“That dinghy floats out of habit. Let’s fix that.”')}
-      ${this.npcCard('wren', 'cartographer', s.data.fragments.length ? '“A map fragment! Show it to old Wren.”' : '“Every map is a promise someone forgot to keep.”')}
-      ${this.npcCard('odessa', 'curios', '“A ship should look like its captain. Yours looks… damp.”')}
-      <div class="note">Vault: ${vaultCount} items stored · ${s.discoveryCount}/${CATALOG_ITEMS.length} discoveries cataloged</div>
-      <button class="act setsail">⛵ Set Sail</button>`;
+    const sellable = [...s.data.vault, ...s.data.cargo].filter((v) => item(v.id).category !== 'resource').length;
+    const st = s.stats;
+    const lines: Record<string, string> = {
+      pip: sellable ? '“Ooh, what did the sea give you today? Let’s have a look!”' : '“Bring me the old world and I’ll give you gold.”',
+      sal: '“Fish, scrap, old records… I buy what floats and what sinks.”',
+      dace: '“Rig rules: everybody trades, nobody steals. Rustfang excepted.”',
+      marlo: '“Every plate I weld, you’ll see. That’s my guarantee. Also my only guarantee.”',
+      nori: '“Rods, rafts and rope. We keep it simple up here.”',
+      vik: '“Diesels, radar, harpoons. Proper kit for the Reach.”',
+    };
+    let html = `<div class="speech">${sett.blurb}</div>`;
+    if (sett.services.includes('appraiser')) html += this.npcCard(npc.trader, 'appraiser', lines[npc.trader] ?? '');
+    if (sett.services.includes('shipwright')) html += this.npcCard(npc.wright, 'shipwright', lines[npc.wright] ?? '');
+    if (sett.services.includes('cartographer')) html += this.npcCard('wren', 'cartographer', s.data.fragments.length ? '“A map fragment! Show it to old Wren.”' : '“Every chart is a promise someone forgot to keep.”');
+    if (sett.services.includes('curios')) html += this.npcCard('odessa', 'curios', '“A boat should look like its captain. Yours looks… damp.”');
+    const recruitable = CREW.filter((c) => (c.home === sett.id || (home && c.home === 'castaway' && s.data.castaways.some((cw) => cw.endsWith(c.id)))) && !s.data.crew.includes(c.id));
+    html += `<div class="section-title">Services</div><div class="svc">
+      ${sett.services.includes('fuel') ? `<button class="btn fuelb" ${st.engine ? '' : 'disabled'}>⛽ Fill tank · ${sett.fuelPrice}g/unit</button>` : ''}
+      ${sett.services.includes('repair') ? `<button class="btn ghost repb" ${s.data.hull >= st.hullMax - 0.5 ? 'disabled' : ''}>🔧 Repair hull · ${Math.ceil((st.hullMax - s.data.hull) * 0.6)}g</button>` : ''}
+      ${sett.services.includes('workbench') ? '<button class="btn ghost wbb">🛠 Workbench</button>' : ''}
+      ${sett.services.includes('recruit') ? `<button class="btn ghost crb">👥 Crew board${recruitable.length ? ` (${recruitable.length})` : ''}</button>` : ''}
+    </div>`;
+    html += `<div class="note">${home ? `Vault: ${vaultCount} items stored · ` : ''}${s.discoveryCount}/${CATALOG_ITEMS.length} discoveries · crew ${s.data.crew.length}/${st.berths}</div>
+      <button class="act setsail">⛵ Cast off</button>`;
+    body.innerHTML = html;
     body.querySelectorAll<HTMLElement>('.npc').forEach((n) => n.addEventListener('click', () => {
       audio.ui();
       this.openPanel(n.dataset.go!);
     }));
+    body.querySelector('.fuelb')?.addEventListener('click', () => {
+      this.game.buyFuel();
+      this.harborPanel();
+    });
+    body.querySelector('.repb')?.addEventListener('click', () => {
+      this.game.repair(false);
+      this.harborPanel();
+    });
+    body.querySelector('.wbb')?.addEventListener('click', () => this.workbenchPanel());
+    body.querySelector('.crb')?.addEventListener('click', () => this.crewBoardPanel());
     body.querySelector('.setsail')!.addEventListener('click', () => {
       this.closePanel();
       this.game.setSail();
     });
+  }
+
+  workbenchPanel() {
+    const { body } = this.openSheet('Workbench', 'Turn salvage into parts, fuel and patches');
+    const s = this.store;
+    const render = () => {
+      body.innerHTML = `<div class="note">Materials come from your hold and vault. Crafted parts go to the ${this.game.isDocked() ? 'vault' : 'hold'}.</div>`;
+      for (const r of RECIPES) {
+        const can = s.canAfford({ gold: 0, mats: r.needs });
+        const row = el(`<div class="row">${iconSVG(r.makes.id)}<div class="r-main"><div class="r-title">${r.name} → ${item(r.makes.id).name} ×${r.makes.n}</div><div class="r-sub">${r.desc}</div>${costHTML(s, { gold: 0, mats: r.needs })}</div><button class="btn" ${can ? '' : 'disabled'}>Craft</button></div>`);
+        row.querySelector('button')!.addEventListener('click', () => {
+          this.game.craft(r.id);
+          render();
+        });
+        body.append(row);
+      }
+      this.backBtn(body);
+    };
+    render();
+  }
+
+  crewBoardPanel() {
+    const sett = this.game.dockedSettlement();
+    const { body } = this.openSheet('Crew Board', `Berths aboard: ${this.store.data.crew.length}/${this.store.stats.berths}`);
+    const s = this.store;
+    const render = () => {
+      body.innerHTML = '';
+      const here = CREW.filter((c) => !s.data.crew.includes(c.id) && (c.home === sett?.id || (sett?.id === 'driftholm' && c.home === 'castaway' && s.data.castaways.some((cw) => cw.endsWith(c.id)))));
+      if (!here.length) body.append(el(`<div class="empty">Nobody here is looking for a berth right now. Castaways drift in the Drift and the Reach…</div>`));
+      for (const c of here) {
+        const info = ROLE_INFO[c.role];
+        const needUp = c.requires?.upgrade && !s.has(c.requires.upgrade);
+        const full = s.data.crew.length >= s.stats.berths;
+        const row = el(`<div class="row"><div class="crew-face" style="background:${info.color}">${info.icon}</div><div class="r-main"><div class="r-title">${c.name} · ${info.label}</div><div class="r-sub">${c.pitch}</div><div class="r-sub"><b>${info.perk}</b></div>${needUp ? `<div class="r-sub"><b>Needs: ${UPGRADE_MAP[c.requires!.upgrade!].name}</b></div>` : ''}</div>
+          <button class="btn" ${needUp || full || (c.cost ?? 0) > s.data.gold ? 'disabled' : ''}>${c.cost ? `Hire ${c.cost}g` : 'Sign on'}</button></div>`);
+        row.querySelector('button')!.addEventListener('click', () => {
+          this.game.recruit(c.id);
+          render();
+        });
+        body.append(row);
+      }
+      if (s.data.crew.length >= s.stats.berths) body.append(el(`<div class="note">All berths taken. A bigger vessel or a Container Cabin adds room.</div>`));
+      this.backBtn(body);
+    };
+    render();
   }
 
   private npcCard(id: keyof typeof NPCS, go: string, line: string) {
@@ -527,13 +789,15 @@ export class UI {
 
   private backBtn(body: HTMLElement) {
     if (!this.game.isDocked()) return;
-    const b = el(`<button class="btn ghost" style="margin-bottom:10px">← Back to the harbor</button>`);
+    const b = el(`<button class="btn ghost" style="margin-bottom:10px">← Back to ${this.game.dockedSettlement()?.name ?? 'the harbor'}</button>`);
     b.addEventListener('click', () => this.harborPanel());
     body.prepend(b);
   }
 
   appraiserPanel() {
-    const { body } = this.openSheet('Pip’s Appraisals', 'Sell treasure and materials for gold');
+    const sett = this.game.dockedSettlement();
+    const trader = NPCS[SETTLEMENT_NPCS[sett?.id ?? 'driftholm']?.trader ?? 'pip'];
+    const { body } = this.openSheet(`${trader.name.split(' ').slice(-1)[0]}’s Trading Post`, 'Sell old-world finds, salvage and fish for gold');
     const s = this.store;
     const render = () => {
       const stacks = [...s.data.vault, ...s.data.cargo].reduce((acc, st) => {
@@ -542,12 +806,12 @@ export class UI {
       }, {} as Record<string, number>);
       const ids = Object.keys(stacks).sort((a, b) => item(b).value - item(a).value);
       const total = ids.reduce((sum, id) => sum + item(id).value * stacks[id], 0);
-      body.innerHTML = `<div class="speech"><b>Pip:</b> ${ids.length ? `“I’ll give you a fair price for any of it. Your Catalog keeps the record forever, even if you sell. Total worth: <b>${total}g</b>.”` : '“Nothing to appraise! Go dig something up.”'}</div>`;
+      body.innerHTML = `<div class="speech"><b>${trader.name.split(' ')[0]}:</b> ${ids.length ? `“A fair price for any of it. Your Catalog keeps the record forever, even if you sell. Total worth: <b>${total}g</b>.”` : '“Nothing to trade! Go pull something out of the sea.”'}</div>`;
       for (const id of ids) {
         const d = item(id);
         const n = stacks[id];
         const isTrophy = s.data.trophies.includes(id);
-        const row = el(`<div class="row" style="border-color:${RARITY_COLOR[d.rarity]}">${iconSVG(id)}<div class="r-main"><div class="r-title">${d.name} ×${n}</div><div class="r-sub">${d.value}g each · ${RARITY_LABEL[d.rarity]}${d.displayable ? ' · can be displayed on your ship' : ''}${d.category === 'resource' ? ' · used by the shipwright' : ''}</div></div>
+        const row = el(`<div class="row" style="border-color:${RARITY_COLOR[d.rarity]}">${iconSVG(id)}<div class="r-main"><div class="r-title">${d.name} ×${n}</div><div class="r-sub">${d.value}g each · ${RARITY_LABEL[d.rarity]}${d.displayable ? ' · can be displayed on your ship' : ''}${d.category === 'resource' ? ' · used for upgrades & crafting' : ''}</div></div>
           <div style="display:flex;flex-direction:column;gap:6px"><button class="btn s1">Sell 1</button>${n > 1 ? `<button class="btn ghost sa">All ${d.value * n}g</button>` : ''}</div></div>`);
         if (isTrophy) row.querySelector('.r-sub')!.innerHTML += ' · <b>on display</b>';
         row.querySelector('.s1')!.addEventListener('click', () => {
@@ -566,22 +830,28 @@ export class UI {
   }
 
   shipwrightPanel() {
-    const { body } = this.openSheet('Keelhart & Daughters', 'Shipwright · functional upgrades', { short: true });
+    const sett = this.game.dockedSettlement() ?? SETTLEMENT_MAP.driftholm;
+    const wright = NPCS[SETTLEMENT_NPCS[sett.id]?.wright ?? 'marlo'];
+    const { body } = this.openSheet(`${wright.name}`, `${wright.role} · ${sett.name}`, { short: true });
     this.game.setShowcase(true);
     const s = this.store;
     const render = () => {
       const st = s.stats;
-      body.innerHTML = `<div class="speech"><b>Marlo:</b> “Every plank I add, you’ll see. That’s my guarantee. Also my only guarantee.”</div>
-        <div class="statgrid"><div class="stat"><b>${st.speed.toFixed(1)}</b><span>top speed</span></div><div class="stat"><b>${st.cargo}</b><span>cargo slots</span></div><div class="stat"><b>${st.turn.toFixed(2)}</b><span>turning</span></div></div>`;
-      const slots: UpgradeSlot[] = ['sail', 'storage', 'steering', 'navigation', 'hull'];
-      for (const slot of slots) {
+      body.innerHTML = `<div class="speech"><b>${wright.name.split(' ')[0]}:</b> “Every part I fit, you’ll see on her. Bring scrap, wire and electronics: the sea’s full of them.”</div>
+        <div class="statgrid"><div class="stat"><b>${st.speed.toFixed(1)}</b><span>sail speed</span></div><div class="stat"><b>${st.engine || '—'}</b><span>engine speed</span></div><div class="stat"><b>${st.cargo}</b><span>cargo slots</span></div>
+        <div class="stat"><b>${Math.round(st.hullMax)}</b><span>hull</span></div><div class="stat"><b>${st.fuelCap}</b><span>fuel tank</span></div><div class="stat"><b>${st.berths}</b><span>crew berths</span></div></div>`;
+      for (const slot of SLOT_ORDER) {
+        const list = UPGRADES.filter((u) => u.slot === slot);
+        if (!list.length) continue;
         body.append(el(`<div class="section-title">${SLOT_LABEL[slot]}</div>`));
-        for (const u of UPGRADES.filter((u) => u.slot === slot)) {
+        for (const u of list) {
           const owned = s.has(u.id);
           const locked = !!u.requires && !s.has(u.requires);
+          const sold = (u.where ?? ['driftholm']).includes(sett.id);
           const afford = s.canAfford(u.cost);
-          const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : costHTML(s, u.cost)}</div>
-            ${owned ? '<span class="rar" style="background:#3fa55a">Installed</span>' : `<button class="btn" ${!afford || locked ? 'disabled' : ''}>Install</button>`}</div>`);
+          const where = (u.where ?? ['driftholm']).map((w) => SETTLEMENT_MAP[w]?.name).join(' or ');
+          const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked || !sold ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : !sold ? `<div class="r-sub"><b>Fitted at ${where}</b></div>` : costHTML(s, u.cost)}</div>
+            ${owned ? '<span class="rar" style="background:#3fa55a">Installed</span>' : `<button class="btn" ${!afford || locked || !sold ? 'disabled' : ''}>Install</button>`}</div>`);
           row.querySelector('button')?.addEventListener('click', () => {
             this.game.buyUpgrade(u.id);
             render();
@@ -593,15 +863,16 @@ export class UI {
       for (const v of Object.values(VESSELS)) {
         const owned = s.data.vesselsOwned.includes(v.id);
         const current = s.data.vessel === v.id;
-        const row = el(`<div class="row ${owned ? 'owned' : ''}"><div class="r-main"><div class="r-title">${v.name}${current ? ' (sailing)' : ''}</div><div class="r-sub">${v.desc}<br>Speed ${v.speed} · Cargo ${v.cargo} · Trophy slots ${v.trophySlots}${v.crossSwell ? ' · crosses the open swell' : ''}</div>${!owned && v.cost ? costHTML(s, v.cost) : ''}</div>
-          ${current ? '<span class="rar" style="background:#3fa55a">Yours</span>' : owned ? '<button class="btn ghost">Switch</button>' : `<button class="btn" ${v.cost && !s.canAfford(v.cost) ? 'disabled' : ''}>Commission</button>`}</div>`);
+        const canBuild = sett.id === 'driftholm';
+        const row = el(`<div class="row ${owned ? 'owned' : ''}"><div class="r-main"><div class="r-title">${v.name}${current ? ' (aboard)' : ''}</div><div class="r-sub">${v.desc}<br>Sail ${v.speed} · Cargo ${v.cargo} · Hull ${v.hull} · Crew ${v.berths} · Trophies ${v.trophySlots}${v.crossSwell ? ' · crosses the open swell' : ''}${v.crossStorm ? ' · survives the Stormwall' : ''}</div>${!owned && v.cost ? costHTML(s, v.cost) : ''}${!owned && !canBuild ? '<div class="r-sub"><b>Built at Driftholm</b></div>' : ''}</div>
+          ${current ? '<span class="rar" style="background:#3fa55a">Yours</span>' : owned ? '<button class="btn ghost">Switch</button>' : `<button class="btn" ${!canBuild || (v.cost && !s.canAfford(v.cost)) ? 'disabled' : ''}>Commission</button>`}</div>`);
         row.querySelector('button')?.addEventListener('click', () => {
           this.game.buyVessel(v.id);
           render();
         });
         body.append(row);
       }
-      body.append(el(`<div class="note">Upgrades carry over to every vessel you own. Materials come from beaches, digs and wrecks.</div>`));
+      body.append(el(`<div class="note">Upgrades carry over to every vessel you own. Materials come from salvage sites, drifting caches, beaches and the workbench.</div>`));
       this.backBtn(body);
     };
     render();
@@ -621,10 +892,10 @@ export class UI {
       } else hints.push(`“<b>${m.name}</b> is whole! That coastline is <b>${ISLAND_MAP[m.island].name}</b>. Read the clue, captain.”`);
     }
     const rumours = [
-      '“The Wren went down inside the reef ring north of here. Breakers ate her. Copper on your hull and you’d slide right over.”',
+      '“The trawler Wren went down inside the reef ring north of here. Copper on your hull and you’d slide right over.”',
       '“The Lantern Rock keeper kept his sea-chest locked. Kept the key somewhere silly, too. Keepers are like that.”',
-      '“Beyond the swell lies the Emerald Coast. Dinghies need not apply.”',
-      '“Dig where the sand looks lonely. Treasure gets lonely.”',
+      '“Beyond the swell lies the Sunken Reach: Old Meridian, Rig Helios, and the Rustfang. Skiffs need not apply.”',
+      '“They say there’s a mountain past the Stormwall that never went under. Fools say that. I say it too.”',
     ];
     body.innerHTML = `<div class="speech"><b>Old Wren:</b> ${hints[0] ?? rumours[Math.floor(Math.random() * rumours.length)]}</div>${hints.slice(1).map((h) => `<div class="speech">${h}</div>`).join('')}
       <div class="speech" style="background:#fffaf0">${rumours.filter((r) => !hints.includes(r)).slice(0, 2).join('<br><br>')}</div>
@@ -700,23 +971,58 @@ export class UI {
 
   shipPanel() {
     const s = this.store;
-    const { body, tabs } = this.openSheet(s.vesselDef.name, 'Your ship · stats, decoration & trophies', { short: true });
+    const { body, tabs } = this.openSheet(s.vesselDef.name, 'Your boat · equipment, crew, workbench & looks', { short: true });
     this.game.setShowcase(true);
-    let tab = 'look';
+    let tab = 'stats';
     const render = () => {
-      this.setTabs(tabs, [{ id: 'look', label: 'Customize' }, { id: 'stats', label: 'Equipment' }], tab, (t) => {
+      const tl = [{ id: 'stats', label: 'Equipment' }, { id: 'crew', label: `Crew ${s.data.crew.length}/${s.stats.berths}` }, { id: 'look', label: 'Customize' }];
+      if (s.has('cabin_container')) tl.splice(2, 0, { id: 'bench', label: 'Workbench' });
+      this.setTabs(tabs, tl, tab, (t) => {
         tab = t;
         render();
       });
       body.innerHTML = '';
       if (tab === 'look') this.renderCustomize(body, false);
-      else {
+      else if (tab === 'bench') {
+        for (const r of RECIPES) {
+          const can = s.canAfford({ gold: 0, mats: r.needs });
+          const row = el(`<div class="row">${iconSVG(r.makes.id)}<div class="r-main"><div class="r-title">${r.name}</div><div class="r-sub">${r.needs.map((n) => `${n.n}× ${item(n.id).name} (${s.countOwned(n.id)})`).join(' + ')} → ${r.makes.n}× ${item(r.makes.id).name}</div></div><button class="btn" ${can ? '' : 'disabled'}>Craft</button></div>`);
+          row.querySelector('button')!.addEventListener('click', () => {
+            this.game.craft(r.id);
+            render();
+          });
+          body.append(row);
+        }
+      } else if (tab === 'crew') {
+        if (!s.data.crew.length) body.append(el(`<div class="empty">No crew yet. Rescue castaways adrift, or hire survivors from settlement crew boards.</div>`));
+        for (const id of s.data.crew) {
+          const c = CREW_MAP[id];
+          const info = ROLE_INFO[c.role];
+          const row = el(`<div class="row"><div class="crew-face" style="background:${info.color}">${info.icon}</div><div class="r-main"><div class="r-title">${c.name} · ${info.label}</div><div class="r-sub"><b>${info.perk}</b></div></div><button class="btn ghost">Ashore</button></div>`);
+          row.querySelector('button')!.addEventListener('click', () => {
+            this.game.dismiss(id);
+            this.toast(`${c.name} will wait for you on the crew board at ${SETTLEMENT_MAP[c.home]?.name ?? 'Driftholm'}.`);
+            render();
+          });
+          body.append(row);
+        }
+      } else {
         const st = s.stats;
-        body.innerHTML = `<div class="statgrid"><div class="stat"><b>${st.speed.toFixed(1)}</b><span>top speed</span></div><div class="stat"><b>${st.cargo}</b><span>cargo slots</span></div><div class="stat"><b>${st.turn.toFixed(2)}</b><span>turning</span></div>
-          <div class="stat"><b>${st.reef ? 'Yes' : 'No'}</b><span>reef-safe hull</span></div><div class="stat"><b>${st.crossSwell ? 'Yes' : 'No'}</b><span>open swell</span></div><div class="stat"><b>${st.compass ? 'Yes' : 'No'}</b><span>treasure compass</span></div></div>`;
-        for (const slot of ['sail', 'storage', 'steering', 'navigation', 'hull'] as UpgradeSlot[]) {
+        body.innerHTML = `<div class="statgrid"><div class="stat"><b>${st.speed.toFixed(1)}</b><span>sail speed</span></div><div class="stat"><b>${st.engine || '—'}</b><span>engine</span></div><div class="stat"><b>${st.cargo}</b><span>cargo slots</span></div>
+          <div class="stat"><b>${Math.round(s.data.hull)}/${st.hullMax}</b><span>hull</span></div><div class="stat"><b>${Math.round(s.data.fuel)}/${st.fuelCap}</b><span>fuel</span></div><div class="stat"><b>${st.armor ? Math.round(st.armor * 100) + '%' : '—'}</b><span>armour</span></div>
+          <div class="stat"><b>${st.reef ? 'Yes' : 'No'}</b><span>reef-safe</span></div><div class="stat"><b>${st.crossSwell ? 'Yes' : 'No'}</b><span>open swell</span></div><div class="stat"><b>${st.crossStorm ? 'Yes' : 'No'}</b><span>Stormwall</span></div></div>
+          <div class="svc"><button class="btn rf" ${s.countOwned('fuel_can') && s.data.fuel < st.fuelCap - 2 ? '' : 'disabled'}>⛽ Pour fuel cans (${s.countOwned('fuel_can')})</button><button class="btn ghost pk" ${s.countOwned('hull_patch') && s.data.hull < st.hullMax ? '' : 'disabled'}>🩹 Patch hull (${s.countOwned('hull_patch')})</button></div>`;
+        body.querySelector('.rf')!.addEventListener('click', () => {
+          this.game.refuel();
+          render();
+        });
+        body.querySelector('.pk')!.addEventListener('click', () => {
+          this.game.repair(true);
+          render();
+        });
+        for (const slot of SLOT_ORDER) {
           const best = s.bestInSlot(slot);
-          body.append(el(`<div class="row ${best ? 'owned' : ''}"><div class="r-main"><div class="r-title">${SLOT_LABEL[slot]}: ${best ? best.name : 'Stock'}</div><div class="r-sub">${best ? best.desc : 'Visit Marlo the Shipwright in port to upgrade.'}</div></div></div>`));
+          body.append(el(`<div class="row ${best ? 'owned' : ''}"><div class="r-main"><div class="r-title">${SLOT_LABEL[slot]}: ${best ? best.name : 'Stock'}</div><div class="r-sub">${best ? best.desc : 'Visit a shipwright to fit one.'}</div></div></div>`));
         }
       }
     };
@@ -733,7 +1039,7 @@ export class UI {
         render();
       });
       const list = tab === 'cargo' ? s.data.cargo : s.data.vault;
-      body.innerHTML = list.length ? '' : `<div class="empty">${tab === 'cargo' ? 'Your hold is empty. Go find something!' : 'Nothing stored. Dock at Port Saltwhistle to unload cargo here.'}</div>`;
+      body.innerHTML = list.length ? '' : `<div class="empty">${tab === 'cargo' ? 'Your hold is empty. Go find something!' : 'Nothing stored. Dock at Driftholm to unload cargo here.'}</div>`;
       if (tab === 'cargo') body.prepend(el(`<div class="note">Small things stack. Treasure chests and story finds always come aboard. Docking unloads everything into your vault.</div>`));
       for (const st of list) {
         const d = item(st.id);
@@ -769,7 +1075,9 @@ export class UI {
           let prog = 0, need = 1;
           if (m.cond.kind === 'category') { prog = s.categoryCount(m.cond.category); need = m.cond.n; }
           else if (m.cond.kind === 'chests') { prog = s.data.chestsOpened; need = m.cond.n; }
-          else { prog = s.discoveryCount; need = m.cond.n; }
+          else if (m.cond.kind === 'discoveries') { prog = s.discoveryCount; need = m.cond.n; }
+          else if (m.cond.kind === 'hauls') { prog = s.data.hauls; need = m.cond.n; }
+          else { prog = s.data.flags.includes(m.cond.flag) ? 1 : 0; need = 1; }
           const reward = [m.reward.gold ? `${m.reward.gold}g` : '', m.reward.cosmetic ? COSMETIC_MAP[m.reward.cosmetic].name : ''].filter(Boolean).join(' + ');
           body.append(el(`<div class="row ${done ? 'owned' : ''}"><div class="r-main"><div class="r-title">${done ? '★ ' : ''}${m.name}</div><div class="r-sub">${m.desc} · Reward: ${reward}</div><div class="progress" style="margin-top:6px"><div style="width:${Math.min(100, (prog / need) * 100)}%"></div></div></div><b style="font-size:13px">${Math.min(prog, need)}/${need}</b></div>`));
         }
@@ -838,9 +1146,9 @@ export class UI {
         c.className = 'map-canvas';
         const am = s.data.activeMap ? TREASURE_MAPS.find((m) => m.id === s.data.activeMap) : null;
         const tgt = am && am.fragments.every((f) => s.data.fragments.includes(f)) && !s.data.mapsCompleted.includes(am.id) ? { x: ISLAND_MAP[am.island].x + am.x, z: ISLAND_MAP[am.island].z + am.z } : null;
-        drawWorldChart(c, s.data.islandsVisited, this.game.shipState(), tgt);
+        drawWorldChart(c, s.data.islandsVisited, this.game.shipState(), tgt, this.game.chartExtras());
         body.append(c);
-        body.append(el(`<div class="note">Islands visited: ${s.data.islandsVisited.length - 1} · The dashed ring marks the open swell. The red ring is the reef.</div>`));
+        body.append(el(`<div class="note">The dashed ring is the open swell (Scrap Trimaran). The dark ring is the Stormwall (Ironwake). Gold diamonds are salvage sites; faded ones are picked clean for now.</div>`));
         if (!owned.length) body.append(el(`<div class="empty">No treasure maps yet. Bottles wash up on beaches…</div>`));
         return;
       }
@@ -878,11 +1186,11 @@ export class UI {
       <div class="setting-row">Vibration <input type="checkbox" class="hap" ${s.data.settings.haptics ? 'checked' : ''} style="width:26px;height:26px"></div>
       <div class="section-title">Progress</div>
       <div class="statgrid"><div class="stat"><b>${s.discoveryCount}</b><span>discoveries</span></div><div class="stat"><b>${s.data.stats.goldEarned}</b><span>gold earned</span></div><div class="stat"><b>${Math.round(s.data.stats.distance)}</b><span>meters sailed</span></div>
-      <div class="stat"><b>${s.data.islandsVisited.length - 1}</b><span>islands visited</span></div><div class="stat"><b>${s.data.upgrades.length}</b><span>upgrades</span></div><div class="stat"><b>${s.data.chestsOpened}</b><span>chests opened</span></div></div>
+      <div class="stat"><b>${s.data.hauls}</b><span>salvage hauls</span></div><div class="stat"><b>${s.data.upgrades.length}</b><span>upgrades</span></div><div class="stat"><b>${s.data.chestsOpened}</b><span>chests opened</span></div></div>
       <button class="btn green save" style="width:100%;margin:6px 0">Save now</button>
       <div class="note">Progress saves automatically on this device after every discovery, sale and upgrade.</div>
       <div class="section-title">How to play</div>
-      <div class="note" style="text-align:left">• Drag the ship’s wheel toward where you want to go. Push further for more sail.<br>• Drag anywhere else on screen to look around. Pinch to zoom.<br>• Sailing with the wind at your side or back is fastest.<br>• Anchor near islands to go ashore. Shells glint on beaches.<br>• Read treasure maps carefully and DIG at the X.</div>
+      <div class="note" style="text-align:left">• Drag the wheel toward where you want to go. Push further for more sail or throttle.<br>• Tap ENGINE to motor against the wind (burns fuel).<br>• Drag anywhere else to look around. Pinch to zoom.<br>• Slow down beside a beacon buoy and tap SALVAGE. Reel when the needle is in the green.<br>• Sail into drifting caches. Rescue castaways to grow your crew.<br>• Storms batter the hull: armour, a Mechanic and patch kits keep you afloat.<br>• Anchor near islands to go ashore and DIG at the X on treasure maps.</div>
       <button class="btn danger reset" style="width:100%;margin-top:16px">Start a new voyage (erase save)</button>`;
     const sfx = body.querySelector('.sfx') as HTMLInputElement;
     const mus = body.querySelector('.mus') as HTMLInputElement;

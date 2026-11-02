@@ -41,11 +41,11 @@ export const RARITY_LABEL: Record<Rarity, string> = {
 };
 
 export const CATEGORY_LABEL: Record<Category, string> = {
-  treasure: 'Treasure',
-  artifact: 'Ancient Artifacts',
-  history: 'Pirate History',
+  treasure: 'Valuables',
+  artifact: 'Relics of the Before',
+  history: 'Old World Records',
   ocean: 'Ocean Finds',
-  wreck: 'Shipwreck Recovery',
+  wreck: 'Salvage Recovery',
   curiosity: 'Curiosities',
   resource: 'Materials',
 };
@@ -73,11 +73,11 @@ export const ITEMS: ItemDef[] = [
   { id: 'sun_mask', name: 'Sunburst Mask', category: 'artifact', rarity: 'epic', value: 240, icon: 'mask', colors: ['#f4a52a', '#8c2f12'], stack: 1, displayable: true,
     desc: 'Hammered gold with eyes of polished shell. It was not made for a human face.' },
 
-  // ── Pirate history ──
+  // ── Old world records ──
   { id: 'journal_redfinch', name: 'Redfinch’s Journal Page', category: 'history', rarity: 'uncommon', value: 25, icon: 'page', colors: ['#efdcb0', '#7a4a21'], stack: 5,
     desc: '“Day 41. The lighthouse keeper owes me a debt. I have hidden half the chart where only the tide can read it.”' },
   { id: 'tattered_flag', name: 'Tattered Jolly Flag', category: 'history', rarity: 'rare', value: 80, icon: 'flag', colors: ['#1c1c22', '#efe6d2'], stack: 1, displayable: true,
-    desc: 'The flag of Captain Redfinch’s Wren. More hole than flag, but unmistakable.' },
+    desc: 'The flag of the trawler Wren, Captain Redfinch’s salvage boat. More hole than flag, but unmistakable.' },
 
   // ── Ocean finds ──
   { id: 'conch', name: 'Queen Conch', category: 'ocean', rarity: 'common', value: 5, icon: 'conch', colors: ['#f6b08a', '#e0607e'], stack: 10,
@@ -109,6 +109,35 @@ export const ITEMS: ItemDef[] = [
   { id: 'bottle_letter', name: 'Unsent Letter', category: 'curiosity', rarity: 'common', value: 8, icon: 'bottle', colors: ['#7fc6a4', '#efdcb0'], stack: 5,
     desc: '“Dear Mum, the island is lovely, the parrot is not.”' },
 
+
+  // ── The drowned world (Waterworld expansion) ──
+  { id: 'gold_watch', name: 'Stopped Gold Watch', category: 'treasure', rarity: 'uncommon', value: 55, icon: 'watch', colors: ['#f4c542', '#3a4148'], stack: 5,
+    desc: 'Stopped at 4:17. Everybody’s watch stopped at 4:17, the day the sea came in.' },
+  { id: 'diamond_ring', name: 'Engagement Diamond', category: 'treasure', rarity: 'rare', value: 120, icon: 'diamond', colors: ['#e9fbf6', '#f4c542'], stack: 5,
+    desc: 'Someone said yes. The sea said no.' },
+  { id: 'summit_chart', name: 'Chart of the Last Summit', category: 'artifact', rarity: 'legendary', value: 500, icon: 'chart', colors: ['#efdcb0', '#c0392b'], stack: 1, displayable: true,
+    desc: 'Pinned under glass at the top of the Meridian Spire: a chart to a mountain that might still be dry.' },
+  { id: 'vinyl_record', name: '“Songs for Dry Days” LP', category: 'history', rarity: 'uncommon', value: 35, icon: 'record', colors: ['#1c1c22', '#e0607e'], stack: 5, displayable: true,
+    desc: 'Warped into a gentle saddle. Track four is about rain. Nobody laughs at it any more.' },
+  { id: 'polaroid', name: 'Photograph of Dry Land', category: 'history', rarity: 'rare', value: 70, icon: 'photo', colors: ['#f6ead0', '#3fa55a'], stack: 5,
+    desc: 'A family on grass. Actual grass, all the way to the edge of the picture.' },
+  { id: 'rig_badge', name: 'Helios Crew Badge', category: 'history', rarity: 'uncommon', value: 30, icon: 'badge', colors: ['#f2b825', '#c8352a'], stack: 5,
+    desc: '“HELIOS PRODUCTION · 2,000 DAYS WITHOUT INCIDENT.” The counter stopped.' },
+  { id: 'transistor_radio', name: 'Transistor Radio', category: 'wreck', rarity: 'uncommon', value: 40, icon: 'radio', colors: ['#c8744a', '#3a4148'], stack: 1, displayable: true,
+    desc: 'Dry it out, give it a battery, and it hisses. Some nights the hiss sounds like a voice.' },
+  { id: 'street_sign', name: 'Meridian Ave. Sign', category: 'wreck', rarity: 'uncommon', value: 45, icon: 'sign', colors: ['#3fa55a', '#f6ead0'], stack: 1, displayable: true,
+    desc: 'Pried off a lamppost forty feet underwater. Traffic was lighter than expected.' },
+  { id: 'traffic_light', name: 'Traffic Light', category: 'wreck', rarity: 'rare', value: 90, icon: 'light', colors: ['#2b2f36', '#f2b825'], stack: 1, displayable: true,
+    desc: 'Stuck on amber forever. Proceed with caution.' },
+  { id: 'ship_in_bottle', name: 'Ship in a Bottle', category: 'wreck', rarity: 'epic', value: 180, icon: 'shipbottle', colors: ['#7fc6a4', '#8a5a34'], stack: 1, displayable: true,
+    desc: 'From the captain’s cabin of the Meridian Star. A ship, in a bottle, in a ship, in the sea.' },
+  { id: 'seed_packet', name: 'Sealed Seed Packet', category: 'curiosity', rarity: 'rare', value: 80, icon: 'seed', colors: ['#e8c46a', '#3fa55a'], stack: 5,
+    desc: '“Heirloom Tomato. Plant after last frost.” Frost. Imagine.' },
+  { id: 'snow_globe', name: 'Snow Globe', category: 'curiosity', rarity: 'rare', value: 65, icon: 'globe', colors: ['#cff1ff', '#c0392b'], stack: 1, displayable: true,
+    desc: 'A tiny city under tiny snow. The city is dry. The snow is the only weather.' },
+  { id: 'rubber_duck', name: 'Rubber Duck', category: 'curiosity', rarity: 'common', value: 8, icon: 'duck', colors: ['#f4c542', '#e8742a'], stack: 5, displayable: true,
+    desc: 'The only species that thrived.' },
+
   // ── Materials ──
   { id: 'driftwood', name: 'Driftwood', category: 'resource', rarity: 'common', value: 2, icon: 'plank', colors: ['#b48a5a', '#6e4b2a'], stack: 10,
     desc: 'Sun-bleached timber. The shipwright always wants more.' },
@@ -118,6 +147,26 @@ export const ITEMS: ItemDef[] = [
     desc: 'Rusty, but a shipwright can straighten anything.' },
   { id: 'canvas', name: 'Sailcloth Scrap', category: 'resource', rarity: 'common', value: 4, icon: 'cloth', colors: ['#f1e6cc', '#b8a27a'], stack: 10,
     desc: 'Torn from a sail that saw better days.' },
+  { id: 'scrap_metal', name: 'Scrap Metal', category: 'resource', rarity: 'common', value: 4, icon: 'scrap', colors: ['#8a8f96', '#a24b21'], stack: 10,
+    desc: 'Rusty plate, bent rebar, a hubcap. Everything floating is a part of something.' },
+  { id: 'wire', name: 'Copper Wire', category: 'resource', rarity: 'common', value: 5, icon: 'wire', colors: ['#d2702f', '#3a4148'], stack: 10,
+    desc: 'Stripped from drowned walls. Mechanics pay well for it.' },
+  { id: 'plastic', name: 'Salvaged Plastic', category: 'resource', rarity: 'common', value: 3, icon: 'plastic', colors: ['#2f6fb0', '#e8742a'], stack: 10,
+    desc: 'It will outlive us all. Might as well make it useful.' },
+  { id: 'electronics', name: 'Circuit Boards', category: 'resource', rarity: 'uncommon', value: 9, icon: 'chip', colors: ['#3e8c80', '#f2b825'], stack: 10,
+    desc: 'Green boards, gold traces. Radar won’t build itself.' },
+  { id: 'crude_oil', name: 'Crude Oil', category: 'resource', rarity: 'common', value: 6, icon: 'oil', colors: ['#1c1c22', '#6b2e14'], stack: 10,
+    desc: 'Black, thick and precious. Refine it on a workbench into fuel.' },
+  { id: 'fuel_can', name: 'Fuel Can', category: 'resource', rarity: 'common', value: 10, icon: 'fuel', colors: ['#c8352a', '#f2b825'], stack: 5,
+    desc: 'Twenty units of go. Use it from the Ship screen to fill your tank.' },
+  { id: 'engine_parts', name: 'Engine Parts', category: 'resource', rarity: 'uncommon', value: 25, icon: 'gear', colors: ['#7f8a94', '#3a4148'], stack: 5,
+    desc: 'Pistons, gaskets, a carburettor that still smells of petrol.' },
+  { id: 'alloy_plate', name: 'Alloy Plate', category: 'resource', rarity: 'uncommon', value: 20, icon: 'plate', colors: ['#9aa9b4', '#3a4148'], stack: 5,
+    desc: 'Hammered and riveted scrap. Hulls, armour and pride.' },
+  { id: 'hull_patch', name: 'Hull Patch Kit', category: 'resource', rarity: 'common', value: 12, icon: 'patch', colors: ['#c9a97a', '#2f6fb0'], stack: 5,
+    desc: 'Plank, plastic and pitch. Repairs 35 hull from the Ship screen.' },
+  { id: 'fish', name: 'Silverfin', category: 'resource', rarity: 'common', value: 6, icon: 'fish', colors: ['#9ec5e8', '#2e5872'], stack: 10,
+    desc: 'Caught by your Fisher. Everyone in every settlement will buy fish.' },
 ];
 
 export const ITEM_MAP: Record<string, ItemDef> = Object.fromEntries(ITEMS.map((i) => [i.id, i]));

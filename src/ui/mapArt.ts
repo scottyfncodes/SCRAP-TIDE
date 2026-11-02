@@ -275,16 +275,66 @@ export function drawTreasureMap(canvas: HTMLCanvasElement, map: TreasureMapDef, 
   }
 }
 
-/** World chart showing discovered islands, harbor and the swell boundary. */
-export function drawWorldChart(canvas: HTMLCanvasElement, visited: string[], ship: { x: number; z: number; heading: number }, target?: { x: number; z: number } | null) {
+export interface ChartExtras {
+  flags: string[];
+  sites: { x: number; z: number; name: string; ready: boolean; region: string }[];
+  settlements: { x: number; z: number; name: string; visited: boolean }[];
+  castaways: { x: number; z: number }[];
+  structures: { x: number; z: number; kind: string }[];
+  raiders: { x: number; z: number; r: number; name: string }[];
+  pois: { id: string; x: number; z: number; name: string }[];
+}
+
+/** World chart: islands, drowned cities, settlements, salvage beacons, raider waters, the swell and the Stormwall. */
+export function drawWorldChart(canvas: HTMLCanvasElement, visited: string[], ship: { x: number; z: number; heading: number }, target?: { x: number; z: number } | null, ex?: ChartExtras) {
   const W = 480, H = 480;
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d')!;
   parchment(ctx, W, H, 3);
-  const half = 470;
+  const half = 1120;
   const scale = W / (half * 2);
   const toPx = (x: number, z: number) => [(x + half) * scale, (z + half - 40) * scale] as const;
+  // the Stormwall
+  {
+    const [cx, cy] = toPx(WORLD.shallowsCenter.x, WORLD.shallowsCenter.z);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, W, H);
+    ctx.arc(cx, cy, WORLD.stormRadius * scale, 0, Math.PI * 2, true);
+    ctx.fillStyle = 'rgba(60,74,92,0.28)';
+    ctx.fill('evenodd');
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(60,74,92,0.8)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, WORLD.stormRadius * scale, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(40,50,64,0.9)';
+    ctx.font = 'italic bold 12px Georgia';
+    ctx.textAlign = 'center';
+    ctx.fillText('~ THE STORMWALL ~', cx, cy - WORLD.stormRadius * scale + 16);
+  }
+  if (ex) {
+    // drowned buildings (ink squares) and raider waters
+    for (const r of ex.raiders) {
+      const [px, py] = toPx(r.x, r.z);
+      ctx.fillStyle = 'rgba(200,53,42,0.12)';
+      ctx.strokeStyle = 'rgba(200,53,42,0.55)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(px, py, r.r * scale, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    for (const st of ex.structures) {
+      const [px, py] = toPx(st.x, st.z);
+      ctx.fillStyle = 'rgba(40,48,58,0.75)';
+      const sz = st.kind === 'container' ? 2 : st.kind === 'oil_rig' || st.kind === 'tanker' || st.kind === 'mega_spire' ? 6 : 4;
+      ctx.fillRect(px - sz / 2, py - sz / 2, sz, sz);
+    }
+  }
   // swell boundary
   const [sx, sy] = toPx(WORLD.shallowsCenter.x, WORLD.shallowsCenter.z);
   ctx.strokeStyle = 'rgba(40,70,120,0.5)';
@@ -297,7 +347,7 @@ export function drawWorldChart(canvas: HTMLCanvasElement, visited: string[], shi
   ctx.fillStyle = 'rgba(40,70,120,0.7)';
   ctx.font = 'italic 12px Georgia';
   ctx.textAlign = 'center';
-  ctx.fillText('~ the open swell ~', sx, sy - WORLD.shallowsRadius * scale - 6);
+  ctx.fillText('~ the open swell · the Sunken Reach beyond ~', sx, sy - WORLD.shallowsRadius * scale - 6);
   // reef
   const [rx, ry] = toPx(WORLD.reef.x, WORLD.reef.z);
   ctx.strokeStyle = 'rgba(200,80,60,0.6)';
@@ -312,14 +362,71 @@ export function drawWorldChart(canvas: HTMLCanvasElement, visited: string[], shi
     const [px, py] = toPx(isl.x, isl.z);
     ctx.fillStyle = known ? 'rgba(150,130,70,0.55)' : 'rgba(90,70,40,0.2)';
     ctx.beginPath();
-    ctx.arc(px, py, Math.max(5, isl.r * scale), 0, Math.PI * 2);
+    ctx.arc(px, py, Math.max(4, isl.r * scale), 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = '#4a2e14';
     ctx.lineWidth = 1.5;
     ctx.stroke();
     ctx.fillStyle = '#4a2e14';
-    ctx.font = `bold ${isl.id === 'harbor' ? 14 : 12}px Georgia`;
-    ctx.fillText(known ? isl.name : '???', px, py + Math.max(5, isl.r * scale) + 14);
+    ctx.font = 'bold 10px Georgia';
+    if (isl.id !== 'harbor') ctx.fillText(known ? isl.name : '???', px, py + Math.max(4, isl.r * scale) + 11);
+  }
+  if (ex) {
+    ctx.textAlign = 'center';
+    for (const p of ex.pois) {
+      if (!ex.flags.includes(`seen_${p.id}`) && p.id !== 'hollow') continue;
+      const [px, py] = toPx(p.x, p.z);
+      ctx.fillStyle = '#2b3542';
+      ctx.font = 'italic bold 12px Georgia';
+      ctx.fillText(p.name, px, py - 12);
+    }
+    for (const s of ex.sites) {
+      const [px, py] = toPx(s.x, s.z);
+      ctx.fillStyle = s.ready ? '#e0a20f' : 'rgba(224,162,15,0.35)';
+      ctx.beginPath();
+      ctx.moveTo(px, py - 5);
+      ctx.lineTo(px + 5, py);
+      ctx.lineTo(px, py + 5);
+      ctx.lineTo(px - 5, py);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#4a2e14';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    for (const s of ex.settlements) {
+      const [px, py] = toPx(s.x, s.z);
+      ctx.fillStyle = s.visited ? '#3e8c80' : 'rgba(62,140,128,0.4)';
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#173c37';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#173c37';
+      ctx.font = 'bold 11px Georgia';
+      ctx.fillText(s.name, px, py + 17);
+    }
+    for (const c of ex.castaways) {
+      const [px, py] = toPx(c.x, c.z);
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#c8352a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(px, py, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+    // legend
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 10px Georgia';
+    const lg: [string, string][] = [['#e0a20f', 'salvage'], ['#3e8c80', 'settlement'], ['#c8352a', 'raiders / castaway'], ['#2b3542', 'drowned towers']];
+    lg.forEach(([c, t], i) => {
+      ctx.fillStyle = c;
+      ctx.fillRect(14, H - 62 + i * 13, 8, 8);
+      ctx.fillStyle = '#2b3542';
+      ctx.fillText(t, 26, H - 54 + i * 13);
+    });
   }
   if (target) {
     const [tx, ty] = toPx(target.x, target.z);

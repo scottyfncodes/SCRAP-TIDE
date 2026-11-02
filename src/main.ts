@@ -1,5 +1,6 @@
 import './ui/styles.css';
 import { Game } from './game/game';
+import { loadReport } from './world/assets';
 
 const fill = document.getElementById('loadFill')!;
 const msg = document.getElementById('loadMsg')!;
@@ -27,6 +28,7 @@ async function boot() {
   const game = new Game(canvas, progress);
   (window as any).__game = game;
   await game.init();
+  (window as any).__loadReport = loadReport;
   loading.classList.add('done');
   setTimeout(() => loading.remove(), 900);
 }
