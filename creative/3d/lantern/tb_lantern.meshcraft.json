@@ -1,0 +1,401 @@
+{
+ "asset_id": "tb_lantern",
+ "brief": {
+  "asset_id": "tb_lantern",
+  "template": "lantern",
+  "params": {},
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+   "/home/user/TIDEBREAKERS/creative/ships/custom/deco_lantern.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/lantern",
+  "profiles": [
+   "three-web-toon",
+   "unity-fbx"
+  ],
+  "preview": {
+   "size": 640,
+   "poses": [
+    {
+     "clip": "swing",
+     "at": "mid"
+    }
+   ]
+  }
+ },
+ "steps": [
+  {
+   "step": "build",
+   "ok": true,
+   "seconds": 0.1
+  },
+  {
+   "step": "preview",
+   "ok": true,
+   "seconds": 32.33
+  },
+  {
+   "step": "validate_scene",
+   "ok": true,
+   "seconds": 0.0
+  },
+  {
+   "step": "export",
+   "ok": true,
+   "seconds": 0.13
+  },
+  {
+   "step": "contact_sheet",
+   "ok": true,
+   "seconds": 0.33
+  },
+  {
+   "step": "manifest",
+   "ok": true,
+   "seconds": 0.01
+  }
+ ],
+ "build": {
+  "blend": {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/source/tb_lantern.blend",
+   "kind": "blend",
+   "bytes": 102302,
+   "sha256": "bb4ab6e994254e2ba39e655d2cb685b9d1da188acf9ad94ad0960fd573ec7ce5"
+  },
+  "seconds": 0.03,
+  "roles": {
+   "cap": "#0E3B66",
+   "frame": "#C98A12",
+   "glass": "#FF9F2E",
+   "flame": "#F6EAD0",
+   "base": "#0E3B66"
+  },
+  "objects": [
+   "lantern",
+   "lantern_body",
+   "lantern_light",
+   "ref_0_deco_lantern.png"
+  ],
+  "actions": [
+   "swing"
+  ],
+  "contract": {
+   "ground": false,
+   "nodes": {
+    "root": "lantern",
+    "body": "lantern_body",
+    "light": "lantern_light"
+   },
+   "clips": [
+    "swing"
+   ],
+   "origin": "hang point (top of hook); hangs down -Y",
+   "light_anchor_yup": [
+    0,
+    -0.2925,
+    0
+   ]
+  },
+  "expect": {
+   "top_z": 0.0,
+   "size": [
+    0.2898,
+    0.2898,
+    0.42842
+   ],
+   "tolerance": 0.35,
+   "centered": true
+  }
+ },
+ "previews": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/previews/tb_lantern_three_quarter.png",
+   "kind": "preview",
+   "bytes": 202680,
+   "sha256": "9b852e687bf8ba48ee3f0862b1dcc1d78e7101a868f8a30ec57148031f67e2d9",
+   "view": "three_quarter",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/previews/tb_lantern_front.png",
+   "kind": "preview",
+   "bytes": 184491,
+   "sha256": "07f8db47dc15c00fafa7881bb8dbfba6e07acc170547036dcd8039ba2446c18c",
+   "view": "front",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/previews/tb_lantern_side.png",
+   "kind": "preview",
+   "bytes": 193277,
+   "sha256": "493fd83b0d3171b90032a9cf8e09254180275a4948b5515e4f1d6e8b0c92c847",
+   "view": "side",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/previews/tb_lantern_top.png",
+   "kind": "preview",
+   "bytes": 157362,
+   "sha256": "5b2ecb16c79c30088bb54eaa8d28c2d8e7eed207d6c893b90c0330f58b6987a6",
+   "view": "top",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/previews/tb_lantern_three_quarter_swing-mid.png",
+   "kind": "preview",
+   "bytes": 197977,
+   "sha256": "a324fd25674f562726305f704e66c5f95d637848f24c71503fa9deca9c5450a8",
+   "view": "three_quarter",
+   "clip": "swing",
+   "pose": "mid",
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/previews/tb_lantern_sheet.png",
+   "kind": "contact_sheet",
+   "bytes": 163417,
+   "sha256": "8c6a39ff0b67a34dc7dcc94e1dfcccc2787d1a40fa6aa0a7079406aa4cd68208"
+  }
+ ],
+ "exports": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 36488,
+   "sha256": "5a45ed983545f944456f1b678d3a5b667df1c21faa283ce185d4bb45d10c6df9",
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "extras": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.three-web-toon.lod50.glb",
+     "kind": "lod",
+     "bytes": 22284,
+     "sha256": "41ed86468a4887bdb19e63a154168d6da70bb5387a8729421f3d0697226b226c",
+     "ratio": 0.5,
+     "triangles": 198
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.three-web-toon.lod25.glb",
+     "kind": "lod",
+     "bytes": 13840,
+     "sha256": "5228e05cb041f2d1bcb5559935c946af9ea08ea5249649e6fd7e53ea528f8801",
+     "ratio": 0.25,
+     "triangles": 91
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.three-web-toon.collision.glb",
+     "kind": "collision",
+     "bytes": 4456,
+     "sha256": "63d97b8df024c3de7aa311aeb4669f6249b69844f461c572ef762f3647d39373",
+     "shape": "convex_hull",
+     "triangles": 56
+    }
+   ],
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.three-web-toon.collision.glb",
+     "kind": "sidecar",
+     "bytes": 4456,
+     "sha256": "63d97b8df024c3de7aa311aeb4669f6249b69844f461c572ef762f3647d39373"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.three-web-toon.lod25.glb",
+     "kind": "sidecar",
+     "bytes": 13840,
+     "sha256": "5228e05cb041f2d1bcb5559935c946af9ea08ea5249649e6fd7e53ea528f8801"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.three-web-toon.lod50.glb",
+     "kind": "sidecar",
+     "bytes": 22284,
+     "sha256": "41ed86468a4887bdb19e63a154168d6da70bb5387a8729421f3d0697226b226c"
+    }
+   ],
+   "roundtrip": {
+    "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.three-web-toon.glb",
+    "objects": [
+     "lantern (EMPTY)",
+     "lantern_body (MESH)",
+     "lantern_light (EMPTY)"
+    ],
+    "triangles": 396,
+    "materials": [
+     "TB_Base",
+     "TB_Cap",
+     "TB_Flame",
+     "TB_Frame",
+     "TB_Glass"
+    ],
+    "actions": [
+     "swing"
+    ],
+    "armatures": 0,
+    "size_m": [
+     0.276,
+     0.29,
+     0.469
+    ],
+    "min_z": -0.4625
+   }
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.unity-fbx.fbx",
+   "kind": "export",
+   "bytes": 37964,
+   "sha256": "07a000d0aa28fbe9a277cbdb5aa14b0df234ad3883d600de1f5a1e5a1a289b7c",
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/lantern/exports/tb_lantern.unity-fbx.atlas.png",
+     "kind": "sidecar",
+     "bytes": 287,
+     "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+    }
+   ]
+  }
+ ],
+ "validation": {
+  "checks": [
+   {
+    "check": "has_meshes",
+    "level": "pass",
+    "detail": "1 mesh objects"
+   },
+   {
+    "check": "triangle_budget",
+    "level": "pass",
+    "detail": "396 triangles (budget 3000)",
+    "tris": 396
+   },
+   {
+    "check": "degenerate_faces",
+    "level": "pass",
+    "detail": "0 zero-area faces"
+   },
+   {
+    "check": "non_manifold_edges",
+    "level": "info",
+    "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+   },
+   {
+    "check": "applied_scale",
+    "level": "pass",
+    "detail": "all mesh scales are 1"
+   },
+   {
+    "check": "naming",
+    "level": "pass",
+    "detail": "no default object names"
+   },
+   {
+    "check": "origin_top",
+    "level": "pass",
+    "detail": "highest point at z=0.000 m (expected 0.0; hangs from its origin)"
+   },
+   {
+    "check": "origin_centered",
+    "level": "pass",
+    "detail": "footprint centre (0.000, 0.000)"
+   },
+   {
+    "check": "dimensions",
+    "level": "pass",
+    "detail": "0.251 \u00d7 0.29 \u00d7 0.456 m (W\u00d7D\u00d7H, expected \u2248 [0.29, 0.29, 0.428])",
+    "size": [
+     0.251,
+     0.29,
+     0.456
+    ]
+   },
+   {
+    "check": "materials_assigned",
+    "level": "pass",
+    "detail": "every mesh has materials"
+   },
+   {
+    "check": "vertex_colors",
+    "level": "pass",
+    "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+   },
+   {
+    "check": "textures_resolvable",
+    "level": "pass",
+    "detail": "no missing texture files"
+   },
+   {
+    "check": "animation_clips",
+    "level": "pass",
+    "detail": "actions: ['swing']",
+    "clips": [
+     "swing"
+    ]
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_lantern.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_lantern.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "3 nodes, 1 meshes, 5 primitives, 5 materials, 1 animations, 0 skins, 0 images",
+    "animations": [
+     "swing"
+    ],
+    "file": "tb_lantern.three-web-toon.glb"
+   },
+   {
+    "check": "contract_nodes",
+    "level": "pass",
+    "detail": "nodes present: ['lantern', 'lantern_body', 'lantern_light']",
+    "file": "tb_lantern.three-web-toon.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 0 warnings, 1 infos",
+    "messages": [
+     "Empty node encountered."
+    ],
+    "file": "tb_lantern.three-web-toon.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_lantern.three-web-toon.glb: 396 tris, size [0.276, 0.29, 0.469] m, clips ['swing']",
+    "file": "tb_lantern.three-web-toon.glb"
+   }
+  ],
+  "summary": {
+   "pass": 17,
+   "warn": 0,
+   "fail": 0,
+   "info": 2
+  }
+ },
+ "manifest": {
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "items": 455
+ },
+ "seconds": 33.2
+}

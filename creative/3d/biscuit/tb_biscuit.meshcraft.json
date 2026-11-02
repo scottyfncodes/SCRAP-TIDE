@@ -1,0 +1,482 @@
+{
+ "asset_id": "tb_biscuit",
+ "brief": {
+  "asset_id": "tb_biscuit",
+  "template": "crab",
+  "params": {},
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+   "/home/user/TIDEBREAKERS/creative/characters/char_biscuit.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/biscuit",
+  "profiles": [
+   "three-web-toon",
+   "godot-glb",
+   "unity-fbx"
+  ],
+  "preview": {
+   "size": 640,
+   "poses": [
+    {
+     "clip": "wave",
+     "at": 14
+    },
+    {
+     "clip": "snap",
+     "at": 5
+    }
+   ]
+  }
+ },
+ "steps": [
+  {
+   "step": "build",
+   "ok": true,
+   "seconds": 0.26
+  },
+  {
+   "step": "preview",
+   "ok": true,
+   "seconds": 39.74
+  },
+  {
+   "step": "validate_scene",
+   "ok": true,
+   "seconds": 0.01
+  },
+  {
+   "step": "export",
+   "ok": true,
+   "seconds": 0.45
+  },
+  {
+   "step": "contact_sheet",
+   "ok": true,
+   "seconds": 0.27
+  },
+  {
+   "step": "manifest",
+   "ok": true,
+   "seconds": 0.01
+  }
+ ],
+ "build": {
+  "blend": {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/source/tb_biscuit.blend",
+   "kind": "blend",
+   "bytes": 137978,
+   "sha256": "eea645937303b2b7a612af25cf1110d4d5470ad74ce05c520d48738f5d7e58d7"
+  },
+  "seconds": 0.18,
+  "roles": {
+   "shell": "#FF6B4A",
+   "shell_dark": "#C4472A",
+   "cup": "#F6EAD0",
+   "cup_band": "#E0607E",
+   "eye": "#FFFFFF",
+   "pupil": "#0E3B66",
+   "saucer": "#F6EAD0"
+  },
+  "objects": [
+   "biscuit",
+   "biscuit_mesh",
+   "biscuit_rig",
+   "ref_0_char_biscuit.png"
+  ],
+  "actions": [
+   "idle",
+   "snap",
+   "wave"
+  ],
+  "contract": {
+   "nodes": {
+    "root": "biscuit",
+    "rig": "biscuit_rig",
+    "mesh": "biscuit_mesh"
+   },
+   "clips": [
+    "idle",
+    "wave",
+    "snap"
+   ],
+   "bones": [
+    "root",
+    "body",
+    "eye_L",
+    "eye_R",
+    "arm_L",
+    "claw_L",
+    "arm_R",
+    "claw_R"
+   ]
+  },
+  "expect": {
+   "base_z": 0.0,
+   "centered": true
+  }
+ },
+ "previews": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/previews/tb_biscuit_three_quarter.png",
+   "kind": "preview",
+   "bytes": 184249,
+   "sha256": "6e5aeedac7a10fb408a7364bb5632962f361f2822442e48b6d96509c774186a4",
+   "view": "three_quarter",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/previews/tb_biscuit_front.png",
+   "kind": "preview",
+   "bytes": 176609,
+   "sha256": "9af1c5b950220f2028d713db8c4287358c7aa1279e41c026ddb3372f9dce7701",
+   "view": "front",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/previews/tb_biscuit_side.png",
+   "kind": "preview",
+   "bytes": 157614,
+   "sha256": "f7fbc73f07e58fbfe01825f9333d1292f248f2fc049e124950e4da21864fb972",
+   "view": "side",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/previews/tb_biscuit_top.png",
+   "kind": "preview",
+   "bytes": 177849,
+   "sha256": "89f1c750bd1e7ad7c4452a0093e31ac879c06417186bf82eeea76279e8124d03",
+   "view": "top",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/previews/tb_biscuit_three_quarter_wave-14.png",
+   "kind": "preview",
+   "bytes": 195482,
+   "sha256": "da08b2c0a1d24bde07b5dfeac350a252f748f11a387ded292de28d5b73fc1211",
+   "view": "three_quarter",
+   "clip": "wave",
+   "pose": 14,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/previews/tb_biscuit_three_quarter_snap-5.png",
+   "kind": "preview",
+   "bytes": 210548,
+   "sha256": "7b4322df753a03a224b63dd639eca338a3855706c1f1f3f4216f30660a2b000a",
+   "view": "three_quarter",
+   "clip": "snap",
+   "pose": 5,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/previews/tb_biscuit_sheet.png",
+   "kind": "contact_sheet",
+   "bytes": 163000,
+   "sha256": "e11497b72a85b703ce596a6a83321dcd320c72f3a788bccfc717f56816f5442b"
+  }
+ ],
+ "exports": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 256652,
+   "sha256": "2edcc3388a0b0343e3ac3c997fa2679b96ec1f46c5c0a4421b05d2e3a391b839",
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "extras": [
+    {
+     "kind": "lod",
+     "skipped": "asset has skinned meshes; decimating them would break their weights (author LODs by hand or per template)"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.three-web-toon.collision.glb",
+     "kind": "collision",
+     "bytes": 9832,
+     "sha256": "9e79f1b0f018ed80a177585e80b1b947a8bc57e0e109cac34fc5b4fb260a0a98",
+     "shape": "convex_hull",
+     "triangles": 136
+    }
+   ],
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.three-web-toon.collision.glb",
+     "kind": "sidecar",
+     "bytes": 9832,
+     "sha256": "9e79f1b0f018ed80a177585e80b1b947a8bc57e0e109cac34fc5b4fb260a0a98"
+    }
+   ],
+   "roundtrip": {
+    "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.three-web-toon.glb",
+    "objects": [
+     "Icosphere (MESH)",
+     "biscuit (EMPTY)",
+     "biscuit_mesh (MESH)",
+     "biscuit_rig (ARMATURE)"
+    ],
+    "triangles": 2132,
+    "materials": [
+     "TB_Cup",
+     "TB_Cup_band",
+     "TB_Eye",
+     "TB_Pupil",
+     "TB_Saucer",
+     "TB_Shell",
+     "TB_Shell_dark"
+    ],
+    "actions": [
+     "idle",
+     "snap",
+     "wave"
+    ],
+    "armatures": 1,
+    "size_m": [
+     0.9,
+     0.52,
+     0.51
+    ],
+    "min_z": 0.0
+   }
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.godot-glb.glb",
+   "kind": "export",
+   "bytes": 282296,
+   "sha256": "bf98ffc45c36640e6a3d8d442fcd748aecb690f3feb56a2fdb971202c7b94ba9",
+   "profile": "godot-glb",
+   "format": "glb",
+   "engine": "Godot 4 (glTF import)",
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.godot-glb.atlas.png",
+     "kind": "sidecar",
+     "bytes": 287,
+     "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+    }
+   ],
+   "roundtrip": {
+    "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.godot-glb.glb",
+    "objects": [
+     "Icosphere (MESH)",
+     "biscuit (EMPTY)",
+     "biscuit_mesh (MESH)",
+     "biscuit_rig (ARMATURE)"
+    ],
+    "triangles": 2132,
+    "materials": [
+     "TB_Atlas"
+    ],
+    "actions": [
+     "idle",
+     "snap",
+     "wave"
+    ],
+    "armatures": 1,
+    "size_m": [
+     0.9,
+     0.52,
+     0.51
+    ],
+    "min_z": 0.0
+   }
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.unity-fbx.fbx",
+   "kind": "export",
+   "bytes": 227548,
+   "sha256": "f1c52ba5d86f312f15e3911ed12f8d814ffcc895003c0da064724a406061d9e9",
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/biscuit/exports/tb_biscuit.unity-fbx.atlas.png",
+     "kind": "sidecar",
+     "bytes": 287,
+     "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+    }
+   ]
+  }
+ ],
+ "validation": {
+  "checks": [
+   {
+    "check": "has_meshes",
+    "level": "pass",
+    "detail": "1 mesh objects"
+   },
+   {
+    "check": "triangle_budget",
+    "level": "pass",
+    "detail": "2132 triangles (budget 6000)",
+    "tris": 2132
+   },
+   {
+    "check": "degenerate_faces",
+    "level": "pass",
+    "detail": "0 zero-area faces"
+   },
+   {
+    "check": "non_manifold_edges",
+    "level": "info",
+    "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+   },
+   {
+    "check": "applied_scale",
+    "level": "pass",
+    "detail": "all mesh scales are 1"
+   },
+   {
+    "check": "naming",
+    "level": "pass",
+    "detail": "no default object names"
+   },
+   {
+    "check": "origin_base",
+    "level": "pass",
+    "detail": "lowest point at z=0.000 m (expected 0.0; the asset sits on its origin)",
+    "min_z": 0.0
+   },
+   {
+    "check": "origin_centered",
+    "level": "pass",
+    "detail": "footprint centre (0.000, 0.000)"
+   },
+   {
+    "check": "materials_assigned",
+    "level": "pass",
+    "detail": "every mesh has materials"
+   },
+   {
+    "check": "vertex_colors",
+    "level": "pass",
+    "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+   },
+   {
+    "check": "textures_resolvable",
+    "level": "pass",
+    "detail": "no missing texture files"
+   },
+   {
+    "check": "animation_clips",
+    "level": "pass",
+    "detail": "actions: ['idle', 'snap', 'wave']",
+    "clips": [
+     "idle",
+     "snap",
+     "wave"
+    ]
+   },
+   {
+    "check": "skinning:biscuit_rig",
+    "level": "pass",
+    "detail": "8 bones, 1 skinned meshes, 0 unweighted verts, 0 verts with >4 influences"
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_biscuit.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_biscuit.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "11 nodes, 1 meshes, 7 primitives, 7 materials, 3 animations, 1 skins, 0 images",
+    "animations": [
+     "idle",
+     "snap",
+     "wave"
+    ],
+    "file": "tb_biscuit.three-web-toon.glb"
+   },
+   {
+    "check": "contract_nodes",
+    "level": "pass",
+    "detail": "nodes present: ['biscuit', 'biscuit_mesh', 'biscuit_rig']",
+    "file": "tb_biscuit.three-web-toon.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 0 warnings, 0 infos",
+    "messages": [],
+    "file": "tb_biscuit.three-web-toon.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_biscuit.three-web-toon.glb: 2132 tris, size [0.9, 0.52, 0.51] m, clips ['idle', 'snap', 'wave']",
+    "file": "tb_biscuit.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_biscuit.godot-glb.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_biscuit.godot-glb.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "11 nodes, 1 meshes, 1 primitives, 1 materials, 3 animations, 1 skins, 1 images",
+    "animations": [
+     "idle",
+     "snap",
+     "wave"
+    ],
+    "file": "tb_biscuit.godot-glb.glb"
+   },
+   {
+    "check": "contract_nodes",
+    "level": "pass",
+    "detail": "nodes present: ['biscuit', 'biscuit_mesh', 'biscuit_rig']",
+    "file": "tb_biscuit.godot-glb.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 0 warnings, 0 infos",
+    "messages": [],
+    "file": "tb_biscuit.godot-glb.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_biscuit.godot-glb.glb: 2132 tris, size [0.9, 0.52, 0.51] m, clips ['idle', 'snap', 'wave']",
+    "file": "tb_biscuit.godot-glb.glb"
+   }
+  ],
+  "summary": {
+   "pass": 22,
+   "warn": 0,
+   "fail": 0,
+   "info": 3
+  }
+ },
+ "manifest": {
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "items": 455
+ },
+ "seconds": 41.6
+}

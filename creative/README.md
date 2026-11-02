@@ -23,6 +23,7 @@ The first visual identity and production asset package for TIDEBREAKERS. It was 
 | `ui/` | `screens/` six iPhone mockups (@3x); `kit/` icons, buttons, badges, map (SVG + PNG) | mockups / game-ready kit |
 | `effects/` | `sheets/` RGBA sprite atlases + JSON; `lottie/`; `materials/` shader ramps; `source/` | game-ready |
 | `marketing/` | Key art, landscape and portrait promos, 26.7 s teaser (silent) | finished |
+| `3d/` | **3D pilot (MeshCraft, Blender):** treasure chests (drop-in for `chestMesh()`), lantern, Grinning Sun figurehead, skinned flags, morph sail, rigged Biscuit, as GLB/FBX/OBJ with editable `.blend` sources. Start with `3d/REPORT-3D.md` and `3d/HANDOFF.md` | game-ready (not wired in) |
 | `pipeline/` | The scripts that drove GITCRAFT in this run (recipes; paths are from the pilot workspace) | source |
 
 ## Naming and versioning

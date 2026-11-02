@@ -1,0 +1,31 @@
+{
+  "asset_id": "tb_chest_small",
+  "template": "chest",
+  "params": {
+    "tier": "small"
+  },
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+    "/home/user/TIDEBREAKERS/creative/ui/kit/nav/cargo.png",
+    "/home/user/TIDEBREAKERS/creative/environments/env_03_treasure-cove_concept_v1.jpg"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/chest_small",
+  "profiles": [
+    "three-web-toon",
+    "three-web-atlas",
+    "godot-glb",
+    "unity-fbx",
+    "obj-static"
+  ],
+  "preview": {
+    "size": 640,
+    "poses": [
+      {
+        "clip": "lid_open",
+        "at": "end"
+      }
+    ]
+  }
+}

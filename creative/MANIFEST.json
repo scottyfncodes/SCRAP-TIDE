@@ -2,8 +2,1061 @@
  "package": "TIDEBREAKERS Creative Production Package",
  "version": "v1",
  "generated": "2026-11-02",
- "files": 337,
+ "files": 449,
  "items": [
+  {
+   "path": "3d/biscuit/exports/tb_biscuit.godot-glb.atlas.png",
+   "bytes": 287,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "godot-glb sidecar",
+   "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+  },
+  {
+   "path": "3d/biscuit/exports/tb_biscuit.godot-glb.glb",
+   "bytes": 282296,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "godot-glb export (Godot 4 (glTF import))",
+   "sha256": "bf98ffc45c36640e6a3d8d442fcd748aecb690f3feb56a2fdb971202c7b94ba9",
+   "triangles": 2132,
+   "profile": "godot-glb",
+   "format": "glb",
+   "engine": "Godot 4 (glTF import)",
+   "clips": [
+    "idle",
+    "snap",
+    "wave"
+   ]
+  },
+  {
+   "path": "3d/biscuit/exports/tb_biscuit.three-web-toon.collision.glb",
+   "bytes": 9832,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "9e79f1b0f018ed80a177585e80b1b947a8bc57e0e109cac34fc5b4fb260a0a98",
+   "triangles": 136
+  },
+  {
+   "path": "3d/biscuit/exports/tb_biscuit.three-web-toon.glb",
+   "bytes": 256652,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "2edcc3388a0b0343e3ac3c997fa2679b96ec1f46c5c0a4421b05d2e3a391b839",
+   "triangles": 2132,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": [
+    "idle",
+    "snap",
+    "wave"
+   ]
+  },
+  {
+   "path": "3d/biscuit/exports/tb_biscuit.unity-fbx.atlas.png",
+   "bytes": 287,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx sidecar",
+   "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+  },
+  {
+   "path": "3d/biscuit/exports/tb_biscuit.unity-fbx.fbx",
+   "bytes": 227548,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx export (Unity / Unreal (FBX))",
+   "sha256": "f1c52ba5d86f312f15e3911ed12f8d814ffcc895003c0da064724a406061d9e9",
+   "triangles": 2132,
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "clips": [
+    "idle",
+    "snap",
+    "wave"
+   ]
+  },
+  {
+   "path": "3d/biscuit/previews/tb_biscuit_front.png",
+   "bytes": 176609,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "9af1c5b950220f2028d713db8c4287358c7aa1279e41c026ddb3372f9dce7701"
+  },
+  {
+   "path": "3d/biscuit/previews/tb_biscuit_sheet.png",
+   "bytes": 163000,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "e11497b72a85b703ce596a6a83321dcd320c72f3a788bccfc717f56816f5442b"
+  },
+  {
+   "path": "3d/biscuit/previews/tb_biscuit_side.png",
+   "bytes": 157614,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "f7fbc73f07e58fbfe01825f9333d1292f248f2fc049e124950e4da21864fb972"
+  },
+  {
+   "path": "3d/biscuit/previews/tb_biscuit_three_quarter.png",
+   "bytes": 184249,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "6e5aeedac7a10fb408a7364bb5632962f361f2822442e48b6d96509c774186a4"
+  },
+  {
+   "path": "3d/biscuit/previews/tb_biscuit_three_quarter_snap-5.png",
+   "bytes": 210548,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "7b4322df753a03a224b63dd639eca338a3855706c1f1f3f4216f30660a2b000a"
+  },
+  {
+   "path": "3d/biscuit/previews/tb_biscuit_three_quarter_wave-14.png",
+   "bytes": 195482,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "da08b2c0a1d24bde07b5dfeac350a252f748f11a387ded292de28d5b73fc1211"
+  },
+  {
+   "path": "3d/biscuit/previews/tb_biscuit_top.png",
+   "bytes": 177849,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "89f1c750bd1e7ad7c4452a0093e31ac879c06417186bf82eeea76279e8124d03"
+  },
+  {
+   "path": "3d/biscuit/source/tb_biscuit.blend",
+   "bytes": 137978,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "eea645937303b2b7a612af25cf1110d4d5470ad74ce05c520d48738f5d7e58d7"
+  },
+  {
+   "path": "3d/chest_grand/exports/tb_chest_grand.three-web-toon.collision.glb",
+   "bytes": 11024,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "5a5d666f5029b94bc1f102c7203e3f90920d921f8e38333f5dca8fd24755eac5",
+   "triangles": 156
+  },
+  {
+   "path": "3d/chest_grand/exports/tb_chest_grand.three-web-toon.glb",
+   "bytes": 187064,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "aa6b4ef70ddab3be2c504b8286741175a5c72c6d79c15f139e5351219cd9c652",
+   "triangles": 2456,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": [
+    "lid_close",
+    "lid_open"
+   ]
+  },
+  {
+   "path": "3d/chest_grand/exports/tb_chest_grand.three-web-toon.lod25.glb",
+   "bytes": 72520,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (25% triangles)",
+   "sha256": "2926b9ea2c7d753603f20bcaf4d0e53f2cbb60893a0862ead2e95c382c590560",
+   "triangles": 604
+  },
+  {
+   "path": "3d/chest_grand/exports/tb_chest_grand.three-web-toon.lod50.glb",
+   "bytes": 131292,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (50% triangles)",
+   "sha256": "24c67815fdd393256f3fbd58da829581e95797744c214d50eb574a399c0231a9",
+   "triangles": 1228
+  },
+  {
+   "path": "3d/chest_grand/previews/tb_chest_grand_front.png",
+   "bytes": 226326,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "ed092631866c68ea1977bb9135e4dc35adf47e12d7f7e851ab35dece2707c8db"
+  },
+  {
+   "path": "3d/chest_grand/previews/tb_chest_grand_sheet.png",
+   "bytes": 287697,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "a61714237e782f8c5b6e9210a8fc45514d114ee6eb7fb7c750fa126234ebf808"
+  },
+  {
+   "path": "3d/chest_grand/previews/tb_chest_grand_side.png",
+   "bytes": 187912,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "226bfea5e2534f22b6637fcf8399f430368fa6669c23a6252bb10af920928827"
+  },
+  {
+   "path": "3d/chest_grand/previews/tb_chest_grand_three_quarter.png",
+   "bytes": 285381,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "1f046905897d52b629578d69c3f319ba087ffcf2052f24c7efb4b0b1769bf36b"
+  },
+  {
+   "path": "3d/chest_grand/previews/tb_chest_grand_three_quarter_lid_open-end.png",
+   "bytes": 258209,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "38b051a993731087cffc8e8b4daa9d11d943a5840cdff1b4f57f14a0915d5595"
+  },
+  {
+   "path": "3d/chest_grand/previews/tb_chest_grand_top.png",
+   "bytes": 182320,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "e063ce0470570d09f6035af4c7a7f9bb2d7c2def97afc784c035a855e76bccf8"
+  },
+  {
+   "path": "3d/chest_grand/source/tb_chest_grand.blend",
+   "bytes": 146043,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "6ccdb98a2d22dfc8f8c54407f7083951cdfc253ca9f50e7dea18148b3b35a904"
+  },
+  {
+   "path": "3d/chest_sea/exports/tb_chest_sea.three-web-toon.collision.glb",
+   "bytes": 11020,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "48e932bc6ccb3ea138e239e452cddea2b53f633bfe4972aafcbcd67c8838ef6b",
+   "triangles": 156
+  },
+  {
+   "path": "3d/chest_sea/exports/tb_chest_sea.three-web-toon.glb",
+   "bytes": 221656,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "123b4b45b07bf1875f23ff2c27e12b96c5e33de6b5d229f2b524a52d5a2df8b2",
+   "triangles": 2800,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": [
+    "lid_close",
+    "lid_open"
+   ]
+  },
+  {
+   "path": "3d/chest_sea/exports/tb_chest_sea.three-web-toon.lod25.glb",
+   "bytes": 82296,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (25% triangles)",
+   "sha256": "79cc718f069ee644f14b3d8e560114242e1edde02c062d9cd32305b2eacd6332",
+   "triangles": 682
+  },
+  {
+   "path": "3d/chest_sea/exports/tb_chest_sea.three-web-toon.lod50.glb",
+   "bytes": 150896,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (50% triangles)",
+   "sha256": "a5c457b66a5779f62c19253b41d064df63a940f2c0e995c6c4fd6ce29e93b73a",
+   "triangles": 1400
+  },
+  {
+   "path": "3d/chest_sea/previews/tb_chest_sea_front.png",
+   "bytes": 234678,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "9614a008bf05f00ce65993417796673f905419b2b50fce04d7048c79f00116a6"
+  },
+  {
+   "path": "3d/chest_sea/previews/tb_chest_sea_sheet.png",
+   "bytes": 320866,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "3cae3ff34532989a78593b9bae288dc0e0a27eeae3ed2b2bfc90acc556cdc6f4"
+  },
+  {
+   "path": "3d/chest_sea/previews/tb_chest_sea_side.png",
+   "bytes": 186323,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "4e1310132604a890879c4fd9a294ddefea3831cc359f84af9efa0ebd329bf0e7"
+  },
+  {
+   "path": "3d/chest_sea/previews/tb_chest_sea_three_quarter.png",
+   "bytes": 295721,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "ec2887d3892e454017824ef20aa8f21e27600f334be5abb0717bac675d8c3c57"
+  },
+  {
+   "path": "3d/chest_sea/previews/tb_chest_sea_three_quarter_lid_open-end.png",
+   "bytes": 265703,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "aa156075ef23b1699b67c74f065585386a511ed4ddccc063b6d85c9c7804e674"
+  },
+  {
+   "path": "3d/chest_sea/previews/tb_chest_sea_top.png",
+   "bytes": 184671,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "ea999e75c1805597251da4236a395aed6415c5947b19593ad6f453b3b93897e0"
+  },
+  {
+   "path": "3d/chest_sea/source/tb_chest_sea.blend",
+   "bytes": 157081,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "d6673c9fbf594da1def157ec977148c8e538a4560385ba1bd9e78559bb42c79c"
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.godot-glb.atlas.png",
+   "bytes": 301,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "godot-glb sidecar",
+   "sha256": "434f3e1a1023d9f51244a6d4dfd13c9db60af84dbb2baa217a43ff4fc3087a03"
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.godot-glb.glb",
+   "bytes": 216496,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "godot-glb export (Godot 4 (glTF import))",
+   "sha256": "148b4fe4fb14cca7092b1421855b1960c9bd83d519b863bfdd3edfcaf15a787c",
+   "triangles": 2456,
+   "profile": "godot-glb",
+   "format": "glb",
+   "engine": "Godot 4 (glTF import)",
+   "clips": [
+    "lid_close",
+    "lid_open"
+   ]
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.obj-static.atlas.png",
+   "bytes": 301,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "obj-static sidecar",
+   "sha256": "434f3e1a1023d9f51244a6d4dfd13c9db60af84dbb2baa217a43ff4fc3087a03"
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.obj-static.mtl",
+   "bytes": 265,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "obj-static sidecar",
+   "sha256": "b6c3d2ebda05d8ef5b14274e7e3034089abab5c36a33a58893155db55260ae9e"
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.obj-static.obj",
+   "bytes": 157943,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "obj-static export (Any DCC / static mesh interchange)",
+   "sha256": "24af15b0f2d0be84bb4ae5f7f8c8cf5aa7f8618f1b2975c7f0fc80016457aeb2",
+   "triangles": 2456,
+   "profile": "obj-static",
+   "format": "obj",
+   "engine": "Any DCC / static mesh interchange",
+   "clips": [
+    "lid_close",
+    "lid_open"
+   ]
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.three-web-atlas.atlas.png",
+   "bytes": 301,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-atlas sidecar",
+   "sha256": "434f3e1a1023d9f51244a6d4dfd13c9db60af84dbb2baa217a43ff4fc3087a03"
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.three-web-atlas.glb",
+   "bytes": 216500,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-atlas export (Three.js / any glTF engine \u2014 single palette-atlas texture)",
+   "sha256": "cf1813763cad86e491babd0cb3f6a33332ab35a750054c14b81a627c3403c61d",
+   "triangles": 2456,
+   "profile": "three-web-atlas",
+   "format": "glb",
+   "engine": "Three.js / any glTF engine \u2014 single palette-atlas texture",
+   "clips": [
+    "lid_close",
+    "lid_open"
+   ]
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.three-web-toon.collision.glb",
+   "bytes": 11012,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "d70b7880ae29267ce8e11cb7c1963c28c5d707c5f7c12a77ae3e1d1b3cb9e0cc",
+   "triangles": 156
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.three-web-toon.glb",
+   "bytes": 186900,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "27a01ea9bb76ada0a0e65767e9e6e9739b06bec4a724be24cb04a432ed63ad17",
+   "triangles": 2456,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": [
+    "lid_close",
+    "lid_open"
+   ]
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.three-web-toon.lod25.glb",
+   "bytes": 72500,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (25% triangles)",
+   "sha256": "f8024bfb142ef79cbac24a413f4a2b3a934f716ef5a4cdfdbd1548cff2b739d9",
+   "triangles": 604
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.three-web-toon.lod50.glb",
+   "bytes": 131004,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (50% triangles)",
+   "sha256": "92c63ba5227476a04b98961f278c60e4808a19d5875587ed13e6e812d6c54fb2",
+   "triangles": 1228
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.unity-fbx.atlas.png",
+   "bytes": 301,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx sidecar",
+   "sha256": "434f3e1a1023d9f51244a6d4dfd13c9db60af84dbb2baa217a43ff4fc3087a03"
+  },
+  {
+   "path": "3d/chest_small/exports/tb_chest_small.unity-fbx.fbx",
+   "bytes": 96108,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx export (Unity / Unreal (FBX))",
+   "sha256": "558c764d1bad20ba960c8a14366adfc2c115d3256bb86fd8b0271315a24ce8eb",
+   "triangles": 2456,
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "clips": [
+    "lid_close",
+    "lid_open"
+   ]
+  },
+  {
+   "path": "3d/chest_small/previews/tb_chest_small_front.png",
+   "bytes": 225787,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "3b0840a1ad77589d4810a4935a49377a75d336fc87b39bb7477fb2eb48e07bfb"
+  },
+  {
+   "path": "3d/chest_small/previews/tb_chest_small_sheet.png",
+   "bytes": 285857,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "021742791a47fc3895c26fc5baa94cabefc75f60b90d1072a4f7240378de5eac"
+  },
+  {
+   "path": "3d/chest_small/previews/tb_chest_small_side.png",
+   "bytes": 187663,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "25e30eed58b9b9e48430c97b88f7c6d87d578e39f9ef515264f1e0f281eb9dad"
+  },
+  {
+   "path": "3d/chest_small/previews/tb_chest_small_three_quarter.png",
+   "bytes": 281381,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "c4f39f7e3c4e5a58a765d1b5c9a80feac3871818b75b95c59feb5e6b291fd302"
+  },
+  {
+   "path": "3d/chest_small/previews/tb_chest_small_three_quarter_lid_open-end.png",
+   "bytes": 255147,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "1583349180e9c26f82219bb80c76a4d8ac16a0b3f22da80e912bedd9bf650e6e"
+  },
+  {
+   "path": "3d/chest_small/previews/tb_chest_small_top.png",
+   "bytes": 180710,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "5e476be0eac23dca75fac85ccfb86e264d22b49aac9ede22f1437cc34ff08e08"
+  },
+  {
+   "path": "3d/chest_small/source/tb_chest_small.blend",
+   "bytes": 146085,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "1395495bcb5c52850e7e176680c8ff457f722f0d9f094b726052f490cab92186"
+  },
+  {
+   "path": "3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.collision.glb",
+   "bytes": 10428,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "88be98309596baf705d393e13d807c44e8aa0371507f48df5f9c4f4679ed483d",
+   "triangles": 128
+  },
+  {
+   "path": "3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.glb",
+   "bytes": 144592,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "f9d8761265a6ac612e1af67b084e4467da299418f5f90747107b2f675118ac5b",
+   "triangles": 1960,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": []
+  },
+  {
+   "path": "3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.lod25.glb",
+   "bytes": 22784,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (25% triangles)",
+   "sha256": "20f040826dfa948a348046bc3e48ff61577c06ac4f7d9c2102e4071d0c231fe7",
+   "triangles": 490
+  },
+  {
+   "path": "3d/figurehead_sun/exports/tb_figurehead_sun.three-web-toon.lod50.glb",
+   "bytes": 49216,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (50% triangles)",
+   "sha256": "158cec299bb3f73ea18b8a56c44f5b701ed3f325db48007c68c07fb615017330",
+   "triangles": 980
+  },
+  {
+   "path": "3d/figurehead_sun/exports/tb_figurehead_sun.unity-fbx.atlas.png",
+   "bytes": 287,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx sidecar",
+   "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+  },
+  {
+   "path": "3d/figurehead_sun/exports/tb_figurehead_sun.unity-fbx.fbx",
+   "bytes": 74460,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx export (Unity / Unreal (FBX))",
+   "sha256": "158b9effa2945a45a174d6bf1106db59ff0a411e1edfe5ca1a87f2dda0e8ee9a",
+   "triangles": 1960,
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "clips": []
+  },
+  {
+   "path": "3d/figurehead_sun/previews/tb_figurehead_sun_front.png",
+   "bytes": 210714,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "a7eb3e694d20e8bb99df142b6c3df8d788c17987ad62369dfec0fdabe123a5bc"
+  },
+  {
+   "path": "3d/figurehead_sun/previews/tb_figurehead_sun_sheet.png",
+   "bytes": 264239,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "c3ad80339adcca4e23d524c41049590a0443b12678ee7ef4be722e80cf054083"
+  },
+  {
+   "path": "3d/figurehead_sun/previews/tb_figurehead_sun_side.png",
+   "bytes": 157891,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "949ad0f739205c4704663990fd86317526132f514f691a9a7845175ef4be4548"
+  },
+  {
+   "path": "3d/figurehead_sun/previews/tb_figurehead_sun_three_quarter.png",
+   "bytes": 200961,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "27665ba5faeffbad5ce6d631b14ebe4173c6c50e34ef7540b9fdf219820f27f5"
+  },
+  {
+   "path": "3d/figurehead_sun/previews/tb_figurehead_sun_top.png",
+   "bytes": 136040,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "1cd1956bbac13f63df394aa25a5407bdfe76f5e68aae083f802ee424883b6af6"
+  },
+  {
+   "path": "3d/figurehead_sun/source/tb_figurehead_sun.blend",
+   "bytes": 130780,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "df9e543811622dbfff50f1550a1bf1ef4f279f82984145371115bf0968b6d427"
+  },
+  {
+   "path": "3d/flag_tidebreaker/exports/tb_flag_tidebreaker.three-web-toon.collision.glb",
+   "bytes": 5044,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "7454ee17117ce48dba5043e0c1cfa59073650d5afd4059dec95152de5c951120",
+   "triangles": 66
+  },
+  {
+   "path": "3d/flag_tidebreaker/exports/tb_flag_tidebreaker.three-web-toon.glb",
+   "bytes": 349176,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "f2b4159b77e91e2c95fc8d4a093b9db8eb6a731f8a4b52c24fc11491e4eca934",
+   "triangles": 3096,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": [
+    "wave"
+   ]
+  },
+  {
+   "path": "3d/flag_tidebreaker/exports/tb_flag_tidebreaker.unity-fbx.atlas.png",
+   "bytes": 287,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx sidecar",
+   "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+  },
+  {
+   "path": "3d/flag_tidebreaker/exports/tb_flag_tidebreaker.unity-fbx.fbx",
+   "bytes": 114748,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx export (Unity / Unreal (FBX))",
+   "sha256": "14a429f6cff3c7d326faaa645865b3e5364047819baf227252da0c5bde25a0ea",
+   "triangles": 3096,
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "clips": [
+    "wave"
+   ]
+  },
+  {
+   "path": "3d/flag_tidebreaker/previews/tb_flag_tidebreaker_front.png",
+   "bytes": 173256,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "b663cb7ddd4bc103f4d20a5e4433e79c42a1fcfd794067a964c12f5a92f4af06"
+  },
+  {
+   "path": "3d/flag_tidebreaker/previews/tb_flag_tidebreaker_sheet.png",
+   "bytes": 99452,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "5c87569db3cf6dd8524963062d65a17e0264d82728446de91d35da4ce3e5e10b"
+  },
+  {
+   "path": "3d/flag_tidebreaker/previews/tb_flag_tidebreaker_side.png",
+   "bytes": 143923,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "0d3cee1ef902b128f85bf7813f09b3bcf79ff44a3b0d097a63efc52a176adf31"
+  },
+  {
+   "path": "3d/flag_tidebreaker/previews/tb_flag_tidebreaker_three_quarter.png",
+   "bytes": 170226,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "76e74cbe9a6f9ffcb4119882ac2d21f308e9e543a62a954f6333ab2e9d8ed180"
+  },
+  {
+   "path": "3d/flag_tidebreaker/previews/tb_flag_tidebreaker_three_quarter_wave-mid.png",
+   "bytes": 165289,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "8b67fdbf7fbe19737af5bd686cef64ab87701d56f0fdeb83cfe42fdb3daa6a2a"
+  },
+  {
+   "path": "3d/flag_tidebreaker/previews/tb_flag_tidebreaker_top.png",
+   "bytes": 96635,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "419ff2b2e5e66b0101aaa8026bf0113820c1709f8e9a6e5eadf67693a2aed0ac"
+  },
+  {
+   "path": "3d/flag_tidebreaker/source/tb_flag_tidebreaker.blend",
+   "bytes": 151971,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "5695725dc991d9cc0aa1e2508f409ca7571fb35637fd0e5c0b9b7241e739f3ff"
+  },
+  {
+   "path": "3d/flag_wren/exports/tb_flag_wren.three-web-toon.collision.glb",
+   "bytes": 5044,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "7454ee17117ce48dba5043e0c1cfa59073650d5afd4059dec95152de5c951120",
+   "triangles": 66
+  },
+  {
+   "path": "3d/flag_wren/exports/tb_flag_wren.three-web-toon.glb",
+   "bytes": 347808,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "82a081f7a7981b1e4aefd461cb5320ea152bde02349c47990feef3e2ad6acc3c",
+   "triangles": 3096,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": [
+    "wave"
+   ]
+  },
+  {
+   "path": "3d/flag_wren/previews/tb_flag_wren_front.png",
+   "bytes": 173464,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "09bfeeaa4b272294dc20e2dde868d51e0a7e0647731664ecf988231abf80d00b"
+  },
+  {
+   "path": "3d/flag_wren/previews/tb_flag_wren_sheet.png",
+   "bytes": 95881,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "50691602a3fed6ed671e38daddf61096d5ea18ddd2da955967d5ee5a8da91872"
+  },
+  {
+   "path": "3d/flag_wren/previews/tb_flag_wren_side.png",
+   "bytes": 143974,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "c140c22e0a6fa01b8651ee96759bf1ac3c37c6c10b84cd7dbf015c653b309ed9"
+  },
+  {
+   "path": "3d/flag_wren/previews/tb_flag_wren_three_quarter.png",
+   "bytes": 167852,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "1fe5fe8598fe2065af5321f6b12127d973bbdbc22f544e2605d990af684b0e57"
+  },
+  {
+   "path": "3d/flag_wren/previews/tb_flag_wren_three_quarter_wave-mid.png",
+   "bytes": 162673,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "0f0ae04d07ae2c757da42aa589f71dcbca844bc82406d905d264d0413f640196"
+  },
+  {
+   "path": "3d/flag_wren/previews/tb_flag_wren_top.png",
+   "bytes": 96650,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "fd955b982257835ff4e9ed7267fc95507f9d09c5ecbe04275d0d079b2634becb"
+  },
+  {
+   "path": "3d/flag_wren/source/tb_flag_wren.blend",
+   "bytes": 150122,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "8491c41d4893ee565cba6e062a812513a34369c5bcb178129fc37f16246259c1"
+  },
+  {
+   "path": "3d/lantern/exports/tb_lantern.three-web-toon.collision.glb",
+   "bytes": 4456,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "63d97b8df024c3de7aa311aeb4669f6249b69844f461c572ef762f3647d39373",
+   "triangles": 56
+  },
+  {
+   "path": "3d/lantern/exports/tb_lantern.three-web-toon.glb",
+   "bytes": 36488,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "5a45ed983545f944456f1b678d3a5b667df1c21faa283ce185d4bb45d10c6df9",
+   "triangles": 396,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": [
+    "swing"
+   ]
+  },
+  {
+   "path": "3d/lantern/exports/tb_lantern.three-web-toon.lod25.glb",
+   "bytes": 13840,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (25% triangles)",
+   "sha256": "5228e05cb041f2d1bcb5559935c946af9ea08ea5249649e6fd7e53ea528f8801",
+   "triangles": 91
+  },
+  {
+   "path": "3d/lantern/exports/tb_lantern.three-web-toon.lod50.glb",
+   "bytes": 22284,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (50% triangles)",
+   "sha256": "41ed86468a4887bdb19e63a154168d6da70bb5387a8729421f3d0697226b226c",
+   "triangles": 198
+  },
+  {
+   "path": "3d/lantern/exports/tb_lantern.unity-fbx.atlas.png",
+   "bytes": 287,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx sidecar",
+   "sha256": "e723c4d2849f846ffd34433015af37df8c5abed8e83d59b657333c4884882849"
+  },
+  {
+   "path": "3d/lantern/exports/tb_lantern.unity-fbx.fbx",
+   "bytes": 37964,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "unity-fbx export (Unity / Unreal (FBX))",
+   "sha256": "07a000d0aa28fbe9a277cbdb5aa14b0df234ad3883d600de1f5a1e5a1a289b7c",
+   "triangles": 396,
+   "profile": "unity-fbx",
+   "format": "fbx",
+   "engine": "Unity / Unreal (FBX)",
+   "clips": [
+    "swing"
+   ]
+  },
+  {
+   "path": "3d/lantern/previews/tb_lantern_front.png",
+   "bytes": 184491,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "07f8db47dc15c00fafa7881bb8dbfba6e07acc170547036dcd8039ba2446c18c"
+  },
+  {
+   "path": "3d/lantern/previews/tb_lantern_sheet.png",
+   "bytes": 163417,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "8c6a39ff0b67a34dc7dcc94e1dfcccc2787d1a40fa6aa0a7079406aa4cd68208"
+  },
+  {
+   "path": "3d/lantern/previews/tb_lantern_side.png",
+   "bytes": 193277,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "493fd83b0d3171b90032a9cf8e09254180275a4948b5515e4f1d6e8b0c92c847"
+  },
+  {
+   "path": "3d/lantern/previews/tb_lantern_three_quarter.png",
+   "bytes": 202680,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "9b852e687bf8ba48ee3f0862b1dcc1d78e7101a868f8a30ec57148031f67e2d9"
+  },
+  {
+   "path": "3d/lantern/previews/tb_lantern_three_quarter_swing-mid.png",
+   "bytes": 197977,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "a324fd25674f562726305f704e66c5f95d637848f24c71503fa9deca9c5450a8"
+  },
+  {
+   "path": "3d/lantern/previews/tb_lantern_top.png",
+   "bytes": 157362,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "5b2ecb16c79c30088bb54eaa8d28c2d8e7eed207d6c893b90c0330f58b6987a6"
+  },
+  {
+   "path": "3d/lantern/source/tb_lantern.blend",
+   "bytes": 102302,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "bb4ab6e994254e2ba39e655d2cb685b9d1da188acf9ad94ad0960fd573ec7ce5"
+  },
+  {
+   "path": "3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.collision.glb",
+   "bytes": 4976,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon collision (convex hull)",
+   "sha256": "f14627e89773cb6a4e45034103f87b812ee009a07d082d021dc5c1efb74d2b92",
+   "triangles": 68
+  },
+  {
+   "path": "3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.glb",
+   "bytes": 111380,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon export (Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline)",
+   "sha256": "d13fc57a23c1a10979cdecf675f7b3bc0ca10d32ea1e84ab076a19a8432b1c9a",
+   "triangles": 940,
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "clips": [
+    "fill",
+    "luff"
+   ]
+  },
+  {
+   "path": "3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.lod25.glb",
+   "bytes": 16020,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (25% triangles)",
+   "sha256": "b3b8d6d75ee8a0160f0318177b7b4c3eaf38815a6c07412a567077caa23741d1",
+   "triangles": 234
+  },
+  {
+   "path": "3d/sail_sunset/exports/tb_sail_sunset.three-web-toon.lod50.glb",
+   "bytes": 29844,
+   "tools": "MeshCraft (Blender)",
+   "status": "game-ready",
+   "notes": "three-web-toon lod (50% triangles)",
+   "sha256": "285bcd59783a83f5e5924dd69c4a38d411bc66b98da277c3cae3389f9dea3545",
+   "triangles": 470
+  },
+  {
+   "path": "3d/sail_sunset/previews/tb_sail_sunset_front.png",
+   "bytes": 182574,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "45b71fc13885432f994f8ce1fdc598bca6a7c5d17cdcb6e31b7f909d9591dcda"
+  },
+  {
+   "path": "3d/sail_sunset/previews/tb_sail_sunset_sheet.png",
+   "bytes": 152761,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "fc7d40b1a89acc427ced00f7cc8a05d3e7e9d9094b55fd145f325874353f7209"
+  },
+  {
+   "path": "3d/sail_sunset/previews/tb_sail_sunset_side.png",
+   "bytes": 124407,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "d1befbd70ad2c970a132942fc35c1a6ca2f5a1fb3725d63a49fb64e0be31fb8f"
+  },
+  {
+   "path": "3d/sail_sunset/previews/tb_sail_sunset_three_quarter.png",
+   "bytes": 190442,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "c412bffa12c5180a3d57449ba768f8d9919603fea3d7680aabc2cdfef22c1483"
+  },
+  {
+   "path": "3d/sail_sunset/previews/tb_sail_sunset_three_quarter_fill-end.png",
+   "bytes": 195791,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "03a64a956d92376389013ffb398dcc92cadb8750a5374bc4704ef43949922fef"
+  },
+  {
+   "path": "3d/sail_sunset/previews/tb_sail_sunset_top.png",
+   "bytes": 104565,
+   "tools": "MeshCraft (Blender)",
+   "status": "preview",
+   "notes": "MeshCraft preview render",
+   "sha256": "562eaf32be90b0bbeeb842c526d24519489cc6de2a0f0139f59ac44bb372f0f6"
+  },
+  {
+   "path": "3d/sail_sunset/source/tb_sail_sunset.blend",
+   "bytes": 112950,
+   "tools": "MeshCraft (Blender)",
+   "status": "source",
+   "notes": "Editable Blender source",
+   "sha256": "76409313a4798b62e4b6eb85a960a7a469b03726d372faf4a8b8b8d888975a76"
+  },
   {
    "path": "art-direction/TIDEBREAKERS_Creative_Package_v1.pdf",
    "bytes": 4335039,
@@ -2577,5 +3630,6 @@
    "status": "source",
    "notes": "Editable native document"
   }
- ]
+ ],
+ "updated": "2026-11-02"
 }

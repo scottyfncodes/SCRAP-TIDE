@@ -1,0 +1,25 @@
+{
+  "asset_id": "tb_lantern",
+  "template": "lantern",
+  "params": {},
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+    "/home/user/TIDEBREAKERS/creative/ships/custom/deco_lantern.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/lantern",
+  "profiles": [
+    "three-web-toon",
+    "unity-fbx"
+  ],
+  "preview": {
+    "size": 640,
+    "poses": [
+      {
+        "clip": "swing",
+        "at": "mid"
+      }
+    ]
+  }
+}

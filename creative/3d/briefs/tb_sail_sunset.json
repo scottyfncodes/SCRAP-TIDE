@@ -1,0 +1,26 @@
+{
+  "asset_id": "tb_sail_sunset",
+  "template": "sail",
+  "params": {
+    "pattern": "sunset"
+  },
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+    "/home/user/TIDEBREAKERS/creative/ships/custom/sail_sunset.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/sail_sunset",
+  "profiles": [
+    "three-web-toon"
+  ],
+  "preview": {
+    "size": 640,
+    "poses": [
+      {
+        "clip": "fill",
+        "at": "end"
+      }
+    ]
+  }
+}

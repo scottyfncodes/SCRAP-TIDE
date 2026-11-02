@@ -1,0 +1,21 @@
+{
+  "asset_id": "tb_figurehead_sun",
+  "template": "sun_figurehead",
+  "params": {},
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+    "/home/user/TIDEBREAKERS/creative/ships/custom/figurehead_sun.png",
+    "/home/user/TIDEBREAKERS/creative/branding/emblem_grinning-sun_v2.png"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/figurehead_sun",
+  "profiles": [
+    "three-web-toon",
+    "unity-fbx"
+  ],
+  "preview": {
+    "size": 640,
+    "poses": []
+  }
+}

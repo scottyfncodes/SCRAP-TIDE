@@ -1,0 +1,413 @@
+{
+ "asset_id": "tb_chest_sea",
+ "brief": {
+  "asset_id": "tb_chest_sea",
+  "template": "chest",
+  "params": {
+   "tier": "sea"
+  },
+  "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-palette.json",
+  "material_prefix": "TB",
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "references": [
+   "/home/user/TIDEBREAKERS/creative/environments/env_05_wreck-of-the-wren_concept_v1.jpg"
+  ],
+  "out_dir": "/home/user/TIDEBREAKERS/creative/3d/chest_sea",
+  "profiles": [
+   "three-web-toon"
+  ],
+  "preview": {
+   "size": 640,
+   "poses": [
+    {
+     "clip": "lid_open",
+     "at": "end"
+    }
+   ]
+  }
+ },
+ "steps": [
+  {
+   "step": "build",
+   "ok": true,
+   "seconds": 0.17
+  },
+  {
+   "step": "preview",
+   "ok": true,
+   "seconds": 36.68
+  },
+  {
+   "step": "validate_scene",
+   "ok": true,
+   "seconds": 0.0
+  },
+  {
+   "step": "export",
+   "ok": true,
+   "seconds": 0.23
+  },
+  {
+   "step": "contact_sheet",
+   "ok": true,
+   "seconds": 0.73
+  },
+  {
+   "step": "manifest",
+   "ok": true,
+   "seconds": 0.01
+  }
+ ],
+ "build": {
+  "blend": {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/source/tb_chest_sea.blend",
+   "kind": "blend",
+   "bytes": 157081,
+   "sha256": "d6673c9fbf594da1def157ec977148c8e538a4560385ba1bd9e78559bb42c79c"
+  },
+  "seconds": 0.09,
+  "roles": {
+   "wood": "#5A7A8A",
+   "plank": "#0E3B66",
+   "band": "#C98A12",
+   "trim": "#1FB5B0",
+   "rivet": "#0E3B66",
+   "gold": "#F4C542",
+   "gem": "#2ECC71",
+   "gem2": "#7FE3D6",
+   "pearl": "#F6EAD0",
+   "dark": "#0A2142",
+   "barnacle": "#F6EAD0",
+   "weed": "#1E6B4E"
+  },
+  "objects": [
+   "chest_body",
+   "chest_lid",
+   "chest_sea",
+   "glow_anchor",
+   "ref_0_env_05_wreck-of-the-wren_concept_v1.jpg"
+  ],
+  "actions": [
+   "lid_close",
+   "lid_open"
+  ],
+  "contract": {
+   "engine": "TIDEBREAKERS chestMesh() replacement",
+   "nodes": {
+    "root": "chest_sea",
+    "body": "chest_body",
+    "lid": "chest_lid",
+    "glow": "glow_anchor"
+   },
+   "lid_hinge_yup": [
+    0,
+    0.88,
+    -0.495
+   ],
+   "lid_open": {
+    "axis": "x",
+    "radians": -1.9,
+    "clip": "lid_open"
+   },
+   "glow_anchor_yup": [
+    0,
+    1.32,
+    0
+   ],
+   "scale": 1.1
+  },
+  "expect": {
+   "base_z": 0.0,
+   "size": [
+    1.6016000000000001,
+    1.0890000000000002,
+    1.4267
+   ],
+   "tolerance": 0.2
+  }
+ },
+ "previews": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/previews/tb_chest_sea_three_quarter.png",
+   "kind": "preview",
+   "bytes": 295721,
+   "sha256": "ec2887d3892e454017824ef20aa8f21e27600f334be5abb0717bac675d8c3c57",
+   "view": "three_quarter",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/previews/tb_chest_sea_front.png",
+   "kind": "preview",
+   "bytes": 234678,
+   "sha256": "9614a008bf05f00ce65993417796673f905419b2b50fce04d7048c79f00116a6",
+   "view": "front",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/previews/tb_chest_sea_side.png",
+   "kind": "preview",
+   "bytes": 186323,
+   "sha256": "4e1310132604a890879c4fd9a294ddefea3831cc359f84af9efa0ebd329bf0e7",
+   "view": "side",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/previews/tb_chest_sea_top.png",
+   "kind": "preview",
+   "bytes": 184671,
+   "sha256": "ea999e75c1805597251da4236a395aed6415c5947b19593ad6f453b3b93897e0",
+   "view": "top",
+   "clip": null,
+   "pose": null,
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/previews/tb_chest_sea_three_quarter_lid_open-end.png",
+   "kind": "preview",
+   "bytes": 265703,
+   "sha256": "aa156075ef23b1699b67c74f065585386a511ed4ddccc063b6d85c9c7804e674",
+   "view": "three_quarter",
+   "clip": "lid_open",
+   "pose": "end",
+   "size": 640
+  },
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/previews/tb_chest_sea_sheet.png",
+   "kind": "contact_sheet",
+   "bytes": 320866,
+   "sha256": "3cae3ff34532989a78593b9bae288dc0e0a27eeae3ed2b2bfc90acc556cdc6f4"
+  }
+ ],
+ "exports": [
+  {
+   "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/exports/tb_chest_sea.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 221656,
+   "sha256": "123b4b45b07bf1875f23ff2c27e12b96c5e33de6b5d229f2b524a52d5a2df8b2",
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "extras": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/exports/tb_chest_sea.three-web-toon.lod50.glb",
+     "kind": "lod",
+     "bytes": 150896,
+     "sha256": "a5c457b66a5779f62c19253b41d064df63a940f2c0e995c6c4fd6ce29e93b73a",
+     "ratio": 0.5,
+     "triangles": 1400
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/exports/tb_chest_sea.three-web-toon.lod25.glb",
+     "kind": "lod",
+     "bytes": 82296,
+     "sha256": "79cc718f069ee644f14b3d8e560114242e1edde02c062d9cd32305b2eacd6332",
+     "ratio": 0.25,
+     "triangles": 682
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/exports/tb_chest_sea.three-web-toon.collision.glb",
+     "kind": "collision",
+     "bytes": 11020,
+     "sha256": "48e932bc6ccb3ea138e239e452cddea2b53f633bfe4972aafcbcd67c8838ef6b",
+     "shape": "convex_hull",
+     "triangles": 156
+    }
+   ],
+   "sidecars": [
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/exports/tb_chest_sea.three-web-toon.collision.glb",
+     "kind": "sidecar",
+     "bytes": 11020,
+     "sha256": "48e932bc6ccb3ea138e239e452cddea2b53f633bfe4972aafcbcd67c8838ef6b"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/exports/tb_chest_sea.three-web-toon.lod25.glb",
+     "kind": "sidecar",
+     "bytes": 82296,
+     "sha256": "79cc718f069ee644f14b3d8e560114242e1edde02c062d9cd32305b2eacd6332"
+    },
+    {
+     "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/exports/tb_chest_sea.three-web-toon.lod50.glb",
+     "kind": "sidecar",
+     "bytes": 150896,
+     "sha256": "a5c457b66a5779f62c19253b41d064df63a940f2c0e995c6c4fd6ce29e93b73a"
+    }
+   ],
+   "roundtrip": {
+    "path": "/home/user/TIDEBREAKERS/creative/3d/chest_sea/exports/tb_chest_sea.three-web-toon.glb",
+    "objects": [
+     "chest_body (MESH)",
+     "chest_lid (MESH)",
+     "chest_sea (EMPTY)",
+     "glow_anchor (EMPTY)"
+    ],
+    "triangles": 2800,
+    "materials": [
+     "TB_Band",
+     "TB_Barnacle",
+     "TB_Dark",
+     "TB_Gem",
+     "TB_Gem2",
+     "TB_Gold",
+     "TB_Pearl",
+     "TB_Plank",
+     "TB_Rivet",
+     "TB_Trim",
+     "TB_Weed",
+     "TB_Wood"
+    ],
+    "actions": [
+     "lid_close",
+     "lid_open"
+    ],
+    "armatures": 0,
+    "size_m": [
+     1.595,
+     1.866,
+     1.909
+    ],
+    "min_z": -0.0044
+   }
+  }
+ ],
+ "validation": {
+  "checks": [
+   {
+    "check": "has_meshes",
+    "level": "pass",
+    "detail": "2 mesh objects"
+   },
+   {
+    "check": "triangle_budget",
+    "level": "pass",
+    "detail": "2800 triangles (budget 6000)",
+    "tris": 2800
+   },
+   {
+    "check": "degenerate_faces",
+    "level": "pass",
+    "detail": "0 zero-area faces"
+   },
+   {
+    "check": "non_manifold_edges",
+    "level": "info",
+    "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+   },
+   {
+    "check": "applied_scale",
+    "level": "pass",
+    "detail": "all mesh scales are 1"
+   },
+   {
+    "check": "naming",
+    "level": "pass",
+    "detail": "no default object names"
+   },
+   {
+    "check": "origin_base",
+    "level": "pass",
+    "detail": "lowest point at z=-0.004 m (expected 0.0; the asset sits on its origin)",
+    "min_z": -0.0044
+   },
+   {
+    "check": "origin_centered",
+    "level": "pass",
+    "detail": "footprint centre (0.000, -0.009)"
+   },
+   {
+    "check": "dimensions",
+    "level": "pass",
+    "detail": "1.595 \u00d7 1.083 \u00d7 1.404 m (W\u00d7D\u00d7H, expected \u2248 [1.602, 1.089, 1.427])",
+    "size": [
+     1.595,
+     1.083,
+     1.404
+    ]
+   },
+   {
+    "check": "materials_assigned",
+    "level": "pass",
+    "detail": "every mesh has materials"
+   },
+   {
+    "check": "vertex_colors",
+    "level": "pass",
+    "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+   },
+   {
+    "check": "textures_resolvable",
+    "level": "pass",
+    "detail": "no missing texture files"
+   },
+   {
+    "check": "animation_clips",
+    "level": "pass",
+    "detail": "actions: ['lid_close', 'lid_open']",
+    "clips": [
+     "lid_close",
+     "lid_open"
+    ]
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_chest_sea.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_chest_sea.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "4 nodes, 2 meshes, 15 primitives, 12 materials, 2 animations, 0 skins, 0 images",
+    "animations": [
+     "lid_close",
+     "lid_open"
+    ],
+    "file": "tb_chest_sea.three-web-toon.glb"
+   },
+   {
+    "check": "contract_nodes",
+    "level": "pass",
+    "detail": "nodes present: ['chest_body', 'chest_lid', 'chest_sea', 'glow_anchor']",
+    "file": "tb_chest_sea.three-web-toon.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 0 warnings, 1 infos",
+    "messages": [
+     "Empty node encountered."
+    ],
+    "file": "tb_chest_sea.three-web-toon.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_chest_sea.three-web-toon.glb: 2800 tris, size [1.595, 1.866, 1.909] m, clips ['lid_close', 'lid_open']",
+    "file": "tb_chest_sea.three-web-toon.glb"
+   }
+  ],
+  "summary": {
+   "pass": 17,
+   "warn": 0,
+   "fail": 0,
+   "info": 2
+  }
+ },
+ "manifest": {
+  "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json",
+  "items": 375
+ },
+ "seconds": 38.3
+}

@@ -1,0 +1,130 @@
+[
+ {
+  "label": "rest",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "5/5 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_node:lantern",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:lantern_body",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:lantern_light",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_clip:swing",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -0.125,
+    -0.456,
+    -0.145
+   ],
+   "max": [
+    0.125,
+    0,
+    0.145
+   ],
+   "size": [
+    0.251,
+    0.456,
+    0.29
+   ]
+  },
+  "clips": [
+   {
+    "name": "swing",
+    "seconds": 2.033,
+    "tracks": [
+     "lantern.quaternion"
+    ]
+   }
+  ],
+  "triangles": 396,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/lantern/engine/tb_lantern_three_rest.png"
+ },
+ {
+  "label": "anim",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "5/5 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_node:lantern",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:lantern_body",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:lantern_light",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_clip:swing",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -0.121,
+    -0.464,
+    -0.148
+   ],
+   "max": [
+    0.143,
+    0.009,
+    0.144
+   ],
+   "size": [
+    0.264,
+    0.473,
+    0.291
+   ]
+  },
+  "clips": [
+   {
+    "name": "swing",
+    "seconds": 2.033,
+    "tracks": [
+     "lantern.quaternion"
+    ]
+   }
+  ],
+  "triangles": 396,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/lantern/engine/tb_lantern_three_anim.png"
+ }
+]

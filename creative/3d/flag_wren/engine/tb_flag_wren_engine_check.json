@@ -1,0 +1,172 @@
+[
+ {
+  "label": "rest",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "4/4 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_base_on_ground",
+    "level": "pass",
+    "detail": "lowest point y=0 m"
+   },
+   {
+    "check": "engine_node:flag",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:flag_pole",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:flag_rig",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:flag_cloth",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_clip:wave",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -0.057,
+    0,
+    -0.06
+   ],
+   "max": [
+    1.235,
+    2.3,
+    0.06
+   ],
+   "size": [
+    1.292,
+    2.3,
+    0.12
+   ]
+  },
+  "clips": [
+   {
+    "name": "wave",
+    "seconds": 1.233,
+    "tracks": [
+     "flag_0.position",
+     "flag_0.quaternion",
+     "flag_0.scale",
+     "flag_1.position",
+     "flag_1.quaternion",
+     "flag_1.scale",
+     "flag_2.position",
+     "flag_2.quaternion",
+     "flag_2.scale",
+     "flag_3.position",
+     "flag_3.quaternion",
+     "flag_3.scale"
+    ]
+   }
+  ],
+  "triangles": 3096,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/flag_wren/engine/tb_flag_wren_three_rest.png"
+ },
+ {
+  "label": "anim",
+  "ok": true,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "4/4 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_base_on_ground",
+    "level": "pass",
+    "detail": "lowest point y=0 m"
+   },
+   {
+    "check": "engine_node:flag",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:flag_pole",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:flag_rig",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_node:flag_cloth",
+    "level": "pass",
+    "detail": "found"
+   },
+   {
+    "check": "engine_clip:wave",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "bounds": {
+   "min": [
+    -0.057,
+    0,
+    -0.06
+   ],
+   "max": [
+    1.23,
+    2.3,
+    0.245
+   ],
+   "size": [
+    1.287,
+    2.3,
+    0.305
+   ]
+  },
+  "clips": [
+   {
+    "name": "wave",
+    "seconds": 1.233,
+    "tracks": [
+     "flag_0.position",
+     "flag_0.quaternion",
+     "flag_0.scale",
+     "flag_1.position",
+     "flag_1.quaternion",
+     "flag_1.scale",
+     "flag_2.position",
+     "flag_2.quaternion",
+     "flag_2.scale",
+     "flag_3.position",
+     "flag_3.quaternion",
+     "flag_3.scale"
+    ]
+   }
+  ],
+  "triangles": 3096,
+  "screenshot": "/home/user/TIDEBREAKERS/creative/3d/flag_wren/engine/tb_flag_wren_three_anim.png"
+ }
+]
