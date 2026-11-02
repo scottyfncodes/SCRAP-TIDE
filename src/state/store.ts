@@ -1,0 +1,330 @@
+// Persistent player state. Saved to localStorage with schema versioning + backup slot.
+import { CATALOG_ITEMS, ITEM_MAP, item, type Category } from '../data/items';
+import { VESSELS, UPGRADE_MAP, type UpgradeDef, type VesselId, type Cost } from '../data/ship';
+import { MILESTONES, FIRST_VOYAGE, type QuestStepId } from '../data/progress';
+import { WORLD } from '../data/world';
+
+const KEY = 'tidebreakers.save.v1';
+const BACKUP_KEY = 'tidebreakers.save.v1.bak';
+export const SAVE_VERSION = 1;
+
+export interface Stack {
+  id: string;
+  n: number;
+}
+
+export interface Discovery {
+  first: number; // timestamp
+  where: string;
+  count: number; // total ever found
+}
+
+export interface SaveData {
+  version: number;
+  created: number;
+  updated: number;
+  gold: number;
+  cargo: Stack[];
+  vault: Stack[];
+  discoveries: Record<string, Discovery>;
+  fragments: string[];
+  mapsRead: string[];
+  mapsCompleted: string[];
+  activeMap: string | null;
+  cachesFound: string[];
+  findsOpened: string[];
+  islandsVisited: string[];
+  regionsSeen: string[];
+  vessel: VesselId;
+  vesselsOwned: VesselId[];
+  upgrades: string[];
+  cosmetics: string[];
+  equipped: { paint: string; sail: string; flag: string };
+  trophies: (string | null)[];
+  milestones: string[];
+  quest: QuestStepId;
+  chestsOpened: number;
+  flags: string[];
+  stats: { goldEarned: number; digs: number; distance: number; trips: number };
+  ship: { x: number; z: number; heading: number; anchored: boolean; docked: boolean };
+  settings: { sfx: number; music: number; haptics: boolean };
+}
+
+export function freshSave(): SaveData {
+  const now = Date.now();
+  return {
+    version: SAVE_VERSION,
+    created: now,
+    updated: now,
+    gold: 15,
+    cargo: [],
+    vault: [],
+    discoveries: {},
+    fragments: [],
+    mapsRead: [],
+    mapsCompleted: [],
+    activeMap: null,
+    cachesFound: [],
+    findsOpened: [],
+    islandsVisited: ['harbor'],
+    regionsSeen: ['shallows'],
+    vessel: 'dinghy',
+    vesselsOwned: ['dinghy'],
+    upgrades: [],
+    cosmetics: ['paint_driftwood', 'sail_plain', 'flag_none'],
+    equipped: { paint: 'paint_driftwood', sail: 'sail_plain', flag: 'flag_none' },
+    trophies: [null, null, null],
+    milestones: [],
+    quest: 'steer',
+    chestsOpened: 0,
+    flags: [],
+    stats: { goldEarned: 0, digs: 0, distance: 0, trips: 0 },
+    ship: { x: WORLD.spawn.x, z: WORLD.spawn.z, heading: WORLD.spawn.heading, anchored: false, docked: true },
+    settings: { sfx: 0.8, music: 0.5, haptics: true },
+  };
+}
+
+function migrate(raw: any): SaveData {
+  const base = freshSave();
+  if (!raw || typeof raw !== 'object') return base;
+  // Shallow-merge so new fields added in later versions get defaults.
+  const merged: SaveData = { ...base, ...raw };
+  merged.equipped = { ...base.equipped, ...(raw.equipped || {}) };
+  merged.ship = { ...base.ship, ...(raw.ship || {}) };
+  merged.stats = { ...base.stats, ...(raw.stats || {}) };
+  merged.settings = { ...base.settings, ...(raw.settings || {}) };
+  merged.cargo = (merged.cargo || []).filter((s) => ITEM_MAP[s.id]);
+  merged.vault = (merged.vault || []).filter((s) => ITEM_MAP[s.id]);
+  while (merged.trophies.length < 3) merged.trophies.push(null);
+  merged.version = SAVE_VERSION;
+  return merged;
+}
+
+type Listener = () => void;
+
+export class Store {
+  data: SaveData;
+  private listeners = new Set<Listener>();
+  private saveTimer = 0;
+  lastSaved = 0;
+  storageOk = true;
+  isNew = false;
+
+  constructor() {
+    this.data = this.load();
+  }
+
+  private load(): SaveData {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) {
+        this.isNew = true;
+        return freshSave();
+      }
+      return migrate(JSON.parse(raw));
+    } catch (e) {
+      console.warn('Save corrupt, trying backup', e);
+      try {
+        const bak = localStorage.getItem(BACKUP_KEY);
+        if (bak) return migrate(JSON.parse(bak));
+      } catch {
+        /* fall through */
+      }
+      this.storageOk = false;
+      this.isNew = true;
+      return freshSave();
+    }
+  }
+
+  saveNow() {
+    this.data.updated = Date.now();
+    try {
+      const prev = localStorage.getItem(KEY);
+      if (prev) localStorage.setItem(BACKUP_KEY, prev);
+      localStorage.setItem(KEY, JSON.stringify(this.data));
+      this.lastSaved = Date.now();
+      this.storageOk = true;
+    } catch (e) {
+      this.storageOk = false;
+      console.warn('Save failed', e);
+    }
+  }
+
+  /** Debounced save + notify listeners. Call after every meaningful change. */
+  commit() {
+    this.emit();
+    clearTimeout(this.saveTimer);
+    this.saveTimer = window.setTimeout(() => this.saveNow(), 400);
+  }
+
+  reset() {
+    try {
+      localStorage.removeItem(KEY);
+      localStorage.removeItem(BACKUP_KEY);
+    } catch {
+      /* ignore */
+    }
+    this.data = freshSave();
+    this.isNew = true;
+    this.saveNow();
+    this.emit();
+  }
+
+  on(fn: Listener) {
+    this.listeners.add(fn);
+    return () => this.listeners.delete(fn);
+  }
+  emit() {
+    this.listeners.forEach((f) => f());
+  }
+
+  // ── Derived ship stats ──
+  get vesselDef() {
+    return VESSELS[this.data.vessel];
+  }
+  has(upgradeId: string) {
+    return this.data.upgrades.includes(upgradeId);
+  }
+  bestInSlot(slot: UpgradeDef['slot']): UpgradeDef | null {
+    let best: UpgradeDef | null = null;
+    for (const id of this.data.upgrades) {
+      const u = UPGRADE_MAP[id];
+      if (u && u.slot === slot && (!best || u.tier > best.tier)) best = u;
+    }
+    return best;
+  }
+  get stats() {
+    const v = this.vesselDef;
+    const sail = this.bestInSlot('sail');
+    const storage = this.bestInSlot('storage');
+    const steer = this.bestInSlot('steering');
+    return {
+      speed: v.speed * (sail?.effects.speedMul ?? 1),
+      turn: v.turn * (steer?.effects.turnMul ?? 1),
+      cargo: v.cargo + (storage?.effects.cargo ?? 0),
+      reef: this.has('hull_copper') || this.data.vessel === 'sloop',
+      compass: this.has('compass_brass'),
+      crossSwell: v.crossSwell,
+      trophySlots: v.trophySlots,
+    };
+  }
+
+  // ── Cargo ──
+  slotsUsed(stacks = this.data.cargo) {
+    let n = 0;
+    for (const s of stacks) n += Math.ceil(s.n / item(s.id).stack);
+    return n;
+  }
+  /** How many of `id` can fit into cargo right now. */
+  room(id: string) {
+    const def = item(id);
+    const cap = this.stats.cargo;
+    const st = this.data.cargo.find((s) => s.id === id);
+    const used = this.slotsUsed();
+    const free = cap - used;
+    const partial = st ? (Math.ceil(st.n / def.stack) * def.stack - st.n) : 0;
+    return Math.max(0, partial + free * def.stack);
+  }
+  addCargo(id: string, n: number): number {
+    const fit = Math.min(n, this.room(id));
+    if (fit <= 0) return 0;
+    const st = this.data.cargo.find((s) => s.id === id);
+    if (st) st.n += fit;
+    else this.data.cargo.push({ id, n: fit });
+    return fit;
+  }
+  removeFrom(list: Stack[], id: string, n: number) {
+    const st = list.find((s) => s.id === id);
+    if (!st) return 0;
+    const take = Math.min(n, st.n);
+    st.n -= take;
+    if (st.n <= 0) list.splice(list.indexOf(st), 1);
+    return take;
+  }
+  addTo(list: Stack[], id: string, n: number) {
+    const st = list.find((s) => s.id === id);
+    if (st) st.n += n;
+    else list.push({ id, n });
+  }
+  countOwned(id: string) {
+    const a = this.data.cargo.find((s) => s.id === id)?.n ?? 0;
+    const b = this.data.vault.find((s) => s.id === id)?.n ?? 0;
+    return a + b;
+  }
+  /** Remove from vault first then cargo. */
+  consume(id: string, n: number) {
+    let left = n;
+    left -= this.removeFrom(this.data.vault, id, left);
+    if (left > 0) left -= this.removeFrom(this.data.cargo, id, left);
+    return n - left;
+  }
+  canAfford(c: Cost) {
+    if (this.data.gold < c.gold) return false;
+    for (const m of c.mats ?? []) if (this.countOwned(m.id) < m.n) return false;
+    return true;
+  }
+  pay(c: Cost) {
+    this.data.gold -= c.gold;
+    for (const m of c.mats ?? []) this.consume(m.id, m.n);
+  }
+  unloadToVault() {
+    let n = 0;
+    for (const s of this.data.cargo) {
+      this.addTo(this.data.vault, s.id, s.n);
+      n += s.n;
+    }
+    this.data.cargo = [];
+    return n;
+  }
+
+  // ── Discoveries ──
+  /** Returns true if this is a brand-new catalog entry. */
+  discover(id: string, where: string, n = 1): boolean {
+    const d = this.data.discoveries[id];
+    if (d) {
+      d.count += n;
+      return false;
+    }
+    this.data.discoveries[id] = { first: Date.now(), where, count: n };
+    return true;
+  }
+  categoryCount(cat: Category) {
+    return CATALOG_ITEMS.filter((i) => i.category === cat && this.data.discoveries[i.id]).length;
+  }
+  get discoveryCount() {
+    return CATALOG_ITEMS.filter((i) => this.data.discoveries[i.id]).length;
+  }
+
+  /** Check milestones; returns newly completed ones (and applies rewards). */
+  checkMilestones() {
+    const done = [];
+    for (const m of MILESTONES) {
+      if (this.data.milestones.includes(m.id)) continue;
+      const c = m.cond;
+      let ok = false;
+      if (c.kind === 'category') ok = this.categoryCount(c.category) >= c.n;
+      else if (c.kind === 'chests') ok = this.data.chestsOpened >= c.n;
+      else if (c.kind === 'discoveries') ok = this.discoveryCount >= c.n;
+      if (ok) {
+        this.data.milestones.push(m.id);
+        if (m.reward.gold) {
+          this.data.gold += m.reward.gold;
+          this.data.stats.goldEarned += m.reward.gold;
+        }
+        if (m.reward.cosmetic && !this.data.cosmetics.includes(m.reward.cosmetic)) this.data.cosmetics.push(m.reward.cosmetic);
+        done.push(m);
+      }
+    }
+    return done;
+  }
+
+  questIndex() {
+    return FIRST_VOYAGE.findIndex((q) => q.id === this.data.quest);
+  }
+  advanceQuest(from: QuestStepId) {
+    if (this.data.quest !== from) return false;
+    const i = this.questIndex();
+    if (i < FIRST_VOYAGE.length - 1) this.data.quest = FIRST_VOYAGE[i + 1].id;
+    return true;
+  }
+}
