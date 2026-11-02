@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>conch</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M16 80 C16 34 74 16 104 34 C120 48 104 84 74 98 C44 110 16 100 16 80 Z" fill="#f6b08a" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M32 86 C53.333 88.667 72 79.333 88 58" fill="none" stroke="#e0607e" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M100 32 L110 18 M114 50 L128 44" fill="none" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

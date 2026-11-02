@@ -1,0 +1,13 @@
+{
+ "image": "fx_dust_motes_sheet.png",
+ "frameWidth": 512,
+ "frameHeight": 512,
+ "frames": 48,
+ "columns": 7,
+ "rows": 7,
+ "fps": 24,
+ "loop": true,
+ "premultiplied": false,
+ "blend": "additive",
+ "use": "Screen-space atmosphere overlay in jungle/cove (additive)"
+}

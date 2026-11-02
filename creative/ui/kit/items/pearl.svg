@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="radial-gradient-1" cx="64" cy="68" r="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.6" stop-color="#fff0e2"/>
+      <stop offset="1" stop-color="#e3c9b4"/>
+    </radialGradient>
+  </defs>
+  <title>pearl</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M14 84 C47.333 64 80.667 64 114 84 C80.667 110.667 47.333 110.667 14 84 Z" fill="#e0607e" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M34 68 C34 51.43 47.43 38 64 38 C80.57 38 94 51.43 94 68 C94 84.57 80.57 98 64 98 C47.43 98 34 84.57 34 68 Z" fill="url(#radial-gradient-1)" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M46 56 C46 52.69 49.58 50 54 50 C58.42 50 62 52.69 62 56 C62 59.31 58.42 62 54 62 C49.58 62 46 59.31 46 56 Z" fill="#ffffff"/>
+  </g>
+</svg>

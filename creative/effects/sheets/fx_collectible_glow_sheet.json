@@ -1,0 +1,13 @@
+{
+ "image": "fx_collectible_glow_sheet.png",
+ "frameWidth": 256,
+ "frameHeight": 256,
+ "frames": 24,
+ "columns": 5,
+ "rows": 5,
+ "fps": 24,
+ "loop": true,
+ "premultiplied": false,
+ "blend": "normal",
+ "use": "Loop under glowing collectibles in the world"
+}

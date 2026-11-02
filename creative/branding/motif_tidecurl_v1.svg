@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="300" viewBox="0 0 600 300">
+  <title>tidecurl corner</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path id="curl_o" d="M20 280 C20 140 120 40 260 40 C380 40 460 120 440 210 C425 270 350 285 320 240 C295 205 320 165 360 175" fill="none" stroke="#0e3b66" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="curl" d="M20 280 C20 140 120 40 260 40 C380 40 460 120 440 210 C425 270 350 285 320 240 C295 205 320 165 360 175" fill="none" stroke="#1fb5b0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="curl_hi" d="M60 250 C70 160 140 90 250 84" fill="none" stroke="#e9fbf6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.009"/>
+    <path d="M520 33 C525.427 52.24 537.76 64.573 557 70 C537.76 75.427 525.427 87.76 520 107 C514.573 87.76 502.24 75.427 483 70 C502.24 64.573 514.573 52.24 520 33 Z" fill="#0e3b66"/>
+    <path d="M520 40 C524.4 55.6 534.4 65.6 550 70 C534.4 74.4 524.4 84.4 520 100 C515.6 84.4 505.6 74.4 490 70 C505.6 65.6 515.6 55.6 520 40 Z" fill="#f4c542"/>
+    <path d="M560 129 C563.08 139.92 570.08 146.92 581 150 C570.08 153.08 563.08 160.08 560 171 C556.92 160.08 549.92 153.08 539 150 C549.92 146.92 556.92 139.92 560 129 Z" fill="#0e3b66"/>
+    <path d="M560 136 C562.053 143.28 566.72 147.947 574 150 C566.72 152.053 562.053 156.72 560 164 C557.947 156.72 553.28 152.053 546 150 C553.28 147.947 557.947 143.28 560 136 Z" fill="#f4c542"/>
+  </g>
+</svg>

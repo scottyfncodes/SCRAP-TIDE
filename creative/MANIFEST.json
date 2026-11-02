@@ -1,0 +1,2581 @@
+{
+ "package": "TIDEBREAKERS Creative Production Package",
+ "version": "v1",
+ "generated": "2026-11-02",
+ "files": 337,
+ "items": [
+  {
+   "path": "art-direction/TIDEBREAKERS_Creative_Package_v1.pdf",
+   "bytes": 4335039,
+   "tools": "DesignCraft \u2192 PdfCraft",
+   "status": "reference",
+   "notes": "12-page creative bible + UI + promos, combined, metadata-tagged and size-reduced in PdfCraft"
+  },
+  {
+   "path": "art-direction/bible_cover_v1.png",
+   "bytes": 457769,
+   "tools": "\u2014",
+   "status": "other",
+   "notes": "",
+   "dimensions": "960x540",
+   "alpha": true
+  },
+  {
+   "path": "art-direction/contact_sheet_v1.png",
+   "bytes": 549361,
+   "tools": "\u2014",
+   "status": "other",
+   "notes": "",
+   "dimensions": "1920x1080",
+   "alpha": true
+  },
+  {
+   "path": "art-direction/visual-direction.md",
+   "bytes": 4968,
+   "tools": "Written direction",
+   "status": "reference",
+   "notes": "Visual direction v1"
+  },
+  {
+   "path": "branding/app-icon/apple-touch-icon-180.png",
+   "bytes": 15206,
+   "tools": "VectorCraft",
+   "status": "game-ready (proposed)",
+   "notes": "Proposed replacement for public/icon-*.png; NOT applied to the game",
+   "dimensions": "180x180",
+   "alpha": false
+  },
+  {
+   "path": "branding/app-icon/icon-1024.png",
+   "bytes": 98127,
+   "tools": "VectorCraft",
+   "status": "game-ready (proposed)",
+   "notes": "Proposed replacement for public/icon-*.png; NOT applied to the game",
+   "dimensions": "1024x1024",
+   "alpha": false
+  },
+  {
+   "path": "branding/app-icon/icon-192.png",
+   "bytes": 15608,
+   "tools": "VectorCraft",
+   "status": "game-ready (proposed)",
+   "notes": "Proposed replacement for public/icon-*.png; NOT applied to the game",
+   "dimensions": "192x192",
+   "alpha": false
+  },
+  {
+   "path": "branding/app-icon/icon-512.png",
+   "bytes": 46195,
+   "tools": "VectorCraft",
+   "status": "game-ready (proposed)",
+   "notes": "Proposed replacement for public/icon-*.png; NOT applied to the game",
+   "dimensions": "512x512",
+   "alpha": false
+  },
+  {
+   "path": "branding/app-icon/icon.svg",
+   "bytes": 9208,
+   "tools": "VectorCraft",
+   "status": "game-ready (proposed)",
+   "notes": "Proposed replacement for public/icon-*.png; NOT applied to the game"
+  },
+  {
+   "path": "branding/emblem_grinning-sun_v2.png",
+   "bytes": 310534,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master",
+   "dimensions": "1872x1872",
+   "alpha": true
+  },
+  {
+   "path": "branding/emblem_grinning-sun_v2.svg",
+   "bytes": 12709,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master"
+  },
+  {
+   "path": "branding/flag_tidebreaker-colors_v1.png",
+   "bytes": 52843,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master",
+   "dimensions": "1650x1086",
+   "alpha": true
+  },
+  {
+   "path": "branding/flag_tidebreaker-colors_v1.svg",
+   "bytes": 3376,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master"
+  },
+  {
+   "path": "branding/motif_compass-rose_v1.png",
+   "bytes": 62201,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master",
+   "dimensions": "920x920",
+   "alpha": true
+  },
+  {
+   "path": "branding/motif_compass-rose_v1.svg",
+   "bytes": 1335,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master"
+  },
+  {
+   "path": "branding/motif_doubloon_v1.png",
+   "bytes": 93854,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master",
+   "dimensions": "828x868",
+   "alpha": true
+  },
+  {
+   "path": "branding/motif_doubloon_v1.svg",
+   "bytes": 3834,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master"
+  },
+  {
+   "path": "branding/motif_rope-divider_v1.png",
+   "bytes": 13137,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master",
+   "dimensions": "2424x136",
+   "alpha": true
+  },
+  {
+   "path": "branding/motif_rope-divider_v1.svg",
+   "bytes": 2945,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master"
+  },
+  {
+   "path": "branding/motif_tidecurl_v1.png",
+   "bytes": 39074,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master",
+   "dimensions": "1152x540",
+   "alpha": true
+  },
+  {
+   "path": "branding/motif_tidecurl_v1.svg",
+   "bytes": 1610,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master"
+  },
+  {
+   "path": "branding/palette/tidebreakers-palette.ase",
+   "bytes": 1236,
+   "tools": "VectorCraft (swatch library export)",
+   "status": "game-ready",
+   "notes": "Palette as ASE/CSS/GPL/JSON"
+  },
+  {
+   "path": "branding/palette/tidebreakers-palette.css",
+   "bytes": 661,
+   "tools": "VectorCraft (swatch library export)",
+   "status": "game-ready",
+   "notes": "Palette as ASE/CSS/GPL/JSON"
+  },
+  {
+   "path": "branding/palette/tidebreakers-palette.gpl",
+   "bytes": 630,
+   "tools": "VectorCraft (swatch library export)",
+   "status": "game-ready",
+   "notes": "Palette as ASE/CSS/GPL/JSON"
+  },
+  {
+   "path": "branding/palette/tidebreakers-palette.json",
+   "bytes": 626,
+   "tools": "VectorCraft (swatch library export)",
+   "status": "game-ready",
+   "notes": "Palette as ASE/CSS/GPL/JSON"
+  },
+  {
+   "path": "branding/palette/tidebreakers-palette.vcswatches",
+   "bytes": 7927,
+   "tools": "VectorCraft (swatch library export)",
+   "status": "game-ready",
+   "notes": "Palette as ASE/CSS/GPL/JSON"
+  },
+  {
+   "path": "branding/source/app_icon_v1.vectorcraft",
+   "bytes": 129394,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/source/emblem_grinning-sun_v2.vectorcraft",
+   "bytes": 174153,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/source/flag_tidebreaker-colors_v1.vectorcraft",
+   "bytes": 63519,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/source/motif_compass-rose_v1.vectorcraft",
+   "bytes": 40361,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/source/motif_doubloon_v1.vectorcraft",
+   "bytes": 65820,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/source/motif_rope-divider_v1.vectorcraft",
+   "bytes": 87126,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/source/motif_tidecurl_v1.vectorcraft",
+   "bytes": 41749,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/source/wordmark_compact_v3.vectorcraft",
+   "bytes": 73020,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/source/wordmark_primary_v3.vectorcraft",
+   "bytes": 86638,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "branding/wordmark_compact_v3.png",
+   "bytes": 236984,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master",
+   "dimensions": "2329x463",
+   "alpha": true
+  },
+  {
+   "path": "branding/wordmark_compact_v3.svg",
+   "bytes": 407313,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master"
+  },
+  {
+   "path": "branding/wordmark_primary_v3.png",
+   "bytes": 262977,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master",
+   "dimensions": "2329x614",
+   "alpha": true
+  },
+  {
+   "path": "branding/wordmark_primary_v3.svg",
+   "bytes": 433246,
+   "tools": "VectorCraft",
+   "status": "finished",
+   "notes": "Brand master"
+  },
+  {
+   "path": "characters/cast_lineup.png",
+   "bytes": 133929,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "1900x760",
+   "alpha": true
+  },
+  {
+   "path": "characters/cast_lineup.svg",
+   "bytes": 39147,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/cast_silhouettes.png",
+   "bytes": 40435,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "1900x760",
+   "alpha": true
+  },
+  {
+   "path": "characters/cast_silhouettes.svg",
+   "bytes": 20506,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/char_biscuit.png",
+   "bytes": 13256,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "271x216",
+   "alpha": true
+  },
+  {
+   "path": "characters/char_biscuit.svg",
+   "bytes": 4451,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/char_captain.png",
+   "bytes": 22619,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "258x408",
+   "alpha": true
+  },
+  {
+   "path": "characters/char_captain.svg",
+   "bytes": 11188,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/char_marlo-keelhart.png",
+   "bytes": 21539,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "300x417",
+   "alpha": true
+  },
+  {
+   "path": "characters/char_marlo-keelhart.svg",
+   "bytes": 7124,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/char_odessa.png",
+   "bytes": 34730,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "277x472",
+   "alpha": true
+  },
+  {
+   "path": "characters/char_odessa.svg",
+   "bytes": 6902,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/char_pip-farthing.png",
+   "bytes": 20157,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "235x345",
+   "alpha": true
+  },
+  {
+   "path": "characters/char_pip-farthing.svg",
+   "bytes": 9693,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/expressions/biscuit_expr_happy.png",
+   "bytes": 13263,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "271x216",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/captain_expr_determined.png",
+   "bytes": 26614,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "480x450",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/captain_expr_happy.png",
+   "bytes": 26943,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "480x450",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/captain_expr_joy.png",
+   "bytes": 27116,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "480x450",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/captain_expr_mischief.png",
+   "bytes": 26749,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "480x450",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/captain_expr_surprised.png",
+   "bytes": 28133,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "480x450",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/captain_expr_worried.png",
+   "bytes": 26790,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "480x450",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/marlo-keelhart_expr_determined.png",
+   "bytes": 21641,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "300x417",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/odessa_expr_mischief.png",
+   "bytes": 34957,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "277x472",
+   "alpha": true
+  },
+  {
+   "path": "characters/expressions/pip-farthing_expr_surprised.png",
+   "bytes": 21699,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "235x345",
+   "alpha": true
+  },
+  {
+   "path": "characters/poses/captain_pose_cheer.png",
+   "bytes": 26619,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "320x408",
+   "alpha": true
+  },
+  {
+   "path": "characters/poses/captain_pose_cheer.svg",
+   "bytes": 11784,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/poses/captain_pose_dig.png",
+   "bytes": 23489,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "274x416",
+   "alpha": true
+  },
+  {
+   "path": "characters/poses/captain_pose_dig.svg",
+   "bytes": 11358,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/poses/captain_pose_idle.png",
+   "bytes": 22624,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent",
+   "dimensions": "258x408",
+   "alpha": true
+  },
+  {
+   "path": "characters/poses/captain_pose_idle.svg",
+   "bytes": 11193,
+   "tools": "VectorCraft",
+   "status": "finished (2D portrait/sprite art)",
+   "notes": "Transparent"
+  },
+  {
+   "path": "characters/source/captain_expr_determined.vectorcraft",
+   "bytes": 169056,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/captain_expr_happy.vectorcraft",
+   "bytes": 171064,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/captain_expr_joy.vectorcraft",
+   "bytes": 162337,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/captain_expr_mischief.vectorcraft",
+   "bytes": 165137,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/captain_expr_surprised.vectorcraft",
+   "bytes": 170991,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/captain_expr_worried.vectorcraft",
+   "bytes": 169040,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/cast_lineup.vectorcraft",
+   "bytes": 506378,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/cast_silhouettes.vectorcraft",
+   "bytes": 273380,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/char_biscuit.vectorcraft",
+   "bytes": 77266,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/char_captain.vectorcraft",
+   "bytes": 170890,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/char_marlo-keelhart.vectorcraft",
+   "bytes": 106757,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/char_odessa.vectorcraft",
+   "bytes": 94051,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/char_pip-farthing.vectorcraft",
+   "bytes": 141900,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/expressions/biscuit_expr_happy.vectorcraft",
+   "bytes": 77266,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/expressions/marlo-keelhart_expr_determined.vectorcraft",
+   "bytes": 104721,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/expressions/odessa_expr_mischief.vectorcraft",
+   "bytes": 98377,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/expressions/pip-farthing_expr_surprised.vectorcraft",
+   "bytes": 152003,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/poses/captain_pose_cheer.vectorcraft",
+   "bytes": 168662,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/poses/captain_pose_dig.vectorcraft",
+   "bytes": 172777,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "characters/source/poses/captain_pose_idle.vectorcraft",
+   "bytes": 170895,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "effects/lottie/fx_collectible_glow.lottie.json",
+   "bytes": 4857,
+   "tools": "EffectCraft (Lottie export)",
+   "status": "game-ready (needs a Lottie player)",
+   "notes": "Lottie JSON"
+  },
+  {
+   "path": "effects/lottie/fx_discovery_burst.lottie.json",
+   "bytes": 11241,
+   "tools": "EffectCraft (Lottie export)",
+   "status": "game-ready (needs a Lottie player)",
+   "notes": "Lottie JSON"
+  },
+  {
+   "path": "effects/lottie/fx_dust_motes.lottie.json",
+   "bytes": 12519,
+   "tools": "EffectCraft (Lottie export)",
+   "status": "game-ready (needs a Lottie player)",
+   "notes": "Lottie JSON"
+  },
+  {
+   "path": "effects/lottie/fx_impact_poof.lottie.json",
+   "bytes": 12927,
+   "tools": "EffectCraft (Lottie export)",
+   "status": "game-ready (needs a Lottie player)",
+   "notes": "Lottie JSON"
+  },
+  {
+   "path": "effects/lottie/fx_treasure_sparkle.lottie.json",
+   "bytes": 3725,
+   "tools": "EffectCraft (Lottie export)",
+   "status": "game-ready (needs a Lottie player)",
+   "notes": "Lottie JSON"
+  },
+  {
+   "path": "effects/lottie/fx_wake_foam.lottie.json",
+   "bytes": 14270,
+   "tools": "EffectCraft (Lottie export)",
+   "status": "game-ready (needs a Lottie player)",
+   "notes": "Lottie JSON"
+  },
+  {
+   "path": "effects/lottie/fx_water_splash.lottie.json",
+   "bytes": 8379,
+   "tools": "EffectCraft (Lottie export)",
+   "status": "game-ready (needs a Lottie player)",
+   "notes": "Lottie JSON"
+  },
+  {
+   "path": "effects/materials/ocean_depth_ramp.vectorcraft",
+   "bytes": 26147,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "Shader colour ramp"
+  },
+  {
+   "path": "effects/materials/ocean_depth_ramp_256x16.png",
+   "bytes": 382,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "Shader colour ramp",
+   "dimensions": "256x16",
+   "alpha": false
+  },
+  {
+   "path": "effects/materials/sky_gradient_ramp_256x16.png",
+   "bytes": 375,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "Shader colour ramp",
+   "dimensions": "256x16",
+   "alpha": false
+  },
+  {
+   "path": "effects/sheets/fx_collectible_glow_sheet.json",
+   "bytes": 256,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata"
+  },
+  {
+   "path": "effects/sheets/fx_collectible_glow_sheet.png",
+   "bytes": 215801,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata",
+   "dimensions": "1280x1280",
+   "alpha": true
+  },
+  {
+   "path": "effects/sheets/fx_discovery_burst_sheet.json",
+   "bytes": 251,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata"
+  },
+  {
+   "path": "effects/sheets/fx_discovery_burst_sheet.png",
+   "bytes": 2517289,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata",
+   "dimensions": "3584x3584",
+   "alpha": true
+  },
+  {
+   "path": "effects/sheets/fx_dust_motes_sheet.json",
+   "bytes": 265,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata"
+  },
+  {
+   "path": "effects/sheets/fx_dust_motes_sheet.png",
+   "bytes": 270819,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata",
+   "dimensions": "3584x3584",
+   "alpha": true
+  },
+  {
+   "path": "effects/sheets/fx_impact_poof_sheet.json",
+   "bytes": 276,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata"
+  },
+  {
+   "path": "effects/sheets/fx_impact_poof_sheet.png",
+   "bytes": 356312,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata",
+   "dimensions": "1920x1536",
+   "alpha": true
+  },
+  {
+   "path": "effects/sheets/fx_treasure_sparkle_sheet.json",
+   "bytes": 250,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata"
+  },
+  {
+   "path": "effects/sheets/fx_treasure_sparkle_sheet.png",
+   "bytes": 46970,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata",
+   "dimensions": "640x640",
+   "alpha": true
+  },
+  {
+   "path": "effects/sheets/fx_wake_foam_sheet.json",
+   "bytes": 257,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata"
+  },
+  {
+   "path": "effects/sheets/fx_wake_foam_sheet.png",
+   "bytes": 131443,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata",
+   "dimensions": "1280x640",
+   "alpha": true
+  },
+  {
+   "path": "effects/sheets/fx_water_splash_sheet.json",
+   "bytes": 256,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata"
+  },
+  {
+   "path": "effects/sheets/fx_water_splash_sheet.png",
+   "bytes": 161795,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata",
+   "dimensions": "1280x1024",
+   "alpha": true
+  },
+  {
+   "path": "effects/sheets/index.json",
+   "bytes": 2056,
+   "tools": "EffectCraft render queue \u2192 sprite-sheet packing (PIL glue)",
+   "status": "game-ready",
+   "notes": "RGBA sprite atlas + JSON metadata"
+  },
+  {
+   "path": "effects/source/tidebreakers_fx_v1.ecproj",
+   "bytes": 3722190,
+   "tools": "EffectCraft",
+   "status": "source",
+   "notes": "Editable .ecproj"
+  },
+  {
+   "path": "environments/env_01_turtle-cay_concept_v1.jpg",
+   "bytes": 267880,
+   "tools": "VectorCraft \u2192 PhotoCraft \u2192 LightCraft",
+   "status": "concept art",
+   "notes": "Graded with the 'Tidebreakers Golden Hour' LightCraft preset; direction for the 3D world, not in-engine assets",
+   "dimensions": "1920x1080",
+   "alpha": false
+  },
+  {
+   "path": "environments/env_02_port-saltwhistle_concept_v1.jpg",
+   "bytes": 301572,
+   "tools": "VectorCraft \u2192 PhotoCraft \u2192 LightCraft",
+   "status": "concept art",
+   "notes": "Graded with the 'Tidebreakers Golden Hour' LightCraft preset; direction for the 3D world, not in-engine assets",
+   "dimensions": "1920x1080",
+   "alpha": false
+  },
+  {
+   "path": "environments/env_03_treasure-cove_concept_v1.jpg",
+   "bytes": 133337,
+   "tools": "VectorCraft \u2192 PhotoCraft \u2192 LightCraft",
+   "status": "concept art",
+   "notes": "Graded with the 'Tidebreakers Golden Hour' LightCraft preset; direction for the 3D world, not in-engine assets",
+   "dimensions": "1920x1080",
+   "alpha": false
+  },
+  {
+   "path": "environments/env_04_mossjaw-jungle_concept_v1.jpg",
+   "bytes": 221774,
+   "tools": "VectorCraft \u2192 PhotoCraft \u2192 LightCraft",
+   "status": "concept art",
+   "notes": "Graded with the 'Tidebreakers Golden Hour' LightCraft preset; direction for the 3D world, not in-engine assets",
+   "dimensions": "1920x1080",
+   "alpha": false
+  },
+  {
+   "path": "environments/env_05_wreck-of-the-wren_concept_v1.jpg",
+   "bytes": 201926,
+   "tools": "VectorCraft \u2192 PhotoCraft \u2192 LightCraft",
+   "status": "concept art",
+   "notes": "Graded with the 'Tidebreakers Golden Hour' LightCraft preset; direction for the 3D world, not in-engine assets",
+   "dimensions": "1920x1080",
+   "alpha": false
+  },
+  {
+   "path": "environments/source/01_turtle-cay/01_turtle-cay_composite.psd",
+   "bytes": 5694136,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/01_turtle-cay/far.vectorcraft",
+   "bytes": 26353,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/01_turtle-cay/mid.vectorcraft",
+   "bytes": 255634,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/01_turtle-cay/near.vectorcraft",
+   "bytes": 56025,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/01_turtle-cay/sky.vectorcraft",
+   "bytes": 114673,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/02_port-saltwhistle/02_port-saltwhistle_composite.psd",
+   "bytes": 6332283,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/02_port-saltwhistle/far.vectorcraft",
+   "bytes": 149415,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/02_port-saltwhistle/mid.vectorcraft",
+   "bytes": 288764,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/02_port-saltwhistle/near.vectorcraft",
+   "bytes": 44318,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/02_port-saltwhistle/sky.vectorcraft",
+   "bytes": 63951,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/03_treasure-cove/03_treasure-cove_composite.psd",
+   "bytes": 4255744,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/03_treasure-cove/far.vectorcraft",
+   "bytes": 55786,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/03_treasure-cove/mid.vectorcraft",
+   "bytes": 217520,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/03_treasure-cove/near.vectorcraft",
+   "bytes": 48758,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/03_treasure-cove/sky.vectorcraft",
+   "bytes": 61470,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/04_mossjaw-jungle/04_mossjaw-jungle_composite.psd",
+   "bytes": 5232545,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/04_mossjaw-jungle/far.vectorcraft",
+   "bytes": 43180,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/04_mossjaw-jungle/mid.vectorcraft",
+   "bytes": 214589,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/04_mossjaw-jungle/near.vectorcraft",
+   "bytes": 142912,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/04_mossjaw-jungle/sky.vectorcraft",
+   "bytes": 32036,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/05_wreck-of-the-wren/05_wreck-of-the-wren_composite.psd",
+   "bytes": 5200735,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/05_wreck-of-the-wren/far.vectorcraft",
+   "bytes": 33079,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/05_wreck-of-the-wren/mid.vectorcraft",
+   "bytes": 78171,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/05_wreck-of-the-wren/near.vectorcraft",
+   "bytes": 40174,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/05_wreck-of-the-wren/sky.vectorcraft",
+   "bytes": 91589,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "environments/source/tidebreakers-golden-hour.lcpreset",
+   "bytes": 4990,
+   "tools": "VectorCraft planes \u2192 PhotoCraft composite",
+   "status": "source",
+   "notes": "Layered PSD / plane documents"
+  },
+  {
+   "path": "marketing/keyart_main_2560x1440_v1.jpg",
+   "bytes": 427829,
+   "tools": "VectorCraft plates \u2192 PhotoCraft composite",
+   "status": "finished",
+   "notes": "Main key art",
+   "dimensions": "2560x1440",
+   "alpha": false
+  },
+  {
+   "path": "marketing/keyart_main_2560x1440_v1.png",
+   "bytes": 1274401,
+   "tools": "VectorCraft plates \u2192 PhotoCraft composite",
+   "status": "finished",
+   "notes": "Main key art",
+   "dimensions": "2560x1440",
+   "alpha": false
+  },
+  {
+   "path": "marketing/promo_landscape_1920x1080_v1.png",
+   "bytes": 557013,
+   "tools": "VectorCraft plates/ships \u2192 DesignCraft layout",
+   "status": "finished",
+   "notes": "Landscape promo",
+   "dimensions": "1920x1080",
+   "alpha": true
+  },
+  {
+   "path": "marketing/promo_portrait_1080x1920_v1.png",
+   "bytes": 1103197,
+   "tools": "VectorCraft \u2192 PhotoCraft re-frame \u2192 DesignCraft layout",
+   "status": "finished",
+   "notes": "Portrait promo",
+   "dimensions": "1080x1920",
+   "alpha": true
+  },
+  {
+   "path": "marketing/source/keyart_main_v1.psd",
+   "bytes": 10152115,
+   "tools": "PhotoCraft / DesignCraft / EffectCraft / FilmCraft",
+   "status": "source",
+   "notes": "Editable sources; .fcproj/.ecproj reference media by absolute path from the pilot run"
+  },
+  {
+   "path": "marketing/source/promo_landscape_v1.designcraft",
+   "bytes": 812146,
+   "tools": "PhotoCraft / DesignCraft / EffectCraft / FilmCraft",
+   "status": "source",
+   "notes": "Editable sources; .fcproj/.ecproj reference media by absolute path from the pilot run"
+  },
+  {
+   "path": "marketing/source/promo_landscape_v1.pdf",
+   "bytes": 966715,
+   "tools": "PhotoCraft / DesignCraft / EffectCraft / FilmCraft",
+   "status": "source",
+   "notes": "Editable sources; .fcproj/.ecproj reference media by absolute path from the pilot run"
+  },
+  {
+   "path": "marketing/source/promo_portrait_v1.designcraft",
+   "bytes": 1128278,
+   "tools": "PhotoCraft / DesignCraft / EffectCraft / FilmCraft",
+   "status": "source",
+   "notes": "Editable sources; .fcproj/.ecproj reference media by absolute path from the pilot run"
+  },
+  {
+   "path": "marketing/source/promo_portrait_v1.pdf",
+   "bytes": 1239068,
+   "tools": "PhotoCraft / DesignCraft / EffectCraft / FilmCraft",
+   "status": "source",
+   "notes": "Editable sources; .fcproj/.ecproj reference media by absolute path from the pilot run"
+  },
+  {
+   "path": "marketing/source/teaser_titles.ecproj",
+   "bytes": 227140,
+   "tools": "PhotoCraft / DesignCraft / EffectCraft / FilmCraft",
+   "status": "source",
+   "notes": "Editable sources; .fcproj/.ecproj reference media by absolute path from the pilot run"
+  },
+  {
+   "path": "marketing/source/tidebreakers_teaser_v1.fcproj",
+   "bytes": 21624,
+   "tools": "PhotoCraft / DesignCraft / EffectCraft / FilmCraft",
+   "status": "source",
+   "notes": "Editable sources; .fcproj/.ecproj reference media by absolute path from the pilot run"
+  },
+  {
+   "path": "marketing/teaser_tidebreakers_1080p_v1.mp4",
+   "bytes": 13537562,
+   "tools": "EffectCraft titles \u2192 FilmCraft edit/export",
+   "status": "finished (silent)",
+   "notes": "H.264 1080p30, no audio"
+  },
+  {
+   "path": "pipeline/bible.py",
+   "bytes": 9387,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/brand_emblem.py",
+   "bytes": 2460,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/brand_final.py",
+   "bytes": 2228,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/brand_rest.py",
+   "bytes": 3787,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/brand_wordmark.py",
+   "bytes": 2360,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/chars.py",
+   "bytes": 15073,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/chars_final.py",
+   "bytes": 2052,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/chars_test.py",
+   "bytes": 214,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/composite_env.py",
+   "bytes": 2660,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/dc.py",
+   "bytes": 2713,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/effects.py",
+   "bytes": 6338,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/envkit.py",
+   "bytes": 5691,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/fx_wake_fix.py",
+   "bytes": 1301,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/keyart_comp.py",
+   "bytes": 3458,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/keyart_planes.py",
+   "bytes": 1977,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/manifest.py",
+   "bytes": 4685,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/mcpc.py",
+   "bytes": 2157,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/pack_fx.py",
+   "bytes": 1619,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/palette.py",
+   "bytes": 696,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/promos.py",
+   "bytes": 3438,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/qc.py",
+   "bytes": 1483,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/scenes.py",
+   "bytes": 12891,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/sheet.py",
+   "bytes": 555,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/ship_sloop.py",
+   "bytes": 1622,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/shipkit.py",
+   "bytes": 11733,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/ships_all.py",
+   "bytes": 6766,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/ships_final.py",
+   "bytes": 2402,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/sun.py",
+   "bytes": 3399,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/teaser_ec.py",
+   "bytes": 3204,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/teaser_fc.py",
+   "bytes": 2423,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/ui_screens.py",
+   "bytes": 11439,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/uikit.py",
+   "bytes": 10427,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "pipeline/vc.py",
+   "bytes": 5027,
+   "tools": "Python over GITCRAFT MCP servers",
+   "status": "source",
+   "notes": "Recipe scripts used in the pilot (absolute paths from the pilot workspace)"
+  },
+  {
+   "path": "ships/custom/deco_lantern.png",
+   "bytes": 24957,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "261x293",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/deco_lantern.svg",
+   "bytes": 1472,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts"
+  },
+  {
+   "path": "ships/custom/figurehead_gull.png",
+   "bytes": 8615,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "339x240",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/figurehead_gull.svg",
+   "bytes": 1230,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts"
+  },
+  {
+   "path": "ships/custom/figurehead_sun.png",
+   "bytes": 22909,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "319x243",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/figurehead_sun.svg",
+   "bytes": 6482,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts"
+  },
+  {
+   "path": "ships/custom/figurehead_turtle.png",
+   "bytes": 9272,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "356x197",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/figurehead_turtle.svg",
+   "bytes": 1565,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts"
+  },
+  {
+   "path": "ships/custom/flag_harbor.png",
+   "bytes": 3889,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "399x282",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/flag_harbor.svg",
+   "bytes": 877,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts"
+  },
+  {
+   "path": "ships/custom/flag_tidebreaker.png",
+   "bytes": 6704,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "309x282",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/flag_tidebreaker.svg",
+   "bytes": 3227,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts"
+  },
+  {
+   "path": "ships/custom/flag_wren.png",
+   "bytes": 6305,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "309x282",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/flag_wren.svg",
+   "bytes": 1160,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts"
+  },
+  {
+   "path": "ships/custom/hull_paint_crimson.png",
+   "bytes": 47668,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/hull_paint_driftwood.png",
+   "bytes": 47616,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/hull_paint_gilded.png",
+   "bytes": 47774,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/hull_paint_midnight.png",
+   "bytes": 47095,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/hull_paint_seafoam.png",
+   "bytes": 47827,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/sail_plain.png",
+   "bytes": 47859,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/sail_shells.png",
+   "bytes": 54738,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/sail_stripe.png",
+   "bytes": 47521,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/custom/sail_sunset.png",
+   "bytes": 47484,
+   "tools": "VectorCraft",
+   "status": "game-ready (UI preview)",
+   "notes": "Cosmetic preview using canon colours from src/data/ship.ts",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/ship_01_leaky-dinghy.png",
+   "bytes": 28983,
+   "tools": "VectorCraft",
+   "status": "finished (2D art; 3D models in-engine unchanged)",
+   "notes": "Transparent, trimmed",
+   "dimensions": "515x444",
+   "alpha": true
+  },
+  {
+   "path": "ships/ship_01_leaky-dinghy.svg",
+   "bytes": 9168,
+   "tools": "VectorCraft",
+   "status": "finished (2D art; 3D models in-engine unchanged)",
+   "notes": "Transparent, trimmed"
+  },
+  {
+   "path": "ships/ship_02_coastal-sloop.png",
+   "bytes": 47835,
+   "tools": "VectorCraft",
+   "status": "finished (2D art; 3D models in-engine unchanged)",
+   "notes": "Transparent, trimmed",
+   "dimensions": "830x756",
+   "alpha": true
+  },
+  {
+   "path": "ships/ship_02_coastal-sloop.svg",
+   "bytes": 9265,
+   "tools": "VectorCraft",
+   "status": "finished (2D art; 3D models in-engine unchanged)",
+   "notes": "Transparent, trimmed"
+  },
+  {
+   "path": "ships/ship_03_saltwhistle-brig.png",
+   "bytes": 79143,
+   "tools": "VectorCraft",
+   "status": "finished (2D art; 3D models in-engine unchanged)",
+   "notes": "Transparent, trimmed",
+   "dimensions": "1117x860",
+   "alpha": true
+  },
+  {
+   "path": "ships/ship_03_saltwhistle-brig.svg",
+   "bytes": 26278,
+   "tools": "VectorCraft",
+   "status": "finished (2D art; 3D models in-engine unchanged)",
+   "notes": "Transparent, trimmed"
+  },
+  {
+   "path": "ships/ship_04_grand-tidebreaker.png",
+   "bytes": 173602,
+   "tools": "VectorCraft",
+   "status": "finished (2D art; 3D models in-engine unchanged)",
+   "notes": "Transparent, trimmed",
+   "dimensions": "1313x1014",
+   "alpha": true
+  },
+  {
+   "path": "ships/ship_04_grand-tidebreaker.svg",
+   "bytes": 62337,
+   "tools": "VectorCraft",
+   "status": "finished (2D art; 3D models in-engine unchanged)",
+   "notes": "Transparent, trimmed"
+  },
+  {
+   "path": "ships/source/custom/deco_lantern.vectorcraft",
+   "bytes": 30596,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/figurehead_gull.vectorcraft",
+   "bytes": 34557,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/figurehead_sun.vectorcraft",
+   "bytes": 92602,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/figurehead_turtle.vectorcraft",
+   "bytes": 38163,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/flag_harbor.vectorcraft",
+   "bytes": 29745,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/flag_tidebreaker.vectorcraft",
+   "bytes": 58816,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/flag_wren.vectorcraft",
+   "bytes": 36881,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/hull_paint_crimson.vectorcraft",
+   "bytes": 123468,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/hull_paint_driftwood.vectorcraft",
+   "bytes": 123468,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/hull_paint_gilded.vectorcraft",
+   "bytes": 123471,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/hull_paint_midnight.vectorcraft",
+   "bytes": 123468,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/hull_paint_seafoam.vectorcraft",
+   "bytes": 123465,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/sail_plain.vectorcraft",
+   "bytes": 123438,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/sail_shells.vectorcraft",
+   "bytes": 253203,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/sail_stripe.vectorcraft",
+   "bytes": 127878,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/custom/sail_sunset.vectorcraft",
+   "bytes": 132282,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/ship_01_leaky-dinghy.vectorcraft",
+   "bytes": 129041,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/ship_02_coastal-sloop.vectorcraft",
+   "bytes": 123473,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/ship_03_saltwhistle-brig.vectorcraft",
+   "bytes": 303457,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ships/source/ship_04_grand-tidebreaker.vectorcraft",
+   "bytes": 667260,
+   "tools": "VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/kit/badge_rarity_common.png",
+   "bytes": 8986,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "600x168",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/badge_rarity_common.svg",
+   "bytes": 6997,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/badge_rarity_epic.png",
+   "bytes": 6526,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "600x168",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/badge_rarity_epic.svg",
+   "bytes": 3841,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/badge_rarity_legendary.png",
+   "bytes": 8868,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "600x168",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/badge_rarity_legendary.svg",
+   "bytes": 8597,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/badge_rarity_rare.png",
+   "bytes": 6930,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "600x168",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/badge_rarity_rare.svg",
+   "bytes": 4646,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/badge_rarity_uncommon.png",
+   "bytes": 9444,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "600x168",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/badge_rarity_uncommon.svg",
+   "bytes": 8773,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/btn_danger_coral.png",
+   "bytes": 11432,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "900x288",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/btn_danger_coral.svg",
+   "bytes": 6350,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/btn_primary_gold.png",
+   "bytes": 12325,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "900x288",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/btn_primary_gold.svg",
+   "bytes": 7724,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/btn_secondary_cream.png",
+   "bytes": 13124,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "900x288",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/btn_secondary_cream.svg",
+   "bytes": 7806,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/hud_coin_pill.png",
+   "bytes": 15654,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "660x192",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/hud_coin_pill.svg",
+   "bytes": 7239,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/conch.png",
+   "bytes": 9865,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/conch.svg",
+   "bytes": 718,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/doubloon.png",
+   "bytes": 27384,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/doubloon.svg",
+   "bytes": 3430,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/gold_bar.png",
+   "bytes": 3538,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/gold_bar.svg",
+   "bytes": 675,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/gold_ring.png",
+   "bytes": 12334,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/gold_ring.svg",
+   "bytes": 1083,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/old_key.png",
+   "bytes": 11633,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/old_key.svg",
+   "bytes": 1071,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/pearl.png",
+   "bytes": 18488,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/pearl.svg",
+   "bytes": 1088,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/sea_emerald.png",
+   "bytes": 7924,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/sea_emerald.svg",
+   "bytes": 751,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/sea_glass.png",
+   "bytes": 8093,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/sea_glass.svg",
+   "bytes": 638,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/ship_bell.png",
+   "bytes": 8979,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/ship_bell.svg",
+   "bytes": 1124,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/spyglass.png",
+   "bytes": 10843,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/spyglass.svg",
+   "bytes": 895,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/starfish.png",
+   "bytes": 8199,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/starfish.svg",
+   "bytes": 616,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/items/sun_mask.png",
+   "bytes": 28577,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/items/sun_mask.svg",
+   "bytes": 5571,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/map_world_shallows.png",
+   "bytes": 123218,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "1170x1600",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/map_world_shallows.svg",
+   "bytes": 155824,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/nav/cargo.png",
+   "bytes": 38010,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/nav/cargo.svg",
+   "bytes": 6959,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/nav/catalog.png",
+   "bytes": 6308,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/nav/catalog.svg",
+   "bytes": 1266,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/nav/dig.png",
+   "bytes": 7871,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/nav/dig.svg",
+   "bytes": 694,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/nav/map.png",
+   "bytes": 6064,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/nav/map.svg",
+   "bytes": 871,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/nav/settings.png",
+   "bytes": 12270,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/nav/settings.svg",
+   "bytes": 812,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/nav/ship.png",
+   "bytes": 7738,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "384x384",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/nav/ship.svg",
+   "bytes": 885,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/kit/panel_sailcloth.png",
+   "bytes": 14763,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset",
+   "dimensions": "1080x720",
+   "alpha": true
+  },
+  {
+   "path": "ui/kit/panel_sailcloth.svg",
+   "bytes": 1203,
+   "tools": "VectorCraft",
+   "status": "game-ready",
+   "notes": "SVG + @3x PNG UI asset"
+  },
+  {
+   "path": "ui/screens/ui_01_main-menu_iphone@3x.png",
+   "bytes": 1131033,
+   "tools": "VectorCraft kit + DesignCraft layout",
+   "status": "illustrative mockup",
+   "notes": "iPhone 390\u00d7844 pt @3x",
+   "dimensions": "1170x2532",
+   "alpha": true
+  },
+  {
+   "path": "ui/screens/ui_02_ship-upgrades_iphone@3x.png",
+   "bytes": 425351,
+   "tools": "VectorCraft kit + DesignCraft layout",
+   "status": "illustrative mockup",
+   "notes": "iPhone 390\u00d7844 pt @3x",
+   "dimensions": "1170x2532",
+   "alpha": true
+  },
+  {
+   "path": "ui/screens/ui_03_treasure-inventory_iphone@3x.png",
+   "bytes": 493183,
+   "tools": "VectorCraft kit + DesignCraft layout",
+   "status": "illustrative mockup",
+   "notes": "iPhone 390\u00d7844 pt @3x",
+   "dimensions": "1170x2532",
+   "alpha": true
+  },
+  {
+   "path": "ui/screens/ui_04_ship-customization_iphone@3x.png",
+   "bytes": 443618,
+   "tools": "VectorCraft kit + DesignCraft layout",
+   "status": "illustrative mockup",
+   "notes": "iPhone 390\u00d7844 pt @3x",
+   "dimensions": "1170x2532",
+   "alpha": true
+  },
+  {
+   "path": "ui/screens/ui_05_map-exploration_iphone@3x.png",
+   "bytes": 404394,
+   "tools": "VectorCraft kit + DesignCraft layout",
+   "status": "illustrative mockup",
+   "notes": "iPhone 390\u00d7844 pt @3x",
+   "dimensions": "1170x2532",
+   "alpha": true
+  },
+  {
+   "path": "ui/screens/ui_06_discovery-notification_iphone@3x.png",
+   "bytes": 420174,
+   "tools": "VectorCraft kit + DesignCraft layout",
+   "status": "illustrative mockup",
+   "notes": "iPhone 390\u00d7844 pt @3x",
+   "dimensions": "1170x2532",
+   "alpha": true
+  },
+  {
+   "path": "ui/source/badge_rarity_common.vectorcraft",
+   "bytes": 27374,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/badge_rarity_epic.vectorcraft",
+   "bytes": 27356,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/badge_rarity_legendary.vectorcraft",
+   "bytes": 27381,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/badge_rarity_rare.vectorcraft",
+   "bytes": 27358,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/badge_rarity_uncommon.vectorcraft",
+   "bytes": 27364,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/btn_danger_coral.vectorcraft",
+   "bytes": 34816,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/btn_primary_gold.vectorcraft",
+   "bytes": 34836,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/btn_secondary_cream.vectorcraft",
+   "bytes": 34824,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/hud_coin_pill.vectorcraft",
+   "bytes": 62113,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_conch.vectorcraft",
+   "bytes": 28119,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_doubloon.vectorcraft",
+   "bytes": 63677,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_gold_bar.vectorcraft",
+   "bytes": 27239,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_gold_ring.vectorcraft",
+   "bytes": 35012,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_old_key.vectorcraft",
+   "bytes": 35792,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_pearl.vectorcraft",
+   "bytes": 31562,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_sea_emerald.vectorcraft",
+   "bytes": 28696,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_sea_glass.vectorcraft",
+   "bytes": 26658,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_ship_bell.vectorcraft",
+   "bytes": 34078,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_spyglass.vectorcraft",
+   "bytes": 29383,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_starfish.vectorcraft",
+   "bytes": 27877,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/items_sun_mask.vectorcraft",
+   "bytes": 88747,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/map_world_shallows.vectorcraft",
+   "bytes": 186254,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/nav_cargo.vectorcraft",
+   "bytes": 80110,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/nav_catalog.vectorcraft",
+   "bytes": 36632,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/nav_dig.vectorcraft",
+   "bytes": 26980,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/nav_map.vectorcraft",
+   "bytes": 30443,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/nav_settings.vectorcraft",
+   "bytes": 29932,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/nav_ship.vectorcraft",
+   "bytes": 29959,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/panel_sailcloth.vectorcraft",
+   "bytes": 36357,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/ui_screens_v1.designcraft",
+   "bytes": 1271818,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  },
+  {
+   "path": "ui/source/ui_screens_v1.pdf",
+   "bytes": 1358043,
+   "tools": "DesignCraft / VectorCraft",
+   "status": "source",
+   "notes": "Editable native document"
+  }
+ ]
+}

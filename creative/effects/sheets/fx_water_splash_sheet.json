@@ -1,0 +1,13 @@
+{
+ "image": "fx_water_splash_sheet.png",
+ "frameWidth": 256,
+ "frameHeight": 256,
+ "frames": 18,
+ "columns": 5,
+ "rows": 4,
+ "fps": 24,
+ "loop": false,
+ "premultiplied": false,
+ "blend": "normal",
+ "use": "Play once on anchor drop, item tossed, bow slam"
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>sea_glass</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M24 58 C30.667 35.333 46 25.333 70 28 C95.333 32 107.333 46.667 106 72 C98 94.667 82 104.667 58 102 C32.667 96.667 21.333 82 24 58 Z" fill="#7fd8c9" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M44 46 C53.333 39.333 64 38 76 42" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

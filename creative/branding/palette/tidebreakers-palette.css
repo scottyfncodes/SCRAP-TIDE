@@ -1,0 +1,28 @@
+/* palette */
+:root {
+  /* TIDEBREAKERS Sunlit Shallows */
+  --lagoon-teal: #1fb5b0;
+  --shallows-aqua: #7fe3d6;
+  --sea-blue: #1a7fa8;
+  --deep-tide: #0e3b66;
+  --midnight-swell: #0a2142;
+  --doubloon-gold: #f4c542;
+  --gold-deep: #c98a12;
+  --sunlit-amber: #ff9f2e;
+  --coral-flame: #ff6b4a;
+  --harbor-crimson: #c0392b;
+  --hibiscus: #e0607e;
+  --sailcloth-cream: #f6ead0;
+  --parchment: #ecdab4;
+  --palm-green: #3fa55a;
+  --jungle-deep: #1e6b4e;
+  --honey-timber: #d9954f;
+  --timber: #9a5a2e;
+  --deep-timber: #5e331b;
+  --plum-shadow: #3b2350;
+  --dusk: #6a4c93;
+  --sky: #7ccbf2;
+  --sky-high: #cff1ff;
+  --beach-sand: #f7d9a0;
+  --sea-foam: #e9fbf6;
+}

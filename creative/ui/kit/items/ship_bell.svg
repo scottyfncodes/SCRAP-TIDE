@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>ship_bell</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M28 92 C28 46.667 40 24 64 24 C88 24 100 46.667 100 92 C106.667 96 108 99.333 104 102 L24 102 C20 99.333 21.333 96 28 92 Z" fill="#c98f3c" stroke="#0e3b66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M54 108 C54 102.48 58.48 98 64 98 C69.52 98 74 102.48 74 108 C74 113.52 69.52 118 64 118 C58.48 118 54 113.52 54 108 Z" fill="#5e331b" stroke="#0e3b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M44 44 C41.333 57.333 40.667 70.667 42 84" fill="none" stroke="#f0c27a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M60 10 L68 10 C70.667 10 72 11.333 72 14 L72 22 C72 24.667 70.667 26 68 26 L60 26 C57.333 26 56 24.667 56 22 L56 14 C56 11.333 57.333 10 60 10 Z" fill="#c98f3c" stroke="#0e3b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

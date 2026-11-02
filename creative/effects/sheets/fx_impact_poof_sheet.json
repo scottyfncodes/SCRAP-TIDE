@@ -1,0 +1,13 @@
+{
+ "image": "fx_impact_poof_sheet.png",
+ "frameWidth": 384,
+ "frameHeight": 384,
+ "frames": 19,
+ "columns": 5,
+ "rows": 4,
+ "fps": 24,
+ "loop": false,
+ "premultiplied": false,
+ "blend": "normal",
+ "use": "Play once for hits, chest bursts, cannon impacts (stylised, no gore)"
+}

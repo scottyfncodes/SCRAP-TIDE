@@ -1,0 +1,13 @@
+{
+ "image": "fx_wake_foam_sheet.png",
+ "frameWidth": 256,
+ "frameHeight": 128,
+ "frames": 24,
+ "columns": 5,
+ "rows": 5,
+ "fps": 24,
+ "loop": true,
+ "premultiplied": false,
+ "blend": "normal",
+ "use": "Scrolling foam sprite at the stern; spawn along wake"
+}
