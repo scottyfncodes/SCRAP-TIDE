@@ -27,6 +27,8 @@ export const MODEL_FILES = [
   'tb_atoll_kit',
   'tb_outpost_kit',
   'tb_flora_kit',
+  // GITCRAFT TIDEBREAKERS 3D package: the Coastal Sloop player boat (hull, deck, cabin, rig, sails, socket_* nodes)
+  'tb_coastal_sloop',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
 
@@ -133,6 +135,32 @@ export function part(file: string, name: string) {
   const out = { geo: solid.length ? merge(solid) : new THREE.BufferGeometry(), glow: glow.length ? merge(glow) : null };
   partCache.set(key, out);
   return out;
+}
+
+/**
+ * A whole model file as a live scene graph (node names, socket_* empties and transforms intact) rendered with the
+ * game's toon material (vertex colours) and the unlit glow material for emissive parts. Geometry is shared between
+ * clones. Returns null if the file failed to load so callers can fall back to procedural geometry.
+ */
+export function sceneModel(file: string, opts: { shadows?: boolean; side?: THREE.Side } = {}): THREE.Object3D | null {
+  const g = gltfs.get(file);
+  if (!g) return null;
+  const root = g.scene.clone(true);
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh) return;
+    const src = m.material as THREE.MeshStandardMaterial;
+    m.userData.srcMaterial = src.name;
+    if (isGlowMaterial(src)) {
+      m.material = glowMat();
+      m.userData.glow = true;
+    } else {
+      m.material = vcMat({ side: opts.side });
+      m.castShadow = !!opts.shadows;
+      m.receiveShadow = !!opts.shadows;
+    }
+  });
+  return root;
 }
 
 /** A renderable group for a node: toon mesh + unlit glow mesh. Shares geometry between instances. */

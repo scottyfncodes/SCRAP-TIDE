@@ -34,6 +34,9 @@ const NEEDED: Record<string, string[]> = {
   tb_outpost_kit: ['pontoon', 'rain_catcher', 'net_tower', 'market_stall', 'sinking_platform', 'dead_tree', 'scrap_heap', 'salvage_barge', 'scrap_boat'],
   tb_flora_kit: ['flora_algae', 'flora_seaweed', 'flora_seedling', 'flora_moss', 'flora_potted', 'flora_flowering', 'flora_fruit', 'flora_sapling',
     'greenhouse', 'garden_plot', 'last_tree'],
+  // upgrades attach to these sockets later; the hull/sail/flag/deck sockets must survive every re-export
+  tb_coastal_sloop: ['tidebreakers_coastal_sloop', 'tidebreakers_coastal_sloop_mesh', 'socket_flag', 'socket_hull', 'socket_navigation', 'socket_sail',
+    'socket_steering', 'socket_storage'],
 };
 
 describe('GITCRAFT models in public/models', () => {
