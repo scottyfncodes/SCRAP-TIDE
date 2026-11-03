@@ -148,15 +148,26 @@ export class Store {
    */
   readonly preview: VesselId | null;
 
-  constructor(opts: { preview?: VesselId | null } = {}) {
-    this.preview = opts.preview ?? null;
+  /** Upgrades a `upgrades=` preview link fitted for this visit (null outside such a preview). */
+  readonly previewUpgrades: string[] | null;
+
+  constructor(opts: { preview?: VesselId | null; upgrades?: string[] | null } = {}) {
     this.data = this.load();
-    if (this.preview) {
-      const hullFrac = Math.min(1, this.data.hull / this.stats.hullMax);
-      this.data.vessel = this.preview;
-      if (!this.data.vesselsOwned.includes(this.preview)) this.data.vesselsOwned.push(this.preview);
-      this.data.hull = Math.round(hullFrac * this.stats.hullMax); // same condition, the new boat's scale
-    }
+    this.previewUpgrades = opts.upgrades?.length ? opts.upgrades : null;
+    // an upgrades-only link previews the save's own boat
+    this.preview = opts.preview ?? (this.previewUpgrades ? this.data.vessel : null);
+    if (this.preview) this.applyPreview(this.data);
+  }
+
+  /** Fit the preview's vessel and upgrades to (an in-memory copy of) the save. */
+  private applyPreview(d: SaveData) {
+    const hullFrac = Math.min(1, d.hull / this.stats.hullMax);
+    const fuelFrac = Math.min(1, d.fuel / this.stats.fuelCap);
+    d.vessel = this.preview!;
+    if (!d.vesselsOwned.includes(d.vessel)) d.vesselsOwned.push(d.vessel);
+    if (this.previewUpgrades) for (const id of this.previewUpgrades) if (!d.upgrades.includes(id)) d.upgrades.push(id);
+    d.hull = Math.round(hullFrac * this.stats.hullMax); // same condition, the new boat's scale
+    d.fuel = Math.round(fuelFrac * this.stats.fuelCap);
   }
 
   private load(): SaveData {
@@ -207,8 +218,7 @@ export class Store {
     if (this.preview) {
       // in a preview, "new game" only restarts this visit; the real save stays as it is
       this.data = freshSave();
-      this.data.vessel = this.preview;
-      if (!this.data.vesselsOwned.includes(this.preview)) this.data.vesselsOwned.push(this.preview);
+      this.applyPreview(this.data);
       this.data.hull = this.stats.hullMax;
       this.isNew = true;
       this.emit();

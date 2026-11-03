@@ -38,6 +38,11 @@ const NEEDED: Record<string, string[]> = {
   tb_coastal_sloop: ['tidebreakers_coastal_sloop', 'tidebreakers_coastal_sloop_mesh', 'socket_flag', 'socket_hull', 'socket_navigation', 'socket_sail',
     'socket_steering', 'socket_storage'],
   tb_sloop_outriggers: ['tb_sloop_outriggers', 'outrigger_port', 'outrigger_starboard'],
+  tb_upg_canvas_mainsail: ['upgrade_canvas_mainsail'],
+  tb_upg_cargo_crates: ['upgrade_lashed_cargo_crates'],
+  tb_upg_brass_compass: ['upgrade_brass_compass'],
+  tb_upg_wheel_rudder: ['upgrade_ship_s_wheel_ash_rudder'],
+  tb_upg_copper_hull: ['upgrade_copper_banded_hull'],
 };
 
 describe('GITCRAFT models in public/models', () => {
@@ -58,6 +63,10 @@ describe('GITCRAFT models in public/models', () => {
     for (const m of ['GC_Plank_4fb39a', 'GC_Wood_f2ead8', 'GC_Cloth_f1e6cc', 'GC_Cloth_c0392b']) expect(sloop.has(m), `sloop ${m}`).toBe(true);
     const out = names('tb_sloop_outriggers');
     for (const m of ['GC_Plank_4fb39a', 'GC_Wood_f2ead8']) expect(out.has(m), `outriggers ${m}`).toBe(true);
+    // what buildShip culls / tints on the upgrades: the base sail + tiller materials, the canvas cloth, the rub-strakes
+    expect(sloop.has('GC_Wood_9a5a2e')).toBe(true);
+    expect(names('tb_upg_canvas_mainsail').has('GC_Cloth_f6ead0')).toBe(true);
+    expect(names('tb_upg_copper_hull').has('GC_Metal_c98a12_m9')).toBe(true);
   });
   it('the cast are people, not block toys: one skinned primitive, 4k+ triangles, a sculpted head, smooth normals', () => {
     const NEED: Record<string, string[]> = { tb_captain: ['Idle', 'Walk', 'Sit', 'Dig', 'Cheer'], tb_raider: ['Idle', 'Attack'], tb_npc_trader: ['Idle', 'Interact'],
