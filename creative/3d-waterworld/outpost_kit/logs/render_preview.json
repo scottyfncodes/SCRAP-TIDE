@@ -1,0 +1,22 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/previews/tb_outpost_kit_three_quarter.png",
+  "kind": "preview",
+  "bytes": 128501,
+  "sha256": "dac371fd96568787421fc82151870086d2fb965e5b7a08c16240fec1d734506e",
+  "view": "three_quarter",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/previews/tb_outpost_kit_front.png",
+  "kind": "preview",
+  "bytes": 118642,
+  "sha256": "c202c70b6b571324bad00d965feac42e5fd7025688a2872c477ce5c228c11179",
+  "view": "front",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ }
+]

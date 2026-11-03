@@ -1,0 +1,57 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/exports/tb_outpost_kit.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 350284,
+  "sha256": "7155590f83b63e9f285ff945b8c9b761b0071618c57d70a476f6f83cb5c58cb0",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/exports/tb_outpost_kit.three-web-toon.lod50.glb",
+    "kind": "lod",
+    "bytes": 259516,
+    "sha256": "27a2a0b72fa72a16a64d1574468650a99ed67cec5e33419280aef0905a0f7149",
+    "ratio": 0.5,
+    "triangles": 1993
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/exports/tb_outpost_kit.three-web-toon.lod25.glb",
+    "kind": "lod",
+    "bytes": 166384,
+    "sha256": "9929123aacda1022bd0a235059917e8300e579ca19899af9d25db8d93dbdaa1b",
+    "ratio": 0.25,
+    "triangles": 897
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/exports/tb_outpost_kit.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 10072,
+    "sha256": "9acac9e9979df96a7ae7717d1cdc56396fd00e82ea00edffb8f2ab3b9020d2ad",
+    "shape": "convex_hull",
+    "triangles": 126
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/exports/tb_outpost_kit.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 10072,
+    "sha256": "9acac9e9979df96a7ae7717d1cdc56396fd00e82ea00edffb8f2ab3b9020d2ad"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/exports/tb_outpost_kit.three-web-toon.lod25.glb",
+    "kind": "sidecar",
+    "bytes": 166384,
+    "sha256": "9929123aacda1022bd0a235059917e8300e579ca19899af9d25db8d93dbdaa1b"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/exports/tb_outpost_kit.three-web-toon.lod50.glb",
+    "kind": "sidecar",
+    "bytes": 259516,
+    "sha256": "27a2a0b72fa72a16a64d1574468650a99ed67cec5e33419280aef0905a0f7149"
+   }
+  ]
+ }
+]

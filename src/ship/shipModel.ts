@@ -4,7 +4,7 @@ import { paint, xf, merge, vcMat, toonMat, canvasTex, weather } from '../world/m
 import { COSMETIC_MAP, type VesselId } from '../data/ship';
 import { item } from '../data/items';
 import type { Store } from '../state/store';
-import { model, crewModel, part, glowMat } from '../world/assets';
+import { model, crewModel, part, glowMat, kitGeo } from '../world/assets';
 import { CREW_MAP } from '../data/crew';
 
 interface HullSpec {
@@ -294,6 +294,16 @@ export function trophyGeometry(id: string): THREE.BufferGeometry {
       parts.push(paint(xf(new THREE.SphereGeometry(0.13, 8, 6), 0, 0.25, 0, 0, 0, 0, [1.4, 1, 1]), a));
       parts.push(paint(xf(new THREE.ConeGeometry(0.05, 0.12, 6), 0.2, 0.27, 0, 0, 0, -Math.PI / 2), b));
       break;
+    case 'plant':
+    case 'bloom':
+    case 'fruitvine':
+    case 'sapling': {
+      // living trophies are the real GITCRAFT flora models: a green plant riding on deck is a statement
+      const [node, sc] = ({ plant: ['flora_potted', 0.42], bloom: ['flora_flowering', 0.46], fruitvine: ['flora_fruit', 0.26], sapling: ['flora_sapling', 0.24] } as const)[d.icon];
+      const k = kitGeo('tb_flora_kit', node, 0, 0.14, 0, 0, sc);
+      parts.push(k ? k.geo : paint(xf(new THREE.IcosahedronGeometry(0.16, 1), 0, 0.28, 0), a));
+      break;
+    }
     default:
       parts.push(paint(xf(new THREE.IcosahedronGeometry(0.16, 1), 0, 0.28, 0), a));
   }

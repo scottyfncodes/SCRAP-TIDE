@@ -1,0 +1,47 @@
+{
+ "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/exports/tb_atoll_kit.mobile.glb",
+ "objects": [
+  "atoll_gate (MESH)",
+  "atoll_kit (EMPTY)",
+  "atoll_wall (MESH)",
+  "atoll_wall_burnt (MESH)",
+  "container_home (MESH)",
+  "propeller (MESH)",
+  "watchtower (MESH)",
+  "water_tank (MESH)"
+ ],
+ "triangles": 7872,
+ "materials": [
+  "TBW_Bloom_w",
+  "TBW_Bronze",
+  "TBW_Char",
+  "TBW_Cloth",
+  "TBW_Concrete_dk",
+  "TBW_Corr",
+  "TBW_Gun",
+  "TBW_Hazard",
+  "TBW_Lamp",
+  "TBW_Navy",
+  "TBW_Net",
+  "TBW_Oxide",
+  "TBW_Paint",
+  "TBW_Red",
+  "TBW_Rust",
+  "TBW_Rust_dark",
+  "TBW_Rust_hi",
+  "TBW_Steel",
+  "TBW_Tarp",
+  "TBW_Tarp2",
+  "TBW_Wood",
+  "TBW_Wood_deep",
+  "TBW_Wood_dk"
+ ],
+ "actions": [],
+ "armatures": 0,
+ "size_m": [
+  122.0,
+  12.16,
+  17.875
+ ],
+ "min_z": -0.1887
+}

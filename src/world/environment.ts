@@ -4,6 +4,7 @@ import { ISLANDS, WORLD, TREASURE_MAPS, type IslandDef } from '../data/world';
 import { heightAt } from './terrain';
 import { vcMat, merge, paint, xf, canvasTex, toonMat } from './materials';
 import * as P from './props';
+import { kitGeo, glowMat, model } from './assets';
 import { RNG, fbm } from '../core/noise';
 
 export interface Collider { x: number; z: number; r: number }
@@ -16,6 +17,10 @@ export class Environment {
   pierTip = new THREE.Vector3();
   npcs: THREE.Object3D[] = [];
   lighthouseLamp?: THREE.Mesh;
+  /** world position of the last tree's canopy (a landmark visible from the water) */
+  landmarkGreen?: THREE.Vector3;
+  /** Driftholm's guarded greenhouse */
+  gardenGlow?: THREE.Vector3;
 
   constructor(private scene: THREE.Scene) {
     this.buildTerrain();
@@ -68,6 +73,7 @@ export class Environment {
     const rng = new RNG(isl.seed * 31 + 7);
     const geos: THREE.BufferGeometry[] = [];
     const sway: THREE.BufferGeometry[] = [];
+    const glows: THREE.BufferGeometry[] = [];
     const exclude: { x: number; z: number; r: number }[] = [];
     for (const l of isl.landmarks) exclude.push({ x: isl.x + l.x, z: isl.z + l.z, r: l.type === 'wreck' ? 14 : l.type === 'lighthouse' ? 6 : 5 });
     for (const f of isl.finds) exclude.push({ x: isl.x + f.x, z: isl.z + f.z, r: 3 });
@@ -96,32 +102,43 @@ export class Environment {
       return false;
     };
 
-    const leaf = isl.style === 'jungle' ? '#56602e' : '#6b6a3a';
-    const leafDark = isl.style === 'jungle' ? '#2e3a1c' : '#4a4528';
+    // Nothing grows out here unless someone guards it. Palms are bleached trunks, scrub is dead brush, and the
+    // sand is littered with what the sea threw up. Living green appears only as a find or behind a garden wall.
+    const kit = (file: string, node: string, x: number, y: number, z: number, ry = 0, sc = 1) => {
+      const k = kitGeo(file, node, x, y, z, ry, sc);
+      if (k) {
+        geos.push(k.geo);
+        if (k.glow) glows.push(k.glow);
+      }
+      return !!k;
+    };
     for (let i = 0; i < isl.palms; i++) {
-      place(40, 0.5, 6, 0.6, 1.4, (x, y, z) => {
-        sway.push(xf(P.palm(rng, rng.range(6, 9.5), rng.range(0.15, 0.45), leaf, leafDark), x, y - 0.2, z));
-        this.colliders.push({ x, z, r: 0.7 });
+      place(40, 0.5, 9, 0.6, 1.4, (x, y, z) => {
+        if (rng.next() < 0.3 && kit('tb_outpost_kit', 'dead_tree', x, y - 0.3, z, rng.range(0, 6), rng.range(0.7, 1.05))) this.colliders.push({ x, z, r: 0.8 });
+        else {
+          geos.push(xf(P.deadPalm(rng, rng.range(4.5, 8.5), rng.range(0.15, 0.5)), x, y - 0.2, z));
+          this.colliders.push({ x, z, r: 0.6 });
+        }
       });
     }
     for (let i = 0; i < isl.rocks; i++) {
       place(30, -1.2, 20, 2, 1.5, (x, y, z) => {
         const s = rng.range(0.8, isl.style === 'rocky' ? 3.2 : 2.2);
-        geos.push(xf(P.rock(rng, s, rng.range(0.5, 0.85), isl.style === 'jungle' ? '#545a50' : '#625a52', isl.style === 'jungle'), x, y + s * 0.15, z, 0, rng.range(0, 6), 0));
+        geos.push(xf(P.rock(rng, s, rng.range(0.5, 0.85), isl.style === 'jungle' ? '#585650' : '#625a52', false), x, y + s * 0.15, z, 0, rng.range(0, 6), 0));
         if (y > -0.3) this.colliders.push({ x, z, r: s * 0.9 });
       });
     }
     for (let i = 0; i < isl.foliage; i++) {
-      place(30, 1.0, 30, 1.2, 1.6, (x, y, z) => {
-        const kind = rng.next();
-        if (kind < 0.45) sway.push(xf(P.bigLeaves(rng, rng.range(0.9, 1.6), isl.style === 'jungle' ? '#46522a' : '#5c5c34'), x, y, z));
-        else if (kind < 0.8) sway.push(xf(P.bush(rng, rng.range(0.8, 1.4), isl.style === 'jungle' ? '#3e4a26' : '#66623a'), x, y - 0.1, z));
-        else sway.push(xf(P.grassTuft(rng), x, y, z));
+      place(30, 0.6, 30, 1.2, 1.6, (x, y, z) => {
+        const k = rng.next();
+        if (k < 0.3 && kit('tb_outpost_kit', 'scrap_heap', x, y - 0.15, z, rng.range(0, 6), rng.range(0.55, 0.85))) this.colliders.push({ x, z, r: 1.4 });
+        else if (k < 0.5) geos.push(paint(xf(new THREE.CylinderGeometry(0.2, 0.26, rng.range(2, 4), 6), x, y + 0.2, z, 0, rng.range(0, 6), Math.PI / 2), '#a89c84', 0.1)); // bleached driftwood log
+        else geos.push(xf(P.deadScrub(rng, rng.range(0.8, 1.4)), x, y, z));
       });
     }
-    // grass tufts everywhere for richness
-    for (let i = 0; i < isl.r * 2.4; i++) {
-      place(6, 1.0, 30, 1.5, 0.3, (x, y, z) => sway.push(xf(P.grassTuft(rng, isl.style === 'jungle' ? '#55602f' : '#857a4a'), x, y, z)));
+    // dry tufts, sparse
+    for (let i = 0; i < isl.r * 0.9; i++) {
+      place(6, 1.0, 30, 1.5, 0.3, (x, y, z) => geos.push(xf(P.grassTuft(rng, rng.next() < 0.5 ? '#7c7258' : '#8a8068'), x, y, z)));
     }
 
     // landmarks
@@ -132,14 +149,14 @@ export class Environment {
       const rot = l.rot ?? 0;
       switch (l.type) {
         case 'twin_palms': {
-          const a = P.palm(new RNG(5), 10, 0.0);
-          sway.push(xf(a, x - 1.2, y - 0.2, z, 0, 0, 0.22));
-          sway.push(xf(P.palm(new RNG(6), 11, 0.0), x + 1.2, y - 0.2, z, 0, 0, -0.22));
+          // the "two sisters": twin dead trunks leaning apart, still the tallest things on the atoll
+          geos.push(xf(P.deadPalm(new RNG(5), 10, 0.0), x - 1.2, y - 0.2, z, 0, 0, 0.22));
+          geos.push(xf(P.deadPalm(new RNG(9), 11, 0.0), x + 1.2, y - 0.2, z, 0, 0, -0.22));
           this.colliders.push({ x: x - 1.2, z, r: 0.7 }, { x: x + 1.2, z, r: 0.7 });
           break;
         }
         case 'big_palm':
-          sway.push(xf(P.palm(new RNG(8), 14, 0.35), x, y - 0.2, z));
+          geos.push(xf(P.deadPalm(new RNG(8), 13, 0.35), x, y - 0.2, z));
           this.colliders.push({ x, z, r: 0.9 });
           break;
         case 'skull_rock':
@@ -179,7 +196,11 @@ export class Environment {
           }
           break;
         case 'waterfall': {
+          // fresh water: a spring forced out of an old storm-drain pipe, caught in drums before it can reach the sea
           geos.push(xf(P.waterfallRocks(rng), x, y - 0.5, z));
+          geos.push(paint(xf(new THREE.CylinderGeometry(0.75, 0.75, 3.2, 10), x, y + 8.6, z - 1.2, Math.PI / 2, 0, 0), '#6b2e14', 0.05));
+          geos.push(paint(xf(new THREE.TorusGeometry(0.78, 0.14, 5, 10), x, y + 8.6, z + 0.4), '#3a4148'));
+          for (let k = 0; k < 4; k++) geos.push(paint(xf(new THREE.CylinderGeometry(0.55, 0.55, 1.3, 9), x - 2.2 + k * 1.3, y + 0.5, z + 4.6), ['#2f6fb0', '#3e8c80', '#2f6fb0', '#a24b21'][k], 0.06));
           this.colliders.push({ x, z: z - 2, r: 5 });
           this.addWaterfall(x, y, z);
           break;
@@ -191,12 +212,14 @@ export class Environment {
       }
     }
 
+    if (isl.id === 'mossjaw') this.lastGarden(isl, geos, glows);
     if (geos.length) {
       const m = new THREE.Mesh(merge(geos), vcMat());
       m.castShadow = true;
       m.receiveShadow = true;
       this.scene.add(m);
     }
+    if (glows.length) this.scene.add(new THREE.Mesh(merge(glows), glowMat()));
     if (sway.length) {
       const m = new THREE.Mesh(merge(sway), vcMat({ sway: true, side: THREE.DoubleSide }));
       m.castShadow = true;
@@ -204,12 +227,46 @@ export class Environment {
     }
   }
 
+  /** Canopy Rise: the exceptional settlement. The last tree, a greenhouse, guarded beds, scrap walls and a lookout. */
+  private lastGarden(isl: IslandDef, geos: THREE.BufferGeometry[], glows: THREE.BufferGeometry[]) {
+    const at = (lx: number, lz: number) => ({ x: isl.x + lx, z: isl.z + lz, y: heightAt(isl.x + lx, isl.z + lz) });
+    const put = (node: string, file: string, lx: number, lz: number, ry = 0, sc = 1, sink = 0.2) => {
+      const p = at(lx, lz);
+      const k = kitGeo(file, node, p.x, p.y - sink, p.z, ry, sc);
+      if (k) {
+        geos.push(k.geo);
+        if (k.glow) glows.push(k.glow);
+      }
+      return p;
+    };
+    const tree = put('last_tree', 'tb_flora_kit', 12, 6, 0.4, 1.25, 0.4);
+    this.colliders.push({ x: tree.x, z: tree.z, r: 3.6 });
+    this.landmarkGreen = new THREE.Vector3(tree.x, tree.y + 9, tree.z);
+    const gh = put('greenhouse', 'tb_flora_kit', -20, -6, 0, 1, 0.1);
+    for (const dx of [-2.4, 0, 2.4]) this.colliders.push({ x: gh.x + dx, z: gh.z, r: 2.3 });
+    for (const [lx, lz] of [[22, 14], [22, 21]] as const) {
+      const g = put('garden_plot', 'tb_flora_kit', lx, lz, 0, 1, 0.15);
+      this.colliders.push({ x: g.x - 1.6, z: g.z, r: 2 }, { x: g.x + 1.6, z: g.z, r: 2 });
+    }
+    // the scrap ring that kept everyone else out
+    const cx = 12, cz = 6, R = 24;
+    for (const a of [0.15, 1.35, 4.9, 5.75]) {
+      const lx = cx + Math.cos(a) * R, lz = cz + Math.sin(a) * R;
+      const w = put(a > 4 ? 'atoll_wall_burnt' : 'atoll_wall', 'tb_atoll_kit', lx, lz, -a - Math.PI / 2, 0.55, 0.75);
+      for (const t of [-3.4, 0, 3.4]) this.colliders.push({ x: w.x - Math.sin(a) * t, z: w.z + Math.cos(a) * t, r: 1.4 });
+    }
+    const lk = put('watchtower', 'tb_atoll_kit', 30, -2, 0.6, 0.85, 0.9);
+    this.colliders.push({ x: lk.x, z: lk.z, r: 2.4 });
+    put('rain_catcher', 'tb_outpost_kit', -12, 8, 0.3, 0.8, 0.8);
+    this.colliders.push({ x: at(-12, 8).x, z: at(-12, 8).z, r: 2.2 });
+  }
+
   private addWaterfall(x: number, y: number, z: number) {
     const tex = canvasTex(64, 256, (ctx) => {
       const g = ctx.createLinearGradient(0, 0, 64, 0);
-      g.addColorStop(0, 'rgba(160,230,255,0.5)');
-      g.addColorStop(0.5, 'rgba(240,255,255,0.95)');
-      g.addColorStop(1, 'rgba(160,230,255,0.5)');
+      g.addColorStop(0, 'rgba(170,200,196,0.35)');
+      g.addColorStop(0.5, 'rgba(225,240,236,0.9)');
+      g.addColorStop(1, 'rgba(170,200,196,0.35)');
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, 64, 256);
       ctx.fillStyle = 'rgba(255,255,255,0.9)';
@@ -217,10 +274,10 @@ export class Environment {
     });
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
     const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, depthWrite: false });
-    const fall = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 9, 1, 1), mat);
+    const fall = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 9, 1, 1), mat);
     fall.position.set(x, y + 4.2, z + 0.4);
     this.scene.add(fall);
-    const mist = new THREE.Mesh(new THREE.CircleGeometry(3, 16), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5, depthWrite: false }));
+    const mist = new THREE.Mesh(new THREE.CircleGeometry(1.6, 16), new THREE.MeshBasicMaterial({ color: 0xdfe8e2, transparent: true, opacity: 0.4, depthWrite: false }));
     mist.rotation.x = -Math.PI / 2;
     mist.position.set(x, y + 0.2, z + 2.2);
     this.scene.add(mist);
@@ -243,17 +300,30 @@ export class Environment {
         break;
       }
     }
+    const glows: THREE.BufferGeometry[] = [];
+    const kit = (file: string, node: string, x: number, y: number, z: number, ry = 0, sc = 1) => {
+      const k = kitGeo(file, node, x, y, z, ry, sc);
+      if (k) {
+        geos.push(k.geo);
+        if (k.glow) glows.push(k.glow);
+      }
+      return !!k;
+    };
     const pierEnd = WORLD.harborDock.endZ;
     const pierStart = shoreZ + 6;
     const deckY = 1.3;
-    const plank = '#a3784c';
-    const plank2 = '#8f6640';
+    // mismatched decking: bleached boards, a darker plank, the odd steel plate laid over a hole
+    const plank = '#a2927a';
+    const plank2 = '#7d6a52';
     // main pier
     for (let z = pierEnd; z < pierStart; z += 0.9) {
-      geos.push(paint(xf(new THREE.BoxGeometry(5.2, 0.22, 0.82), rng.range(-0.05, 0.05), deckY, z, 0, rng.range(-0.02, 0.02), 0), rng.next() > 0.5 ? plank : plank2, 0.08));
+      const r = rng.next();
+      geos.push(paint(xf(new THREE.BoxGeometry(r > 0.9 ? 3.4 : 5.2, 0.22, 0.82), rng.range(-0.3, 0.3), deckY, z, 0, rng.range(-0.04, 0.04), 0), r > 0.86 ? '#6f7275' : r > 0.45 ? plank : plank2, 0.1));
     }
     for (let z = pierEnd; z < pierStart; z += 4) {
-      for (const sx of [-2.5, 2.5]) geos.push(paint(xf(new THREE.CylinderGeometry(0.28, 0.32, 6, 7), sx, deckY - 2.5, z), '#5e4128'));
+      // pilings: old pipe, I-beam and tarred timber, whatever was long enough
+      for (const sx of [-2.5, 2.5]) geos.push(paint(xf(new THREE.CylinderGeometry(0.28, 0.32, 6, 7), sx, deckY - 2.5, z), rng.pick(['#5a3a28', '#4a4d50', '#6b2e14'])));
+      geos.push(paint(xf(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 8), 2.75, deckY - 0.3, z), '#222222')); // tyre fender
     }
     // finger piers
     const fingers = [{ z: 186, dir: -1, len: 16 }, { z: 196, dir: 1, len: 18 }];
@@ -275,31 +345,25 @@ export class Environment {
     for (let i = 0; i < 6; i++) geos.push(xf(P.barrel(), rng.range(-1.8, 1.8) + (i % 2 ? 0 : 0), deckY + 0.1, pierStart - 3 - i * 4.5 + rng.range(-1, 1), 0, rng.range(0, 3), 0, 0.8));
     for (let i = 0; i < 4; i++) geos.push(xf(P.crate(rng.range(0.8, 1.1)), rng.range(-1.5, 1.5), deckY + 0.1, pierStart - 6 - i * 7, 0, rng.range(0, 1), 0));
 
-    // shops along the waterfront (decorative, each matches a harbor service)
-    const shops: { x: number; name: string; wall: string; roof: string; awning: [string, string]; sign: string }[] = [
-      { x: -42, name: 'SHIPWRIGHT', wall: '#7f735c', roof: '#5a3a26', awning: ['#3f5a66', '#b3a888'], sign: '⚓' },
-      { x: -20, name: 'TRADER', wall: '#8f8062', roof: '#7a3a22', awning: ['#a8822e', '#b8ad8c'], sign: '⚖' },
-      { x: 20, name: 'CHARTS', wall: '#6f7a70', roof: '#3d544c', awning: ['#3e6a60', '#b3a888'], sign: '⌖' },
-      { x: 42, name: 'CURIOS', wall: '#86685a', roof: '#4e3440', awning: ['#8a3226', '#b8ad8c'], sign: '✦' },
+    // the services live in salvaged containers and patchwork shacks, each with a hand-painted board
+    const shops: { x: number; name: string; tint: string; sign: string; kind: 'container' | 'shack' }[] = [
+      { x: -42, name: 'SHIPWRIGHT', tint: '#3f5a66', sign: '⚓', kind: 'container' },
+      { x: -20, name: 'TRADER', tint: '#a8822e', sign: '⚖', kind: 'shack' },
+      { x: 20, name: 'CHARTS', tint: '#3e6a60', sign: '⌖', kind: 'shack' },
+      { x: 42, name: 'CURIOS', tint: '#8a3226', sign: '✦', kind: 'container' },
     ];
     for (const s of shops) {
       const z = shoreZ + 14;
       const y = heightAt(s.x, z);
-      geos.push(paint(xf(new THREE.BoxGeometry(10, 5.5, 8), s.x, y + 2.75, z), s.wall, 0.04));
-      geos.push(paint(xf(new THREE.ConeGeometry(7.6, 3.6, 4), s.x, y + 7.3, z, 0, Math.PI / 4, 0, [1.05, 1, 0.85]), s.roof, 0.05));
-      geos.push(paint(xf(new THREE.BoxGeometry(1.8, 3, 0.3), s.x, y + 1.5, z - 4.05), '#5a3a1e'));
-      geos.push(paint(xf(new THREE.BoxGeometry(1.6, 1.4, 0.2), s.x - 3, y + 3.2, z - 4.05), '#2a4058'));
-      geos.push(paint(xf(new THREE.BoxGeometry(1.6, 1.4, 0.2), s.x + 3, y + 3.2, z - 4.05), '#2a4058'));
-      // striped awning
-      for (let i = 0; i < 8; i++) {
-        const seg = new THREE.BoxGeometry(1.25, 0.12, 3);
-        geos.push(paint(xf(seg, s.x - 4.4 + i * 1.25, y + 4.6, z - 5.4, -0.35, 0, 0), i % 2 ? s.awning[0] : s.awning[1]));
+      if (s.kind === 'container') kit('tb_atoll_kit', 'container_home', s.x, y - 0.95, z + 0.5, Math.PI, 0.82);
+      else {
+        kit('tb_settlement_kit', 'mod_shack', s.x, y - 0.9, z, Math.PI, 1.05);
+        kit('tb_outpost_kit', 'market_stall', s.x + 1, y - 0.9, z - 5.5, Math.PI, 0.75);
       }
-      for (const sx of [-4.8, 4.8]) geos.push(paint(xf(new THREE.CylinderGeometry(0.1, 0.1, 4.2, 6), s.x + sx, y + 2.1, z - 6.6), '#5e4128'));
-      this.addSign(s.name, s.sign, s.x, y + 6.0, z - 4.2);
+      this.addSign(s.name, s.sign, s.x, y + 6.0, z - 4.2, s.tint);
       this.colliders.push({ x: s.x, z, r: 6 });
       // shopkeeper
-      const npc = new THREE.Mesh(P.person(rng, s.awning[0], rng.next() > 0.5 ? '#3b2a1e' : null), vcMat());
+      const npc = new THREE.Mesh(P.person(rng, s.tint, rng.next() > 0.5 ? '#3b2a1e' : null), vcMat());
       npc.position.set(s.x + 1.5, y, z - 7);
       npc.rotation.y = rng.range(-0.4, 0.4);
       this.scene.add(npc);
@@ -311,35 +375,59 @@ export class Environment {
       const y = heightAt(x, z);
       for (let i = 0; i < 7; i++) {
         const rib = new THREE.TorusGeometry(2.6 - Math.abs(i - 3) * 0.25, 0.16, 4, 8, Math.PI);
-        geos.push(paint(xf(rib, x, y + 2.8, z - 6 + i * 1.6, 0, 0, Math.PI), '#b48a5a'));
+        geos.push(paint(xf(rib, x, y + 2.8, z - 6 + i * 1.6, 0, 0, Math.PI), i % 3 ? '#8a4a26' : '#6f7275')); // ribs cut from old steel
       }
       geos.push(paint(xf(new THREE.BoxGeometry(0.4, 0.4, 12), x, y + 0.3, z - 1.2), '#6e4527'));
       for (let i = 0; i < 4; i++) geos.push(xf(P.crate(0.9), x + 5 + rng.range(-1, 1), y, z - 4 + i * 2.2));
     }
-    // houses climbing the hill
-    const houseCols = ['#8a7a5a', '#5f7270', '#8a5a44', '#a89a74', '#6a6e66', '#9a8a62', '#7a5f4a'];
-    const roofCols = ['#7a3a22', '#3f5a52', '#4a4e52', '#6a4228', '#5a5a4a'];
-    for (let i = 0; i < 26; i++) {
-      const x = rng.range(-90, 90);
-      const z = shoreZ + rng.range(26, 85);
-      if (Math.abs(x) < 8 && z < shoreZ + 34) continue;
+    // the shanty climbing the hill: stacked containers, raft shacks hauled ashore, tanks and rain catchers
+    const spots: [number, number][] = [];
+    for (let i = 0; i < 40 && spots.length < 16; i++) {
+      const x = rng.range(-88, 88);
+      const z = shoreZ + rng.range(28, 80);
+      if (Math.abs(x) < 9 && z < shoreZ + 36) continue;
+      if (Math.abs(x - 14) < 12 && Math.abs(z - (shoreZ + 42)) < 10) continue; // the guarded garden
+      if (spots.some(([a, b]) => Math.hypot(a - x, b - z) < 13)) continue;
+      if (heightAt(x, z) < 1) continue;
+      spots.push([x, z]);
+    }
+    spots.forEach(([x, z], i) => {
       const y = heightAt(x, z);
-      if (y < 1) continue;
-      const w = rng.range(4, 6.5), h = rng.range(3.5, 6), d = rng.range(4, 6);
-      const ry = rng.range(-0.3, 0.3);
-      geos.push(paint(xf(new THREE.BoxGeometry(w, h, d), x, y + h / 2 - 0.3, z, 0, ry, 0), rng.pick(houseCols), 0.04));
-      geos.push(paint(xf(new THREE.ConeGeometry(Math.max(w, d) * 0.78, 2.6, 4), x, y + h + 1.0, z, 0, Math.PI / 4 + ry, 0, [1, 1, d / w]), rng.pick(roofCols), 0.05));
-      geos.push(paint(xf(new THREE.BoxGeometry(0.9, 1.1, 0.1), x, y + h * 0.6, z - d / 2 - 0.05, 0, ry, 0), '#2a4058'));
+      const ry = rng.range(-0.4, 0.4) + (i % 2 ? Math.PI : 0);
+      const pick = i % 5;
+      if (pick === 0 || pick === 3) kit('tb_atoll_kit', 'container_home', x, y - 0.95, z, ry, 0.7);
+      else if (pick === 1) kit('tb_settlement_kit', 'mod_shack', x, y - 0.9, z, ry, 0.9);
+      else if (pick === 2) kit('tb_outpost_kit', 'rain_catcher', x, y - 0.9, z, ry, 0.9);
+      else kit('tb_settlement_kit', 'mod_market', x, y - 0.9, z, ry, 0.85);
+      this.colliders.push({ x, z, r: pick === 0 || pick === 3 ? 5 : 3.6 });
+    });
+    // the freshwater tank stands highest, where everyone can see it is still full
+    {
+      const x = -26, z = shoreZ + 40;
+      kit('tb_atoll_kit', 'water_tank', x, heightAt(x, z) - 0.95, z, 0.3, 1.0);
+      this.colliders.push({ x, z, r: 4.6 });
+    }
+    // the guarded garden: a greenhouse and a bed of green behind a scrap fence
+    {
+      const x = 14, z = shoreZ + 42;
+      const y = heightAt(x, z);
+      kit('tb_flora_kit', 'greenhouse', x, y - 0.15, z, 0.2, 1.0);
+      kit('tb_flora_kit', 'garden_plot', x + 0.5, heightAt(x, z + 6) - 0.2, z + 6.5, 0.2, 0.9);
+      for (let k = 0; k < 9; k++) {
+        const a = (k / 9) * Math.PI * 2;
+        const fx = x + Math.cos(a) * 7.5, fz = z + 3 + Math.sin(a) * 7;
+        geos.push(paint(xf(new THREE.BoxGeometry(4.6, 1.6, 0.12), fx, heightAt(fx, fz) + 0.6, fz, 0, -a + Math.PI / 2, rng.range(-0.06, 0.06)), rng.pick(['#7f8a94', '#a24b21', '#3e8c80', '#8e918c', '#6b2e14'])));
+      }
+      this.colliders.push({ x, z, r: 4 }, { x, z: z + 6.5, r: 3 });
+      this.gardenGlow = new THREE.Vector3(x, y + 2, z);
     }
     // a little watchtower with a big flag
     {
       const x = 18, z = shoreZ + 3;
       const y = heightAt(x, z);
-      for (const [dx, dz] of [[-1.2, -1.2], [1.2, -1.2], [-1.2, 1.2], [1.2, 1.2]]) geos.push(paint(xf(new THREE.CylinderGeometry(0.2, 0.25, 9, 6), x + dx, y + 4.5, z + dz), '#6e4527'));
-      geos.push(paint(xf(new THREE.BoxGeometry(3.4, 0.4, 3.4), x, y + 9, z), '#8f6640'));
-      geos.push(paint(xf(new THREE.ConeGeometry(2.8, 2.2, 4), x, y + 10.8, z, 0, Math.PI / 4, 0), '#b0472f'));
+      kit('tb_atoll_kit', 'watchtower', x, y - 0.95, z, 0.4, 0.9);
       geos.push(paint(xf(new THREE.CylinderGeometry(0.08, 0.08, 6, 5), x, y + 14, z), '#3b3b3b'));
-      const flag = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.8, 8, 2), toonMat('#8a3226', { side: THREE.DoubleSide }));
+      const flag = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.8, 8, 2), toonMat('#7a3a22', { side: THREE.DoubleSide }));
       flag.position.set(x + 1.5, y + 16, z);
       this.scene.add(flag);
       const fp = flag.geometry.attributes.position;
@@ -352,36 +440,31 @@ export class Environment {
         fp.needsUpdate = true;
       });
     }
-    // moored boats around the fingers for life
-    const boatCols = ['#7e3a26', '#3f5560', '#9a7a34', '#4f6a5e'];
+    // scavenger boats tied up along the fingers: patched hulls, outboards, tarps, every one different
     for (let i = 0; i < 5; i++) {
       const f = fingers[i % 2];
       const x = f.dir * (5 + (i >> 1) * 5.5);
       const z = f.z + (i % 2 ? -4 : 4) * (i > 2 ? -1 : 1);
-      const g = new THREE.Group();
-      const hull = new THREE.Mesh(merge([
-        paint(xf(new THREE.CylinderGeometry(1.2, 0.7, 5.5, 10, 1, false, 0, Math.PI), 0, 0, 0, Math.PI / 2, 0, Math.PI), rng.pick(boatCols)),
-        paint(xf(new THREE.BoxGeometry(2.2, 0.15, 5), 0, 0.05, 0), '#a3784c'),
-        paint(xf(new THREE.CylinderGeometry(0.07, 0.08, 5, 5), 0, 2.5, 0.3), '#6e4527'),
-      ]), vcMat());
-      g.add(hull);
+      const g = model('tb_outpost_kit', 'scrap_boat') ?? new THREE.Group();
+      g.scale.setScalar(rng.range(0.85, 1.05));
+      g.traverse((o) => ((o as THREE.Mesh).isMesh && (o.castShadow = true)));
       g.position.set(x, 0.1, z);
-      g.rotation.y = rng.range(-0.2, 0.2);
+      g.rotation.y = rng.range(-0.2, 0.2) + (i % 2 ? Math.PI : 0);
       this.scene.add(g);
       const ph = rng.range(0, 6);
       this.animators.push((t) => {
-        g.position.y = 0.15 + Math.sin(t * 1.3 + ph) * 0.12;
+        g.position.y = 0.05 + Math.sin(t * 1.3 + ph) * 0.12;
         g.rotation.z = Math.sin(t * 1.1 + ph) * 0.04;
       });
       this.boatRects.push({ x0: x - 1.3, x1: x + 1.3, z0: z - 3, z1: z + 3 });
     }
-    // waterfront palms
-    for (let i = 0; i < 10; i++) {
-      const x = (i < 5 ? -1 : 1) * rng.range(12, 95);
-      const z = shoreZ + rng.range(-1, 6);
+    // the waterfront: nets drying on poles, a scrap heap, two dead trees nobody has cut for firewood yet
+    for (const [x, kind] of [[-30, 'net_tower'], [33, 'net_tower'], [-70, 'scrap_heap'], [64, 'dead_tree'], [-82, 'dead_tree'], [78, 'scrap_heap']] as const) {
+      const z = shoreZ + 3 + (kind === 'dead_tree' ? 5 : 0);
       const y = heightAt(x, z);
-      if (y < 0.4) continue;
-      sway.push(xf(P.palm(rng, rng.range(6, 9), 0.3), x, y - 0.2, z));
+      if (y < 0.2) continue;
+      kit('tb_outpost_kit', kind, x, y - (kind === 'net_tower' ? 0.9 : 0.2), z, rng.range(0, 6), kind === 'net_tower' ? 0.9 : 1);
+      this.colliders.push({ x, z, r: 1.8 });
     }
     // dockside folks
     for (let i = 0; i < 4; i++) {
@@ -402,6 +485,7 @@ export class Environment {
     m.castShadow = true;
     m.receiveShadow = true;
     this.scene.add(m);
+    if (glows.length) this.scene.add(new THREE.Mesh(merge(glows), glowMat()));
     if (sway.length) {
       const s = new THREE.Mesh(merge(sway), vcMat({ sway: true, side: THREE.DoubleSide }));
       s.castShadow = true;
@@ -409,22 +493,33 @@ export class Environment {
     }
   }
 
-  private addSign(text: string, glyph: string, x: number, y: number, z: number) {
+  /** A hand-painted board nailed to the front: stencil letters on scrap, paint runs, a coloured stripe. */
+  private addSign(text: string, glyph: string, x: number, y: number, z: number, tint = '#3e6a60') {
     const tex = canvasTex(512, 128, (ctx) => {
-      ctx.fillStyle = '#5a3a1e';
+      ctx.fillStyle = '#6f6656';
       ctx.fillRect(0, 0, 512, 128);
-      ctx.strokeStyle = '#e8c46a';
-      ctx.lineWidth = 8;
-      ctx.strokeRect(8, 8, 496, 112);
-      ctx.fillStyle = '#f6e7c1';
-      ctx.font = 'bold 64px Georgia, serif';
+      for (let i = 0; i < 4; i++) {
+        ctx.fillStyle = ['#7d7362', '#625a4c', '#857a66', '#5a5245'][i];
+        ctx.fillRect(0, i * 32, 512, 30);
+      }
+      ctx.fillStyle = tint;
+      ctx.fillRect(0, 96, 512, 14);
+      ctx.fillStyle = 'rgba(60,30,15,.5)';
+      for (let i = 0; i < 9; i++) ctx.fillRect(Math.random() * 500, Math.random() * 120, 3 + Math.random() * 10, 2 + Math.random() * 6);
+      ctx.fillStyle = '#e8dfc8';
+      ctx.font = '900 62px "Saira Stencil One", Impact, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(`${glyph} ${text}`, 256, 68);
+      ctx.fillText(`${glyph} ${text}`, 256, 52);
+      ctx.fillStyle = 'rgba(232,223,200,.55)';
+      for (let i = 0; i < 6; i++) ctx.fillRect(90 + Math.random() * 330, 76, 3, 6 + Math.random() * 16); // paint runs
+      ctx.fillStyle = '#2a2a2a';
+      for (const px of [14, 498]) for (const py of [16, 112]) ctx.fillRect(px - 3, py - 3, 6, 6);
     });
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(8, 2), new THREE.MeshBasicMaterial({ map: tex }));
     sign.position.set(x, y, z);
     sign.rotation.y = Math.PI;
+    sign.rotation.z = (Math.random() - 0.5) * 0.06;
     this.scene.add(sign);
   }
 
@@ -453,7 +548,8 @@ function terrainColor(c: THREE.Color, x: number, z: number, h: number, slope: nu
   }
   // salt-bleached grey sand, dead khaki scrub, the odd sickly green hollow, scorched rock
   const sand = new THREE.Color(style === 'harbor' ? '#8a8170' : '#9a8f78');
-  const grassBase = style === 'jungle' ? '#4d5a2e' : style === 'rocky' ? '#77744a' : style === 'harbor' ? '#6b6a44' : '#7a7448';
+  // no living green on open ground: dead khaki scrub, packed mud, salt crust. Canopy Rise ('jungle') is dark terraced soil.
+  const grassBase = style === 'jungle' ? '#4f4634' : style === 'rocky' ? '#78705a' : style === 'harbor' ? '#6c6452' : '#7d7258';
   const grass = new THREE.Color(grassBase);
   const rockC = new THREE.Color(style === 'jungle' ? '#4f5248' : '#5d5650');
   const grassLine = style === 'sandbar' ? 99 : style === 'rocky' ? 2.2 : 1.6;
@@ -461,13 +557,13 @@ function terrainColor(c: THREE.Color, x: number, z: number, h: number, slope: nu
   c.copy(sand).lerp(grass, gt);
   if (gt > 0.3) {
     const patch = fbm(x * 0.025 + 40, z * 0.025, 3, 8);
-    c.lerp(new THREE.Color(style === 'jungle' ? '#33421f' : '#4a5130'), Math.max(0, (patch - 0.45) * 1.6) * gt);
-    c.lerp(new THREE.Color('#8f8058'), Math.max(0, (0.45 - patch) * 1.4) * gt); // dead, sun-dried patches
+    c.lerp(new THREE.Color(style === 'jungle' ? '#3a3026' : '#4c4638'), Math.max(0, (patch - 0.45) * 1.6) * gt); // damp mud hollows
+    c.lerp(new THREE.Color('#a39a86'), Math.max(0, (0.45 - patch) * 1.4) * gt); // salt-crusted, sun-dried patches
   }
   const rt = Math.min(1, Math.max(0, (slope - (style === 'rocky' ? 0.55 : 0.8)) * 2.5));
   c.lerp(rockC, rt);
   // scattered scorch and rust bleed from buried junk
   const junk = fbm(x * 0.13 - 17, z * 0.13 + 4, 2, 11);
-  if (junk > 0.64) c.lerp(new THREE.Color('#5a3220'), Math.min(1, (junk - 0.64) * 4) * 0.5);
+  if (junk > 0.64) c.lerp(new THREE.Color(style === 'jungle' ? '#3f3428' : '#5a3220'), Math.min(1, (junk - 0.64) * 4) * (style === 'jungle' ? 0.3 : 0.5));
   c.multiplyScalar(0.9 + n * 0.16);
 }

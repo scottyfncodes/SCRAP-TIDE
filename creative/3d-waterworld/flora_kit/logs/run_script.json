@@ -1,0 +1,17 @@
+{
+ "stdout": "Info: Saved as \"tb_flora_kit.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-waterworld/flora_kit/source/tb_flora_kit.blend\", \"tris\": 5056, \"objects\": 12}\n",
+ "objects": [
+  "flora_algae",
+  "flora_flowering",
+  "flora_fruit",
+  "flora_kit",
+  "flora_moss",
+  "flora_potted",
+  "flora_sapling",
+  "flora_seaweed",
+  "flora_seedling",
+  "garden_plot",
+  "greenhouse",
+  "last_tree"
+ ]
+}

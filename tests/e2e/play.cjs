@@ -213,6 +213,53 @@ const check = (name, ok, detail = '') => {
   check('a hull strike costs hull and flashes the HUD', hit.h1 < hit.h0 && hit.flash, JSON.stringify(hit));
   await g(() => { const G = window.__game; G.store.data.hull = G.store.stats.hullMax; });
 
+  // ── Waterworld pass: settlements from the GITCRAFT kits, drifting algae, and living plants worth finding
+  const ww = await g(() => {
+    const names = new Set();
+    window.__game.scene.traverse((o) => o.name && names.add(o.name));
+    const placed = window.__game.drowned.placedNodes;
+    return { wall: placed.has('atoll_wall'), gate: placed.has('atoll_gate'), propeller: placed.has('propeller'), boats: names.has('scrap_boat'),
+      algae: window.__game.drowned.flotsam.filter((f) => f.kind === 'algae_mat').length, plants: window.__game.finds.filter((f) => f.def.kind === 'plant').length };
+  });
+  check('Waterworld settlements, drifting algae and plant finds are in the world', ww.wall && ww.gate && ww.propeller && ww.boats && ww.algae > 10 && ww.plants >= 6, JSON.stringify(ww));
+  const alg = await g(() => {
+    const G = window.__game;
+    G.store.data.cargo = [];
+    const f = G.drowned.flotsam.find((x) => x.kind === 'algae_mat' && !x.picked);
+    Object.assign(G.boat, { x: f.x, z: f.z, heading: 0, speed: 1, docked: false, anchored: false, busy: false });
+    G.mode = 'sail';
+    return { x: f.x, z: f.z };
+  });
+  await playFor(1.5);
+  const algAfter = await g((a) => ({ picked: window.__game.drowned.flotsam.find((f) => f.x === a.x && f.z === a.z).picked, cargo: window.__game.store.data.cargo.map((c) => c.id) }), alg);
+  check('hooking a drifting algae mat brings living green aboard', algAfter.picked, JSON.stringify(algAfter));
+  // walk up to the seedling on Turtle Atoll and take it aboard
+  const seed = await g(() => {
+    const G = window.__game;
+    const f = G.finds.find((x) => x.def.id === 'turtle_seedling');
+    G.ui.closePanel();
+    Object.assign(G.boat, { x: -150, z: 122, speed: 0, docked: false, anchored: true, busy: false });
+    G.mode = 'foot';
+    Object.assign(G.foot, { x: f.x + 1.2, z: f.z + 1.2, landX: -150, landZ: 122, heading: 0 });
+    G.foot.island = G.finds.find((x) => x.def.id === 'turtle_seedling').isl;
+    return { x: f.x, z: f.z, shaft: f.obj.children.some((c) => c.userData.shaft), halo: f.obj.children.some((c) => c.userData.halo) };
+  });
+  await playFor(1);
+  await dismiss();
+  const seedActs = await actions();
+  const took = await click(/ABOARD/);
+  await page.waitForTimeout(800);
+  const seedAfter = await g(() => ({
+    opened: window.__game.store.data.findsOpened.includes('turtle_seedling'),
+    have: window.__game.store.countOwned('seedling_tin'),
+    living: !!document.querySelector('.reveal.living .alive-stamp'),
+  }));
+  await page.screenshot({ path: `${out}/living_reveal.png` });
+  await dismiss();
+  check('a plant find glows (halo + light shaft) and offers TAKE IT ABOARD', seed.shaft && seed.halo && took, seedActs.join(' | '));
+  check('taking the seedling stores it and shows the green ALIVE reveal', seedAfter.opened && seedAfter.have > 0 && seedAfter.living, JSON.stringify(seedAfter));
+  await g(() => { const G = window.__game; G.mode = 'sail'; Object.assign(G.boat, { anchored: false }); });
+
   // ── save & reload
   await g(() => { window.__game.persistShip?.(); window.__game.store.saveNow(); });
   await page.reload();

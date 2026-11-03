@@ -51,6 +51,8 @@ float wxNoise(vec3 x) {
 const WEATHER_FRAG = /* glsl */ `
 {
   vec3 c = diffuseColor.rgb;
+  // living plants (saturated green, and nothing else is) are exempt: sun and salt bleach everything but them
+  float living = smoothstep(0.16, 0.3, c.g - max(c.r, c.b));
   float lum = dot(c, vec3(0.299, 0.587, 0.114));
   float sat = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
   // grade: bleach saturation the way sun and salt do, pull toward a warm grey-sienna base
@@ -74,7 +76,7 @@ const WEATHER_FRAG = /* glsl */ `
   graded = mix(graded, vec3(0.70, 0.67, 0.59), salt * 0.45);
   // sun-bleached tops
   graded = mix(graded, graded * 0.85 + vec3(0.11, 0.105, 0.09), smoothstep(0.75, 1.0, vWxNrm.y) * 0.35);
-  diffuseColor.rgb = mix(c, graded, uWeather);
+  diffuseColor.rgb = mix(c, graded, uWeather * (1.0 - living)) + c * living * 0.18;
 }
 `;
 

@@ -1,7 +1,8 @@
 // Lightweight particle bursts + interactive world objects (pickups, chests, bottles, crates).
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat, canvasTex } from '../world/materials';
-import { item } from '../data/items';
+import { item, LIVING_GREEN } from '../data/items';
+import { model } from '../world/assets';
 
 let sparkTex: THREE.Texture | null = null;
 function sparkTexture() {
@@ -259,4 +260,55 @@ export function crabMesh(): THREE.Object3D {
   const m = new THREE.Mesh(merge(parts), vcMat());
   m.castShadow = true;
   return m;
+}
+
+// ───────── Living plants (Waterworld pass) ─────────
+let shaftTex: THREE.Texture | null = null;
+function shaftTexture() {
+  if (shaftTex) return shaftTex;
+  shaftTex = canvasTex(8, 128, (ctx) => {
+    const g = ctx.createLinearGradient(0, 128, 0, 0);
+    g.addColorStop(0, 'rgba(255,255,255,0.9)');
+    g.addColorStop(0.35, 'rgba(255,255,255,0.35)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 8, 128);
+  });
+  return shaftTex;
+}
+
+/** Display scale per flora node: small finds are shown a little larger than life so they read on a phone. */
+const PLANT_SCALE: Record<string, number> = {
+  flora_algae: 1.5, flora_seaweed: 1.6, flora_seedling: 2.6, flora_moss: 1.7, flora_potted: 1.6, flora_flowering: 1.6, flora_fruit: 1.25, flora_sapling: 1.25,
+};
+
+/**
+ * A living plant waiting to be found: the GITCRAFT flora-kit model, a pulsing green halo on the ground and a faint
+ * shaft of green light that can be seen from the water. Green is the only saturated colour in the world, so
+ * this is the thing your eye goes to.
+ */
+export function plantFindMesh(node: string): THREE.Object3D {
+  const g = new THREE.Group();
+  const m = model('tb_flora_kit', node, { shadows: true });
+  const s = PLANT_SCALE[node] ?? 1.4;
+  if (m) {
+    m.scale.setScalar(s);
+    g.add(m);
+  } else {
+    const fb = new THREE.Mesh(paint(new THREE.IcosahedronGeometry(0.5, 1), LIVING_GREEN), vcMat());
+    fb.position.y = 0.5;
+    g.add(fb);
+  }
+  const halo = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.5, 32), new THREE.MeshBasicMaterial({ color: LIVING_GREEN, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }));
+  halo.rotation.x = -Math.PI / 2;
+  halo.position.y = 0.32; // above sloped ground so the ring never half-sinks into the hill
+  halo.renderOrder = 2;
+  halo.userData.halo = true;
+  g.add(halo);
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.9, 14, 12, 1, true), new THREE.MeshBasicMaterial({ map: shaftTexture(), color: LIVING_GREEN, transparent: true, opacity: 0.32, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, fog: false }));
+  shaft.position.y = 7;
+  shaft.userData.shaft = true;
+  g.add(shaft);
+  g.userData.living = true;
+  return g;
 }

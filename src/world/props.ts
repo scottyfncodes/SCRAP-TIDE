@@ -364,3 +364,57 @@ export function person(rng: RNG, shirt: string, hat: string | null): THREE.Buffe
   }
   return merge(parts);
 }
+
+// ───────── Dead vegetation (Waterworld pass): nothing on the islands is green unless someone protects it ─────────
+
+/** A sun-bleached palm trunk, snapped near the top, two dead fronds hanging off it. */
+export function deadPalm(rng: RNG, height = 7, lean = 0.3): THREE.BufferGeometry {
+  const parts: THREE.BufferGeometry[] = [];
+  const segs = 6;
+  const dir = rng.range(0, Math.PI * 2);
+  const lx = Math.cos(dir) * lean, lz = Math.sin(dir) * lean;
+  const snap = rng.range(0.62, 0.95);
+  const pts: THREE.Vector3[] = [];
+  for (let i = 0; i <= segs; i++) {
+    const t = (i / segs) * snap;
+    pts.push(new THREE.Vector3(lx * height * t * t, height * t, lz * height * t * t));
+  }
+  for (let i = 0; i < segs; i++) {
+    const a = pts[i], b = pts[i + 1];
+    const r0 = 0.4 - (i / segs) * 0.17;
+    const cyl = new THREE.CylinderGeometry(r0 * 0.9, r0, a.distanceTo(b) * 1.04, 7, 1);
+    cyl.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize()));
+    const mid = a.clone().add(b).multiplyScalar(0.5);
+    cyl.translate(mid.x, mid.y, mid.z);
+    parts.push(paint(cyl, i % 2 ? '#a39a88' : '#8c8373', 0.08));
+  }
+  const top = pts[segs];
+  // a jagged snapped crown
+  parts.push(paint(xf(new THREE.ConeGeometry(0.26, 0.7, 5), top.x, top.y + 0.3, top.z, rng.range(-0.3, 0.3), 0, rng.range(-0.3, 0.3)), '#7a6f5e'));
+  if (snap > 0.75) {
+    for (let i = 0; i < 2; i++) {
+      const ang = rng.range(0, Math.PI * 2);
+      const f = frond(rng, top.x, top.y - 0.1, top.z, ang, rng.range(2, 3), '#6b5a40', '#4a3d2c');
+      // hang them straight down: dead fronds droop against the trunk
+      f.translate(-top.x, -top.y, -top.z);
+      f.applyMatrix4(new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(-Math.sin(ang), 0, Math.cos(ang)), -0.9));
+      f.translate(top.x, top.y, top.z);
+      parts.push(f);
+    }
+  }
+  return merge(parts);
+}
+
+/** Dry, salt-killed scrub: grey-brown twigs, no leaves. */
+export function deadScrub(rng: RNG, s = 1): THREE.BufferGeometry {
+  const parts: THREE.BufferGeometry[] = [];
+  const n = rng.int(5, 8);
+  for (let i = 0; i < n; i++) {
+    const h = rng.range(0.5, 1.2) * s;
+    const twig = new THREE.CylinderGeometry(0.015 * s, 0.04 * s, h, 3);
+    xf(twig, rng.range(-0.3, 0.3) * s, h / 2, rng.range(-0.3, 0.3) * s, rng.range(-0.7, 0.7), 0, rng.range(-0.7, 0.7));
+    parts.push(paint(twig, rng.pick(['#7c705c', '#6a604f', '#8d826c']), 0.1, 0.15));
+  }
+  parts.push(paint(xf(new THREE.IcosahedronGeometry(0.35 * s, 0), 0, 0.12 * s, 0, 0, 0, 0, [1.4, 0.4, 1.2]), '#5a5244', 0.1));
+  return merge(parts);
+}

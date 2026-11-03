@@ -1,0 +1,93 @@
+{
+ "checks": [
+  {
+   "check": "has_meshes",
+   "level": "pass",
+   "detail": "11 mesh objects"
+  },
+  {
+   "check": "triangle_budget",
+   "level": "pass",
+   "detail": "5056 triangles (budget 8000)",
+   "tris": 5056
+  },
+  {
+   "check": "degenerate_faces",
+   "level": "pass",
+   "detail": "0 zero-area faces"
+  },
+  {
+   "check": "non_manifold_edges",
+   "level": "info",
+   "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+  },
+  {
+   "check": "applied_scale",
+   "level": "pass",
+   "detail": "all mesh scales are 1"
+  },
+  {
+   "check": "naming",
+   "level": "pass",
+   "detail": "no default object names"
+  },
+  {
+   "check": "origin_centered",
+   "level": "warn",
+   "detail": "footprint centre (21.273, -0.000)"
+  },
+  {
+   "check": "materials_assigned",
+   "level": "pass",
+   "detail": "every mesh has materials"
+  },
+  {
+   "check": "vertex_colors",
+   "level": "pass",
+   "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+  },
+  {
+   "check": "textures_resolvable",
+   "level": "pass",
+   "detail": "no missing texture files"
+  },
+  {
+   "check": "animation_clips",
+   "level": "pass",
+   "detail": "actions: []",
+   "clips": []
+  },
+  {
+   "check": "gltf_version",
+   "level": "pass",
+   "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41"
+  },
+  {
+   "check": "gltf_color0",
+   "level": "pass",
+   "detail": "every primitive has COLOR_0"
+  },
+  {
+   "check": "gltf_counts",
+   "level": "info",
+   "detail": "12 nodes, 11 meshes, 79 primitives, 27 materials, 0 animations, 0 skins, 0 images",
+   "animations": []
+  },
+  {
+   "check": "contract_nodes",
+   "level": "pass",
+   "detail": "nodes present: ['flora_algae', 'flora_flowering', 'flora_fruit', 'flora_kit', 'flora_moss', 'flora_potted', 'flora_sapling', 'flora_seaweed', 'flora_seedling', 'garden_plot', 'greenhouse', 'last_tree']"
+  },
+  {
+   "check": "khronos_validator",
+   "level": "info",
+   "detail": "gltf-validator not installed (meshcraft/engine_check: npm ci)"
+  }
+ ],
+ "summary": {
+  "pass": 12,
+  "warn": 1,
+  "fail": 0,
+  "info": 3
+ }
+}

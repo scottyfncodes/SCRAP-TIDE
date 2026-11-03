@@ -1,0 +1,57 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/exports/tb_atoll_kit.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 610464,
+  "sha256": "a0c20136367786d54f68edc09c88d1aa18931b42de4dacad53443ae3ac224491",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/exports/tb_atoll_kit.three-web-toon.lod50.glb",
+    "kind": "lod",
+    "bytes": 441300,
+    "sha256": "bf32b4d3be343e555c0029be3832117d9b656fd8c222d806cf55ce6848f16e40",
+    "ratio": 0.5,
+    "triangles": 3842
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/exports/tb_atoll_kit.three-web-toon.lod25.glb",
+    "kind": "lod",
+    "bytes": 254016,
+    "sha256": "273bcd7c4483489e44c205af7e99573eea75bd334d95f6b86c19870ff315628c",
+    "ratio": 0.25,
+    "triangles": 1657
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/exports/tb_atoll_kit.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 9872,
+    "sha256": "928d4dae0a4172ec8874ac059ad1158d2467e1a252d99d563a20b991d5da0679",
+    "shape": "convex_hull",
+    "triangles": 138
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/exports/tb_atoll_kit.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 9872,
+    "sha256": "928d4dae0a4172ec8874ac059ad1158d2467e1a252d99d563a20b991d5da0679"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/exports/tb_atoll_kit.three-web-toon.lod25.glb",
+    "kind": "sidecar",
+    "bytes": 254016,
+    "sha256": "273bcd7c4483489e44c205af7e99573eea75bd334d95f6b86c19870ff315628c"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/exports/tb_atoll_kit.three-web-toon.lod50.glb",
+    "kind": "sidecar",
+    "bytes": 441300,
+    "sha256": "bf32b4d3be343e555c0029be3832117d9b656fd8c222d806cf55ce6848f16e40"
+   }
+  ]
+ }
+]

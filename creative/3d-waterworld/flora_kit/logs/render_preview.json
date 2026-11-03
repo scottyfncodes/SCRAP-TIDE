@@ -1,0 +1,22 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/flora_kit/previews/tb_flora_kit_three_quarter.png",
+  "kind": "preview",
+  "bytes": 131302,
+  "sha256": "715d375b6951f2beff7bcb1fa1b18d3bc49c91d83fac9d87d188b8f36ff1ebc5",
+  "view": "three_quarter",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/flora_kit/previews/tb_flora_kit_front.png",
+  "kind": "preview",
+  "bytes": 121871,
+  "sha256": "8050c59f4b24bea4f1c0b7afb56a7e77f1ad900fca2b115adc72031e14b49f86",
+  "view": "front",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ }
+]
