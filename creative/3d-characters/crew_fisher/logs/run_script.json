@@ -1,0 +1,8 @@
+{
+ "stdout": "Info: Saved as \"tb_crew_fisher.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/crew_fisher/source/tb_crew_fisher.blend\", \"tris\": 5172, \"clips\": [\"Idle\", \"Walk\", \"Interact\", \"Attack\"]}\n",
+ "objects": [
+  "crew_fisher",
+  "crew_fisher_mesh",
+  "crew_fisher_rig"
+ ]
+}

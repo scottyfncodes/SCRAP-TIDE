@@ -1,10 +1,14 @@
-// The player's little captain: animated walk, sit, dig and cheer poses.
+// The player's captain. Starts as a lightweight procedural stand-in and switches to the rigged GITCRAFT survivor
+// (creative/3d-characters/captain: Idle / Walk / Sit / Dig / Cheer clips) as soon as it has streamed in.
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat } from '../world/materials';
+import type { Character } from '../world/assets';
+
+const CLIP_FOR: Record<string, string> = { idle: 'Idle', walk: 'Walk', sit: 'Sit', dig: 'Dig', cheer: 'Cheer' };
 
 export class Captain {
   root = new THREE.Group();
-  private body = new THREE.Group();
+  body = new THREE.Group(); // the procedural stand-in (hidden once the rigged survivor loads)
   private legL: THREE.Object3D;
   private legR: THREE.Object3D;
   private armL: THREE.Object3D;
@@ -14,6 +18,46 @@ export class Captain {
   pose: 'idle' | 'walk' | 'sit' | 'dig' | 'cheer' = 'idle';
   private phase = 0;
   private digT = 0;
+  /** the rigged survivor, once loaded */
+  char: Character | null = null;
+  private current: THREE.AnimationAction | null = null;
+  private tool: THREE.Object3D | null = null;
+
+  /** Swap the stand-in for the rigged character. */
+  useCharacter(c: Character) {
+    this.char = c;
+    this.body.visible = false;
+    c.root.scale.setScalar(1.08);
+    this.root.add(c.root);
+    // a salvaged shovel in the right hand, shown while digging
+    const hand = c.root.getObjectByName('mixamorigRightHand');
+    if (hand) {
+      const sh = new THREE.Mesh(
+        merge([
+          paint(xf(new THREE.CylinderGeometry(0.016, 0.016, 0.95, 5), 0, 0.12, 0), '#8a5a34'),
+          paint(xf(new THREE.BoxGeometry(0.17, 0.22, 0.014), 0, -0.42, 0.02), '#7f8a94'),
+        ]),
+        vcMat({ weather: 0.6 })
+      );
+      // bone space: the hand bone runs along its local Y; stand the shaft across the fist
+      sh.rotation.set(Math.PI / 2, 0, 0);
+      sh.position.set(0, 0.06, 0);
+      sh.visible = false;
+      hand.add(sh);
+      this.tool = sh;
+    }
+    this.play('idle', 0);
+  }
+
+  private play(pose: string, fade = 0.25) {
+    const c = this.char;
+    if (!c) return;
+    const a = c.actions[CLIP_FOR[pose]] ?? c.actions.Idle;
+    if (!a || a === this.current) return;
+    a.reset().play();
+    if (this.current) this.current.crossFadeTo(a, fade, false);
+    this.current = a;
+  }
 
   constructor() {
     const mat = vcMat({ weather: 0.45 });
@@ -87,11 +131,23 @@ export class Captain {
   }
 
   dig() {
-    this.digT = 0.7;
+    this.digT = this.char ? 1.1 : 0.7;
     this.pose = 'dig';
   }
 
   update(dt: number, speed: number) {
+    if (this.char) {
+      if (this.pose === 'dig') {
+        this.digT -= dt;
+        if (this.digT <= 0) this.pose = 'idle';
+      }
+      this.play(this.pose);
+      if (this.current && this.pose === 'walk') this.current.timeScale = 0.75 + speed * 0.28;
+      else if (this.current) this.current.timeScale = 1;
+      if (this.tool) this.tool.visible = this.pose === 'dig';
+      this.char.mixer.update(dt);
+      return;
+    }
     this.phase += dt * (4 + speed * 2.2);
     const s = Math.sin(this.phase);
     this.shovel.visible = this.pose === 'dig';

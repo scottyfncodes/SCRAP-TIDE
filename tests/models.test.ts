@@ -2,7 +2,7 @@
 // vertex colours (the game's toon pipeline) and contains every node the code asks for by name.
 import { describe, expect, it } from 'vitest';
 import { readFileSync, existsSync, statSync } from 'node:fs';
-import { MODEL_FILES, CREW_FILES } from '../src/world/assets';
+import { MODEL_FILES, CREW_FILES, CHARACTER_FILES } from '../src/world/assets';
 
 function glbJson(path: string) {
   const b = readFileSync(path);
@@ -37,7 +37,7 @@ const NEEDED: Record<string, string[]> = {
 };
 
 describe('GITCRAFT models in public/models', () => {
-  const files = [...MODEL_FILES, ...CREW_FILES.map((r) => `tb_crew_${r}`)];
+  const files = [...MODEL_FILES, ...CREW_FILES.map((r) => `tb_crew_${r}`), ...CHARACTER_FILES];
   it.each(files)('%s is a valid, vertex-coloured glTF with its nodes', (name) => {
     const path = `public/models/${name}.glb`;
     expect(existsSync(path), path).toBe(true);
@@ -47,6 +47,24 @@ describe('GITCRAFT models in public/models', () => {
     const names = new Set((j.nodes ?? []).map((n: { name?: string }) => n.name));
     for (const n of NEEDED[name] ?? []) expect(names.has(n), `${name} missing node ${n}`).toBe(true);
     for (const m of j.meshes ?? []) for (const p of m.primitives) expect(p.attributes.COLOR_0, `${name}/${m.name}`).toBeDefined();
+  });
+  it('the cast are people, not block toys: one skinned primitive, 4k+ triangles, a sculpted head, smooth normals', () => {
+    const NEED: Record<string, string[]> = { tb_captain: ['Idle', 'Walk', 'Sit', 'Dig', 'Cheer'], tb_raider: ['Idle', 'Attack'], tb_npc_trader: ['Idle', 'Interact'],
+      tb_npc_elder: ['Idle', 'Interact'], tb_npc_dockhand: ['Idle', 'Interact'] };
+    for (const f of [...CHARACTER_FILES, ...CREW_FILES.map((r) => `tb_crew_${r}`)]) {
+      const j = glbJson(`public/models/${f}.glb`);
+      const prims = j.meshes.flatMap((m: { primitives: unknown[] }) => m.primitives);
+      expect(prims.length, `${f} draws in one call`).toBe(1);
+      const p = prims[0] as { attributes: Record<string, number>; indices: number };
+      expect(p.attributes.NORMAL, `${f} keeps smooth normals`).toBeDefined();
+      expect(p.attributes.JOINTS_0 !== undefined && p.attributes.WEIGHTS_0 !== undefined, f).toBe(true);
+      expect(j.accessors[p.indices].count / 3, `${f} triangles`).toBeGreaterThan(4000);
+      const clips = (j.animations ?? []).map((a: { name: string }) => a.name);
+      for (const c of NEED[f] ?? ['Idle', 'Walk', 'Interact', 'Attack']) expect(clips, `${f} clip ${c}`).toContain(c);
+      // skinned mesh at the scene root (glTF ignores a skinned mesh's parent transform)
+      const meshNode = j.nodes.findIndex((n: { mesh?: number }) => n.mesh !== undefined);
+      expect(j.nodes.some((n: { children?: number[] }) => (n.children ?? []).includes(meshNode)), `${f} mesh is a root node`).toBe(false);
+    }
   });
   it('crew characters are rigged with Mixamo-named bones and an Idle clip', () => {
     for (const r of CREW_FILES) {

@@ -1,0 +1,33 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-characters/crew_salvager/exports/tb_crew_salvager.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 616020,
+  "sha256": "3389fbb72b3d032627bcdee4c377d4bf6c3b4e5527ff306a3c59a90d284137f9",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "kind": "lod",
+    "skipped": "asset has skinned meshes; decimating them would break their weights (author LODs by hand or per template)"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-characters/crew_salvager/exports/tb_crew_salvager.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 17184,
+    "sha256": "b4ee3b1c6dcaa1fd43271d68587214c38b62ec2786487dbd9ad125296c7c0eed",
+    "shape": "convex_hull",
+    "triangles": 230
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-characters/crew_salvager/exports/tb_crew_salvager.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 17184,
+    "sha256": "b4ee3b1c6dcaa1fd43271d68587214c38b62ec2786487dbd9ad125296c7c0eed"
+   }
+  ]
+ }
+]

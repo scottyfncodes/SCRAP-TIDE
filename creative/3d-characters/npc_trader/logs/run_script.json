@@ -1,0 +1,8 @@
+{
+ "stdout": "Info: Saved as \"tb_npc_trader.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/npc_trader/source/tb_npc_trader.blend\", \"tris\": 4538, \"clips\": [\"Idle\", \"Interact\"]}\n",
+ "objects": [
+  "npc_trader",
+  "npc_trader_mesh",
+  "npc_trader_rig"
+ ]
+}

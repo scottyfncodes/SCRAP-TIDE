@@ -4,7 +4,7 @@ import { ISLANDS, WORLD, TREASURE_MAPS, type IslandDef } from '../data/world';
 import { heightAt } from './terrain';
 import { vcMat, merge, paint, xf, canvasTex, toonMat } from './materials';
 import * as P from './props';
-import { kitGeo, glowMat, model } from './assets';
+import { kitGeo, glowMat, model, characterModel, type Character } from './assets';
 import { RNG, fbm } from '../core/noise';
 
 export interface Collider { x: number; z: number; r: number }
@@ -16,6 +16,8 @@ export class Environment {
   animators: ((t: number, dt: number) => void)[] = [];
   pierTip = new THREE.Vector3();
   npcs: THREE.Object3D[] = [];
+  /** rigged townsfolk that replaced the stand-ins, with a timer for their next gesture */
+  private folk: { c: Character; next: number }[] = [];
   lighthouseLamp?: THREE.Mesh;
   /** world position of the last tree's canopy (a landmark visible from the water) */
   landmarkGreen?: THREE.Vector3;
@@ -364,7 +366,9 @@ export class Environment {
       this.colliders.push({ x: s.x, z, r: 6 });
       // shopkeeper
       const npc = new THREE.Mesh(P.person(rng, s.tint, rng.next() > 0.5 ? '#3b2a1e' : null), vcMat());
-      npc.position.set(s.x + 1.5, y, z - 7);
+      // stand in front of the counter (shack shops have a market stall out front), feet on the ground
+      const nz = z - (s.kind === 'shack' ? 10.5 : 7);
+      npc.position.set(s.x + 1.5, Math.max(heightAt(s.x + 1.5, nz), 0.2), nz);
       npc.rotation.y = rng.range(-0.4, 0.4);
       this.scene.add(npc);
       this.npcs.push(npc);
@@ -475,6 +479,7 @@ export class Environment {
       this.npcs.push(npc);
     }
     this.animators.push((t) => {
+      if (this.folk.length) return;
       this.npcs.forEach((n, i) => {
         n.scale.y = 1 + Math.sin(t * 2 + i) * 0.02;
         n.rotation.y += Math.sin(t * 0.3 + i * 2) * 0.002;
@@ -523,8 +528,47 @@ export class Environment {
     this.scene.add(sign);
   }
 
+  /** Swap the stand-in townsfolk for the rigged GITCRAFT survivors once they have streamed in. */
+  upgradeNpcs() {
+    if (this.folk.length) return;
+    const kinds = ['tb_npc_trader', 'tb_npc_elder', 'tb_npc_dockhand'];
+    this.npcs = this.npcs.map((old, i) => {
+      const c = characterModel(kinds[(i * 2 + (i > 3 ? 1 : 0)) % kinds.length]);
+      if (!c) return old;
+      c.root.position.copy(old.position);
+      c.root.rotation.y = old.rotation.y;
+      c.root.scale.setScalar(0.95 + ((i * 37) % 10) / 100);
+      c.root.traverse((o) => (o.castShadow = true));
+      this.scene.add(c.root);
+      this.scene.remove(old);
+      const idle = c.actions.Idle;
+      if (idle) {
+        idle.time = i * 1.3;
+        idle.timeScale = 0.9 + (i % 3) * 0.08;
+        idle.play();
+      }
+      this.folk.push({ c, next: 4 + i * 2.7 });
+      return c.root;
+    });
+  }
+
   update(t: number, dt: number) {
     for (const a of this.animators) a(t, dt);
+    for (const f of this.folk) {
+      // now and then somebody waves at a passing boat or haggles over the counter
+      f.next -= dt;
+      if (f.next <= 0 && f.c.actions.Interact && f.c.actions.Idle) {
+        f.next = 9 + Math.random() * 12;
+        const it = f.c.actions.Interact;
+        it.reset().setLoop(THREE.LoopOnce, 1).play();
+        f.c.actions.Idle.crossFadeTo(it, 0.3, false);
+        setTimeout(() => {
+          f.c.actions.Idle.reset().play();
+          it.crossFadeTo(f.c.actions.Idle, 0.4, false);
+        }, it.getClip().duration * 1000 - 300);
+      }
+      if (f.c.root.visible) f.c.mixer.update(dt);
+    }
     if (this.lighthouseLamp) {
       (this.lighthouseLamp.material as THREE.MeshBasicMaterial).opacity = 0.0;
     }

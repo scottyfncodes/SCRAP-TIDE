@@ -31,6 +31,8 @@ export const MODEL_FILES = [
 export type ModelFile = (typeof MODEL_FILES)[number];
 
 export const CREW_FILES = ['mechanic', 'navigator', 'salvager', 'fisher', 'lookout', 'defender'] as const;
+/** Apocalyptic-pirate cast (creative/3d-characters): the captain, Driftholm's townsfolk and the Rustfang raiders. */
+export const CHARACTER_FILES = ['tb_captain', 'tb_npc_trader', 'tb_npc_elder', 'tb_npc_dockhand', 'tb_raider'] as const;
 
 const gltfs = new Map<string, GLTF>();
 const partCache = new Map<string, { geo: THREE.BufferGeometry; glow: THREE.BufferGeometry | null } | null>();
@@ -78,7 +80,7 @@ let crewPromise: Promise<void> | null = null;
 export function loadCrew() {
   if (!crewPromise) {
     const loader = new GLTFLoader();
-    crewPromise = Promise.all(CREW_FILES.map((r) => loadOne(loader, `tb_crew_${r}`))).then(() => undefined);
+    crewPromise = Promise.all([...CREW_FILES.map((r) => `tb_crew_${r}`), ...CHARACTER_FILES].map((n) => loadOne(loader, n))).then(() => undefined);
   }
   return crewPromise;
 }
@@ -163,9 +165,15 @@ export function kitGeo(file: string, name: string, x: number, y: number, z: numb
 }
 
 const skinMats = new Map<THREE.Material, THREE.Material>();
-/** A rigged crew member (MeshCraft deckhand, Mixamo-named bones) with its own mixer and actions. */
-export function crewModel(role: string): { root: THREE.Object3D; mixer: THREE.AnimationMixer; actions: Record<string, THREE.AnimationAction> } | null {
-  const g = gltfs.get(`tb_crew_${role}`);
+/** A rigged crew member (MeshCraft survivor, Mixamo-named bones) with its own mixer and actions. */
+export function crewModel(role: string) {
+  return characterModel(`tb_crew_${role}`);
+}
+
+export type Character = { root: THREE.Object3D; mixer: THREE.AnimationMixer; actions: Record<string, THREE.AnimationAction> };
+/** Any rigged character GLB: a skeleton-safe clone, the game's toon material, a mixer and one action per clip. */
+export function characterModel(file: string): Character | null {
+  const g = gltfs.get(file);
   if (!g) return null;
   const root = SkeletonUtils.clone(g.scene);
   mergeSkinned(root);

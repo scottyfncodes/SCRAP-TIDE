@@ -1,0 +1,8 @@
+{
+ "stdout": "Info: Saved as \"tb_captain.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/captain/source/tb_captain.blend\", \"tris\": 6228, \"clips\": [\"Idle\", \"Walk\", \"Sit\", \"Dig\", \"Cheer\", \"Interact\"]}\n",
+ "objects": [
+  "captain",
+  "captain_mesh",
+  "captain_rig"
+ ]
+}

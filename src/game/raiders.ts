@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import type { Game } from './game';
 import { RAIDER_ZONES, type RaiderZone } from '../data/world';
 import { item } from '../data/items';
-import { model } from '../world/assets';
+import { model, characterModel, type Character } from '../world/assets';
 import { angleDiff, clamp } from '../core/noise';
 import { audio } from '../audio/audio';
 
@@ -18,6 +18,8 @@ interface Raider {
   timer: number;
   zone: RaiderZone;
   ph: number;
+  crew: Character[];
+  attacking: boolean;
 }
 
 export class Raiders {
@@ -43,11 +45,35 @@ export class Raiders {
     for (let i = 0; i < z.count; i++) {
       const obj = model('tb_raider_skiff', 'raider_body', { shadows: true }) ?? new THREE.Mesh(new THREE.BoxGeometry(2.4, 1, 6), new THREE.MeshToonMaterial({ color: 0x6b2e14 }));
       const a = (i / z.count) * Math.PI * 2;
-      const r: Raider = { obj, x: z.x + Math.cos(a) * z.r * 0.5, z: z.z + Math.sin(a) * z.r * 0.5, heading: a, speed: 4, state: 'patrol', timer: 0, zone: z, ph: a };
+      const r: Raider = { obj, x: z.x + Math.cos(a) * z.r * 0.5, z: z.z + Math.sin(a) * z.r * 0.5, heading: a, speed: 4, state: 'patrol', timer: 0, zone: z, ph: a, crew: [], attacking: false };
+      this.crewUp(r);
       this.g.scene.add(obj);
       this.list.push(r);
     }
     this.spawned.add(z.id);
+  }
+
+  /** Rustfang crew on deck (GITCRAFT survivor rig): one at the bow with a cutlass, one at the tiller. */
+  crewUp(r: Raider) {
+    if (r.crew.length) return;
+    for (const [z, ry] of [[1.1, 0], [-1.7, 0.4]] as const) {
+      const c = characterModel('tb_raider');
+      if (!c) return;
+      c.root.position.set(z > 0 ? 0.15 : -0.2, 0.62, z);
+      c.root.rotation.y = ry;
+      r.obj.add(c.root);
+      const idle = c.actions.Idle;
+      if (idle) {
+        idle.time = r.ph + z;
+        idle.play();
+      }
+      r.crew.push(c);
+    }
+  }
+
+  /** Characters stream in after the title: give skiffs already on the water their crews. */
+  onCharacters() {
+    for (const r of this.list) this.crewUp(r);
   }
 
   private despawn(z: RaiderZone) {
@@ -74,6 +100,20 @@ export class Raiders {
     for (const r of this.list) {
       r.timer -= dt;
       const dToP = Math.hypot(px - r.x, pz - r.z);
+      // the bow raider waves the cutlass when they close in
+      const attack = r.state === 'chase' && dToP < 40;
+      if (attack !== r.attacking && r.crew[0]) {
+        r.attacking = attack;
+        const c = r.crew[0];
+        const to = attack ? c.actions.Attack : c.actions.Idle;
+        const from = attack ? c.actions.Idle : c.actions.Attack;
+        if (to && from) {
+          to.reset().play();
+          if (attack) to.setLoop(THREE.LoopRepeat, Infinity);
+          from.crossFadeTo(to, 0.2, false);
+        }
+      }
+      if (dToP < 260) for (const c of r.crew) c.mixer.update(dt);
       const zoneD = Math.hypot(px - r.zone.x, pz - r.zone.z);
       const chaseR = r.zone.r * (defender ? 0.6 : 1);
       if (r.state === 'flee' && r.timer <= 0) r.state = 'patrol';

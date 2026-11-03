@@ -1,0 +1,33 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-characters/crew_fisher/exports/tb_crew_fisher.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 650716,
+  "sha256": "752efddce51b6c82ec3ade8a96c7a851bc64e1890fdf3a9c4e871b01ab064d92",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "kind": "lod",
+    "skipped": "asset has skinned meshes; decimating them would break their weights (author LODs by hand or per template)"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-characters/crew_fisher/exports/tb_crew_fisher.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 11988,
+    "sha256": "c7f8fcf9493ec9d3508c82566ce907e6edff8f3491ea116cb52ee2aa4c43751e",
+    "shape": "convex_hull",
+    "triangles": 164
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-characters/crew_fisher/exports/tb_crew_fisher.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 11988,
+    "sha256": "c7f8fcf9493ec9d3508c82566ce907e6edff8f3491ea116cb52ee2aa4c43751e"
+   }
+  ]
+ }
+]

@@ -1,0 +1,44 @@
+{
+ "uri": "/home/user/TIDEBREAKERS/creative/3d-characters/npc_dockhand/exports/tb_npc_dockhand.mobile.glb",
+ "mimeType": "model/gltf-binary",
+ "validatorVersion": "2.0.0-dev.3.10",
+ "validatedAt": "2026-11-03T16:14:28.486Z",
+ "issues": {
+  "numErrors": 0,
+  "numWarnings": 0,
+  "numInfos": 0,
+  "numHints": 0,
+  "messages": [],
+  "truncated": false
+ },
+ "info": {
+  "version": "2.0",
+  "generator": "glTF-Transform v4.1.1",
+  "extensionsUsed": [
+   "KHR_mesh_quantization"
+  ],
+  "extensionsRequired": [
+   "KHR_mesh_quantization"
+  ],
+  "resources": [
+   {
+    "pointer": "/buffers/0",
+    "mimeType": "application/gltf-buffer",
+    "storage": "glb",
+    "byteLength": 222340
+   }
+  ],
+  "animationCount": 2,
+  "materialCount": 1,
+  "hasMorphTargets": false,
+  "hasSkins": true,
+  "hasTextures": false,
+  "hasDefaultScene": true,
+  "drawCallCount": 1,
+  "totalVertexCount": 6625,
+  "totalTriangleCount": 5082,
+  "maxUVs": 0,
+  "maxInfluences": 4,
+  "maxAttributes": 5
+ }
+}

@@ -1,0 +1,33 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-characters/npc_trader/exports/tb_npc_trader.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 549016,
+  "sha256": "ea958cb012d2b73082b52af42fcca652137bead8cf6ed0de6270823d1ed3d2f8",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "kind": "lod",
+    "skipped": "asset has skinned meshes; decimating them would break their weights (author LODs by hand or per template)"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-characters/npc_trader/exports/tb_npc_trader.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 18156,
+    "sha256": "07bb3394fa6d909cf3db7138c0a251052763da6034f721ac0bba2ffe22a23fe7",
+    "shape": "convex_hull",
+    "triangles": 248
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-characters/npc_trader/exports/tb_npc_trader.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 18156,
+    "sha256": "07bb3394fa6d909cf3db7138c0a251052763da6034f721ac0bba2ffe22a23fe7"
+   }
+  ]
+ }
+]
