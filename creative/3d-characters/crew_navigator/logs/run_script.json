@@ -1,0 +1,8 @@
+{
+ "stdout": "Info: Saved as \"tb_crew_navigator.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/crew_navigator/source/tb_crew_navigator.blend\", \"tris\": 5422, \"clips\": [\"Idle\", \"Walk\", \"Interact\", \"Attack\"]}\n",
+ "objects": [
+  "crew_navigator",
+  "crew_navigator_mesh",
+  "crew_navigator_rig"
+ ]
+}

@@ -39,6 +39,10 @@ rarest behind the scrap walls of Canopy Rise. Each comes aboard with a green ALI
 **Settlements:** outposts on drum pontoons, trading posts (Rooftop Hollow, Rig Helios), Driftholm's fortified scrap
 atoll with its salvaged propeller and freshwater tower, the raiders' Rustfang Hold, and Canopy Rise, the last garden.
 
+**People:** the captain, crew, townsfolk and Rustfang raiders are rigged apocalyptic-pirate survivors (patched dusters,
+tricorns and goggles, road-sign armour, salvaged blades), with idle, walk, dig, sit, cheer and attack animation
+(`creative/3d-characters`, `docs/characters-pass/`).
+
 **Crew:** six survivors, six roles with real perks: Mechanic, Navigator, Salvager, Fisher, Lookout, Defender.
 **Captain's Log:** a 10-step goal chain after the first voyage that always points at the next big unlock.
 
@@ -67,7 +71,7 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | Procedural WebAudio (howling wind, groaning steel, bell buoys, hull strikes, engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
 
 3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`, and the Waterworld atoll,
-outpost and flora kits in `creative/3d-waterworld`); item icons from VectorCraft (`creative/ui-drowned`) plus the living-plant
+outpost and flora kits in `creative/3d-waterworld`, and the rigged cast in `creative/3d-characters`); item icons from VectorCraft (`creative/ui-drowned`) plus the living-plant
 icons in `src/ui/iconsLiving.ts`.
 
 ## Tech

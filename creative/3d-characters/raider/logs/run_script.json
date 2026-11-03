@@ -1,0 +1,8 @@
+{
+ "stdout": "Info: Saved as \"tb_raider.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/raider/source/tb_raider.blend\", \"tris\": 5020, \"clips\": [\"Idle\", \"Attack\"]}\n",
+ "objects": [
+  "raider",
+  "raider_mesh",
+  "raider_rig"
+ ]
+}

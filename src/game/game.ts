@@ -7,7 +7,7 @@ import { Ocean } from '../world/ocean';
 import { Sky } from '../world/sky';
 import { Atmosphere } from '../world/atmosphere';
 import { DrownedWorld } from '../world/drowned';
-import { loadModels, loadCrew, model, loadReport } from '../world/assets';
+import { loadModels, loadCrew, model, loadReport, characterModel } from '../world/assets';
 import { oceanState } from '../world/ocean';
 import { Salvage } from './salvage';
 import { Raiders } from './raiders';
@@ -167,8 +167,10 @@ export class Game implements GameAPI {
     this.restoreState();
     this.placeFinds();
     await this.progress(1, 'Ready');
-    if (this.store.data.crew.length) loadCrew().then(() => this.rebuildShip());
-    else void loadCrew();
+    loadCrew().then(() => {
+      if (this.store.data.crew.length) this.rebuildShip();
+      this.onCharacters();
+    });
     this.renderer.compile(this.scene, this.camera);
     let last = performance.now();
     const loop = (now: number) => {
@@ -187,6 +189,14 @@ export class Game implements GameAPI {
     document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && save());
     window.addEventListener('pagehide', save);
     this.ui.showTitle(this.store.isNew);
+  }
+
+  /** The apocalyptic-pirate cast has streamed in: the captain, the townsfolk and the raider crews come alive. */
+  private onCharacters() {
+    const cap = characterModel('tb_captain');
+    if (cap) this.captain.useCharacter(cap);
+    this.env.upgradeNpcs();
+    this.raiders.onCharacters();
   }
 
   start() {

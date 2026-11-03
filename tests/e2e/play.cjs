@@ -222,6 +222,16 @@ const check = (name, ok, detail = '') => {
       algae: window.__game.drowned.flotsam.filter((f) => f.kind === 'algae_mat').length, plants: window.__game.finds.filter((f) => f.def.kind === 'plant').length };
   });
   check('Waterworld settlements, drifting algae and plant finds are in the world', ww.wall && ww.gate && ww.propeller && ww.boats && ww.algae > 10 && ww.plants >= 6, JSON.stringify(ww));
+  // apocalyptic-pirate cast: the rigged captain, townsfolk and raider crews replace the stand-ins
+  await page.waitForFunction(() => !!window.__game.captain.char && window.__game.env.folk.length > 0, null, { timeout: 120000 }).catch(() => {});
+  const cast = await g(() => {
+    const G = window.__game;
+    const cap = G.captain.char;
+    return { captain: !!cap, clips: cap ? Object.keys(cap.actions).sort().join(',') : '', standIn: G.captain.body.visible, folk: G.env.folk.length,
+      raiders: G.raiders.list.map((r) => r.crew.length) };
+  });
+  check('the rigged survivor cast replaces the block figures (captain, townsfolk, raider crews)',
+    cast.captain && !cast.standIn && /Dig/.test(cast.clips) && /Sit/.test(cast.clips) && cast.folk >= 8 && cast.raiders.every((n) => n === 2), JSON.stringify(cast));
   const alg = await g(() => {
     const G = window.__game;
     G.store.data.cargo = [];

@@ -1,0 +1,860 @@
+"""TIDEBREAKERS: apocalyptic-pirate survivors, authored for GITCRAFT MeshCraft `run_script`.
+
+    run_script {"path": ".../survivors.py",
+                "args": {"asset": "captain", "out_dir": ".../creative/3d-characters/captain",
+                         "palette": ".../creative/3d-waterworld/tidebreakers-waterworld-palette.json"}}
+
+Replaces the block-toy deckhands with people. What makes them read as human at phone size:
+  * real proportions: ~7.3 heads tall, a small head on a neck, shoulders wider than hips (or the reverse),
+    a narrow waist, tapered limbs with a calf and a forearm, hands with fingers and a thumb;
+  * a sculpted head: a skull that is taller than wide, a jaw that narrows to a chin, a brow ridge,
+    eye sockets, a nose, ears, a mouth line, brows, and hair/beard as their own masses;
+  * continuous lofted torso and limbs, smooth-shaded, with *blended* joint weights (shoulders, elbows,
+    hips and knees bend instead of hinging rigid blocks);
+  * clothing as layers over the body: long patched coats with open fronts and flared skirts, sleeves,
+    belts, bandoliers, scarves, armour made from road signs and car hoods, hats with goggles.
+
+Rig: MeshCraft's 22-bone Mixamo-named skeleton (engine/procedural/builders.SKELETON) and its clip authoring
+helpers, so the game's crew loader and any Mixamo clip retarget unchanged. Extra clips (Sit, Dig, Cheer)
+are authored with the same helpers. Front = -Y (=> +Z in three.js). Origin = between the feet.
+"""
+import json, math, os, random, zlib, importlib
+import bmesh
+from mathutils import Matrix, Vector
+
+A = args  # noqa: F821
+PAL = Palette.from_file(A["palette"])  # noqa: F821
+ASSET = A["asset"]
+OUT = A["out_dir"]
+bpy_ = bpy  # noqa: F821
+B = importlib.import_module("engine.procedural.builders")
+SK = B.SKELETON
+MX = B.MIXAMO
+RNG = random.Random(zlib.crc32(ASSET.encode()))
+
+kit.reset()  # noqa: F821
+M = kit.Materials(PAL, {}, prefix="TBC")  # noqa: F821
+
+
+def mat(hexcol, role=None):
+    role = role or "c" + hexcol.lstrip("#").lower()
+    if role not in M.mats:
+        M.add(role, hexcol, rough=0.8)
+    return M[role]
+
+
+# ------------------------------------------------------------------ geometry
+def ring(n, rx, ry, z, cx=0.0, cy=0.0, a0=0.0, a1=math.tau, closed=True, squareness=0.0):
+    pts = []
+    count = n if closed else n + 1
+    for i in range(count):
+        a = a0 + (a1 - a0) * i / n
+        c, s = math.cos(a), math.sin(a)
+        if squareness:  # superellipse-ish: flatter sides (shoulders, coats)
+            k = squareness
+            c = math.copysign(abs(c) ** (1 - k), c)
+            s = math.copysign(abs(s) ** (1 - k), s)
+        pts.append(Vector((cx + rx * c, cy + ry * s, z)))
+    return pts
+
+
+def loft(name, rings, material, closed=True, cap_bottom=True, cap_top=True, smooth=True):
+    """Skin a list of point rings (same length) into one surface."""
+    bm = bmesh.new()
+    vs = [[bm.verts.new(p) for p in r] for r in rings]
+    n = len(rings[0])
+    for i in range(len(vs) - 1):
+        for j in range(n if closed else n - 1):
+            a, b = vs[i][j], vs[i][(j + 1) % n]
+            c, d = vs[i + 1][(j + 1) % n], vs[i + 1][j]
+            bm.faces.new((a, b, c, d))
+    if closed and cap_bottom:
+        bm.faces.new(list(reversed(vs[0])))
+    if closed and cap_top:
+        bm.faces.new(vs[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    me = bpy_.data.meshes.new(name)
+    bm.to_mesh(me)
+    bm.free()
+    o = bpy_.data.objects.new(name, me)
+    bpy_.context.scene.collection.objects.link(o)
+    o.data.materials.append(material)
+    for p in o.data.polygons:
+        p.use_smooth = smooth
+    return o
+
+
+def tube(name, a, b, radii, material, n=9, flat=1.0, smooth=True, cap=True):
+    """Tapered limb from a to b; radii sampled along it (calf/forearm bulges). flat<1 flattens across Y."""
+    a, b = Vector(a), Vector(b)
+    L = (b - a).length
+    rings = []
+    k = len(radii)
+    for i, r in enumerate(radii):
+        t = i / (k - 1)
+        rings.append(ring(n, r, r * flat, t * L))
+    o = loft(name, rings, material, cap_bottom=cap, cap_top=cap, smooth=smooth)
+    q = Vector((0, 0, 1)).rotation_difference((b - a).normalized())
+    o.data.transform(Matrix.Translation(a) @ q.to_matrix().to_4x4())
+    return o
+
+
+def box(name, size, loc, material, rot=(0, 0, 0), bevel=0.0):
+    o = kit.box(name, size, loc, material, bevel=bevel)  # noqa: F821
+    if any(rot):
+        tf(o, rot, loc)
+    return o
+
+
+def cyl(name, r, depth, loc, material, axis="Z", n=10, r2=None):
+    return kit.cylinder(name, r, depth, loc, axis=axis, verts=n, mat=material, r2=r2)  # noqa: F821
+
+
+def blob(name, r, loc, material, scale=(1, 1, 1), sub=2, seed=0, wobble=0.0):
+    return kit.ico(name, r, loc, material, sub=sub, scale=scale, seed=seed, wobble=wobble)  # noqa: F821
+
+
+def tf(o, rot=(0, 0, 0), pivot=(0, 0, 0), move=(0, 0, 0)):
+    p = Vector(pivot)
+    R = Matrix.Translation(p) @ (Matrix.Rotation(rot[2], 4, "Z") @ Matrix.Rotation(rot[1], 4, "Y") @ Matrix.Rotation(rot[0], 4, "X")) @ Matrix.Translation(-p)
+    o.data.transform(Matrix.Translation(Vector(move)) @ R)
+    o.data.update()
+    return o
+
+
+def deform(o, fn):
+    for v in o.data.vertices:
+        v.co = fn(v.co.copy())
+    o.data.update()
+    return o
+
+
+def smoothstep(a, b, x):
+    t = max(0.0, min(1.0, (x - a) / (b - a)))
+    return t * t * (3 - 2 * t)
+
+
+# ------------------------------------------------------------------ skinning
+PARTS = []  # (object, bone or "AUTO_TORSO" / "SKIRT")
+
+
+def part(bone, *objs):
+    for o in objs:
+        PARTS.append((o, bone))
+    return objs
+
+
+def bone_seg(name):
+    h, t, par = SK[name]
+    return Vector(h), Vector(t), par
+
+
+CHILD = {"LeftArm": "LeftForeArm", "LeftForeArm": "LeftHand", "LeftUpLeg": "LeftLeg", "LeftLeg": "LeftFoot",
+         "RightArm": "RightForeArm", "RightForeArm": "RightHand", "RightUpLeg": "RightLeg", "RightLeg": "RightFoot",
+         "Spine": "Spine1", "Spine1": "Spine2", "Neck": "Head", "LeftShoulder": "LeftArm", "RightShoulder": "RightArm"}
+BLEND = {"LeftArm": 0.07, "RightArm": 0.07, "LeftForeArm": 0.06, "RightForeArm": 0.06, "LeftUpLeg": 0.08, "RightUpLeg": 0.08,
+         "LeftLeg": 0.07, "RightLeg": 0.07, "Spine": 0.05, "Spine1": 0.05, "Spine2": 0.06, "Hips": 0.05, "Neck": 0.03, "Head": 0.03,
+         "LeftShoulder": 0.05, "RightShoulder": 0.05, "LeftHand": 0.03, "RightHand": 0.03}
+
+
+def torso_bone(z):
+    if z < 1.05:
+        return "Hips"
+    if z < 1.17:
+        return "Spine"
+    if z < 1.29:
+        return "Spine1"
+    if z < 1.42:
+        return "Spine2"
+    return "Neck"
+
+
+def weights_for(co, bone):
+    """Rigid ownership blended across the joint at each end of the bone."""
+    if bone == "AUTO_TORSO":
+        bone = torso_bone(co.z)
+        if bone == "Spine2" and abs(co.x) > 0.16 and co.z > 1.3:  # shoulder mass rides with the clavicle
+            return blend_pair("Spine2", ("Left" if co.x > 0 else "Right") + "Shoulder", smoothstep(0.16, 0.22, abs(co.x)) * 0.6)
+    if bone == "SKIRT":  # coat tails / long skirts: follow the hips, swing with the nearer thigh
+        side = "LeftUpLeg" if co.x > 0 else "RightUpLeg"
+        k = smoothstep(0.02, 0.14, abs(co.x)) * smoothstep(0.95, 0.55, co.z) * 0.65
+        return blend_pair("Hips", side, k)
+    h, t, par = bone_seg(bone)
+    d = t - h
+    L = d.length
+    s = (co - h).dot(d.normalized())
+    bl = BLEND.get(bone, 0.04)
+    w = {bone: 1.0}
+    if par and s < bl:
+        k = 0.5 * (1 - max(0.0, s) / bl)
+        w = {bone: 1 - k, par: k}
+    ch = CHILD.get(bone)
+    if ch and s > L - bl:
+        k = 0.5 * (s - (L - bl)) / bl
+        w = {bone: w.get(bone, 1) - min(k, 0.5), ch: min(k, 0.5), **{b: v for b, v in w.items() if b != bone}}
+    return w
+
+
+def blend_pair(a, b, k):
+    return {a: 1 - k, b: k}
+
+
+def build_body_object():
+    objs = []
+    for o, bone in PARTS:
+        groups = {}
+        for v in o.data.vertices:
+            for bn, wt in weights_for(o.matrix_world @ v.co, bone).items():
+                if wt <= 0:
+                    continue
+                g = groups.get(bn) or o.vertex_groups.new(name=MX + bn)
+                groups[bn] = g
+                g.add([v.index], wt, "REPLACE")
+        objs.append(o)
+    body = kit.join(objs, ASSET + "_mesh")  # noqa: F821
+    bm = bmesh.new()
+    bm.from_mesh(body.data)
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-5, edges=bm.edges)
+    bm.to_mesh(body.data)
+    bm.free()
+    return body
+
+
+# ------------------------------------------------------------------ the human
+SKINS = {"pale": "#E2B79A", "light": "#D19C79", "olive": "#B98458", "tan": "#9E6A45", "brown": "#7A4E33", "dark": "#563624"}
+
+
+def human(p):
+    """Body + head. p: frame m/f, build (girth), skin, hair, hairstyle, beard, age."""
+    f = p.get("frame", "m") == "f"
+    g = p.get("build", 1.0)
+    skin = mat(SKINS.get(p.get("skin", "light"), p.get("skin", "#D19C79")), "skin")
+    skin_dk = mat(_shade(SKINS.get(p.get("skin", "light"), "#D19C79"), 0.82), "skin_dk")
+    shirt = mat(p.get("shirt", "#8E8470"))
+    pants = mat(p.get("pants", "#4A463C"))
+    boots = mat(p.get("boots", "#2E2620"))
+    top_skin = p.get("bare_arms", False)
+    # ---- torso: hips → waist → ribcage → chest → shoulders → neck base
+    S = [  # z, half-width, half-depth, front offset (belly/chest), squareness
+        (0.86, (0.165 if not f else 0.185) * g, 0.11 * g, 0.0, 0.25),
+        (0.97, (0.16 if not f else 0.18) * g, 0.115 * g, -0.005, 0.25),
+        (1.08, (0.145 if not f else 0.128) * g, 0.1 * g, -0.008 * g, 0.2),
+        (1.19, (0.155 if not f else 0.14) * g, 0.105 * g, -0.01, 0.25),
+        (1.29, (0.175 if not f else 0.155) * g, (0.112 if not f else 0.122) * g, -0.012 if not f else -0.02, 0.3),
+        (1.37, (0.19 if not f else 0.165) * g, 0.1 * g, -0.005, 0.35),
+        (1.43, 0.12 * g, 0.075, 0.0, 0.1),
+        (1.47, 0.06, 0.055, 0.0, 0.0),
+    ]
+    rings = [ring(14, rx, ry, z, cy=cy, squareness=sq) for z, rx, ry, cy, sq in S]
+    torso = loft("torso", rings, shirt)
+    # colour the trousers below the belt
+    for poly in torso.data.polygons:
+        if poly.center.z < 1.0:
+            poly.material_index = _slot(torso, pants)
+    part("AUTO_TORSO", torso)
+    part("Hips", cyl("belt", 0.168 * g if not f else 0.183 * g, 0.055, (0, 0, 1.0), mat(p.get("belt", "#3B2A1C")), n=14),
+         box("buckle", (0.05, 0.02, 0.04), (0, -0.12 * g - 0.005, 1.0), mat("#8C7A4A")))
+    # ---- neck + head
+    part("Neck", tube("neck", (0, 0.005, 1.43), (0, 0.01, 1.53), [0.052, 0.048, 0.047], skin, n=9))
+    head(p, skin, skin_dk)
+    # ---- arms (T-pose along ±X), shoulders, hands
+    for side, sx in (("Left", 1), ("Right", -1)):
+        sh = Vector(SK[side + "Arm"][0])
+        el = Vector(SK[side + "ForeArm"][0])
+        wr = Vector(SK[side + "Hand"][0])
+        upper_r = [0.062, 0.058, 0.052, 0.046, 0.043] if not f else [0.055, 0.05, 0.045, 0.04, 0.038]
+        fore_r = [0.042, 0.046, 0.042, 0.035, 0.03] if not f else [0.037, 0.04, 0.036, 0.031, 0.027]
+        upper_r = [r * g for r in upper_r]
+        fore_r = [r * (0.5 + 0.5 * g) for r in fore_r]
+        sleeve = skin if top_skin else shirt
+        part(side + "Shoulder", blob("deltoid", 0.072 * g, (sx * 0.19 * g, 0, 1.385), sleeve, scale=(1.15, 1.0, 0.85)))
+        part(side + "Arm", tube("upper", sh + Vector((sx * 0.01, 0, 0)), el, upper_r, sleeve, flat=0.92))
+        part(side + "ForeArm", tube("fore", el, wr, fore_r, skin if p.get("rolled", True) or top_skin else sleeve, flat=0.85))
+        hand(side, sx, wr, skin, skin_dk, gloves=p.get("gloves"))
+        # ---- legs
+        hip = Vector(SK[side + "UpLeg"][0])
+        kn = Vector(SK[side + "Leg"][0])
+        an = Vector(SK[side + "Foot"][0])
+        hip = Vector((sx * (0.095 if not f else 0.105) * g, hip.y, 0.9))
+        thigh_r = [0.088, 0.083, 0.072, 0.062, 0.055] if not f else [0.092, 0.085, 0.072, 0.06, 0.052]
+        shin_r = [0.054, 0.06, 0.055, 0.045, 0.038, 0.035]
+        part(side + "UpLeg", tube("thigh", hip, kn, [r * g for r in thigh_r], pants, flat=0.95))
+        part(side + "Leg", tube("shin", kn, an + Vector((0, 0, 0.04)), [r * (0.6 + 0.4 * g) for r in shin_r], pants, flat=0.95))
+        boot(side, sx, an, boots, high=p.get("high_boots", True))
+
+
+def _shade(hexcol, k):
+    h = hexcol.lstrip("#")
+    r, g_, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return "#%02X%02X%02X" % tuple(min(255, int(c * k)) for c in (r, g_, b))
+
+
+def _slot(o, material):
+    for i, m in enumerate(o.data.materials):
+        if m == material:
+            return i
+    o.data.materials.append(material)
+    return len(o.data.materials) - 1
+
+
+def hand(side, sx, wr, skin, skin_dk, gloves=None):
+    hm = mat(gloves) if gloves else skin
+    x0 = wr.x
+    parts = [box("palm", (0.085, 0.075, 0.03), (x0 + sx * 0.045, -0.004, wr.z - 0.004), hm, bevel=0.008)]
+    for i in range(4):
+        y = -0.03 + i * 0.02
+        ln = (0.062, 0.07, 0.066, 0.052)[i]
+        parts.append(box("finger", (ln, 0.017, 0.02), (x0 + sx * (0.088 + ln / 2), y, wr.z - 0.008 - 0.003 * i), hm, bevel=0.005))
+    th = box("thumb", (0.05, 0.02, 0.022), (x0 + sx * 0.035, -0.05, wr.z - 0.01), hm, bevel=0.006)
+    tf(th, (0, 0, sx * -0.6), (x0 + sx * 0.02, -0.04, wr.z))
+    parts.append(th)
+    part(side + "Hand", *parts)
+
+
+def boot(side, sx, an, material, high=True):
+    x = an.x
+    top = 0.36 if high else 0.16
+    shaft = tube("shaft", (x, 0.004, 0.05), (x, 0.0, top), [0.052, 0.05, 0.052, 0.056], material, n=10)
+    foot = loft("foot", [ring(10, 0.048, 0.05, z, cy=cy) for z, cy in ((0.0, 0.02), (0.07, 0.0))] , material)
+    toe = loft("toe", [ring(10, 0.047, 0.06, 0.0, cy=-0.09), ring(10, 0.042, 0.05, 0.065, cy=-0.07), ring(10, 0.02, 0.03, 0.08, cy=-0.05)], material)
+    for o in (foot, toe):
+        o.data.transform(Matrix.Translation((x, 0, 0)))
+    sole = box("sole", (0.1, 0.27, 0.025), (x, -0.045, 0.012), mat("#1A1612"))
+    part(side + "Leg", shaft)
+    part(side + "Foot", foot, sole)
+    part(side + "ToeBase", toe)
+    if high:
+        part(side + "Leg", cyl("cuff", 0.062, 0.04, (x, 0.0, top), material, n=10))
+
+
+def head(p, skin, skin_dk):
+    """A sculpted low-poly head: skull taller than wide, jaw narrowing to a chin, brow ridge, sockets, nose, ears."""
+    cz = 1.63
+    age = p.get("age", 0.3)
+    f = p.get("frame", "m") == "f"
+    h = kit.sphere("skull", 0.1, (0, 0, cz), skin, segs=16, rings=12)  # noqa: F821
+
+    def sculpt(v):
+        x, y, z = v.x, v.y, v.z - cz
+        x *= 0.84
+        y *= 0.98
+        z *= 1.18
+        # jaw: narrows below the cheekbones, chin forward
+        jaw = smoothstep(-0.01, -0.1, z)
+        x *= 1 - jaw * (0.34 if not f else 0.4)
+        y *= 1 - jaw * 0.25
+        if y < 0:
+            y -= jaw * 0.012
+        # back of the skull rounder and a touch fuller
+        if y > 0.02 and z > -0.02:
+            y *= 1.06
+        # brow ridge + sockets + cheekbones on the face (front = -y)
+        if y < -0.05:
+            brow = math.exp(-((z - 0.028) / 0.016) ** 2) * (1 - smoothstep(0.05, 0.085, abs(x)))
+            y -= brow * (0.009 if not f else 0.005)
+            for ex in (-0.034, 0.034):
+                sock = math.exp(-(((x - ex) / 0.018) ** 2 + ((z - 0.008) / 0.014) ** 2))
+                y += sock * 0.008
+            cheek = math.exp(-((abs(x) - 0.052) / 0.02) ** 2 - ((z + 0.012) / 0.02) ** 2)
+            y -= cheek * 0.004
+        # flatten the crown slightly
+        if z > 0.07:
+            z = 0.07 + (z - 0.07) * 0.85
+        return Vector((x, y, z + cz))
+
+    deform(h, sculpt)
+    nose = loft("nose", [ring(4, 0.012, 0.004, cz + 0.024, cy=-0.087), ring(4, 0.014, 0.016, cz - 0.012, cy=-0.1), ring(4, 0.017, 0.014, cz - 0.028, cy=-0.098)],
+                skin, smooth=False)
+    tip = blob("nosetip", 0.012, (0, -0.108, cz - 0.022), skin, scale=(1.1, 0.9, 0.9), sub=1)
+    ears = [blob("ear", 0.022, (s * 0.087, 0.006, cz - 0.004), skin_dk, scale=(0.4, 0.8, 1.25), sub=1) for s in (-1, 1)]
+    eyes = []
+    for s in (-1, 1):
+        eyes.append(blob("eyewhite", 0.011, (s * 0.033, -0.083, cz + 0.008), mat("#D8D2C4"), scale=(1.3, 0.6, 0.8), sub=1))
+        eyes.append(blob("iris", 0.0065, (s * 0.033, -0.09, cz + 0.008), mat(p.get("eyes", "#2A2018")), scale=(1, 0.6, 1), sub=1))
+        brow = box("brow", (0.034, 0.012, 0.007 if not f else 0.005), (s * 0.034, -0.088, cz + 0.026), mat(p.get("brows", p.get("hair", "#2A2018"))), bevel=0.002)
+        tf(brow, (0, s * (0.12 if age > 0.5 else 0.05), 0), (s * 0.034, -0.088, cz + 0.026))
+        eyes.append(brow)
+    mouth = box("mouth", (0.034, 0.008, 0.006), (0, -0.086, cz - 0.05), mat("#5A3028"), bevel=0.002)
+    lip = box("lip", (0.03, 0.01, 0.006), (0, -0.084, cz - 0.057), skin_dk, bevel=0.002)
+    part("Head", h, nose, tip, *ears, *eyes, mouth, lip)
+    if p.get("eyepatch"):
+        part("Head", box("patch", (0.03, 0.01, 0.026), (0.033 * p["eyepatch"], -0.094, cz + 0.008), mat("#141210"), bevel=0.004),
+             tube("strap", (-0.09, -0.02, cz + 0.035), (0.09, -0.02, cz + 0.0), [0.004, 0.004], mat("#141210"), n=4))
+    if p.get("scar"):
+        part("Head", box("scar", (0.004, 0.006, 0.04), (-0.05, -0.08, cz - 0.005), mat("#8C4B3A")))
+    hair(p, cz)
+
+
+def hair(p, cz):
+    hc = mat(p.get("hair", "#2A2018"))
+    style = p.get("hairstyle", "short")
+    if style in ("short", "long", "dreads", "bun", "ponytail"):
+        cap = kit.sphere("hair", 0.106, (0, 0.004, cz + 0.008), hc, segs=16, rings=10)  # noqa: F821
+        bm_del(cap, lambda v: v.z < cz - 0.005 or (v.y < -0.06 and v.z < cz + 0.05))
+        deform(cap, lambda v: Vector((v.x * 0.9, v.y, cz + (v.z - cz) * 1.12)))
+        part("Head", cap)
+    if style == "long":
+        part("Neck", box("hairback", (0.17, 0.05, 0.2), (0, 0.065, cz - 0.08), hc, bevel=0.02))
+    if style == "ponytail":
+        part("Neck", tube("tail", (0, 0.1, cz + 0.02), (0, 0.13, cz - 0.17), [0.03, 0.026, 0.02, 0.01], hc, n=6))
+    if style == "bun":
+        part("Head", blob("bun", 0.045, (0, 0.085, cz + 0.05), hc, sub=1))
+    if style == "dreads":
+        for i in range(9):
+            a = math.pi * (0.15 + 0.7 * i / 8)
+            x, y = math.cos(a) * 0.09, abs(math.sin(a)) * 0.07 + 0.01
+            part("Neck", tube("dread", (x, y, cz + 0.02), (x * 1.25, y + 0.03, cz - 0.2 - RNG.uniform(0, 0.08)), [0.014, 0.012, 0.009], hc, n=5))
+    if style == "mohawk":
+        for i in range(7):
+            t = i / 6
+            part("Head", cyl("spike", 0.016, 0.07 - abs(t - 0.4) * 0.05, (0, -0.05 + t * 0.15, cz + 0.105 - (t - 0.35) ** 2 * 0.12), hc, n=4, r2=0.003))
+        side = kit.sphere("stubble", 0.104, (0, 0.006, cz + 0.006), mat(_shade(p.get("hair", "#2A2018"), 1.6)), segs=14, rings=9)  # noqa: F821
+        bm_del(side, lambda v: v.z < cz - 0.005 or v.y < -0.06)
+        part("Head", side)
+    if style == "bald" and p.get("age", 0) > 0.6:
+        ring_h = kit.sphere("fringe", 0.104, (0, 0.01, cz), hc, segs=14, rings=9)  # noqa: F821
+        bm_del(ring_h, lambda v: v.z > cz + 0.03 or v.z < cz - 0.04 or v.y < -0.03)
+        part("Head", ring_h)
+    beard = p.get("beard")
+    if beard:
+        bc = mat(p.get("beard_color", p.get("hair", "#2A2018")))
+        full = beard == "full"
+        # a beard that follows the jaw and leaves the mouth clear: cheeks/jaw/chin only
+        bd = kit.sphere("beard", 0.094, (0, -0.006, cz - 0.03), bc, segs=14, rings=10)  # noqa: F821
+        bm_del(bd, lambda v: v.z > cz - 0.012 or v.y > 0.035 or (abs(v.x) < 0.024 and v.z > cz - 0.066 and v.y < -0.05))
+        deform(bd, lambda v: Vector((v.x * (0.8 if full else 0.74), v.y * (1.0 if full else 0.93), v.z - (0.035 if full else 0.0) * smoothstep(cz - 0.06, cz - 0.12, v.z))))
+        part("Head", bd)
+        part("Head", box("moustache", (0.046, 0.012, 0.01), (0, -0.092, cz - 0.04), bc, bevel=0.004))
+
+
+def bm_del(o, pred):
+    bm = bmesh.new()
+    bm.from_mesh(o.data)
+    mw = o.matrix_world
+    dead = [v for v in bm.verts if pred(mw @ v.co)]
+    bmesh.ops.delete(bm, geom=dead, context="VERTS")
+    bm.to_mesh(o.data)
+    bm.free()
+    o.data.update()
+    for poly in o.data.polygons:
+        poly.use_smooth = True
+
+
+# ------------------------------------------------------------------ wardrobe
+def coat(p, length=0.52, col="#5A4632", collar=True, open_front=0.55, sleeves=True, patches=True, flare=0.08):
+    """Long patched coat: open front, flared tails, shoulders, sleeves over the arms, patches of other cloth."""
+    g = p.get("build", 1.0)
+    f = p.get("frame", "m") == "f"
+    cm = mat(col)
+    lining = mat(_shade(col, 0.6))
+    a0, a1 = -math.pi / 2 + open_front / 2, -math.pi / 2 + math.tau - open_front / 2
+    upper = [
+        (1.44, 0.13 * g, 0.085, 0.0),
+        (1.38, 0.205 * g if not f else 0.18 * g, 0.115 * g, 0.0),
+        (1.29, 0.19 * g if not f else 0.172 * g, 0.125 * g, -0.012),
+        (1.19, 0.17 * g if not f else 0.155 * g, 0.118 * g, -0.01),
+        (1.08, 0.162 * g if not f else 0.148 * g, 0.114 * g, -0.008),
+        (0.97, 0.18 * g if not f else 0.195 * g, 0.128 * g, -0.005),
+    ]
+    rings = [ring(14, rx, ry, z, cy=cy, a0=a0, a1=a1, closed=False, squareness=0.3) for z, rx, ry, cy in reversed(upper)]
+    body = loft("coat", rings, cm, closed=False)
+    part("AUTO_TORSO", body)
+    if length > 0.0:
+        lower = []
+        zt = 0.97
+        for i in range(4):
+            t = (i + 1) / 4
+            z = zt - length * t
+            lower.append((z, (0.185 + flare * t) * g, (0.13 + flare * 0.8 * t) * g))
+        tails = [ring(14, 0.18 * g, 0.128 * g, zt, a0=a0 + 0.12, a1=a1 - 0.12, closed=False, squareness=0.3)]
+        tails += [ring(14, rx, ry, z, a0=a0 + 0.12 + 0.15 * (i + 1) / 4, a1=a1 - 0.12 - 0.15 * (i + 1) / 4, closed=False, squareness=0.25) for i, (z, rx, ry) in enumerate(lower)]
+        skirt = loft("coattails", tails, cm, closed=False)
+        # ragged hem: tear the bottom row unevenly
+        hem_z = zt - length
+        deform(skirt, lambda v: Vector((v.x, v.y, v.z + (RNG.uniform(-0.03, 0.025) if abs(v.z - hem_z) < 0.005 else 0))))
+        part("SKIRT", skirt)
+    if collar:
+        part("Spine2", loft("collar", [ring(12, 0.125 * g, 0.09, 1.43, a0=a0 + 0.3, a1=a1 - 0.3, closed=False),
+                                      ring(12, 0.15 * g, 0.115, 1.52, a0=a0 + 0.2, a1=a1 - 0.2, closed=False)], lining, closed=False))
+    for s in (-1, 1):  # lapels
+        lap = box("lapel", (0.05, 0.012, 0.22), (s * 0.075, -0.125 * g, 1.27), lining)
+        tf(lap, (0, 0, s * 0.25), (s * 0.075, -0.125 * g, 1.27))
+        part("Spine2", lap)
+    if sleeves:
+        for side, sx in (("Left", 1), ("Right", -1)):
+            sh = Vector(SK[side + "Arm"][0])
+            el = Vector(SK[side + "ForeArm"][0])
+            wr = Vector(SK[side + "Hand"][0])
+            part(side + "Shoulder", blob("coatshoulder", 0.08 * g, (sx * 0.195 * g, 0, 1.385), cm, scale=(1.15, 1.05, 0.85)))
+            part(side + "Arm", tube("sleeve", sh + Vector((sx * 0.01, 0, 0)), el, [0.07 * g, 0.066 * g, 0.06 * g, 0.056 * g], cm, flat=0.95))
+            part(side + "ForeArm", tube("cuffsleeve", el, wr - Vector((sx * 0.03, 0, 0)), [0.056 * g, 0.058 * g, 0.056 * g, 0.06 * g], cm, flat=0.92))
+            part(side + "ForeArm", tube("cuff", wr - Vector((sx * 0.07, 0, 0)), wr - Vector((sx * 0.025, 0, 0)), [0.064 * g, 0.066 * g], lining, flat=0.92))
+    if patches:
+        for i in range(3):
+            pc = mat(RNG.choice(("#6E6A5A", "#3E5C66", "#7A4A2A", "#8C8270", "#A24B21")))
+            z = RNG.uniform(0.62, 1.3)
+            a = RNG.uniform(0.6, 2.6) * RNG.choice((-1, 1))
+            rx = 0.19 * g
+            loc = (math.cos(a - math.pi / 2) * rx * 1.02, math.sin(a - math.pi / 2) * 0.13 * g * 1.04 + 0.01, z)
+            pt = box("patch", (0.07, 0.006, 0.06), loc, pc)
+            tf(pt, (0, 0, a), loc)
+            part("Hips" if z < 0.97 else "AUTO_TORSO", pt)
+
+
+def bandolier(p, col="#3B2A1C", shells="#B88A3A", side=1):
+    g = p.get("build", 1.0)
+    bm_ = mat(col)
+    sh = mat(shells)
+    pts = []
+    for i in range(9):
+        t = i / 8
+        z = 1.4 - t * 0.38
+        x = side * (0.14 - t * 0.28) * g
+        pts.append((x, z))
+    for front, yk in ((-1, -1), (1, 1)):
+        for i in range(8):
+            (x0, z0), (x1, z1) = pts[i], pts[i + 1]
+            y = yk * (0.122 * g if z0 < 1.3 else 0.112 * g) + yk * 0.006
+            seg = tube("strap", (x0, y, z0), (x1, y, z1), [0.018, 0.018], bm_, n=4, flat=0.4)
+            part("AUTO_TORSO", seg)
+            if front < 0 and i % 2 == 0 and 1 <= i <= 6:
+                part("AUTO_TORSO", cyl("shell", 0.009, 0.05, ((x0 + x1) / 2, y - 0.012, (z0 + z1) / 2 + 0.02), sh, n=5))
+
+
+def scarf(p, col="#7E3524", mask=False):
+    g = p.get("build", 1.0)
+    sc = mat(col)
+    part("Neck", loft("scarf", [ring(12, 0.075, 0.07, 1.44), ring(12, 0.07, 0.068, 1.5), ring(12, 0.066, 0.064, 1.53)], sc))
+    tail = box("scarftail", (0.06, 0.02, 0.2), (0.05, 0.075 * g, 1.36), sc, bevel=0.01)
+    tf(tail, (0.15, 0, 0.1), (0.05, 0.075, 1.45))
+    part("Spine2", tail)
+    if mask:  # pulled up over the nose against spray and smoke
+        part("Head", loft("mask", [ring(12, 0.088, 0.096, 1.55, cy=-0.008, a0=-math.pi + 0.5, a1=-0.5 + 0.0001, closed=False),
+                                  ring(12, 0.085, 0.104, 1.62, cy=-0.004, a0=-math.pi + 0.45, a1=-0.45 + 0.0001, closed=False)], sc, closed=False))
+
+
+def hat_tricorn(col="#2E2620", goggles=True):
+    cz = 1.63
+    hm = mat(col)
+    hz = cz + 0.06
+    brim = kit.cylinder("brim", 0.155, 0.012, (0, 0.006, hz), verts=24, mat=hm)  # noqa: F821
+    # tricorn: the brim cocked up between three points (front, back-left, back-right), the points stay low
+    def cock(v):
+        r = math.hypot(v.x, v.y - 0.006)
+        a = math.atan2(v.x, -(v.y - 0.006))
+        up = max(0.0, -math.cos(3 * a)) * smoothstep(0.085, 0.155, r)
+        k = 1 - 0.18 * up  # turned-up sides pull in toward the crown
+        return Vector((v.x * k, 0.006 + (v.y - 0.006) * k, v.z + 0.075 * up))
+    deform(brim, cock)
+    crown = loft("crown", [ring(14, 0.1, 0.108, hz - 0.005), ring(14, 0.097, 0.104, hz + 0.06), ring(14, 0.078, 0.084, hz + 0.088)], hm)
+    band = cyl("band", 0.102, 0.018, (0, 0, hz + 0.012), mat("#5A3A1E"), n=14)
+    parts = [brim, crown, band]
+    if goggles:
+        for s in (-1, 1):
+            parts.append(cyl("goggle", 0.024, 0.024, (s * 0.04, -0.104, hz + 0.035), mat("#8C6A34"), axis="Y", n=10))
+            parts.append(cyl("lens", 0.018, 0.004, (s * 0.04, -0.117, hz + 0.035), mat("#4E7A82"), axis="Y", n=10))
+    part("Head", *parts)
+
+
+def hat_souwester(col="#C9A23A"):
+    cz = 1.63
+    hm = mat(col)
+    crown = loft("sou", [ring(14, 0.11, 0.118, cz + 0.02), ring(14, 0.104, 0.11, cz + 0.1), ring(14, 0.06, 0.066, cz + 0.135)], hm)
+    brim = kit.cylinder("soubrim", 0.16, 0.012, (0, 0.025, cz + 0.02), verts=20, mat=hm)  # noqa: F821
+    deform(brim, lambda v: Vector((v.x, v.y, v.z - 0.06 * smoothstep(0.0, 0.16, v.y) * smoothstep(0.09, 0.16, math.hypot(v.x, v.y)))))
+    part("Head", crown, brim)
+
+
+def hood(col="#3E5C66"):
+    cz = 1.63
+    hm = mat(col)
+    hd = kit.sphere("hood", 0.125, (0, 0.012, cz + 0.005), hm, segs=16, rings=10)  # noqa: F821
+    bm_del(hd, lambda v: v.y < -0.045 and v.z < cz + 0.07)
+    deform(hd, lambda v: Vector((v.x * 0.95, v.y, v.z + 0.012 * smoothstep(cz, cz + 0.12, v.z))))
+    part("Head", hd)
+    part("Neck", loft("cowl", [ring(12, 0.11, 0.1, 1.42), ring(12, 0.1, 0.1, 1.52)], hm))
+
+
+def headwrap(col="#7A4A2A"):
+    cz = 1.63
+    w = kit.sphere("wrap", 0.112, (0, 0.01, cz + 0.022), mat(col), segs=16, rings=10)  # noqa: F821
+    bm_del(w, lambda v: v.z < cz + 0.0 or (v.y < -0.07 and v.z < cz + 0.04))
+    deform(w, lambda v: Vector((v.x, v.y * 1.05, cz + (v.z - cz) * 1.3)))
+    part("Head", w, box("knot", (0.05, 0.03, 0.04), (0.03, -0.09, cz + 0.11), mat(_shade(col, 0.8)), bevel=0.012))
+
+
+def cap_beanie(col="#3E5C66"):
+    cz = 1.63
+    b = kit.sphere("beanie", 0.11, (0, 0.006, cz + 0.02), mat(col), segs=16, rings=10)  # noqa: F821
+    bm_del(b, lambda v: v.z < cz + 0.02)
+    part("Head", b, cyl("roll", 0.108, 0.03, (0, 0.006, cz + 0.035), mat(_shade(col, 0.8)), n=16))
+
+
+def goggles_forehead(col="#3A4148"):
+    cz = 1.63
+    parts = [tube("gstrap", (-0.105, 0.0, cz + 0.06), (0.105, 0.0, cz + 0.06), [0.012, 0.012], mat("#1A1612"), n=4)]
+    for s in (-1, 1):
+        parts.append(cyl("gog", 0.027, 0.03, (s * 0.038, -0.098, cz + 0.07), mat(col), axis="Y", n=10))
+        parts.append(cyl("glens", 0.02, 0.004, (s * 0.038, -0.114, cz + 0.07), mat("#2F6F6A"), axis="Y", n=10))
+    part("Head", *parts)
+
+
+def glasses():
+    cz = 1.63
+    parts = []
+    for s in (-1, 1):
+        parts.append(kit.torus("rim", 0.016, 0.0028, (s * 0.034, -0.094, cz + 0.008), axis="Y", mat=mat("#8C7A4A"), major=10, minor=4))  # noqa: F821
+    parts.append(box("bridge", (0.02, 0.004, 0.004), (0, -0.096, cz + 0.012), mat("#8C7A4A")))
+    part("Head", *parts)
+
+
+def pauldron(side="Left", col="#C8352A", stripe="#E9E2CC"):
+    """Shoulder armour cut from a road sign, bolted to a strap."""
+    sx = 1 if side == "Left" else -1
+    plate = kit.sphere("pauldron", 0.11, (sx * 0.2, 0, 1.39), mat(col), segs=12, rings=8)  # noqa: F821
+    bm_del(plate, lambda v: v.z < 1.37)
+    deform(plate, lambda v: Vector((v.x, v.y * 1.1, v.z)))
+    part(side + "Shoulder", plate, box("signstripe", (0.14, 0.2, 0.012), (sx * 0.2, 0, 1.47), mat(stripe)))
+    for y in (-0.06, 0.06):
+        part(side + "Shoulder", cyl("bolt", 0.009, 0.01, (sx * 0.2, y, 1.485), mat("#7F8A94"), n=6))
+
+
+def chestplate(col="#8C3A26", trim="#7F8A94"):
+    part("Spine2", loft("hood_plate", [ring(12, 0.17, 0.02, 1.37, cy=-0.12, a0=-math.pi, a1=0, closed=False),
+                                       ring(12, 0.15, 0.022, 1.2, cy=-0.122, a0=-math.pi, a1=0, closed=False)], mat(col), closed=False))
+    part("Spine1", box("hood_trim", (0.26, 0.01, 0.02), (0, -0.135, 1.2), mat(trim)))
+
+
+def apron(col="#5A4632"):
+    part("Hips", box("apron", (0.26, 0.012, 0.42), (0, -0.13, 0.82), mat(col), bevel=0.005))
+    for x in (-0.08, 0.04):
+        part("Hips", box("pocket", (0.08, 0.01, 0.07), (x, -0.138, 0.82), mat(_shade(col, 0.8))))
+
+
+def pouch_belt(col="#4E2F1A"):
+    for x, y in ((0.14, -0.06), (-0.15, -0.04), (0.16, 0.06)):
+        part("Hips", box("pouch", (0.06, 0.05, 0.07), (x, y, 0.95), mat(col), bevel=0.008))
+
+
+def rope_coil(side=1):
+    part("Spine2", kit.torus("rope", 0.13, 0.022, (side * 0.06, 0.0, 1.27), axis="Y", mat=mat("#B89A64"), major=16, minor=5))  # noqa: F821
+
+
+def poncho(col="#2F6FB0", length=0.42):
+    part("AUTO_TORSO", loft("poncho", [ring(16, 0.1, 0.085, 1.47), ring(16, 0.27, 0.2, 1.36, squareness=0.2),
+                                        ring(16, 0.3, 0.22, 1.36 - length * 0.5), ring(16, 0.29, 0.21, 1.36 - length)], mat(col), cap_bottom=False, cap_top=False))
+
+
+def backpack(col="#5A4632"):
+    part("Spine2", box("pack", (0.22, 0.12, 0.26), (0, 0.17, 1.24), mat(col), bevel=0.02))
+    part("Spine2", cyl("bedroll", 0.045, 0.24, (0, 0.17, 1.4), mat("#6E6A5A"), axis="X", n=8))
+
+
+# ----------------------------------------------------------------- held items (right hand, T-pose: blade along -Y)
+def held(kind):
+    wr = Vector(SK["RightHand"][0])
+    x = wr.x - 0.075
+    z = wr.z
+    hm = []
+    if kind == "cutlass":  # a blade cut from a car leaf-spring, rebar guard
+        hm += [tube("grip", (x, 0.05, z), (x, -0.04, z), [0.016, 0.016], mat("#3B2A1C"), n=6),
+               kit.torus("guard", 0.04, 0.008, (x, -0.045, z), axis="Y", mat=mat("#6B2E14"), major=10, minor=4),  # noqa: F821
+               box("blade", (0.012, 0.6, 0.045), (x, -0.35, z + 0.012), mat("#9AA3AD")),
+               box("bladetip", (0.012, 0.08, 0.03), (x, -0.68, z + 0.02), mat("#9AA3AD"))]
+    elif kind == "wrench":
+        hm += [box("wrench", (0.024, 0.34, 0.03), (x, -0.12, z), mat("#7F8A94")), box("jaw", (0.03, 0.05, 0.08), (x, -0.3, z + 0.02), mat("#7F8A94"))]
+    elif kind == "gaff":
+        hm += [tube("gaffpole", (x, 0.45, z), (x, -0.9, z), [0.014, 0.014], mat("#8A5A34"), n=5),
+               kit.torus("hook", 0.06, 0.008, (x, -0.92, z + 0.05), axis="X", mat=mat("#7F8A94"), major=10, minor=4)]  # noqa: F821
+    elif kind == "spyglass":
+        hm += [tube("spy", (x, 0.08, z), (x, -0.28, z), [0.022, 0.026, 0.03], mat("#B88A3A"), n=8)]
+    elif kind == "binoculars":
+        hm += [cyl("binoc", 0.026, 0.12, (x, -0.04, z + 0.02), mat("#2B2F36"), axis="Y", n=8), cyl("binoc2", 0.026, 0.12, (x, -0.04, z - 0.04), mat("#2B2F36"), axis="Y", n=8)]
+    elif kind == "grapple":
+        hm += [tube("ghandle", (x, 0.05, z), (x, -0.22, z), [0.016, 0.016], mat("#7F8A94"), n=5)]
+        for a in range(3):
+            ang = a * math.tau / 3
+            hm.append(tube("prong", (x, -0.22, z), (x + math.cos(ang) * 0.07, -0.3, z + math.sin(ang) * 0.07), [0.01, 0.006], mat("#6B2E14"), n=4))
+    elif kind == "harpoon":
+        hm += [tube("hshaft", (x, 0.5, z), (x, -1.0, z), [0.016, 0.014], mat("#4E2F1A"), n=5),
+               loft("hhead", [ring(4, 0.025, 0.006, 0.0), ring(4, 0.001, 0.001, 0.14)], mat("#9AA3AD"))]
+        hm[-1].data.transform(Matrix.Translation((x, -1.0, z)) @ Matrix.Rotation(math.pi / 2, 4, "X"))
+    elif kind == "shovel":
+        hm += [tube("shaft", (x, 0.12, z), (x, -0.7, z), [0.014, 0.014], mat("#8A5A34"), n=5), box("spade", (0.16, 0.2, 0.012), (x, -0.8, z), mat("#7F8A94"))]
+    elif kind == "lantern":
+        hm += [cyl("lant", 0.04, 0.1, (x, 0, z - 0.1), mat("#3A4148"), n=8), cyl("lantglass", 0.032, 0.06, (x, 0, z - 0.1), mat("#FFC46B", "lamp"), n=8)]
+    if hm:
+        part("RightHand", *hm)
+
+
+# ------------------------------------------------------------------ clips (MeshCraft builders helpers)
+_rot, _loc, _cycle, _new, _fin = B._rot, B._loc, B._cycle, B._new_action, B._finish
+DOWN = B.ARMS_DOWN
+
+
+def a_sit(arm):  # seated at the helm: knees up, one hand on the tiller
+    def pose(t, f):
+        s = math.sin(t * 2 * math.pi)
+        _loc(arm, "Hips", (0, 0.05, -0.45), f)
+        for side in ("Left", "Right"):
+            _rot(arm, side + "UpLeg", [("X", -82)], f)
+            _rot(arm, side + "Leg", [("X", 78)], f)
+        _rot(arm, "Spine1", [("X", 4 + 1.5 * s)], f)
+        _rot(arm, "LeftArm", [("Y", DOWN - 10), ("X", -35)], f)
+        _rot(arm, "LeftForeArm", [("Z", 50)], f)
+        _rot(arm, "RightArm", [("Y", -DOWN + 15), ("X", -45)], f)
+        _rot(arm, "RightForeArm", [("Z", -30)], f)
+        _rot(arm, "Head", [("Z", 18 * math.sin(t * 2 * math.pi + 0.6))], f)
+    return _cycle(arm, "Sit", 80, pose, step=5)
+
+
+def a_dig(arm):  # two-handed shovel strokes: bend into the ground, drive, lift
+    def pose(t, f):
+        sw = math.sin(t * 2 * math.pi)
+        dn = max(0.0, sw)
+        _loc(arm, "Hips", (0, 0.02, -0.04 - 0.07 * dn), f)
+        _rot(arm, "Spine", [("X", 14 + 16 * dn)], f)
+        _rot(arm, "Spine1", [("X", 6 + 6 * dn)], f)
+        _rot(arm, "Head", [("X", -8)], f)
+        _rot(arm, "LeftUpLeg", [("X", -22 - 10 * dn)], f)
+        _rot(arm, "LeftLeg", [("X", 28 + 18 * dn)], f)
+        _rot(arm, "RightUpLeg", [("X", 10)], f)
+        _rot(arm, "RightLeg", [("X", 14 + 12 * dn)], f)
+        _rot(arm, "RightArm", [("Y", -DOWN - 6), ("X", -52 - 15 * dn)], f)
+        _rot(arm, "RightForeArm", [("Z", -12)], f)
+        _rot(arm, "LeftArm", [("Y", DOWN + 4), ("X", -74 - 15 * dn)], f)
+        _rot(arm, "LeftForeArm", [("Z", 38)], f)
+    return _cycle(arm, "Dig", 30, pose, loop=True, step=3)
+
+
+def a_cheer(arm):
+    def pose(t, f):
+        s = math.sin(t * 4 * math.pi)
+        _loc(arm, "Hips", (0, 0, 0.05 * abs(s)), f)
+        _rot(arm, "LeftArm", [("Y", -40 - 10 * s)], f)
+        _rot(arm, "RightArm", [("Y", 40 + 10 * s)], f)
+        _rot(arm, "LeftForeArm", [("Z", 15)], f)
+        _rot(arm, "RightForeArm", [("Z", -15)], f)
+        _rot(arm, "Head", [("X", -10)], f)
+    return _cycle(arm, "Cheer", 40, pose, step=4)
+
+
+def a_idle_human(arm):  # weight on one leg, breathing, a glance round: less mannequin than the stock idle
+    def pose(t, f):
+        s = math.sin(t * 2 * math.pi)
+        _loc(arm, "Hips", (0.015, 0, -0.012 + 0.006 * s), f)
+        _rot(arm, "Hips", [("Y", 3)], f)
+        _rot(arm, "Spine1", [("X", 2 * s), ("Y", -2)], f)
+        _rot(arm, "Spine2", [("X", 1.5 * s)], f)
+        _rot(arm, "Head", [("Z", 14 * math.sin(t * 2 * math.pi + 1)), ("X", 3)], f)
+        _rot(arm, "LeftArm", [("Y", DOWN + 4), ("X", 4 * s)], f)
+        _rot(arm, "RightArm", [("Y", -DOWN - 6), ("X", -3 * s)], f)
+        _rot(arm, "LeftForeArm", [("Z", 14)], f)
+        _rot(arm, "RightForeArm", [("Z", -18)], f)
+        _rot(arm, "LeftUpLeg", [("Y", -3)], f)
+        _rot(arm, "RightUpLeg", [("X", -6), ("Y", 4)], f)
+        _rot(arm, "RightLeg", [("X", 10)], f)
+    return _cycle(arm, "Idle", 90, pose, step=6)
+
+
+CLIPS = {"Idle": a_idle_human, "Walk": B.a_walk, "Run": B.a_run, "Interact": B.a_interact, "Attack": B.a_attack, "Sit": a_sit, "Dig": a_dig, "Cheer": a_cheer}
+
+
+def rig(body, clips):
+    root = kit.empty(ASSET, (0, 0, 0), kind="ARROWS", size=0.3)  # noqa: F821
+    arm_d = bpy_.data.armatures.new("rig")
+    arm = bpy_.data.objects.new(ASSET + "_rig", arm_d)
+    bpy_.context.scene.collection.objects.link(arm)
+    arm.parent = root
+    arm["mc_convention"] = "mixamo"
+    for o in bpy_.context.scene.objects:
+        o.select_set(False)
+    bpy_.context.view_layer.objects.active = arm
+    arm.select_set(True)
+    bpy_.ops.object.mode_set(mode="EDIT")
+    for name, (h, t, par) in SK.items():
+        b = arm_d.edit_bones.new(MX + name)
+        b.head, b.tail, b.roll = h, t, 0
+    for name, (h, t, par) in SK.items():
+        if par:
+            arm_d.edit_bones[MX + name].parent = arm_d.edit_bones[MX + par]
+    bpy_.ops.object.mode_set(mode="OBJECT")
+    # glTF ignores a skinned mesh's parent transform (Khronos NODE_SKINNED_MESH_NON_ROOT): keep it at the root
+    mod = body.modifiers.new("Armature", "ARMATURE")
+    mod.object = arm
+    for c in clips:
+        CLIPS[c](arm)
+    return root, arm
+
+
+# ------------------------------------------------------------------ the cast
+CAST = {
+    # the player: a weathered captain in a patched sailcloth-and-leather duster, tricorn and goggles, a rebar cutlass
+    "captain": dict(p=dict(frame="m", build=1.0, skin="olive", hair="#2A2018", hairstyle="long", beard="short", beard_color="#3E2E22", age=0.4, shirt="#8E8470", pants="#3E3A30",
+                           boots="#2A1F17", scar=True),
+                    wear=lambda p: (coat(p, length=0.5, col="#5A4430"), bandolier(p), scarf(p, "#7E3524"), hat_tricorn("#2B231C"), pouch_belt()),
+                    held=None, clips=["Idle", "Walk", "Sit", "Dig", "Cheer", "Interact"]),
+    # crew (same files as before: tb_crew_<role>.glb)
+    "crew_mechanic": dict(p=dict(frame="f", build=0.95, skin="tan", hair="#1E1612", hairstyle="ponytail", age=0.3, shirt="#5A6066", pants="#3C4A5C", boots="#2E2620",
+                                 bare_arms=True, gloves="#6E4B2A"),
+                          wear=lambda p: (goggles_forehead(), apron("#6B4E30"), pouch_belt("#3B2A1C")), held="wrench", clips=["Idle", "Walk", "Interact", "Attack"]),
+    "crew_fisher": dict(p=dict(frame="m", build=1.08, skin="light", hair="#B8B2A4", hairstyle="bald", beard="full", beard_color="#C8C2B4", age=0.8,
+                               shirt="#6E6A5A", pants="#2F3A40", boots="#1F2A30"),
+                        wear=lambda p: (coat(p, length=0.34, col="#B8902E", open_front=0.4, patches=True, flare=0.05), hat_souwester("#B8902E")),
+                        held="gaff", clips=["Idle", "Walk", "Interact", "Attack"]),
+    "crew_lookout": dict(p=dict(frame="m", build=0.86, skin="brown", hair="#1E1612", hairstyle="short", age=0.15, shirt="#7A6E58", pants="#4A463C"),
+                         wear=lambda p: (poncho("#3E5C66", 0.46), hood("#3E5C66"), scarf(p, "#8C8270")), held="binoculars", clips=["Idle", "Walk", "Interact", "Attack"]),
+    "crew_navigator": dict(p=dict(frame="f", build=0.92, skin="dark", hair="#151010", hairstyle="bun", age=0.45, shirt="#C8BDA0", pants="#2E3440"),
+                           wear=lambda p: (coat(p, length=0.55, col="#26344A", open_front=0.6, patches=False), headwrap("#B8642E"), glasses(), backpack("#4E2F1A")),
+                           held="spyglass", clips=["Idle", "Walk", "Interact", "Attack"]),
+    "crew_salvager": dict(p=dict(frame="m", build=1.18, skin="pale", hair="#5A3A22", hairstyle="bald", beard="full", age=0.5, shirt="#262A2E", pants="#262A2E",
+                                 boots="#1A1612", gloves="#3A4148", rolled=False),
+                          wear=lambda p: (goggles_forehead("#B8642E"), rope_coil(1), pouch_belt("#3A4148"), pauldron("Right", "#7F8A94", "#3A4148")),
+                          held="grapple", clips=["Idle", "Walk", "Interact", "Attack"]),
+    "crew_defender": dict(p=dict(frame="f", build=1.02, skin="olive", hair="#2A1A12", hairstyle="mohawk", age=0.3, shirt="#3A3530", pants="#3A3530", eyepatch=1,
+                                 gloves="#2B1D14"),
+                          wear=lambda p: (pauldron("Left", "#C8352A", "#E9E2CC"), chestplate("#8C3A26"), scarf(p, "#2B1D14"), pouch_belt()),
+                          held="harpoon", clips=["Idle", "Walk", "Interact", "Attack"]),
+    # townsfolk
+    "npc_trader": dict(p=dict(frame="f", build=1.1, skin="brown", hair="#151010", hairstyle="short", age=0.55, shirt="#8C6A4A", pants="#4A3A2A"),
+                       wear=lambda p: (headwrap("#3E8C80"), apron("#7A5A3A"), scarf(p, "#C8A040")), held=None, clips=["Idle", "Interact"]),
+    "npc_elder": dict(p=dict(frame="m", build=0.9, skin="light", hair="#D8D2C4", hairstyle="long", beard="full", beard_color="#E0DACC", age=0.9, shirt="#6E6A5A", pants="#4A463C"),
+                      wear=lambda p: (poncho("#7A6448", 0.5), scarf(p, "#5A3A2A")), held="lantern", clips=["Idle", "Interact"]),
+    "npc_dockhand": dict(p=dict(frame="m", build=1.12, skin="tan", hair="#2A1F17", hairstyle="dreads", beard="short", age=0.35, shirt="#7A4A36", pants="#3D4248",
+                                bare_arms=True),
+                         wear=lambda p: (cap_beanie("#3E5C66"), rope_coil(-1), pouch_belt()), held=None, clips=["Idle", "Interact"]),
+    # Rustfang raiders: scrap armour, masks, mohawks, cutlasses
+    "raider": dict(p=dict(frame="m", build=1.05, skin="pale", hair="#B8352A", hairstyle="mohawk", age=0.3, shirt="#2B2620", pants="#2B2620", gloves="#1A1612", bare_arms=True),
+                   wear=lambda p: (pauldron("Left", "#3A4148", "#B8352A"), pauldron("Right", "#6B2E14", "#3A4148"), scarf(p, "#1A1612", mask=True), goggles_forehead("#6B2E14"),
+                                   bandolier(p, "#1A1612", "#9AA3AD", side=-1)), held="cutlass", clips=["Idle", "Attack"]),
+}
+
+
+spec = CAST[ASSET]
+P = spec["p"]
+human(P)
+spec["wear"](P)
+if spec["held"]:
+    held(spec["held"])
+body = build_body_object()
+kit.shade(body, 55)  # noqa: F821
+root, arm = rig(body, spec["clips"])
+for o in bpy_.context.scene.objects:
+    if o.type == "MESH":
+        kit.bake_vertex_colors(o, M, jitter=0.02, seed=zlib.crc32(o.name.encode()) & 0xFFFF)  # noqa: F821
+        # colours now live in COLOR_0: collapse to one material so the character exports as ONE primitive
+        # (one draw call, a fraction of the glTF JSON). The skin material keeps the role/colour metadata.
+        keep = M["skin"]
+        o.data.materials.clear()
+        o.data.materials.append(keep)
+        for poly in o.data.polygons:
+            poly.material_index = 0
+s = bpy_.context.scene
+s["gitcraft_brief"] = json.dumps({"asset_id": f"tb_{ASSET}", "template": "run_script:survivors", "params": {"asset": ASSET}, "palette": A["palette"], "out_dir": OUT})
+s["gitcraft_result"] = json.dumps({"contract": {"ground": True, "clips": spec["clips"], "skeleton": "mixamo"}, "expect": {"base_z": 0.0}})
+s["gitcraft_template"] = "run_script:survivors"
+os.makedirs(os.path.join(OUT, "source"), exist_ok=True)
+blend = os.path.join(OUT, "source", f"tb_{ASSET}.blend")
+bpy_.ops.wm.save_as_mainfile(filepath=blend, compress=True)
+tris = sum(len(p.vertices) - 2 for o in s.objects if o.type == "MESH" for p in o.data.polygons)
+print(json.dumps({"blend": blend, "tris": tris, "clips": spec["clips"]}))

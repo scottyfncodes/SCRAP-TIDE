@@ -1,0 +1,113 @@
+{
+ "checks": [
+  {
+   "check": "has_meshes",
+   "level": "pass",
+   "detail": "1 mesh objects"
+  },
+  {
+   "check": "triangle_budget",
+   "level": "pass",
+   "detail": "6228 triangles (budget 8000)",
+   "tris": 6228
+  },
+  {
+   "check": "degenerate_faces",
+   "level": "pass",
+   "detail": "0 zero-area faces"
+  },
+  {
+   "check": "non_manifold_edges",
+   "level": "info",
+   "detail": "146 non-manifold edges (expected for kit-bashed props built from closed parts)"
+  },
+  {
+   "check": "applied_scale",
+   "level": "pass",
+   "detail": "all mesh scales are 1"
+  },
+  {
+   "check": "naming",
+   "level": "pass",
+   "detail": "no default object names"
+  },
+  {
+   "check": "origin_base",
+   "level": "pass",
+   "detail": "lowest point at z=-0.000 m (expected 0.0; the asset sits on its origin)",
+   "min_z": -0.0005
+  },
+  {
+   "check": "origin_centered",
+   "level": "pass",
+   "detail": "footprint centre (-0.002, 0.007)"
+  },
+  {
+   "check": "materials_assigned",
+   "level": "pass",
+   "detail": "every mesh has materials"
+  },
+  {
+   "check": "vertex_colors",
+   "level": "pass",
+   "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+  },
+  {
+   "check": "textures_resolvable",
+   "level": "pass",
+   "detail": "no missing texture files"
+  },
+  {
+   "check": "animation_clips",
+   "level": "pass",
+   "detail": "actions: ['Cheer', 'Dig', 'Idle', 'Interact', 'Sit', 'Walk']",
+   "clips": [
+    "Cheer",
+    "Dig",
+    "Idle",
+    "Interact",
+    "Sit",
+    "Walk"
+   ]
+  },
+  {
+   "check": "skinning:captain_rig",
+   "level": "pass",
+   "detail": "22 bones, 1 skinned meshes, 0 unweighted verts, 0 verts with >4 influences"
+  },
+  {
+   "check": "gltf_version",
+   "level": "pass",
+   "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41"
+  },
+  {
+   "check": "gltf_color0",
+   "level": "pass",
+   "detail": "every primitive has COLOR_0"
+  },
+  {
+   "check": "gltf_counts",
+   "level": "info",
+   "detail": "25 nodes, 1 meshes, 1 primitives, 1 materials, 6 animations, 1 skins, 0 images",
+   "animations": [
+    "Cheer",
+    "Dig",
+    "Idle",
+    "Interact",
+    "Sit",
+    "Walk"
+   ]
+  },
+  {
+   "check": "khronos_validator",
+   "level": "info",
+   "detail": "gltf-validator not installed (meshcraft/engine_check: npm ci)"
+  }
+ ],
+ "summary": {
+  "pass": 14,
+  "warn": 0,
+  "fail": 0,
+  "info": 3
+ }
+}

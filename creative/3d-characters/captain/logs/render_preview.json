@@ -1,0 +1,42 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-characters/captain/previews/tb_captain_front.png",
+  "kind": "preview",
+  "bytes": 147995,
+  "sha256": "d51fe785df3db4b702d8a995048cb2a5aadab7e7c78aa7ad048eebc6d67708f5",
+  "view": "front",
+  "clip": null,
+  "pose": null,
+  "size": 512
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-characters/captain/previews/tb_captain_three_quarter.png",
+  "kind": "preview",
+  "bytes": 144580,
+  "sha256": "6c9744a4b9ab4329672fd4b21844f134a0383bcde8c477757e3826efa87f5084",
+  "view": "three_quarter",
+  "clip": null,
+  "pose": null,
+  "size": 512
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-characters/captain/previews/tb_captain_three_quarter_Idle-mid.png",
+  "kind": "preview",
+  "bytes": 142531,
+  "sha256": "384455b0672c273dfaf5213aebd1d5fedd6109be279e46e5c312738718da7b16",
+  "view": "three_quarter",
+  "clip": "Idle",
+  "pose": "mid",
+  "size": 512
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-characters/captain/previews/tb_captain_three_quarter_Walk-mid.png",
+  "kind": "preview",
+  "bytes": 134819,
+  "sha256": "fdaf34458e06e3c3bb23433104bcabd8ef48e299204664a5443de1f8760e7c82",
+  "view": "three_quarter",
+  "clip": "Walk",
+  "pose": "mid",
+  "size": 512
+ }
+]
