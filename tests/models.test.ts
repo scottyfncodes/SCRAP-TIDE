@@ -37,6 +37,7 @@ const NEEDED: Record<string, string[]> = {
   // upgrades attach to these sockets later; the hull/sail/flag/deck sockets must survive every re-export
   tb_coastal_sloop: ['tidebreakers_coastal_sloop', 'tidebreakers_coastal_sloop_mesh', 'socket_flag', 'socket_hull', 'socket_navigation', 'socket_sail',
     'socket_steering', 'socket_storage'],
+  tb_sloop_outriggers: ['tb_sloop_outriggers', 'outrigger_port', 'outrigger_starboard'],
 };
 
 describe('GITCRAFT models in public/models', () => {
@@ -50,6 +51,13 @@ describe('GITCRAFT models in public/models', () => {
     const names = new Set((j.nodes ?? []).map((n: { name?: string }) => n.name));
     for (const n of NEEDED[name] ?? []) expect(names.has(n), `${name} missing node ${n}`).toBe(true);
     for (const m of j.meshes ?? []) for (const p of m.primitives) expect(p.attributes.COLOR_0, `${name}/${m.name}`).toBeDefined();
+  });
+  it('the sloop and its outriggers keep the paint/sail material names the cosmetic tint recolours', () => {
+    const names = (f: string) => new Set((glbJson(`public/models/${f}.glb`).materials ?? []).map((m: { name: string }) => m.name));
+    const sloop = names('tb_coastal_sloop');
+    for (const m of ['GC_Plank_4fb39a', 'GC_Wood_f2ead8', 'GC_Cloth_f1e6cc', 'GC_Cloth_c0392b']) expect(sloop.has(m), `sloop ${m}`).toBe(true);
+    const out = names('tb_sloop_outriggers');
+    for (const m of ['GC_Plank_4fb39a', 'GC_Wood_f2ead8']) expect(out.has(m), `outriggers ${m}`).toBe(true);
   });
   it('the cast are people, not block toys: one skinned primitive, 4k+ triangles, a sculpted head, smooth normals', () => {
     const NEED: Record<string, string[]> = { tb_captain: ['Idle', 'Walk', 'Sit', 'Dig', 'Cheer'], tb_raider: ['Idle', 'Attack'], tb_npc_trader: ['Idle', 'Interact'],

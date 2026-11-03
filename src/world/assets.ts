@@ -29,6 +29,8 @@ export const MODEL_FILES = [
   'tb_flora_kit',
   // GITCRAFT TIDEBREAKERS 3D package: the Coastal Sloop player boat (hull, deck, cabin, rig, sails, socket_* nodes)
   'tb_coastal_sloop',
+  // its outrigger floats and cross-beams (MeshCraft, creative/3d-sloop/outriggers), placed in the sloop's frame
+  'tb_sloop_outriggers',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
 
@@ -161,6 +163,44 @@ export function sceneModel(file: string, opts: { shadows?: boolean; side?: THREE
     }
   });
   return root;
+}
+
+const tintCache = new Map<string, THREE.BufferGeometry>();
+/**
+ * Recolour a sceneModel() clone by source material name: every vertex of a matching mesh takes the new colour, keeping
+ * its own light/dark variation from MeshCraft's per-face bake (vertex luminance relative to the mesh's mean). Geometry
+ * is cloned once per (mesh, colour) and shared, never edited in place, so other clones keep their colours.
+ */
+export function tintModel(root: THREE.Object3D, colors: Record<string, THREE.ColorRepresentation>) {
+  const lum = (r: number, g: number, b: number) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    const want = m.isMesh ? colors[m.userData.srcMaterial as string] : undefined;
+    if (want === undefined) return;
+    const src = (m.userData.srcGeometry as THREE.BufferGeometry | undefined) ?? m.geometry;
+    m.userData.srcGeometry = src;
+    const target = new THREE.Color(want); // linear, like glTF COLOR_0
+    const key = `${src.uuid}|${target.getHexString()}`;
+    let geo = tintCache.get(key);
+    if (!geo) {
+      const c = src.attributes.color;
+      if (!c) return;
+      let mean = 0;
+      for (let i = 0; i < c.count; i++) mean += lum(c.getX(i), c.getY(i), c.getZ(i));
+      mean = mean / c.count || 1;
+      const arr = new Float32Array(c.count * 3);
+      for (let i = 0; i < c.count; i++) {
+        const k = Math.min(1.35, Math.max(0.65, lum(c.getX(i), c.getY(i), c.getZ(i)) / mean));
+        arr[i * 3] = target.r * k;
+        arr[i * 3 + 1] = target.g * k;
+        arr[i * 3 + 2] = target.b * k;
+      }
+      geo = src.clone();
+      geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
+      tintCache.set(key, geo);
+    }
+    m.geometry = geo;
+  });
 }
 
 /** A renderable group for a node: toon mesh + unlit glow mesh. Shares geometry between instances. */

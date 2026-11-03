@@ -4,7 +4,7 @@ import { paint, xf, merge, vcMat, toonMat, canvasTex, weather } from '../world/m
 import { COSMETIC_MAP, type VesselId } from '../data/ship';
 import { item } from '../data/items';
 import type { Store } from '../state/store';
-import { model, crewModel, part, glowMat, kitGeo, sceneModel } from '../world/assets';
+import { model, crewModel, part, glowMat, kitGeo, sceneModel, tintModel } from '../world/assets';
 import { CREW_MAP } from '../data/crew';
 
 interface HullSpec {
@@ -29,6 +29,23 @@ const KIT_SCALE: Record<VesselId, number> = { dinghy: 0.62, sloop: 1, ironwake: 
 const SLOOP_FILE = 'tb_coastal_sloop';
 const SLOOP_ROOF = 2.06; // top of the model's cabin roof
 const SLOOP_FLAG_MATERIAL = 'GC_Cloth_0a2142'; // the model's masthead pennant (swapped for an equipped flag cosmetic)
+// The outrigger floats + cross-beams, modelled for the sloop in MeshCraft (creative/3d-sloop/outriggers), in the same frame.
+const OUTRIGGER_FILE = 'tb_sloop_outriggers';
+// Captain at the helm: in the cockpit between the cabin's after wall (z -3.7) and the transom, beside the tiller.
+const SLOOP_HELM = new THREE.Vector3(-0.55, 0, -4.3);
+
+/**
+ * The models were built in Seafoam Green paint with Red Stripe sails; these are the materials that carry those
+ * colours, so every paint and sail cosmetic recolours them (the cabin, deck, spars and fittings keep their own colours).
+ */
+function cosmeticTints(paint: string[], sail: string[]): Record<string, string> {
+  return {
+    GC_Plank_4fb39a: paint[0], // hull planking (and the outrigger floats)
+    GC_Wood_f2ead8: paint[1], // trim band along the gunwale (and the floats)
+    GC_Cloth_f1e6cc: sail[0], // mainsail + jib cloth
+    GC_Cloth_c0392b: sail[1], // the mainsail's band
+  };
+}
 
 /** The sloop model with its socket_* nodes intact, or null (procedural fallback) if the GLB failed to load. */
 function sloopModel() {
@@ -367,6 +384,13 @@ export function buildShip(store: Store): ShipParts {
   // how far the model's deck sits from the procedural one, so deck-mounted parts and the captain stand on it
   const lift = glb ? glb.deckY - (h.sheer - 0.05) : 0;
   if (glb) group.add(glb.root);
+  // outrigger floats: the MeshCraft model when it loaded, else the kit floats placed further down
+  const outriggers = vessel === 'sloop' ? sceneModel(OUTRIGGER_FILE, { shadows: true, side: THREE.DoubleSide }) : null;
+  if (outriggers) group.add(outriggers);
+  const sailCos = COSMETIC_MAP[s.equipped.sail] ?? COSMETIC_MAP.sail_plain;
+  const tints = cosmeticTints(paintCos.colors, sailCos.colors);
+  if (glb) tintModel(glb.root, tints);
+  if (outriggers) tintModel(outriggers, tints);
   // Ironwake: two hulls; P() then measures from the outer side of each hull
   const P = cat
     ? (u: number, v: number) => {
@@ -465,6 +489,8 @@ export function buildShip(store: Store): ShipParts {
     mastH = (sailTier >= 2 ? 10.5 : sailTier >= 1 ? 9.5 : 8.5) * (cat ? 1.2 : 1);
     mastZ = 0.8;
     seat.set(0, deckY + 0.05 + lift, cat ? -4.6 : -3.6);
+    // on the model the old seat is inside the cabin; sit at the helm in the cockpit instead
+    if (glb) seat.set(SLOOP_HELM.x, glb.deckY + 0.05, SLOOP_HELM.z);
   }
 
   // mast
@@ -665,8 +691,8 @@ export function buildShip(store: Store): ShipParts {
       : kit('engine_outboard', cat ? CAT_OFFSET : 0, h.sheer - 0.25, -h.L / 2 - 0.05)
     : null;
   if (engineUp?.visual === 'engine_outboard' && cat) kit('engine_outboard', -CAT_OFFSET, h.sheer - 0.25, -h.L / 2 - 0.05);
-  if (vessel === 'sloop') {
-    // the Trimaran's outrigger floats (welded fuel tanks)
+  if (vessel === 'sloop' && !outriggers) {
+    // the Trimaran's outrigger floats (welded fuel tanks): the kit fallback
     kit('outrigger', h.W * 0.85, h.sheer - 0.6, -0.4, 0, 1.15);
     kit('outrigger', -h.W * 0.85, h.sheer - 0.6, -0.4, Math.PI, 1.15);
   }
@@ -706,7 +732,10 @@ export function buildShip(store: Store): ShipParts {
       }
     }
   }
-  if (vessel !== 'dinghy') kit('nav_console', 0.9 * K, dy, -h.L * 0.38, Math.PI);
+  // the kit helm console + wheel was placed for the code-built cabin; on the model it half-buries in the cabin's
+  // after wall and its flat top reads as a slab on the roof. The model steers with its own tiller (the wheel
+  // upgrade will mount on socket_steering), so it is left off there.
+  if (vessel !== 'dinghy' && !glb) kit('nav_console', 0.9 * K, dy, -h.L * 0.38, Math.PI);
 
   if (kitSolid.length) {
     const km = new THREE.Mesh(merge(kitSolid), vcMat());
