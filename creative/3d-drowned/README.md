@@ -15,7 +15,23 @@ Everything here was produced by GITCRAFT's 3D Department, headless and sandboxed
 | `boat_kit` 16 boat upgrades + turbine rotor, each at its mount point | MeshCraft `run_script` | `engine_outboard`, `engine_twin`, `radar_mast`, `salvage_crane`, `harpoon_turret`, `deck_turbine(_rotor)`, `solar_array`, `cabin_container`, `fuel_drums`, `spotlight`, `fishing_rig`, `outrigger`, `water_still`, `deck_lights`, `armor_plate`, `nav_console` | 3.3k | 274 KB |
 | `raider_skiff` Rustfang raider | MeshCraft `run_script` | `raider_body` | 0.4k | 36 KB |
 | `debris_kit` floating cache, beacon buoy, debris patch, oil drum, castaway raft | MeshCraft `run_script` | `cache_crate`, `buoy`, `debris_patch`, `oil_drum`, `castaway_raft` | 0.9k | 78 KB |
+| `trawler_wreck` fishing trawler down by the stern, listing, nets on the A-frame (grimy pass) | MeshCraft `run_script` | `trawler_body` | 1.2k | 95 KB |
+| `port_crane` buckled harbour gantry crane, snapped boom trailing in the sea (grimy pass) | MeshCraft `run_script` | `crane_body` | 2.0k | 146 KB |
+| `flotsam_kit` barrel raft, ghost net, bell buoy, capsized hull (grimy pass) | MeshCraft `run_script` | `barrel_raft`, `net_tangle`, `bell_buoy`, `hull_shard` | 1.1k | 94 KB |
 | `crew_{mechanic,navigator,salvager,fisher,lookout,defender}` | ForgeCraft `generate` → MeshCraft `deckhand` template | 22-bone Mixamo-named rig; clips `Idle`, `Walk`, `Interact`, `Attack` | ~4k each | 227–242 KB |
+
+## Weathering pass (grimy art-direction revamp)
+
+Every MeshCraft kit above (all except the crew) went through `scripts/weather_pass.py`, run by MeshCraft `run_script` against its
+source `.blend` and saved back. It bakes crevice grime (vertex concavity, like Blender's Dirty Vertex Colors), edge wear,
+rust chips and downward rust bleed into the `Color` corner attribute (glTF COLOR_0), leaving emissive faces alone. The pass is
+idempotent (scene flag `tb_weather_pass`). Each kit was then re-exported (`export_asset`, three-web-toon + LODs + collision),
+validated (`validate_asset`, Khronos included: 0 failures on all 14) and engine-checked in three@0.170 with the game toon
+material (`engine_check`). Logs: `<asset>/logs/{weather_pass,export,validate,engine_check}.json`.
+
+```bash
+run_script {"path": ".../scripts/weather_pass.py", "blend": ".../<asset>/source/tb_<asset>.blend", "save": true, "args": {}}
+```
 
 ## Per asset
 

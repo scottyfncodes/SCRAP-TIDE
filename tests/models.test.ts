@@ -27,6 +27,9 @@ const NEEDED: Record<string, string[]> = {
     'cabin_container', 'fuel_drums', 'spotlight', 'fishing_rig', 'outrigger', 'deck_lights', 'armor_plate', 'nav_console'],
   tb_raider_skiff: ['raider_body'],
   tb_debris_kit: ['cache_crate', 'buoy', 'debris_patch', 'oil_drum', 'castaway_raft'],
+  tb_trawler_wreck: ['trawler_body'],
+  tb_port_crane: ['crane_body'],
+  tb_flotsam_kit: ['barrel_raft', 'net_tangle', 'bell_buoy', 'hull_shard'],
 };
 
 describe('GITCRAFT models in public/models', () => {
