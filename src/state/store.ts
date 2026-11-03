@@ -152,10 +152,10 @@ export class Store {
     this.preview = opts.preview ?? null;
     this.data = this.load();
     if (this.preview) {
+      const hullFrac = Math.min(1, this.data.hull / this.stats.hullMax);
       this.data.vessel = this.preview;
       if (!this.data.vesselsOwned.includes(this.preview)) this.data.vesselsOwned.push(this.preview);
-      this.data.hull = Math.min(this.data.hull, this.stats.hullMax);
-      if (this.isNew) this.data.hull = this.stats.hullMax;
+      this.data.hull = Math.round(hullFrac * this.stats.hullMax); // same condition, the new boat's scale
     }
   }
 

@@ -34,7 +34,8 @@ async function boot() {
     // ?ship= preview link: say so, so nobody mistakes it for their real save
     const tag = document.createElement('div');
     tag.className = 'preview-tag';
-    tag.textContent = `PREVIEW · ${VESSELS[game.store.preview].name} · not saved`;
+    tag.textContent = 'PREVIEW · NOT SAVED';
+    tag.title = `Previewing the ${VESSELS[game.store.preview].name}. Nothing from this visit is saved.`;
     document.body.append(tag);
   }
   loading.classList.add('done');
