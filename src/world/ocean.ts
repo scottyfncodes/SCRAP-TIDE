@@ -1,6 +1,7 @@
 // The Drowned World ocean. Gerstner swell (computed identically on CPU for floating objects and on GPU),
-// depth-aware colour from turquoise shelf to abyss, sky + sun reflection, subsurface glow on crests,
-// crest and shoreline foam, a live wake trail behind the boat, storm swell and day/night lighting.
+// depth-aware colour from silted shallows through dirty teal to oil-black abyss, drifting oil slicks with a
+// thin-film sheen, sky + sun reflection, murky subsurface glow on crests, scummy crest/shore foam and
+// wind-driven spindrift streaks, a live wake trail, storm swell and day/night lighting.
 import * as THREE from 'three';
 import { heightAt, isReef, swellFactor } from './terrain';
 import { WORLD, STRUCTURES } from '../data/world';
@@ -163,36 +164,48 @@ void main() {
   float f0 = noise(p*2.1 + o3), fx = noise((p+vec2(0.25,0.0))*2.1 + o3), fz = noise((p+vec2(0.0,0.25))*2.1 + o3);
   float nearK = 1.0 - smoothstep(20.0, 90.0, length(cameraPosition.xz - p));
   vec3 N = normalize(vN + vec3((n0-nx)*rip + (f0-fx)*0.9*nearK, 0.0, (n0-nz)*rip + (f0-fz)*0.9*nearK));
+  vec3 Nflat = normalize(vN);
 
-  // depth colour: shore → turquoise shelf → open water → deep → abyss
-  vec3 cShore = vec3(0.30, 0.86, 0.78);
-  vec3 cShelf = vec3(0.03, 0.62, 0.62);
-  vec3 cOpen = vec3(0.012, 0.25, 0.42);
-  vec3 cDeep = vec3(0.004, 0.09, 0.22);
-  vec3 cAbyss = vec3(0.002, 0.035, 0.11);
+  // depth colour: silted shore → dirty teal shelf → grey-green open water → deep → oil-black abyss
+  vec3 cShore = vec3(0.27, 0.31, 0.24);
+  vec3 cShelf = vec3(0.07, 0.25, 0.23);
+  vec3 cOpen = vec3(0.035, 0.135, 0.145);
+  vec3 cDeep = vec3(0.014, 0.055, 0.065);
+  vec3 cAbyss = vec3(0.006, 0.022, 0.028);
   vec3 col = mix(cShore, cShelf, smoothstep(0.0, 1.8, depth));
   col = mix(col, cOpen, smoothstep(1.8, 7.0, depth));
   col = mix(col, cDeep, smoothstep(7.0, 16.0, depth));
   col = mix(col, cAbyss, smoothstep(15.0, 22.0, depth) * 0.85 + swell * 0.35);
-  col = mix(col, col * vec3(0.55, 0.62, 0.66), uStorm * 0.6);
+  col = mix(col, col * vec3(0.62, 0.64, 0.62), uStorm * 0.6);
+  // suspended silt churns the shallows
+  col = mix(col, vec3(0.22, 0.21, 0.15), (1.0 - smoothstep(0.0, 4.0, depth)) * noise(p * 0.08 + t * 0.03) * 0.35);
 
   float cs = caustic(p, t) * (1.0 - smoothstep(0.5, 6.0, depth));
-  col += cs * vec3(0.28, 0.36, 0.32) * (1.0 - uNight * 0.8);
+  col += cs * vec3(0.10, 0.13, 0.10) * (1.0 - uNight * 0.8);
+
+  // oil slicks: slow-drifting patches that flatten the chop and shimmer with a thin-film sheen
+  float oilN = noise(p * 0.016 + vec2(t * 0.004, -t * 0.003)) * 0.75 + noise(p * 0.06 - t * 0.01) * 0.25;
+  float oil = smoothstep(0.66, 0.74, oilN) * smoothstep(1.0, 4.0, depth);
   col *= uAmbient;
+  N = normalize(mix(N, Nflat, oil * 0.8));
 
   vec3 V = normalize(cameraPosition - vWorld);
-  // subsurface: light through the back of the crests
+  // subsurface: murky light through the back of the crests
   float sss = pow(max(0.0, dot(V, -uSunDir) + 0.3), 2.0) * max(0.0, vWave) * (1.0 - uNight);
-  col += vec3(0.02, 0.32, 0.30) * sss * 0.9;
+  col += vec3(0.05, 0.20, 0.16) * sss * 0.8;
+  // the slick itself: a tarry darkening with an iridescent film that shifts with view angle
+  float film = noise(p * 0.21 + t * 0.02) * 2.0 + dot(N, V) * 3.0;
+  vec3 sheen = 0.5 + 0.5 * cos(6.2831 * (vec3(0.0, 0.33, 0.67) + film));
+  col = mix(col, col * 0.3 + mix(vec3(0.05, 0.04, 0.035), sheen * vec3(0.07, 0.06, 0.075), 0.55) * (1.0 - uNight * 0.7) * uAmbient, oil * 0.85);
 
   // reflections
   float fres = 0.04 + 0.96 * pow(1.0 - max(dot(N, V), 0.0), 5.0);
   vec3 R = reflect(-V, N);
   vec3 sky = mix(uSkyColor, uSkyTop, smoothstep(0.0, 0.6, R.y));
-  col = mix(col, sky, clamp(fres * 0.85, 0.0, 0.9));
+  col = mix(col, sky * vec3(0.82, 0.86, 0.84), clamp(fres * 0.62, 0.0, 0.7));
   vec3 H = normalize(uSunDir + V);
   float ndh = max(dot(N, H), 0.0);
-  float spec = pow(ndh, mix(1400.0, 200.0, uStorm)) * 0.75 + pow(ndh, 90.0) * 0.035;
+  float spec = pow(ndh, mix(1400.0, 200.0, uStorm)) * 0.6 + pow(ndh, 90.0) * 0.03 + pow(ndh, 600.0) * oil * 0.8;
   col += uSunColor * spec * mix(1.1, 0.45, uNight) * (1.0 - uStorm * 0.7);
 
   // foam: shoreline, reef breakers, wave crests (more in storms), and the boat's wake
@@ -212,9 +225,17 @@ void main() {
     wk = max(wk, ring);
   }
   foam = max(foam, wk * smoothstep(0.25, 0.7, fn + 0.35));
+  // spindrift: long scum lines blown along the wind, thicker in a blow
+  vec2 wd = normalize(vec2(0.94, 0.34));
+  float along = dot(p, wd), across = dot(p, vec2(-wd.y, wd.x));
+  float streaks = smoothstep(0.78, 0.96, noise(vec2(along * 0.025 - t * 0.12, across * 0.55)) * 0.8 + noise(p * 0.4) * 0.2);
+  foam = max(foam, streaks * (0.35 + uStorm * 0.6) * smoothstep(2.0, 6.0, depth));
+  foam *= 1.0 - oil * 0.7;
   foam = smoothstep(0.45, 0.6, foam);
-  vec3 foamCol = mix(vec3(0.95, 0.99, 1.0), uSkyColor, 0.15) * (uAmbient * 0.6 + 0.4);
-  col = mix(col, foamCol, foam * 0.92);
+  // foam here is never white: salt-scum the colour of old bone, stained by the water under it
+  vec3 foamCol = mix(vec3(0.78, 0.76, 0.68), uSkyColor, 0.18) * (uAmbient * 0.6 + 0.4);
+  foamCol *= 0.85 + 0.15 * fn;
+  col = mix(col, foamCol, foam * 0.88);
 
   float alpha = mix(0.5, 0.97, smoothstep(0.0, 6.0, depth));
   alpha = max(alpha, foam * 0.95);
@@ -281,7 +302,7 @@ export class Ocean {
     this.mesh.frustumCulled = false;
     scene.add(this.mesh);
 
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x061a33 }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x050a0b }));
     floor.position.y = -21;
     scene.add(floor);
   }

@@ -1,6 +1,6 @@
 // Modular vessel construction. Every functional upgrade and cosmetic maps to visible parts.
 import * as THREE from 'three';
-import { paint, xf, merge, vcMat, toonMat, canvasTex } from '../world/materials';
+import { paint, xf, merge, vcMat, toonMat, canvasTex, weather } from '../world/materials';
 import { COSMETIC_MAP, type VesselId } from '../data/ship';
 import { item } from '../data/items';
 import type { Store } from '../state/store';
@@ -147,6 +147,7 @@ function sailTexture(cosmeticId: string, patched: boolean) {
       ctx.lineTo(x, 256);
       ctx.stroke();
     }
+    grimeCloth(ctx, 256, 256, cos.id.length * 7 + 3);
     if (patched) {
       const patches = [[60, 70, 50, 40, '#d8c39a'], [150, 160, 60, 46, '#c9b48a'], [120, 40, 34, 30, '#e3d1a8']] as const;
       for (const [x, y, w, h, c] of patches) {
@@ -170,6 +171,47 @@ function sailTexture(cosmeticId: string, patched: boolean) {
       ctx.globalCompositeOperation = 'source-over';
     }
   });
+}
+
+/** Years of salt, sun and diesel smoke on canvas: mildew blotches, water stains, rust drips from the grommets and grimy edges. */
+export function grimeCloth(ctx: CanvasRenderingContext2D, w: number, h: number, seed = 1) {
+  let r = seed * 9301 + 49297;
+  const rnd = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
+  for (let i = 0; i < 14; i++) {
+    const x = rnd() * w, y = rnd() * h, rad = 10 + rnd() * 46;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+    const col = rnd() > 0.5 ? '70,58,36' : '52,60,40';
+    g.addColorStop(0, `rgba(${col},${0.10 + rnd() * 0.16})`);
+    g.addColorStop(0.7, `rgba(${col},${0.05 + rnd() * 0.06})`);
+    g.addColorStop(1, `rgba(${col},0)`);
+    ctx.fillStyle = g;
+    ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+  }
+  // tide-mark rings where water dried on the cloth
+  ctx.lineWidth = 1.5;
+  for (let i = 0; i < 4; i++) {
+    ctx.strokeStyle = `rgba(90,70,40,${0.12 + rnd() * 0.12})`;
+    ctx.beginPath();
+    ctx.ellipse(rnd() * w, rnd() * h, 12 + rnd() * 30, 8 + rnd() * 20, rnd() * 3, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  // rust drips
+  for (let i = 0; i < 6; i++) {
+    const x = 10 + rnd() * (w - 20), len = 20 + rnd() * 90;
+    const g = ctx.createLinearGradient(0, 0, 0, len);
+    g.addColorStop(0, 'rgba(120,52,18,0.45)');
+    g.addColorStop(1, 'rgba(120,52,18,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(x, 0, 2 + rnd() * 3, len);
+  }
+  // grimy edges and a soot-darkened foot
+  const e = ctx.createLinearGradient(0, 0, 0, h);
+  e.addColorStop(0, 'rgba(30,24,18,0.18)');
+  e.addColorStop(0.2, 'rgba(30,24,18,0)');
+  e.addColorStop(0.75, 'rgba(30,24,18,0)');
+  e.addColorStop(1, 'rgba(30,24,18,0.38)');
+  ctx.fillStyle = e;
+  ctx.fillRect(0, 0, w, h);
 }
 
 function flagTexture(id: string) {
@@ -459,7 +501,7 @@ export function buildShip(store: Store): ShipParts {
 
   // sails
   const sails: THREE.Mesh[] = [];
-  const sailMat = new THREE.MeshToonMaterial({ map: sailTexture(s.equipped.sail, sailTier === 0), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 });
+  const sailMat = weather(new THREE.MeshToonMaterial({ map: sailTexture(s.equipped.sail, sailTier === 0), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 }), 0.7);
   const sc = vessel !== 'dinghy' ? 2.2 : 1;
   if (sailTier === 0) {
     // stubby patched lateen-ish triangle
@@ -527,7 +569,7 @@ export function buildShip(store: Store): ShipParts {
   if (s.equipped.flag !== 'flag_none') {
     const fg = new THREE.PlaneGeometry(0.7 * sc, 0.42 * sc, 6, 1);
     fg.translate(0.35 * sc, 0, 0);
-    flag = new THREE.Mesh(fg, new THREE.MeshToonMaterial({ map: flagTexture(s.equipped.flag), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 }));
+    flag = new THREE.Mesh(fg, weather(new THREE.MeshToonMaterial({ map: flagTexture(s.equipped.flag), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 }), 0.6));
     flag.position.set(0, mastBase + mastH - 0.2, mastZ);
     flag.userData.base = Float32Array.from(fg.attributes.position.array as Float32Array);
     group.add(flag);

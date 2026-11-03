@@ -1,8 +1,9 @@
-// Sky for the Drowned World: day/night dome with sun, moon and stars; clouds tinted by the hour; dark
-// storm decks riding the storm cells; the Stormwall ring on the horizon; rain, lightning bolts, gulls,
-// and the silhouettes of drowned cities where mountains used to be.
+// Sky for the Drowned World: day/night dome with a sun smeared by haze, moon and stars; a low, heavy cloud
+// ceiling tinted by the hour; dark storm decks riding the storm cells; the Stormwall ring on the horizon;
+// rain, lightning bolts, scavenger birds, and a ruined horizon: drowned skylines, gantry cranes, rig legs,
+// listing hulls and smokestacks, with gas flares still burning out there.
 import * as THREE from 'three';
-import { merge, paint, xf } from './materials';
+import { merge, paint, paintGradient, xf } from './materials';
 import { RNG } from '../core/noise';
 import { WORLD } from '../data/world';
 import type { Atmosphere } from './atmosphere';
@@ -19,8 +20,10 @@ void main(){
   vec3 c = mix(uHorizon, uTop, pow(smoothstep(0.0, 0.7, h), 0.75));
   float s = max(dot(d, uSun), 0.0);
   // sun / moon glow and disc
-  c += uSunColor * pow(s, 18.0) * mix(0.55, 0.25, uNight) * (1.0 - uStorm);
-  c += mix(vec3(1.0, 0.97, 0.88), vec3(0.9, 0.95, 1.0), uNight) * smoothstep(0.9975, 0.999, s) * mix(2.2, 1.2, uNight) * (1.0 - uStorm * 0.9);
+  c += uSunColor * (pow(s, 10.0) * 0.35 + pow(s, 60.0) * 0.4) * mix(0.6, 0.25, uNight) * (1.0 - uStorm);
+  // a dirty band of haze sits on the horizon
+  c = mix(c, uHorizon * vec3(0.92, 0.9, 0.86), (1.0 - smoothstep(0.0, 0.16, h)) * 0.5);
+  c += mix(vec3(1.0, 0.97, 0.88), vec3(0.9, 0.95, 1.0), uNight) * smoothstep(0.9975, 0.999, s) * mix(1.4, 1.1, uNight) * (1.0 - uStorm * 0.9);
   // stars
   vec3 q = floor(d * 260.0);
   float st = step(0.9965, hash(q)) * smoothstep(0.05, 0.4, h) * uNight * (1.0 - uStorm);
@@ -44,6 +47,8 @@ export class Sky {
   private rainMat: THREE.LineBasicMaterial;
   private bolt: THREE.Mesh;
   private boltLife = 0;
+  private flares: THREE.Sprite[] = [];
+  private flarePos: THREE.Vector3[] = [];
   private gulls: { m: THREE.Group; r: number; c: THREE.Vector3; sp: number; ph: number; wingL: THREE.Mesh; wingR: THREE.Mesh }[] = [];
 
   constructor(scene: THREE.Scene, private atmo: Atmosphere) {
@@ -62,19 +67,20 @@ export class Sky {
 
     const rng = new RNG(99);
     // fair-weather clouds
-    this.cloudMat = new THREE.MeshToonMaterial({ color: 0xffffff, emissive: 0x8fb8cc, fog: false });
-    for (let i = 0; i < 24; i++) {
+    this.cloudMat = new THREE.MeshToonMaterial({ color: 0xa8aca6, emissive: 0x4a5250, fog: false, vertexColors: true });
+    for (let i = 0; i < 20; i++) {
       const parts: THREE.BufferGeometry[] = [];
       const n = rng.int(4, 7);
       for (let k = 0; k < n; k++) {
         const r = rng.range(14, 30);
-        parts.push(paint(xf(new THREE.SphereGeometry(r, 10, 7), rng.range(-45, 45), rng.range(0, 10), rng.range(-14, 14), 0, 0, 0, [1, 0.62, 1]), '#ffffff'));
+        parts.push(xf(new THREE.SphereGeometry(r, 10, 7), rng.range(-55, 55), rng.range(0, 8), rng.range(-16, 16), 0, 0, 0, [1.3, 0.45, 1]));
       }
-      const m = new THREE.Mesh(merge(parts), this.cloudMat);
+      // sooty, rain-heavy bellies under paler tops
+      const m = new THREE.Mesh(paintGradient(merge(parts.map((g) => paint(g, '#ffffff'))), '#55585a', '#d0d0c8'), this.cloudMat);
       const ang = rng.range(0, Math.PI * 2);
       const dist = rng.range(500, 1500);
-      m.position.set(Math.cos(ang) * dist, rng.range(150, 280), Math.sin(ang) * dist);
-      m.scale.setScalar(rng.range(0.8, 1.7));
+      m.position.set(Math.cos(ang) * dist, rng.range(120, 220), Math.sin(ang) * dist);
+      m.scale.set(rng.range(1.5, 2.6), rng.range(0.7, 1.1), rng.range(1.5, 2.6));
       this.clouds.push(m);
       this.group.add(m);
     }
@@ -109,23 +115,78 @@ export class Sky {
     wallMesh.frustumCulled = false;
     scene.add(wallMesh);
 
-    // drowned skylines on the horizon (where mountains used to be)
-    this.skylineMat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, transparent: true, opacity: 0.55 });
+    // the ruined horizon: drowned skylines, gantry cranes, rig legs, listing hulls, smokestacks
+    this.skylineMat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, transparent: true, opacity: 0.72 });
     const far: THREE.BufferGeometry[] = [];
-    for (let cluster = 0; cluster < 9; cluster++) {
-      const ang = (cluster / 9) * Math.PI * 2 + rng.range(-0.15, 0.15);
-      const d = rng.range(2300, 2700);
+    this.flarePos = [];
+    for (let cluster = 0; cluster < 11; cluster++) {
+      const ang = (cluster / 11) * Math.PI * 2 + rng.range(-0.15, 0.15);
+      const d = rng.range(2250, 2700);
       const cx = Math.cos(ang) * d, cz = Math.sin(ang) * d;
-      const n = rng.int(6, 13);
-      for (let k = 0; k < n; k++) {
-        const w = rng.range(18, 45), h = rng.range(30, 160) * (k % 4 === 0 ? 1.6 : 1);
-        const ox = rng.range(-160, 160);
-        const tang = new THREE.Vector3(-Math.sin(ang), 0, Math.cos(ang));
-        far.push(paint(xf(new THREE.BoxGeometry(w, h, w), cx + tang.x * ox, h / 2 - 20, cz + tang.z * ox, 0, rng.range(0, 3), 0), '#ffffff'));
-        if (k % 5 === 0) far.push(paint(xf(new THREE.CylinderGeometry(1.5, 3, 60, 4), cx + tang.x * ox, h + 10, cz + tang.z * ox), '#ffffff'));
+      const tang = new THREE.Vector3(-Math.sin(ang), 0, Math.cos(ang));
+      const at = (ox: number) => [cx + tang.x * ox, cz + tang.z * ox] as const;
+      const kind = cluster % 4;
+      if (kind === 0 || kind === 2) {
+        // drowned towers, some snapped off and leaning
+        const n = rng.int(6, 12);
+        for (let k = 0; k < n; k++) {
+          const w = rng.range(18, 45), h = rng.range(30, 160) * (k % 4 === 0 ? 1.6 : 1);
+          const [x, z] = at(rng.range(-170, 170));
+          const lean = k % 3 === 0 ? rng.range(-0.12, 0.12) : 0;
+          far.push(paint(xf(new THREE.BoxGeometry(w, h, w), x, h / 2 - 20, z, lean, rng.range(0, 3), lean), '#ffffff'));
+          if (k % 5 === 0) far.push(paint(xf(new THREE.CylinderGeometry(1.5, 3, 60, 4), x, h + 10, z), '#ffffff'));
+        }
+      }
+      if (kind === 1) {
+        // offshore rig: four legs, a deck, a derrick and a flare boom
+        const [x, z] = at(rng.range(-60, 60));
+        for (const [lx, lz] of [[-30, -30], [30, -30], [-30, 30], [30, 30]]) far.push(paint(xf(new THREE.CylinderGeometry(5, 6, 120, 6), x + lx, 40, z + lz), '#ffffff'));
+        far.push(paint(xf(new THREE.BoxGeometry(90, 18, 80), x, 108, z), '#ffffff'));
+        far.push(paint(xf(new THREE.CylinderGeometry(3, 14, 90, 4), x - 15, 160, z), '#ffffff'));
+        far.push(paint(xf(new THREE.BoxGeometry(70, 4, 4), x + 60, 130, z, 0, 0, 0.5), '#ffffff'));
+        this.flarePos.push(new THREE.Vector3(x + 90, 150, z));
+      }
+      if (kind === 3) {
+        // a listing cargo hull and a pair of gantry cranes over it
+        const [x, z] = at(rng.range(-80, 80));
+        far.push(paint(xf(new THREE.BoxGeometry(260, 46, 40), x, 4, z, 0, ang + Math.PI / 2, 0.14), '#ffffff'));
+        far.push(paint(xf(new THREE.BoxGeometry(40, 50, 36), x + tang.x * 90, 50, z + tang.z * 90, 0, ang + Math.PI / 2, 0.14), '#ffffff'));
+        for (const off of [-140, 150]) {
+          const [gx, gz] = at(off);
+          far.push(paint(xf(new THREE.BoxGeometry(8, 190, 8), gx, 75, gz), '#ffffff'));
+          far.push(paint(xf(new THREE.BoxGeometry(8, 190, 8), gx + 26, 75, gz), '#ffffff'));
+          far.push(paint(xf(new THREE.BoxGeometry(180, 9, 9), gx + Math.cos(ang) * -40, 172, gz + Math.sin(ang) * -40, 0, ang, 0), '#ffffff'));
+        }
+      }
+      // smokestacks and a few flare towers scattered through every cluster
+      if (rng.next() > 0.4) {
+        const [x, z] = at(rng.range(-200, 200));
+        const h = rng.range(90, 170);
+        far.push(paint(xf(new THREE.CylinderGeometry(5, 8, h, 6), x, h / 2 - 15, z), '#ffffff'));
+        if (rng.next() > 0.5) this.flarePos.push(new THREE.Vector3(x, h - 10, z));
       }
     }
     this.group.add(new THREE.Mesh(merge(far), this.skylineMat));
+    // gas flares: unlit sprites that flicker on the horizon, brightest at night
+    const flareTex = (() => {
+      const c = document.createElement('canvas');
+      c.width = c.height = 64;
+      const g = c.getContext('2d')!;
+      const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+      gr.addColorStop(0, 'rgba(255,230,170,1)');
+      gr.addColorStop(0.25, 'rgba(255,140,50,0.85)');
+      gr.addColorStop(1, 'rgba(200,60,10,0)');
+      g.fillStyle = gr;
+      g.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(c);
+    })();
+    for (const p of this.flarePos) {
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: flareTex, fog: false, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: 0xffffff }));
+      sp.position.copy(p);
+      sp.scale.set(38, 60, 1);
+      this.flares.push(sp);
+      this.group.add(sp);
+    }
 
     // rain: streaks in a box that follows the camera
     const rp = new Float32Array(1400 * 6);
@@ -146,8 +207,9 @@ export class Sky {
     scene.add(this.bolt);
 
     // gulls circling landmarks and settlements
-    const gullBody = new THREE.MeshToonMaterial({ color: 0xffffff });
-    const gullWing = new THREE.MeshToonMaterial({ color: 0xf2f2f2, side: THREE.DoubleSide });
+    // scavenger birds: soot-dark, circling whatever the sea gives up
+    const gullBody = new THREE.MeshToonMaterial({ color: 0x2c2a27 });
+    const gullWing = new THREE.MeshToonMaterial({ color: 0x3a3732, side: THREE.DoubleSide });
     const wingGeo = new THREE.BufferGeometry();
     wingGeo.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, -0.3, 0, 0, 0.35, 1.6, 0.1, 0.1], 3));
     wingGeo.computeVertexNormals();
@@ -195,9 +257,9 @@ export class Sky {
     this.domeU.uStorm.value = a.storm;
     this.domeU.uTime.value = t;
 
-    // clouds take the colour of the hour
-    this.cloudMat.color.copy(a.sunColor).lerp(new THREE.Color(1, 1, 1), 0.55).multiplyScalar(1 - a.night * 0.65);
-    this.cloudMat.emissive.copy(a.skyHorizon).multiplyScalar(0.55);
+    // a heavy, grimy ceiling that takes the colour of the hour
+    this.cloudMat.color.copy(a.sunColor).lerp(new THREE.Color(0.6, 0.62, 0.6), 0.6).multiplyScalar(0.85 - a.night * 0.6);
+    this.cloudMat.emissive.copy(a.skyHorizon).multiplyScalar(0.42);
     this.cloudMat.opacity = 1 - a.storm * 0.5;
     for (const c of this.clouds) {
       c.position.x += dt * 2.2;
@@ -212,7 +274,13 @@ export class Sky {
     const dark = 1 - a.night * 0.55;
     this.stormMat.color.setRGB(0.29 * dark, 0.34 * dark, 0.39 * dark).lerp(new THREE.Color('#dfe6ff'), a.lightning * 0.6);
     this.wallMat.color.setRGB(0.24 * dark, 0.29 * dark, 0.36 * dark).lerp(new THREE.Color('#dfe6ff'), a.lightning * 0.3);
-    this.skylineMat.color.copy(a.skyHorizon).multiplyScalar(0.62);
+    this.skylineMat.color.copy(a.skyHorizon).multiplyScalar(0.48);
+    for (let i = 0; i < this.flares.length; i++) {
+      const f = this.flares[i];
+      const flick = 0.75 + 0.25 * Math.sin(t * 9 + i * 3.1) * Math.sin(t * 5.3 + i);
+      (f.material as THREE.SpriteMaterial).opacity = (0.35 + a.night * 0.65) * flick * (1 - a.storm * 0.5);
+      f.scale.set(34 + flick * 10, 50 + flick * 22, 1);
+    }
 
     // rain follows the camera, intensity follows the storm
     this.rain.position.set(focus.x, focus.y - 18, focus.z);

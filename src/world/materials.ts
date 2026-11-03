@@ -1,12 +1,14 @@
-// Shared storybook toon materials + geometry helpers.
+// Shared toon materials + geometry helpers. Every toon surface in the game goes through `weather()`:
+// a world-space shader pass that grades vertex colours into the drowned-world palette and layers
+// grime, rust streaks, tide-line staining and salt crust on top, so nothing reads as clean plastic.
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 let gradient: THREE.DataTexture | null = null;
 export function toonGradient() {
   if (gradient) return gradient;
-  // 4 soft bands: gives an illustrated, painted feel without going flat.
-  const data = new Uint8Array([90, 90, 90, 255, 150, 150, 150, 255, 210, 210, 210, 255, 255, 255, 255, 255]);
+  // 4 hard bands with a deep shadow step: contrasty, weathered light instead of soft storybook shading.
+  const data = new Uint8Array([58, 58, 58, 255, 118, 118, 118, 255, 196, 196, 196, 255, 255, 255, 255, 255]);
   gradient = new THREE.DataTexture(data, 4, 1, THREE.RGBAFormat);
   gradient.minFilter = THREE.NearestFilter;
   gradient.magFilter = THREE.NearestFilter;
@@ -16,31 +18,78 @@ export function toonGradient() {
 
 const cache = new Map<string, THREE.Material>();
 
-export function vcMat(opts: { emissive?: number; side?: THREE.Side; sway?: boolean } = {}) {
-  const key = `vc-${opts.emissive ?? 0}-${opts.side ?? 0}-${opts.sway ? 1 : 0}`;
+export function vcMat(opts: { emissive?: number; side?: THREE.Side; sway?: boolean; weather?: number } = {}) {
+  const key = `vc-${opts.emissive ?? 0}-${opts.side ?? 0}-${opts.sway ? 1 : 0}-${opts.weather ?? 1}`;
   let m = cache.get(key) as THREE.MeshToonMaterial | undefined;
   if (!m) {
     m = new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: toonGradient(), side: opts.side ?? THREE.FrontSide });
     if (opts.emissive) m.emissive = new THREE.Color(opts.emissive);
-    if (opts.sway) addSway(m);
+    weather(m, opts.weather ?? 1, !!opts.sway);
     cache.set(key, m);
   }
   return m;
 }
 
-export function toonMat(color: THREE.ColorRepresentation, extra: Partial<THREE.MeshToonMaterialParameters> = {}) {
-  return new THREE.MeshToonMaterial({ color, gradientMap: toonGradient(), ...extra });
+export function toonMat(color: THREE.ColorRepresentation, extra: Partial<THREE.MeshToonMaterialParameters> = {}, amount = 1) {
+  return weather(new THREE.MeshToonMaterial({ color, gradientMap: toonGradient(), ...extra }), amount);
 }
 
 export const swayUniforms = { uTime: { value: 0 } };
 
-/** Gentle wind sway for foliage. Amount scales with height above the prop's base (stored in uv.y). */
-function addSway(m: THREE.Material) {
+const WEATHER_COMMON = /* glsl */ `
+varying vec3 vWxPos;
+varying vec3 vWxNrm;
+uniform float uWeather;
+float wxHash(vec3 p) { p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+float wxNoise(vec3 x) {
+  vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mix(wxHash(i), wxHash(i + vec3(1,0,0)), f.x), mix(wxHash(i + vec3(0,1,0)), wxHash(i + vec3(1,1,0)), f.x), f.y),
+             mix(mix(wxHash(i + vec3(0,0,1)), wxHash(i + vec3(1,0,1)), f.x), mix(wxHash(i + vec3(0,1,1)), wxHash(i + vec3(1,1,1)), f.x), f.y), f.z);
+}
+`;
+
+const WEATHER_FRAG = /* glsl */ `
+{
+  vec3 c = diffuseColor.rgb;
+  float lum = dot(c, vec3(0.299, 0.587, 0.114));
+  float sat = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
+  // grade: bleach saturation the way sun and salt do, pull toward a warm grey-sienna base
+  vec3 graded = mix(vec3(lum), c, 0.62) * vec3(1.0, 0.95, 0.87);
+  vec3 P = vWxPos;
+  float big = wxNoise(P * 0.21);
+  float fine = wxNoise(P * 1.7 + 11.0);
+  // grime: blotchy oily build-up, heavier in crevices facing down
+  float grime = smoothstep(0.42, 0.95, big * 0.7 + fine * 0.45) * (0.55 + 0.45 * (1.0 - max(vWxNrm.y, 0.0)));
+  graded = mix(graded, graded * vec3(0.42, 0.38, 0.33), grime * 0.55);
+  // rust streaks: noise stretched vertically so it runs down walls; strongest on grey/neutral (metal) surfaces
+  float streak = wxNoise(vec3(P.x * 2.3, P.y * 0.16, P.z * 2.3)) * 0.75 + fine * 0.25;
+  float metal = 1.0 - smoothstep(0.08, 0.32, sat);
+  float rust = smoothstep(0.58, 0.82, streak) * (0.35 + 0.65 * metal) * (1.0 - max(vWxNrm.y, 0.0) * 0.6);
+  graded = mix(graded, vec3(0.40, 0.17, 0.07) * (0.7 + lum * 0.6), rust * 0.6);
+  // tide line: algae-black stain below, a crust of bone-white salt just above
+  float y = P.y;
+  float algae = (1.0 - smoothstep(-0.2, 0.9, y)) * step(-6.0, y);
+  graded = mix(graded, vec3(0.09, 0.12, 0.09), algae * (0.45 + fine * 0.3));
+  float salt = smoothstep(0.5, 1.0, y) * (1.0 - smoothstep(1.2, 2.6, y)) * smoothstep(0.45, 0.75, fine);
+  graded = mix(graded, vec3(0.70, 0.67, 0.59), salt * 0.45);
+  // sun-bleached tops
+  graded = mix(graded, graded * 0.85 + vec3(0.11, 0.105, 0.09), smoothstep(0.75, 1.0, vWxNrm.y) * 0.35);
+  diffuseColor.rgb = mix(c, graded, uWeather);
+}
+`;
+
+/**
+ * Drowned-world weathering for a toon material. `amount` 0..1 scales the whole effect (crew faces get less
+ * than steel hulls). Composes with optional foliage sway.
+ */
+export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false): M {
+  const u = { value: amount };
   m.onBeforeCompile = (shader) => {
-    shader.uniforms.uTime = swayUniforms.uTime;
-    shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\nuniform float uTime;\nattribute float sway;')
-      .replace(
+    shader.uniforms.uWeather = u;
+    if (sway) shader.uniforms.uTime = swayUniforms.uTime;
+    let vs = shader.vertexShader.replace('#include <common>', `#include <common>\n${WEATHER_COMMON}${sway ? 'uniform float uTime;\nattribute float sway;' : ''}`);
+    if (sway)
+      vs = vs.replace(
         '#include <begin_vertex>',
         `#include <begin_vertex>
         vec4 wp = modelMatrix * vec4(transformed, 1.0);
@@ -49,7 +98,26 @@ function addSway(m: THREE.Material) {
         transformed.z += cos(uTime * 1.1 + ph * 1.3) * 0.12 * sway;
         transformed.y += sin(uTime * 2.0 + ph) * 0.05 * sway;`
       );
+    vs = vs.replace(
+      '#include <project_vertex>',
+      `#include <project_vertex>
+      {
+        mat4 wxM = modelMatrix;
+        #ifdef USE_INSTANCING
+        wxM = modelMatrix * instanceMatrix;
+        #endif
+        vWxPos = (wxM * vec4(transformed, 1.0)).xyz;
+        vWxNrm = normalize(mat3(wxM) * objectNormal);
+      }`
+    );
+    shader.vertexShader = vs;
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', `#include <common>\n${WEATHER_COMMON}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>\n${WEATHER_FRAG}`);
   };
+  m.customProgramCacheKey = () => `weather-${sway ? 1 : 0}`;
+  m.userData.weather = u;
+  return m;
 }
 
 export function paint(geo: THREE.BufferGeometry, color: THREE.ColorRepresentation, jitter = 0, sway = 0): THREE.BufferGeometry {
