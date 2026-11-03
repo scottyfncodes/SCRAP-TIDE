@@ -167,11 +167,12 @@ void main() {
   vec3 Nflat = normalize(vN);
 
   // depth colour: silted shore → dirty teal shelf → grey-green open water → deep → oil-black abyss
-  vec3 cShore = vec3(0.27, 0.31, 0.24);
-  vec3 cShelf = vec3(0.07, 0.25, 0.23);
-  vec3 cOpen = vec3(0.035, 0.135, 0.145);
-  vec3 cDeep = vec3(0.014, 0.055, 0.065);
-  vec3 cAbyss = vec3(0.006, 0.022, 0.028);
+  // murky silted turquoise in the shallows -> desaturated blue-green -> dark navy open water (never Caribbean)
+  vec3 cShore = vec3(0.22, 0.29, 0.26);
+  vec3 cShelf = vec3(0.055, 0.215, 0.225);
+  vec3 cOpen = vec3(0.028, 0.11, 0.145);
+  vec3 cDeep = vec3(0.011, 0.043, 0.075);
+  vec3 cAbyss = vec3(0.005, 0.017, 0.036);
   vec3 col = mix(cShore, cShelf, smoothstep(0.0, 1.8, depth));
   col = mix(col, cOpen, smoothstep(1.8, 7.0, depth));
   col = mix(col, cDeep, smoothstep(7.0, 16.0, depth));
@@ -192,7 +193,7 @@ void main() {
   vec3 V = normalize(cameraPosition - vWorld);
   // subsurface: murky light through the back of the crests
   float sss = pow(max(0.0, dot(V, -uSunDir) + 0.3), 2.0) * max(0.0, vWave) * (1.0 - uNight);
-  col += vec3(0.05, 0.20, 0.16) * sss * 0.8;
+  col += vec3(0.04, 0.16, 0.16) * sss * 0.8;
   // the slick itself: a tarry darkening with an iridescent film that shifts with view angle
   float film = noise(p * 0.21 + t * 0.02) * 2.0 + dot(N, V) * 3.0;
   vec3 sheen = 0.5 + 0.5 * cos(6.2831 * (vec3(0.0, 0.33, 0.67) + film));
@@ -214,7 +215,9 @@ void main() {
   float pulse = 0.5 + 0.5 * sin(depth * 9.0 - t * 2.4 + fn * 3.0);
   float foam = shoreBand * (0.55 + 0.45 * pulse);
   foam = max(foam, reef * smoothstep(0.35, 0.75, fn + 0.25 * sin(t*3.0 + p.x*0.4)));
-  foam = max(foam, smoothstep(0.55 - uStorm * 0.25, 0.95, vWave + fn*0.35) * (0.2 + swell*0.5 + uStorm * 0.8));
+  // whitecaps: crests break into torn lace, never solid blobs of paint
+  float lace = smoothstep(0.32, 0.78, noise(p * 2.3 + vec2(t * 0.9, t * 0.4)) * 0.7 + noise(p * 6.1 - t * 0.5) * 0.3);
+  foam = max(foam, smoothstep(0.55 - uStorm * 0.25, 0.95, vWave + fn*0.35) * (0.2 + swell*0.5 + uStorm * 0.8) * (0.35 + 0.75 * lace));
   float wk = 0.0;
   for (int i = 0; i < ${WAKE_N}; i++) {
     vec4 w = uWake[i];
@@ -231,11 +234,11 @@ void main() {
   float streaks = smoothstep(0.78, 0.96, noise(vec2(along * 0.025 - t * 0.12, across * 0.55)) * 0.8 + noise(p * 0.4) * 0.2);
   foam = max(foam, streaks * (0.35 + uStorm * 0.6) * smoothstep(2.0, 6.0, depth));
   foam *= 1.0 - oil * 0.7;
-  foam = smoothstep(0.45, 0.6, foam);
+  foam = smoothstep(0.4, 0.72, foam);
   // foam here is never white: salt-scum the colour of old bone, stained by the water under it
   vec3 foamCol = mix(vec3(0.78, 0.76, 0.68), uSkyColor, 0.18) * (uAmbient * 0.6 + 0.4);
   foamCol *= 0.85 + 0.15 * fn;
-  col = mix(col, foamCol, foam * 0.88);
+  col = mix(col, foamCol, foam * 0.82);
 
   float alpha = mix(0.5, 0.97, smoothstep(0.0, 6.0, depth));
   alpha = max(alpha, foam * 0.95);

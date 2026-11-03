@@ -1,5 +1,5 @@
 // DOM UI: HUD, touch controls, panels (harbor, catalog, maps, ship, cargo, settings), reveals.
-import { ITEMS, CATALOG_ITEMS, ITEM_MAP, RARITY_COLOR, RARITY_LABEL, RARITY_ORDER, CATEGORY_LABEL, item, type Category } from '../data/items';
+import { ITEMS, CATALOG_ITEMS, ITEM_MAP, RARITY_COLOR, RARITY_LABEL, RARITY_ORDER, CATEGORY_LABEL, LIVING_GREEN, isLiving, item, type Category } from '../data/items';
 import { UPGRADES, VESSELS, COSMETICS, COSMETIC_MAP, SLOT_LABEL, SLOT_ORDER, UPGRADE_MAP, type Cost } from '../data/ship';
 import { RECIPES } from '../data/crafting';
 import { CREW, CREW_MAP, ROLE_INFO } from '../data/crew';
@@ -378,7 +378,7 @@ export class UI {
     const ctx = c.getContext('2d')!;
     const W = c.width, R = W / 2;
     ctx.clearRect(0, 0, W, W);
-    ctx.strokeStyle = 'rgba(120,200,170,.22)';
+    ctx.strokeStyle = 'rgba(226,170,80,.24)'; // salvaged amber CRT: green is reserved for living things
     ctx.lineWidth = 2;
     for (const k of [0.33, 0.66]) {
       ctx.beginPath();
@@ -394,9 +394,9 @@ export class UI {
       const sweep = (performance.now() / 1000) * 2.2;
       const g = ctx.createConicGradient ? ctx.createConicGradient(sweep, R, R) : null;
       if (g) {
-        g.addColorStop(0, 'rgba(140,220,180,.38)');
-        g.addColorStop(0.12, 'rgba(140,220,180,0)');
-        g.addColorStop(1, 'rgba(140,220,180,0)');
+        g.addColorStop(0, 'rgba(236,180,90,.4)');
+        g.addColorStop(0.12, 'rgba(236,180,90,0)');
+        g.addColorStop(1, 'rgba(236,180,90,0)');
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(R, R, R, 0, Math.PI * 2);
@@ -404,7 +404,7 @@ export class UI {
       }
     }
     const cos = Math.cos(camYaw), sin = Math.sin(camYaw);
-    const col: Record<string, string> = { site: '#e8b83a', site_done: 'rgba(232,184,58,.32)', town: '#8fe0c4', cache: '#b6e05a', raider: '#ff5a2a', castaway: '#f2ede0' };
+    const col: Record<string, string> = { site: '#e8b83a', site_done: 'rgba(232,184,58,.32)', town: '#9fd0c8', cache: '#d9c8a0', raider: '#ff5a2a', castaway: '#f2ede0', plant: LIVING_GREEN };
     for (const b of blips) {
       // world → screen: camera forward is up
       const fx = b.x * sin + b.z * cos; // forward component
@@ -417,7 +417,7 @@ export class UI {
       }
       ctx.fillStyle = col[b.kind] ?? '#fff';
       ctx.beginPath();
-      const r = b.kind === 'town' ? 8 : b.kind === 'raider' ? 7 : 6;
+      const r = b.kind === 'town' ? 8 : b.kind === 'raider' ? 7 : b.kind === 'plant' ? 5 + Math.sin(performance.now() / 260) * 1.5 : 6;
       if (b.kind === 'raider') {
         ctx.moveTo(R + px * R, R + py * R - r);
         ctx.lineTo(R + px * R + r, R + py * R + r);
@@ -562,10 +562,12 @@ export class UI {
   revealItem(id: string, n: number, isNew: boolean) {
     const d = item(id);
     const rc = RARITY_COLOR[d.rarity];
+    const alive = isLiving(id);
     audio.discover(RARITY_ORDER.indexOf(d.rarity));
     this.queueReveal(() =>
-      el(`<div class="reveal"><div class="reveal-card" style="--rc:${rc}"><div class="rays"></div>
-        <div class="r-kicker">${isNew ? 'New Discovery!' : 'Found'}</div>
+      el(`<div class="reveal${alive ? ' living' : ''}"><div class="reveal-card" style="--rc:${alive ? LIVING_GREEN : rc}"><div class="rays"></div>
+        ${alive ? '<div class="alive-stamp">ALIVE</div>' : ''}
+        <div class="r-kicker">${alive ? 'Living green' : isNew ? 'New Discovery!' : 'Found'}</div>
         <div class="r-icon">${iconSVG(id, { size: 120 })}</div>
         <div class="r-name">${d.name}${n > 1 ? ` ×${n}` : ''}</div>
         <span class="r-rarity" style="background:${rc}">${RARITY_LABEL[d.rarity]} · ${CATEGORY_LABEL[d.category]}</span>
@@ -581,6 +583,25 @@ export class UI {
         <div class="r-name">${title}</div>
         <div class="r-loot">${loot.map((l, i) => `<div class="lchip" style="--c:${RARITY_COLOR[item(l.id).rarity]};animation-delay:${0.15 + i * 0.12}s">${iconSVG(l.id, { size: 30 })}${item(l.id).name}${l.n > 1 ? ` ×${l.n}` : ''}</div>`).join('')}</div>
         <button class="btn r-ok" style="min-width:160px">Haul it aboard</button></div></div>`)
+    );
+  }
+
+  /** A living plant comes aboard: the one card in the game that is green. */
+  revealLiving(loot: { id: string; n: number }[], where: string) {
+    const main = loot.find((l) => isLiving(l.id)) ?? loot[0];
+    const d = item(main.id);
+    const rarer = RARITY_ORDER.indexOf(d.rarity);
+    this.queueReveal(() =>
+      el(`<div class="reveal living"><div class="reveal-card" style="--rc:${LIVING_GREEN}"><div class="rays"></div>
+        <div class="alive-stamp">ALIVE</div>
+        <div class="r-kicker">Found growing on ${where}</div>
+        <div class="r-icon">${iconSVG(main.id, { size: 120 })}</div>
+        <div class="r-name">${d.name}</div>
+        <span class="r-rarity" style="background:${RARITY_COLOR[d.rarity]}">${RARITY_LABEL[d.rarity]} · Living green</span>
+        <div class="r-desc">${d.desc}</div>
+        ${loot.length > 1 ? `<div class="r-loot">${loot.map((l, i) => `<div class="lchip" style="--c:${isLiving(l.id) ? LIVING_GREEN : RARITY_COLOR[item(l.id).rarity]};animation-delay:${0.15 + i * 0.12}s">${iconSVG(l.id, { size: 30 })}${item(l.id).name}${l.n > 1 ? ` ×${l.n}` : ''}</div>`).join('')}</div>` : ''}
+        <div class="r-note">${rarer >= 3 ? 'Every settlement on the water will want this. Keep it out of the salt and away from raiders.' : rarer >= 2 ? 'A healthy green plant. People will stop you on the dock to look at it.' : 'Small, but alive. Out here that counts for a lot.'}</div>
+        <button class="btn r-ok living-ok" style="min-width:160px">Shelter it aboard</button></div></div>`)
     );
   }
 
@@ -604,7 +625,7 @@ export class UI {
   revealMilestone(name: string, desc: string, reward: string) {
     audio.discover(4);
     this.queueReveal(() =>
-      el(`<div class="reveal"><div class="reveal-card" style="--rc:#5fc47a"><div class="rays"></div>
+      el(`<div class="reveal"><div class="reveal-card" style="--rc:#4f9a95"><div class="rays"></div>
         <div class="r-kicker">Collection Milestone</div>
         <div class="r-name">${name}</div>
         <div class="r-desc">${desc}<br><br><b>Reward:</b> ${reward}</div>
@@ -879,7 +900,7 @@ export class UI {
           const afford = s.canAfford(u.cost);
           const where = (u.where ?? ['driftholm']).map((w) => SETTLEMENT_MAP[w]?.name).join(' or ');
           const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked || !sold ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : !sold ? `<div class="r-sub"><b>Fitted at ${where}</b></div>` : costHTML(s, u.cost)}</div>
-            ${owned ? '<span class="rar" style="background:#3fa55a">Installed</span>' : `<button class="btn" ${!afford || locked || !sold ? 'disabled' : ''}>Install</button>`}</div>`);
+            ${owned ? '<span class="rar" style="background:#4f9a95">Installed</span>' : `<button class="btn" ${!afford || locked || !sold ? 'disabled' : ''}>Install</button>`}</div>`);
           row.querySelector('button')?.addEventListener('click', () => {
             this.game.buyUpgrade(u.id);
             render();
@@ -893,7 +914,7 @@ export class UI {
         const current = s.data.vessel === v.id;
         const canBuild = sett.id === 'driftholm';
         const row = el(`<div class="row ${owned ? 'owned' : ''}"><div class="r-main"><div class="r-title">${v.name}${current ? ' (aboard)' : ''}</div><div class="r-sub">${v.desc}<br>Sail ${v.speed} · Cargo ${v.cargo} · Hull ${v.hull} · Crew ${v.berths} · Trophies ${v.trophySlots}${v.crossSwell ? ' · crosses the open swell' : ''}${v.crossStorm ? ' · survives the Stormwall' : ''}</div>${!owned && v.cost ? costHTML(s, v.cost) : ''}${!owned && !canBuild ? '<div class="r-sub"><b>Built at Driftholm</b></div>' : ''}</div>
-          ${current ? '<span class="rar" style="background:#3fa55a">Yours</span>' : owned ? '<button class="btn ghost">Switch</button>' : `<button class="btn" ${!canBuild || (v.cost && !s.canAfford(v.cost)) ? 'disabled' : ''}>Commission</button>`}</div>`);
+          ${current ? '<span class="rar" style="background:#4f9a95">Yours</span>' : owned ? '<button class="btn ghost">Switch</button>' : `<button class="btn" ${!canBuild || (v.cost && !s.canAfford(v.cost)) ? 'disabled' : ''}>Commission</button>`}</div>`);
         row.querySelector('button')?.addEventListener('click', () => {
           this.game.buyVessel(v.id);
           render();
@@ -982,7 +1003,7 @@ export class UI {
         const grid = el(`<div class="grid"></div>`);
         for (const d of displayable) {
           const on = s.data.trophies.includes(d.id);
-          const c = el(`<button class="cell" style="--c:${on ? '#3fa55a' : RARITY_COLOR[d.rarity]}">${iconSVG(d.id)}<div class="c-name">${d.name}</div>${on ? '<div class="c-n">✔</div>' : ''}</button>`);
+          const c = el(`<button class="cell" style="--c:${on ? '#4f9a95' : RARITY_COLOR[d.rarity]}">${iconSVG(d.id)}<div class="c-name">${d.name}</div>${on ? '<div class="c-n">✔</div>' : ''}</button>`);
           c.addEventListener('click', () => {
             if (on) return;
             const free = s.data.trophies.slice(0, slots).findIndex((t) => !t);
@@ -1072,7 +1093,7 @@ export class UI {
       for (const st of list) {
         const d = item(st.id);
         const slots = Math.ceil(st.n / d.stack);
-        const row = el(`<div class="row" style="border-color:${RARITY_COLOR[d.rarity]}">${iconSVG(st.id)}<div class="r-main"><div class="r-title">${d.name} ×${st.n}</div><div class="r-sub">${tab === 'cargo' ? `${slots} slot${slots > 1 ? 's' : ''} · stacks to ${d.stack}` : CATEGORY_LABEL[d.category]} · worth ${d.value}g each</div></div>${tab === 'cargo' ? '<button class="btn ghost">Toss 1</button>' : ''}</div>`);
+        const row = el(`<div class="row${isLiving(st.id) ? ' living' : ''}" style="border-color:${isLiving(st.id) ? LIVING_GREEN : RARITY_COLOR[d.rarity]}">${iconSVG(st.id)}<div class="r-main"><div class="r-title">${d.name} ×${st.n}</div><div class="r-sub">${tab === 'cargo' ? `${slots} slot${slots > 1 ? 's' : ''} · stacks to ${d.stack}` : CATEGORY_LABEL[d.category]} · worth ${d.value}g each</div></div>${tab === 'cargo' ? '<button class="btn ghost">Toss 1</button>' : ''}</div>`);
         row.querySelector('button')?.addEventListener('click', () => {
           this.game.jettison(st.id);
           render();
@@ -1130,7 +1151,7 @@ export class UI {
         for (const d of items) {
           const disc = s.data.discoveries[d.id];
           const isNew = disc && !this.seenCatalog.has(d.id);
-          const cell = el(`<button class="cell ${disc ? '' : 'unknown'} ${isNew ? 'new' : ''}" style="--c:${disc ? RARITY_COLOR[d.rarity] : ''}">${iconSVG(d.id, { silhouette: !disc })}<div class="c-name">${disc ? d.name : '???'}</div>${disc ? `<div class="c-n">×${disc.count}</div>` : ''}</button>`);
+          const cell = el(`<button class="cell ${disc ? '' : 'unknown'} ${isNew ? 'new' : ''} ${disc && d.category === 'living' ? 'living' : ''}" style="--c:${disc ? (d.category === 'living' ? LIVING_GREEN : RARITY_COLOR[d.rarity]) : ''}">${iconSVG(d.id, { silhouette: !disc })}<div class="c-name">${disc ? d.name : '???'}</div>${disc ? `<div class="c-n">×${disc.count}</div>` : ''}</button>`);
           cell.addEventListener('click', () => {
             if (!disc) {
               audio.deny();
@@ -1235,7 +1256,7 @@ export class UI {
     hap.addEventListener('change', apply);
     body.querySelector('.save')!.addEventListener('click', () => {
       s.saveNow();
-      this.toast('Progress saved ✔', { color: '#3fa55a' });
+      this.toast('Progress saved ✔', { color: '#4f9a95' });
     });
     let armed = false;
     const rb = body.querySelector('.reset') as HTMLButtonElement;

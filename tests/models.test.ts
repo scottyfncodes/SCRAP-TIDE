@@ -30,6 +30,10 @@ const NEEDED: Record<string, string[]> = {
   tb_trawler_wreck: ['trawler_body'],
   tb_port_crane: ['crane_body'],
   tb_flotsam_kit: ['barrel_raft', 'net_tangle', 'bell_buoy', 'hull_shard'],
+  tb_atoll_kit: ['atoll_wall', 'atoll_wall_burnt', 'atoll_gate', 'watchtower', 'water_tank', 'propeller', 'container_home'],
+  tb_outpost_kit: ['pontoon', 'rain_catcher', 'net_tower', 'market_stall', 'sinking_platform', 'dead_tree', 'scrap_heap', 'salvage_barge', 'scrap_boat'],
+  tb_flora_kit: ['flora_algae', 'flora_seaweed', 'flora_seedling', 'flora_moss', 'flora_potted', 'flora_flowering', 'flora_fruit', 'flora_sapling',
+    'greenhouse', 'garden_plot', 'last_tree'],
 };
 
 describe('GITCRAFT models in public/models', () => {

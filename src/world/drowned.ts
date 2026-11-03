@@ -2,8 +2,8 @@
 // using the GITCRAFT MeshCraft models (public/models). Each piece falls back to simple procedural geometry
 // if its model failed to load, so the game always runs.
 import * as THREE from 'three';
-import { STRUCTURES, SALVAGE_SITES, type StructureDef } from '../data/world';
-import { model } from './assets';
+import { STRUCTURES, SALVAGE_SITES, OUTPOSTS, type StructureDef, type OutpostDef } from '../data/world';
+import { model, kitGeo, glowMat } from './assets';
 import { vcMat, paint, xf, merge } from './materials';
 import { RNG } from '../core/noise';
 import { heightAt } from './terrain';
@@ -42,12 +42,26 @@ export class DrownedWorld {
   focus = new THREE.Vector3();
   /** drifting flotsam the player can pick over by sailing slowly through it */
   flotsam: { x: number; z: number; kind: string; picked: boolean; obj: THREE.Object3D }[] = [];
+  /** every kit node placed in the world (static pieces are merged into per-settlement batches, so they have no scene name) */
+  placedNodes = new Set<string>();
+  /** static kit pieces, merged per settlement into one toon mesh + one glow mesh (a whole town = 2 draw calls) */
+  private batch = 'misc';
+  private batches = new Map<string, { geos: THREE.BufferGeometry[]; glows: THREE.BufferGeometry[]; x: number; z: number; n: number }>();
+  private batchMeshes: { obj: THREE.Object3D; x: number; z: number; r: number }[] = [];
 
   constructor(private scene: THREE.Scene) {
     for (const s of STRUCTURES) this.place(s);
+    this.batch = 'driftholm';
     this.buildDriftholmRafts();
+    this.batch = 'hollow';
     this.buildRooftopHollow();
+    this.batch = 'helios';
     this.buildHeliosDock();
+    for (const o of OUTPOSTS) {
+      this.batch = o.id;
+      this.buildOutpost(o);
+    }
+    this.flushBatches();
     this.scatterDebris();
     this.bellBuoys();
     this.markSites();
@@ -134,6 +148,124 @@ export class DrownedWorld {
     for (const [k, x, z, r] of [...west, ...east]) this.module3(k, x, z, r);
     // walkways tie the rafts to the pier
     for (const [x, z, r] of [[-14, 196, 0], [16, 197, 0], [-34, 186, 0.6], [36, 187, -0.6]] as const) this.module3('mod_walkway', x, z, r);
+    // Driftholm is a fortified atoll: scrap palisades flank the raft districts (one still scorched from the last
+    // raid), watchtowers on the corners, the harbour mouth left open for boats
+    const H = Math.PI / 2;
+    this.kitPiece('tb_atoll_kit', 'atoll_wall', -68, 181, H, 1, true);
+    this.kitPiece('tb_atoll_kit', 'atoll_wall_burnt', -68, 197, H, 1, true);
+    this.kitPiece('tb_atoll_kit', 'atoll_wall', -52, 170, 0, 1, true);
+    this.kitPiece('tb_atoll_kit', 'atoll_wall', 72, 181, -H, 1, true);
+    this.kitPiece('tb_atoll_kit', 'atoll_wall', 72, 197, -H, 1, true);
+    this.kitPiece('tb_atoll_kit', 'atoll_wall_burnt', 56, 172, Math.PI, 1, true);
+    this.kitPiece('tb_atoll_kit', 'watchtower', -68, 167, 0.6, 1, true);
+    this.kitPiece('tb_atoll_kit', 'watchtower', 72, 168, -0.5, 1, true);
+    // the town's landmark: a supertanker's propeller, stood on end in the shallows, a lookout shack on its hub
+    this.kitPiece('tb_atoll_kit', 'propeller', -30, 158, 0.25, 1, false);
+    this.colliders.push({ x: -30, z: 158, r: 7 });
+  }
+
+  /**
+   * Place one kit node; walls add a chain of colliders along their length. Boats bob on their own; everything else
+   * (walls, towers, tanks, stalls: heavy, moored, effectively still) is merged into its settlement's static batch.
+   */
+  private kitPiece(file: string, node: string, x: number, z: number, rot = 0, scale = 1, _bob = true, y = 0) {
+    const bob = node === 'scrap_boat';
+    let obj: THREE.Object3D | null = null;
+    if (bob) {
+      obj = model(file, node);
+      if (!obj) return null;
+      this.add(obj, x, y, z, rot, scale);
+      obj.traverse((m) => (m.castShadow = false)); // small and at the waterline: not worth a shadow pass
+    } else {
+      const k = kitGeo(file, node, x, y, z, rot, scale);
+      if (!k) return null;
+      let b = this.batches.get(this.batch);
+      if (!b) this.batches.set(this.batch, (b = { geos: [], glows: [], x: 0, z: 0, n: 0 }));
+      b.geos.push(k.geo);
+      if (k.glow) b.glows.push(k.glow);
+      b.x += x;
+      b.z += z;
+      b.n++;
+    }
+    this.placedNodes.add(node);
+    if (/wall/.test(node)) {
+      const L = 16 * scale;
+      for (let t = -L / 2 + 2; t <= L / 2 - 2; t += 4) this.colliders.push({ x: x + Math.cos(rot) * t, z: z - Math.sin(rot) * t, r: 2.6 * scale });
+    } else if (node === 'atoll_gate') {
+      for (const t of [-7, -3.5, 0, 3.5, 7]) this.colliders.push({ x: x + Math.cos(rot) * t * scale, z: z - Math.sin(rot) * t * scale, r: 3 * scale });
+    } else if (node !== 'propeller' && node !== 'scrap_boat') {
+      const r = { water_tank: 4.8, container_home: 6, watchtower: 2.8, salvage_barge: 6, pontoon: 5.5, sinking_platform: 5, market_stall: 4, rain_catcher: 3.2, net_tower: 2.6 }[node] ?? 3;
+      this.colliders.push({ x, z, r: r * scale });
+    }
+    if (bob && obj) {
+      const o = obj;
+      const ph = x * 0.11 + z * 0.07;
+      this.animators.push((t) => {
+        o.visible = Math.abs(o.position.x - this.focus.x) < 420 && Math.abs(o.position.z - this.focus.z) < 420;
+        if (!o.visible) return;
+        o.position.y = y + Math.sin(t * 0.9 + ph) * 0.14;
+        o.rotation.z = Math.sin(t * 0.7 + ph) * 0.04;
+      });
+    }
+    return obj;
+  }
+
+  private flushBatches() {
+    for (const [, b] of this.batches) {
+      const grp = new THREE.Group();
+      const solid = new THREE.Mesh(merge(b.geos), vcMat());
+      solid.castShadow = solid.receiveShadow = true;
+      grp.add(solid);
+      if (b.glows.length) {
+        const gm = new THREE.Mesh(merge(b.glows), glowMat());
+        gm.userData.glow = true;
+        grp.add(gm);
+        this.glows.push(gm);
+      }
+      solid.geometry.computeBoundingSphere();
+      const bs = solid.geometry.boundingSphere!;
+      this.scene.add(grp);
+      this.batchMeshes.push({ obj: grp, x: bs.center.x, z: bs.center.z, r: bs.radius });
+    }
+    this.batches.clear();
+    // whole settlements drop out once the haze has them (fog is opaque by ~860 m)
+    this.animators.push(() => {
+      for (const m of this.batchMeshes) m.obj.visible = Math.hypot(m.x - this.focus.x, m.z - this.focus.z) - m.r < 820;
+    });
+  }
+
+  /** Settlement hierarchy dressing from data: outposts, the raider fort, a stripping yard, a platform going under. */
+  private buildOutpost(o: OutpostDef) {
+    const c = Math.cos(o.rot), s = Math.sin(o.rot);
+    const at = (lx: number, lz: number) => [o.x + lx * c + lz * s, o.z - lx * s + lz * c] as const;
+    const put = (file: string, node: string, lx: number, lz: number, r = 0, sc = 1, bob = true) => {
+      const [x, z] = at(lx, lz);
+      return this.kitPiece(file, node, x, z, o.rot + r, sc, bob);
+    };
+    if (o.kind === 'outpost') {
+      put('tb_outpost_kit', 'pontoon', 0, 0);
+      put('tb_settlement_kit', 'mod_shack', -1.5, 0.5, 0.1, 0.7);
+      put('tb_atoll_kit', 'watchtower', 3.2, 2.5, 0.3, 0.6);
+      put('tb_outpost_kit', 'rain_catcher', 8.5, -3, 0, 0.75);
+      put('tb_outpost_kit', 'scrap_boat', -7.5, -4, 1.4, 1);
+      if (o.id !== 'op_gullstep') put('tb_outpost_kit', 'net_tower', -2, 8.5, 0, 0.8);
+    } else if (o.kind === 'raider_fort') {
+      put('tb_atoll_kit', 'atoll_gate', 0, -20, 0, 1, false);
+      const ring = [[-16, -14, -0.7], [16, -14, 0.7], [-21, 2, -1.57], [21, 2, 1.57], [-13, 17, -2.4], [13, 17, 2.4]] as const;
+      ring.forEach(([lx, lz, r], i) => put('tb_atoll_kit', i % 2 ? 'atoll_wall_burnt' : 'atoll_wall', lx, lz, r, 1, false));
+      put('tb_atoll_kit', 'watchtower', -10, -20, 0, 1, false);
+      put('tb_atoll_kit', 'watchtower', 10, -20, 0, 1, false);
+      put('tb_atoll_kit', 'container_home', -4, 2, 0.2, 0.9, false);
+      put('tb_atoll_kit', 'container_home', 6, 9, -0.4, 0.85, false);
+      put('tb_atoll_kit', 'water_tank', 8, -6, 0, 0.8, false);
+      put('tb_outpost_kit', 'scrap_heap', -9, -8, 0, 1.6, false);
+      put('tb_outpost_kit', 'scrap_boat', -26, -26, 0.8, 1.15);
+      put('tb_outpost_kit', 'scrap_boat', 24, -27, -0.6, 1.1);
+    } else if (o.kind === 'strip_wreck') {
+      put('tb_outpost_kit', 'salvage_barge', 0, 0, 0, 1.1);
+    } else {
+      put('tb_outpost_kit', 'sinking_platform', 0, 0, 0, 1.2, false);
+    }
   }
 
   private module3(kind: string, x: number, z: number, rot = 0) {
@@ -142,6 +274,14 @@ export class DrownedWorld {
 
   /** Rooftop Hollow: a fishing community on the roof of the drowned apartment block. */
   private buildRooftopHollow() {
+    // trading settlement: nets drying, a rain catcher, a fish market at the pontoon, boats tied off the south face
+    this.kitPiece('tb_outpost_kit', 'net_tower', -244, -40, 0.5);
+    this.kitPiece('tb_outpost_kit', 'net_tower', -206, -62, 1.2);
+    this.kitPiece('tb_outpost_kit', 'rain_catcher', -216, -40, 0.3);
+    this.kitPiece('tb_outpost_kit', 'market_stall', -238, -34, 0.5 + Math.PI);
+    this.kitPiece('tb_outpost_kit', 'scrap_boat', -222, -30, 2.2);
+    this.kitPiece('tb_outpost_kit', 'scrap_boat', -250, -50, 1.0);
+    this.kitPiece('tb_outpost_kit', 'scrap_boat', -204, -45, -0.4);
     const bx = -235, bz = -70, rot = 0.5;
     const top = this.hollowTop;
     const local = (lx: number, lz: number) => {
@@ -162,6 +302,14 @@ export class DrownedWorld {
     this.module3('mod_walkway', -532, 150, 0.6 + Math.PI / 2);
     this.module3('mod_shack', -522, 142, 0.6);
     this.module3('mod_market', -548, 140, 0.6);
+    // the market spills off the rig onto pontoons: stalls, fresh water for sale, a lookout and a stripping barge
+    this.kitPiece('tb_outpost_kit', 'market_stall', -512, 150, 0.6 + Math.PI);
+    this.kitPiece('tb_outpost_kit', 'market_stall', -560, 128, 0.6);
+    this.kitPiece('tb_atoll_kit', 'water_tank', -506, 132, 0.2);
+    this.kitPiece('tb_outpost_kit', 'rain_catcher', -568, 146, 0.4);
+    this.kitPiece('tb_atoll_kit', 'watchtower', -500, 168, 0.6);
+    this.kitPiece('tb_outpost_kit', 'salvage_barge', -585, 190, 2.0);
+    for (const [x, z, r] of [[-520, 122, 0.8], [-538, 118, 1.9], [-498, 150, 2.6], [-572, 160, -0.3]] as const) this.kitPiece('tb_outpost_kit', 'scrap_boat', x, z, r);
   }
 
   /** Floating wreckage around the drowned places: planks, drums, foam and tyres. */
@@ -212,8 +360,24 @@ export class DrownedWorld {
         i++;
       }
     }
+    // drifting algae mats: the commonest living thing at sea, and still worth hooking
+    const algae = model('tb_flora_kit', 'flora_algae');
+    if (algae) {
+      for (let i = 0, tries = 0; i < 28 && tries < 400; tries++) {
+        const x = rng.range(-760, 760), z = rng.range(-760, 760);
+        if (heightAt(x, z) > -3 || STRUCTURES.some((s) => Math.hypot(s.x - x, s.z - z) < s.r + 10)) continue;
+        const o = this.add(algae.clone(), x, 0.02, z, rng.range(0, 6), rng.range(1.6, 2.4));
+        o.traverse((m) => (m.castShadow = false));
+        this.flotsam.push({ x, z, kind: 'algae_mat', picked: false, obj: o });
+        const ph = x * 0.1 + z * 0.13;
+        this.animators.push((t) => {
+          o.visible = Math.abs(o.position.x - this.focus.x) < 220 && Math.abs(o.position.z - this.focus.z) < 220;
+          if (o.visible) o.position.y = 0.02 + Math.sin(t * 1.0 + ph) * 0.12;
+        });
+        i++;
+      }
+    }
     void parts;
-    void merge;
   }
 
   /** Old navigation bell buoys, still tolling, mark the way into each region. */

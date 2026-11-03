@@ -1,0 +1,49 @@
+{
+ "path": "/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/exports/tb_outpost_kit.mobile.glb",
+ "objects": [
+  "dead_tree (MESH)",
+  "market_stall (MESH)",
+  "net_tower (MESH)",
+  "outpost_kit (EMPTY)",
+  "pontoon (MESH)",
+  "rain_catcher (MESH)",
+  "salvage_barge (MESH)",
+  "scrap_boat (MESH)",
+  "scrap_heap (MESH)",
+  "sinking_platform (MESH)"
+ ],
+ "triangles": 4032,
+ "materials": [
+  "TBW_Barnacle",
+  "TBW_Bloom_w",
+  "TBW_Cloth",
+  "TBW_Corr",
+  "TBW_Gun",
+  "TBW_Hazard",
+  "TBW_Kelp",
+  "TBW_Lamp",
+  "TBW_Navy",
+  "TBW_Net",
+  "TBW_Oxide",
+  "TBW_Paint",
+  "TBW_Red",
+  "TBW_Rust",
+  "TBW_Rust_dark",
+  "TBW_Rust_hi",
+  "TBW_Steel",
+  "TBW_Tarp",
+  "TBW_Tarp2",
+  "TBW_Tyre",
+  "TBW_Wood",
+  "TBW_Wood_deep",
+  "TBW_Wood_dk"
+ ],
+ "actions": [],
+ "armatures": 0,
+ "size_m": [
+  92.3,
+  12.0,
+  14.204
+ ],
+ "min_z": -3.0314
+}

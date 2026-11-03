@@ -29,9 +29,11 @@ export interface Cache {
 }
 
 export interface ScriptedFind {
-  // A visible object that holds something specific (bottle, chest, drawer).
+  // A visible object that holds something specific (bottle, chest, drawer), or a living plant ('plant',
+  // drawn with the GITCRAFT flora kit node named in `plant`).
   id: string;
-  kind: 'bottle' | 'chest' | 'crate' | 'drawer';
+  kind: 'bottle' | 'chest' | 'crate' | 'drawer' | 'plant';
+  plant?: string;
   x: number;
   z: number;
   label: string;
@@ -70,7 +72,7 @@ export interface RegionDef {
 }
 
 export const REGIONS: Record<RegionId, RegionDef> = {
-  shallows: { id: 'shallows', name: 'The Drift', blurb: 'Warm shallows over a drowned county. Rooftops, reefs and rumours.' },
+  shallows: { id: 'shallows', name: 'The Drift', blurb: 'Silted shallows over a drowned county. Rooftops, dead reefs and rumours.' },
   emerald: { id: 'emerald', name: 'The Sunken Reach', blurb: 'Open swell over the old cities. Towers, rigs and raiders.' },
   stormwall: { id: 'stormwall', name: 'The Stormwall', blurb: 'A storm that never ends. Something tall stands inside it.' },
 };
@@ -90,12 +92,12 @@ export const WORLD = {
 export const ISLANDS: IslandDef[] = [
   {
     id: 'harbor', name: 'Driftholm', region: 'shallows', x: 0, z: 320, r: 112, peak: 13, seed: 11, style: 'harbor',
-    palms: 26, rocks: 10, foliage: 30, shells: 0, landmarks: [], caches: [], finds: [],
+    palms: 8, rocks: 12, foliage: 10, shells: 0, landmarks: [], caches: [], finds: [],
     blurb: 'Rafts lashed to the last hill of the old harbour town. Home.',
   },
   {
     id: 'turtle', name: 'Turtle Atoll', region: 'shallows', x: -150, z: 70, r: 40, peak: 9, seed: 23, style: 'tropical',
-    palms: 18, rocks: 6, foliage: 16, shells: 7,
+    palms: 7, rocks: 8, foliage: 8, shells: 7,
     landmarks: [
       { type: 'skull_rock', x: 14, z: -12 },
       { type: 'twin_palms', x: -12, z: -6 },
@@ -108,12 +110,13 @@ export const ISLANDS: IslandDef[] = [
     ],
     finds: [
       { id: 'turtle_bottle', kind: 'bottle', x: 6, z: 33, label: 'Search the bottle', loot: [], fragment: 'turtle_scrap' },
+      { id: 'turtle_seedling', kind: 'plant', plant: 'flora_seedling', x: -16, z: 6, label: 'Lift the seedling tin', loot: [{ id: 'seedling_tin', n: 1 }] },
     ],
-    blurb: 'A coral ring around the top of a drowned hill. Shaped like a turtle, if you squint.',
+    blurb: 'A ring of dead coral around the top of a drowned hill. Shaped like a turtle, if you squint. Something green was seen here.',
   },
   {
     id: 'lantern', name: 'Lantern Rock', region: 'shallows', x: 175, z: 10, r: 32, peak: 15, seed: 37, style: 'rocky',
-    palms: 6, rocks: 16, foliage: 8, shells: 5,
+    palms: 3, rocks: 18, foliage: 5, shells: 5,
     landmarks: [
       { type: 'lighthouse', x: 6, z: -6 },
       { type: 'hut', x: -10, z: 8, rot: 0.6 },
@@ -125,6 +128,7 @@ export const ISLANDS: IslandDef[] = [
     finds: [
       { id: 'lantern_drawer', kind: 'drawer', x: -6, z: 13, label: 'Open the keeper’s sea-chest', loot: [{ id: 'gold_bar', n: 1 }, { id: 'journal_redfinch', n: 1 }],
         fragment: 'redfinch_b', requiresItem: 'old_key', requiresText: 'The sea-chest is locked tight. A barnacled lock… someone buried the key nearby, maybe on another island.' },
+      { id: 'lantern_moss', kind: 'plant', plant: 'flora_moss', x: 2, z: -14, label: 'Peel up the moss', loot: [{ id: 'live_moss', n: 1 }] },
     ],
     blurb: 'The old coast light. The coast is gone. The light still watches.',
   },
@@ -137,12 +141,13 @@ export const ISLANDS: IslandDef[] = [
       { id: 'wreck_cabin', kind: 'crate', x: 5.1, z: 5.7, label: 'Search the captain’s cabin', loot: [{ id: 'sextant', n: 1 }, { id: 'tattered_flag', n: 1 }], fragment: 'redfinch_a' },
       { id: 'wreck_bell', kind: 'crate', x: -0.4, z: -4.4, label: 'Pry loose the ship’s bell', loot: [{ id: 'ship_bell', n: 1 }, { id: 'rope', n: 3 }] },
       { id: 'wreck_hold', kind: 'crate', x: 0.9, z: 1.2, label: 'Dig through the cargo hold', loot: [{ id: 'spyglass', n: 1 }, { id: 'iron_nails', n: 4 }, { id: 'canvas', n: 3 }] },
+      { id: 'gull_weed', kind: 'plant', plant: 'flora_seaweed', x: -8, z: -8, label: 'Gather the sea-lettuce', loot: [{ id: 'sea_lettuce', n: 3 }, { id: 'algae_mat', n: 2 }] },
     ],
     blurb: 'A ring of breakers guards the wreck of the trawler Wren. Only a strong hull gets through.',
   },
   {
     id: 'mossjaw', name: 'Canopy Rise', region: 'emerald', x: -330, z: -320, r: 58, peak: 22, seed: 77, style: 'jungle',
-    palms: 22, rocks: 10, foliage: 40, shells: 6,
+    palms: 9, rocks: 12, foliage: 10, shells: 6,
     landmarks: [
       { type: 'arch', x: -8, z: 10, rot: 0.3 },
       { type: 'pillars', x: 18, z: -6 },
@@ -152,8 +157,13 @@ export const ISLANDS: IslandDef[] = [
       { id: 'moss_c1', x: 30, z: 20, loot: [{ id: 'sea_emerald', n: 1 }] },
       { id: 'moss_c2', x: -30, z: 0, loot: [{ id: 'clay_whistle', n: 1 }, { id: 'doubloon', n: 3 }] },
     ],
-    finds: [],
-    blurb: 'A hill-town swallowed by jungle, high above the drowned valley. Someone carved a sun here.',
+    finds: [
+      { id: 'canopy_flowers', kind: 'plant', plant: 'flora_flowering', x: -25.5, z: -6, label: 'Take the flowers under glass', loot: [{ id: 'flowering_jar', n: 1 }] },
+      { id: 'canopy_potted', kind: 'plant', plant: 'flora_potted', x: 20, z: 10, label: 'Take the potted green', loot: [{ id: 'potted_green', n: 1 }, { id: 'jar_of_soil', n: 1 }] },
+      { id: 'canopy_vine', kind: 'plant', plant: 'flora_fruit', x: 27, z: 19, label: 'Haul the tomato vine', loot: [{ id: 'fruit_vine', n: 1 }] },
+      { id: 'canopy_sapling', kind: 'plant', plant: 'flora_sapling', x: 16, z: 3, label: 'Take a sapling from the last tree', loot: [{ id: 'tree_sapling', n: 1 }] },
+    ],
+    blurb: 'The last hilltop with soil on it. The gardeners are long gone, but behind their scrap walls the last tree still stands.',
   },
 ];
 
@@ -210,12 +220,13 @@ export const FRAGMENT_MAP: Record<string, MapFragmentDef> = Object.fromEntries(M
 // Beach pickups rolled per visit, by region.
 export const BEACH_POOL: Record<RegionId, { id: string; w: number }[]> = {
   shallows: [
-    { id: 'spiral_shell', w: 6 }, { id: 'conch', w: 4 }, { id: 'sand_dollar', w: 4 }, { id: 'starfish', w: 4 },
-    { id: 'sea_glass', w: 3 }, { id: 'driftwood', w: 6 }, { id: 'coral_branch', w: 1 }, { id: 'bottle_letter', w: 1 }, { id: 'rope', w: 1 },
+    { id: 'spiral_shell', w: 3 }, { id: 'conch', w: 2 }, { id: 'sand_dollar', w: 2 }, { id: 'starfish', w: 2 }, { id: 'plastic', w: 4 },
+    { id: 'sea_glass', w: 3 }, { id: 'driftwood', w: 6 }, { id: 'coral_branch', w: 1 }, { id: 'bottle_letter', w: 1 }, { id: 'rope', w: 2 },
+    { id: 'algae_mat', w: 3 }, { id: 'sea_lettuce', w: 1.5 },
   ],
   emerald: [
-    { id: 'conch', w: 4 }, { id: 'starfish', w: 3 }, { id: 'coral_branch', w: 3 }, { id: 'driftwood', w: 6 }, { id: 'pearl', w: 1 },
-    { id: 'plastic', w: 3 }, { id: 'rubber_duck', w: 1 },
+    { id: 'conch', w: 2 }, { id: 'starfish', w: 2 }, { id: 'coral_branch', w: 3 }, { id: 'driftwood', w: 6 }, { id: 'pearl', w: 1 },
+    { id: 'plastic', w: 4 }, { id: 'rubber_duck', w: 1 }, { id: 'algae_mat', w: 3 }, { id: 'sea_lettuce', w: 2 }, { id: 'seedling_tin', w: 0.25 },
   ],
   stormwall: [{ id: 'driftwood', w: 4 }, { id: 'scrap_metal', w: 3 }],
 };
@@ -376,7 +387,7 @@ export const SALVAGE_SITES: SalvageSiteDef[] = [
     loot: [L('electronics', 3, 1, 3), L('canvas', 3, 2, 3), L('plastic', 4, 2, 4), L('snow_globe', 1, 1), L('fuel_can', 3, 1, 2)],
     blurb: 'Boxes spilled from the tanker when she went down.' },
   { id: 'sv_spire', name: 'The Meridian Spire', kind: 'spire', x: -210, z: -1040, r: 30, region: 'stormwall', difficulty: 3, heavy: true, rolls: 5, respawn: 900,
-    loot: [L('electronics', 4, 2, 4), L('alloy_plate', 3, 1, 2), L('diamond_ring', 2, 1), L('gold_bar', 2, 1), L('seed_packet', 2, 1)],
+    loot: [L('electronics', 4, 2, 4), L('alloy_plate', 3, 1, 2), L('diamond_ring', 2, 1), L('gold_bar', 2, 1), L('seed_packet', 2, 1), L('jar_of_soil', 1, 1)],
     first: [{ id: 'summit_chart', n: 1 }, { id: 'gold_bar', n: 2 }],
     blurb: 'The tallest thing left in the world. At the top: the chart everybody whispers about.' },
 ];
@@ -385,8 +396,8 @@ export const SALVAGE_MAP: Record<string, SalvageSiteDef> = Object.fromEntries(SA
 /** Floating caches drift into open water near the player. */
 export const CACHE_POOL: Record<RegionId, LootRoll[]> = {
   shallows: [L('fuel_can', 4, 1), L('scrap_metal', 4, 1, 2), L('plastic', 4, 1, 3), L('rope', 3, 1, 2), L('driftwood', 4, 2, 4), L('bottle_letter', 1, 1), L('rubber_duck', 1, 1)],
-  emerald: [L('fuel_can', 5, 1, 2), L('scrap_metal', 4, 2, 3), L('electronics', 2, 1), L('wire', 3, 1, 2), L('canvas', 2, 1, 2), L('vinyl_record', 1, 1)],
-  stormwall: [L('fuel_can', 4, 2), L('alloy_plate', 2, 1), L('engine_parts', 2, 1), L('electronics', 3, 1, 2), L('diamond_ring', 1, 1)],
+  emerald: [L('fuel_can', 5, 1, 2), L('scrap_metal', 4, 2, 3), L('electronics', 2, 1), L('wire', 3, 1, 2), L('canvas', 2, 1, 2), L('vinyl_record', 1, 1), L('seedling_tin', 0.5, 1)],
+  stormwall: [L('fuel_can', 4, 2), L('alloy_plate', 2, 1), L('engine_parts', 2, 1), L('electronics', 3, 1, 2), L('diamond_ring', 1, 1), L('jar_of_soil', 0.6, 1)],
 };
 
 /** Castaways adrift: sail up and rescue them to recruit crew. */
@@ -403,6 +414,23 @@ export const RAIDER_ZONES: RaiderZone[] = [
   { id: 'rz_meridian', name: 'Old Meridian', x: 520, z: -450, r: 200, count: 2, speed: 8.5 },
 ];
 
+/**
+ * Settlement hierarchy dressing (no services: pure world-building, built from the GITCRAFT atoll/outpost kits).
+ *  outpost      a handful of lashed platforms, a shelter, a crude watchtower, a mooring point
+ *  raider_fort  a fortified scrap atoll: gate, burnt walls from past attacks, towers, the raiders' boats
+ *  strip_wreck  a salvage barge cutting a wreck apart for parts
+ *  sinking      an abandoned platform slowly going under
+ */
+export interface OutpostDef { id: string; name: string; kind: 'outpost' | 'raider_fort' | 'strip_wreck' | 'sinking'; x: number; z: number; rot: number; r: number }
+export const OUTPOSTS: OutpostDef[] = [
+  { id: 'op_gullstep', name: 'Gullstep', kind: 'outpost', x: 110, z: 70, rot: 0.5, r: 9 },
+  { id: 'op_tincan', name: 'Tin Can Rest', kind: 'outpost', x: -120, z: -110, rot: -0.4, r: 9 },
+  { id: 'op_lastcall', name: 'Last Call', kind: 'outpost', x: -400, z: 20, rot: 1.2, r: 9 },
+  { id: 'op_hold', name: 'Rustfang Hold', kind: 'raider_fort', x: 350, z: 625, rot: 2.6, r: 24 },
+  { id: 'op_strip', name: 'The Stripping Yard', kind: 'strip_wreck', x: 54, z: -54, rot: 0.4, r: 8 },
+  { id: 'op_sinking', name: 'Going Under', kind: 'sinking', x: -60, z: 40, rot: 0.9, r: 8 },
+];
+
 /** Named points of interest drawn on the chart. */
 export const POIS = [
   { id: 'meridian', name: 'Old Meridian', x: 500, z: -440 },
@@ -410,4 +438,6 @@ export const POIS = [
   { id: 'graveyard', name: 'Rustfang Graveyard', x: 270, z: 650 },
   { id: 'hollow', name: 'Rooftop Hollow', x: -235, z: -70 },
   { id: 'spire', name: 'The Meridian Spire', x: -210, z: -1040 },
-];
+  { id: 'hold', name: 'Rustfang Hold', x: 350, z: 625, blurb: 'A raider atoll of scrap walls and a hull-plate gate. The scorch marks are from the last people who tried.' },
+  { id: 'canopy', name: 'The Last Tree', x: -318, z: -312, blurb: 'Green. Actual green, on the hilltop, behind scrap walls. Someone fought to keep it alive.' },
+] as { id: string; name: string; x: number; z: number; blurb?: string }[];

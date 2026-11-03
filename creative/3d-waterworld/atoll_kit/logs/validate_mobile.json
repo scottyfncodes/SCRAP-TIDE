@@ -1,0 +1,93 @@
+{
+ "checks": [
+  {
+   "check": "has_meshes",
+   "level": "pass",
+   "detail": "7 mesh objects"
+  },
+  {
+   "check": "triangle_budget",
+   "level": "pass",
+   "detail": "7872 triangles (budget 8000)",
+   "tris": 7872
+  },
+  {
+   "check": "degenerate_faces",
+   "level": "pass",
+   "detail": "0 zero-area faces"
+  },
+  {
+   "check": "non_manifold_edges",
+   "level": "info",
+   "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+  },
+  {
+   "check": "applied_scale",
+   "level": "pass",
+   "detail": "all mesh scales are 1"
+  },
+  {
+   "check": "naming",
+   "level": "pass",
+   "detail": "no default object names"
+  },
+  {
+   "check": "origin_centered",
+   "level": "warn",
+   "detail": "footprint centre (53.000, -0.570)"
+  },
+  {
+   "check": "materials_assigned",
+   "level": "pass",
+   "detail": "every mesh has materials"
+  },
+  {
+   "check": "vertex_colors",
+   "level": "pass",
+   "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+  },
+  {
+   "check": "textures_resolvable",
+   "level": "pass",
+   "detail": "no missing texture files"
+  },
+  {
+   "check": "animation_clips",
+   "level": "pass",
+   "detail": "actions: []",
+   "clips": []
+  },
+  {
+   "check": "gltf_version",
+   "level": "pass",
+   "detail": "glTF 2.0, generator glTF-Transform v4.1.1"
+  },
+  {
+   "check": "gltf_color0",
+   "level": "pass",
+   "detail": "every primitive has COLOR_0"
+  },
+  {
+   "check": "gltf_counts",
+   "level": "info",
+   "detail": "8 nodes, 7 meshes, 110 primitives, 23 materials, 0 animations, 0 skins, 0 images",
+   "animations": []
+  },
+  {
+   "check": "contract_nodes",
+   "level": "pass",
+   "detail": "nodes present: ['atoll_gate', 'atoll_kit', 'atoll_wall', 'atoll_wall_burnt', 'container_home', 'propeller', 'watchtower', 'water_tank']"
+  },
+  {
+   "check": "khronos_validator",
+   "level": "info",
+   "detail": "gltf-validator not installed (meshcraft/engine_check: npm ci)"
+  }
+ ],
+ "summary": {
+  "pass": 12,
+  "warn": 1,
+  "fail": 0,
+  "info": 3
+ }
+}

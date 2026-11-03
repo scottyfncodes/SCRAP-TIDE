@@ -156,7 +156,7 @@ export class Salvage {
     audio.pickup();
     audio.splash();
     g.sparkle.emit(new THREE.Vector3(g.boat.x, 1.4, g.boat.z), 24, '#bff7e6', 2, 3, 1, 3, 0.5);
-    g.ui.toast(`Drifting cache: ${out.join(', ') || 'empty, sadly'}`, { icon: 'fuel_can', color: '#3fa55a', life: 3 });
+    g.ui.toast(`Drifting cache: ${out.join(', ') || 'empty, sadly'}`, { icon: 'fuel_can', color: '#4f9a95', life: 3 });
     s.commit();
     g.checkMilestones();
   }

@@ -23,6 +23,10 @@ export const MODEL_FILES = [
   'tb_trawler_wreck',
   'tb_port_crane',
   'tb_flotsam_kit',
+  // Waterworld art-direction pass (creative/3d-waterworld): atoll structures, outpost props and boats, living plants
+  'tb_atoll_kit',
+  'tb_outpost_kit',
+  'tb_flora_kit',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
 
@@ -106,6 +110,8 @@ export function part(file: string, name: string) {
     const m = o as THREE.Mesh;
     if (!m.isMesh || (m as unknown as THREE.SkinnedMesh).isSkinnedMesh) return;
     const geo = m.geometry.clone();
+    // de-interleave (some optimisers pack vertex attributes together; the static batcher needs plain arrays)
+    for (const [k, a] of Object.entries(geo.attributes)) if ((a as THREE.InterleavedBufferAttribute).isInterleavedBufferAttribute) geo.setAttribute(k, (a as THREE.InterleavedBufferAttribute).clone());
     geo.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
     if (!geo.attributes.color) {
       const c = (m.material as THREE.MeshStandardMaterial).color ?? new THREE.Color(1, 1, 1);
@@ -113,8 +119,8 @@ export function part(file: string, name: string) {
       const arr = new Float32Array(n * 3);
       for (let i = 0; i < n; i++) arr.set([c.r, c.g, c.b], i * 3);
       geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
-    } else if (geo.attributes.color.itemSize === 4) {
-      // drop alpha so all parts merge with the procedural (RGB) layout
+    } else if (geo.attributes.color.itemSize === 4 || geo.attributes.color.normalized) {
+      // drop alpha / unpack 8-bit colours so all parts merge with the procedural (float RGB) layout
       const src = geo.attributes.color;
       const arr = new Float32Array(src.count * 3);
       for (let i = 0; i < src.count; i++) arr.set([src.getX(i), src.getY(i), src.getZ(i)], i * 3);
@@ -143,6 +149,17 @@ export function model(file: string, name: string, opts: { shadows?: boolean; sid
     grp.add(gm);
   }
   return grp;
+}
+
+/**
+ * A node's geometry baked into world space, ready to merge into a static batch (one draw call for a whole
+ * settlement). Returns null if the model failed to load so callers can skip or fall back.
+ */
+export function kitGeo(file: string, name: string, x: number, y: number, z: number, ry = 0, s = 1) {
+  const p = part(file, name);
+  if (!p) return null;
+  const m = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), ry), new THREE.Vector3(s, s, s));
+  return { geo: p.geo.clone().applyMatrix4(m), glow: p.glow ? p.glow.clone().applyMatrix4(m) : null };
 }
 
 const skinMats = new Map<THREE.Material, THREE.Material>();

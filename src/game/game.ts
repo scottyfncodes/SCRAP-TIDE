@@ -17,9 +17,9 @@ import { swayUniforms } from '../world/materials';
 import { buildShip, animateShip, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
 import { audio } from '../audio/audio';
-import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh } from './fx';
+import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh, plantFindMesh } from './fx';
 import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
-import { item, RARITY_ORDER } from '../data/items';
+import { item, RARITY_ORDER, LIVING_GREEN, isLiving } from '../data/items';
 import { UPGRADE_MAP, VESSELS, COSMETIC_MAP, type VesselId } from '../data/ship';
 import { RECIPE_MAP } from '../data/crafting';
 import { CREW_MAP, ROLE_INFO } from '../data/crew';
@@ -106,6 +106,7 @@ export class Game implements GameAPI {
   private rng = new RNG(Date.now() & 0xffff);
   private shake = 0;
   private proxTimer = 0;
+  private titleYawSet = false;
 
   constructor(private canvas: HTMLCanvasElement, private progress: (p: number, msg: string) => Promise<void>) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -190,13 +191,14 @@ export class Game implements GameAPI {
 
   start() {
     this.started = true;
+    this.camYaw = this.boat.heading; // play starts with the camera behind the boat, as before
     audio.unlock();
     if (this.store.isNew) {
       this.ui.revealInfo('Driftholm · Year 61 After the Water', 'Wake up, Captain!', 'The sea took the cities, the roads and the mountains. It left you a patchwork skiff, fifteen gold and a head full of stories.<br><br>Out there: drowned towers full of the old world, castaways who need a berth, and a boat that could become a home.<br><br><b>Drag the wheel</b> (bottom-left) toward where you want to sail.', 'Let’s go');
       this.store.isNew = false;
       this.store.saveNow();
     } else {
-      this.ui.toast('Welcome back, Captain. Your progress was restored.', { color: '#3fa55a', life: 3.5 });
+      this.ui.toast('Welcome back, Captain. Your progress was restored.', { color: '#4f9a95', life: 3.5 });
     }
     if (this.boat.docked) setTimeout(() => this.ui.toast('Push the wheel to cast off from the pier', { life: 3.5 }), 1200);
   }
@@ -356,7 +358,7 @@ export class Game implements GameAPI {
     this.rebuildShip();
     this.showcase = true;
     this.sparkle.emit(new THREE.Vector3(this.boat.x, 2, this.boat.z), 50, '#ffd25e', 4, 5, 1.4, 4, 2);
-    this.ui.toast(`${u.name} installed!`, { color: '#3fa55a', life: 3 });
+    this.ui.toast(`${u.name} installed!`, { color: '#4f9a95', life: 3 });
     if (s.data.quest === 'free' && s.data.upgrades.length === 1) {
       setTimeout(() => this.ui.revealInfo('First upgrade!', 'She looks better already', 'Every part you fit shows up on your boat. Now open your Captain’s Log (top of the screen): salvage the drowned tower, fit an engine, find a crew, and build her into something that can cross the swell.', 'Fair winds'), 900);
     }
@@ -451,7 +453,14 @@ export class Game implements GameAPI {
         const x = isl.x + f.x, z = isl.z + f.z;
         const y = heightAt(x, z);
         const opened = this.store.data.findsOpened.includes(f.id);
-        if (f.kind === 'bottle') {
+        if (f.kind === 'plant') {
+          if (opened) continue; // taken aboard: it lives on your boat now
+          const obj = plantFindMesh(f.plant ?? 'flora_potted');
+          obj.position.set(x, y - 0.03, z);
+          obj.rotation.y = Math.atan2(isl.x - x, isl.z - z);
+          this.scene.add(obj);
+          this.finds.push({ def: f, isl, obj, x, z });
+        } else if (f.kind === 'bottle') {
           if (opened) continue;
           const obj = bottleMesh();
           obj.position.set(x, Math.max(y, 0.1), z);
@@ -530,7 +539,7 @@ export class Game implements GameAPI {
       const mode = opts.reveal ?? 'toast';
       if (isNew && mode === 'card') this.ui.revealItem(id, got, true);
       else if (isNew && mode === 'toast') {
-        this.ui.toast(`New discovery: ${d.name}!`, { icon: id, color: '#ffb627', life: 3.2 });
+        this.ui.toast(isLiving(id) ? `Something alive: ${d.name}!` : `New discovery: ${d.name}!`, { icon: id, color: isLiving(id) ? LIVING_GREEN : '#f0c445', life: 3.2 });
         audio.discover(RARITY_ORDER.indexOf(d.rarity));
       } else if (mode !== 'none') {
         this.ui.toast(`+${got} ${d.name}`, { icon: id, color: '#c9b48a', life: 1.8 });
@@ -767,7 +776,7 @@ export class Game implements GameAPI {
     if (def.cost) s.data.gold -= def.cost;
     s.data.crew.push(id);
     audio.discover(2);
-    this.ui.toast(`${def.name} joined your crew! ${ROLE_INFO[def.role].icon}`, { color: '#3fa55a', life: 3 });
+    this.ui.toast(`${def.name} joined your crew! ${ROLE_INFO[def.role].icon}`, { color: '#4f9a95', life: 3 });
     s.commit();
     loadCrew().then(() => this.rebuildShip());
   }
@@ -820,7 +829,7 @@ export class Game implements GameAPI {
     s.addTo(this.boat.docked ? s.data.vault : s.data.cargo, r.makes.id, r.makes.n);
     s.discover(r.makes.id, 'your workbench', r.makes.n);
     audio.hammer();
-    this.ui.toast(`Crafted ${item(r.makes.id).name} ×${r.makes.n}`, { icon: r.makes.id, color: '#3fa55a' });
+    this.ui.toast(`Crafted ${item(r.makes.id).name} ×${r.makes.n}`, { icon: r.makes.id, color: '#4f9a95' });
     s.commit();
   }
 
@@ -887,7 +896,9 @@ export class Game implements GameAPI {
         barrel_raft: [['crude_oil', 1], ['scrap_metal', 2], ['rope', 1]],
         net_tangle: [['rope', 2], ['plastic', 2], ['fish', 1]],
         hull_shard: [['driftwood', 2], ['iron_nails', 2], ['canvas', 1]],
+        algae_mat: [['algae_mat', 3], ['sea_lettuce', 2]],
       };
+      if (f.kind === 'net_tangle' && this.rng.next() < 0.4) table.net_tangle = [...table.net_tangle, ['sea_lettuce', 1]];
       const got: string[] = [];
       for (const [id, n] of table[f.kind] ?? table.hull_shard) {
         if (this.rng.next() < 0.35) continue;
@@ -898,7 +909,10 @@ export class Game implements GameAPI {
       audio.splash();
       audio.pickup();
       this.foam.emit(new THREE.Vector3(f.x, 0.3, f.z), 14, '#b8b2a0', 1.5, 2, 1, 4, 0.6);
-      this.ui.toast(got.length ? `Picked over ${f.kind === 'barrel_raft' ? 'a barrel raft' : f.kind === 'net_tangle' ? 'a ghost net' : 'a capsized hull'}: ${got.join(', ')}` : 'Picked clean long ago. Nothing worth keeping.', { icon: got.length ? 'rope' : undefined, color: '#9a8a5a', life: 2.8 });
+      const what = f.kind === 'barrel_raft' ? 'a barrel raft' : f.kind === 'net_tangle' ? 'a ghost net' : f.kind === 'algae_mat' ? 'a drifting algae mat' : 'a capsized hull';
+      const green = f.kind === 'algae_mat';
+      if (green) this.sparkle.emit(new THREE.Vector3(f.x, 0.5, f.z), 18, LIVING_GREEN, 1.2, 2, 1.2, 2, 1);
+      this.ui.toast(got.length ? `Picked over ${what}: ${got.join(', ')}` : 'Picked clean long ago. Nothing worth keeping.', { icon: got.length ? (green ? 'algae_mat' : 'rope') : undefined, color: green ? LIVING_GREEN : '#9a8a5a', life: 2.8 });
       this.store.commit();
       setTimeout(() => (f.picked = false), 240000); // the sea brings more
     }
@@ -1000,6 +1014,8 @@ export class Game implements GameAPI {
     const blips: { x: number; z: number; kind: string }[] = [];
     for (const site of SALVAGE_SITES) if (Math.hypot(site.x - px, site.z - pz) < range * 1.4) blips.push({ x: site.x - px, z: site.z - pz, kind: this.salvage.ready(site) ? 'site' : 'site_done' });
     for (const st2 of SETTLEMENTS) if (Math.hypot(st2.x - px, st2.z - pz) < range * 1.4) blips.push({ x: st2.x - px, z: st2.z - pz, kind: 'town' });
+    // anything still growing shows up green: the one blip every captain turns toward
+    for (const f of this.finds) if (f.def.kind === 'plant' && Math.hypot(f.x - px, f.z - pz) < range * 1.2) blips.push({ x: f.x - px, z: f.z - pz, kind: 'plant' });
     if (st.radar || this.store.hasRole('lookout')) {
       for (const c of this.caches) blips.push({ x: c.x - px, z: c.z - pz, kind: 'cache' });
       for (const r of this.raiders.positions()) blips.push({ x: r.x - px, z: r.z - pz, kind: 'raider' });
@@ -1019,7 +1035,7 @@ export class Game implements GameAPI {
       this.persistShip();
       this.store.commit();
       this.camYaw = 0.35; // look back at the town
-      if (n) this.ui.toast(`Unloaded ${n} item${n > 1 ? 's' : ''} into your harbor vault`, { color: '#3fa55a', life: 3 });
+      if (n) this.ui.toast(`Unloaded ${n} item${n > 1 ? 's' : ''} into your harbor vault`, { color: '#4f9a95', life: 3 });
       audio.phrase('harbor');
       setTimeout(() => this.ui.openPanel('harbor'), 300);
     });
@@ -1082,6 +1098,19 @@ export class Game implements GameAPI {
     this.captain.dig();
     const where = f.isl.name;
     const pos = new THREE.Vector3(f.x, heightAt(f.x, f.z) + 0.8, f.z);
+    if (f.def.kind === 'plant') {
+      // lift it gently: a burst of green motes, the halo collapses, the plant comes aboard
+      this.sparkle.emit(pos, 60, LIVING_GREEN, 2.4, 4.2, 1.6, 2.5, 0.8);
+      this.sparkle.emit(pos, 20, '#f6e7a0', 1.5, 3, 1.2, 2, 0.5);
+      audio.discover(4);
+      this.scene.remove(f.obj);
+      for (const l of f.def.loot) this.gain(l.id, l.n, f.isl.name, { force: true, reveal: 'none' });
+      this.ui.revealLiving(f.def.loot, f.isl.name);
+      s.commit();
+      this.checkMilestones();
+      this.haptic(40);
+      return;
+    }
     if (f.def.kind === 'bottle') {
       audio.splash();
       this.sparkle.emit(pos, 30, '#bff7e6', 2, 3, 1, 3, 0.5);
@@ -1306,6 +1335,24 @@ export class Game implements GameAPI {
     for (const f of this.finds) {
       const sp = f.obj.children.find((c) => c.userData.sparkle);
       if (sp) sp.scale.setScalar(1 + Math.abs(Math.sin(this.t * 2.5)) * 1.2);
+      if (f.obj.userData.living) {
+        const vx = this.mode === 'sail' ? this.boat.x : this.foot.x, vz = this.mode === 'sail' ? this.boat.z : this.foot.z;
+        f.obj.visible = Math.abs(f.x - vx) < 380 && Math.abs(f.z - vz) < 380; // past this the haze has it anyway
+        if (!f.obj.visible) continue;
+        // a slow green heartbeat; the light shaft fades as you walk up so it never hides the plant
+        const beat = 0.5 + 0.5 * Math.sin(this.t * 2.2 + f.x);
+        for (const c of f.obj.children) {
+          if (c.userData.halo) {
+            c.scale.setScalar(1 + beat * 0.35);
+            ((c as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = 0.35 + beat * 0.35;
+          } else if (c.userData.shaft) {
+            const px = this.mode === 'sail' ? this.boat.x : this.foot.x, pz = this.mode === 'sail' ? this.boat.z : this.foot.z;
+            const near = clamp((Math.hypot(px - f.x, pz - f.z) - 4) / 26, 0, 1);
+            ((c as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = (0.12 + beat * 0.2) * near;
+          }
+        }
+        if (this.rng.next() < dt * 1.5) this.sparkle.emit(new THREE.Vector3(f.x, heightAt(f.x, f.z) + 0.4, f.z), 1, LIVING_GREEN, 0.3, 1.2, 1.6, -0.2, 1.4);
+      }
     }
     // sun & shadows follow the action
     const fp = this.mode === 'sail' ? new THREE.Vector3(this.boat.x, 0, this.boat.z) : new THREE.Vector3(this.foot.x, 0, this.foot.z);
@@ -1652,7 +1699,7 @@ export class Game implements GameAPI {
     const acts: Action[] = [];
     const find = this.nearestFind();
     const q = this.store.data.quest;
-    if (find) acts.push({ id: 'search', label: `\u{1F50D} ${find.def.kind === 'bottle' ? 'OPEN BOTTLE' : 'SEARCH'}`, glow: true });
+    if (find) acts.push({ id: 'search', label: find.def.kind === 'plant' ? '\u{1F331} TAKE IT ABOARD' : `\u{1F50D} ${find.def.kind === 'bottle' ? 'OPEN BOTTLE' : 'SEARCH'}`, glow: true });
     acts.push({ id: 'dig', label: '⛏ DIG', glow: q === 'dig_x' && best < 2.6 });
     const boatD = Math.hypot(f.landX - f.x, f.landZ - f.z);
     if (boatD < 7) acts.push({ id: 'board', label: '⛵ BOARD', glow: q === 'return_harbor' });
@@ -1664,11 +1711,15 @@ export class Game implements GameAPI {
     const target = new THREE.Vector3();
     let dist: number, pitch: number;
     if (!this.started) {
-      // title orbit
-      this.camYaw += dt * 0.08;
-      target.set(this.boat.x, 2, this.boat.z);
-      dist = 22;
-      pitch = 0.32;
+      // title orbit: opens on Driftholm (the scrap atoll behind the pier), then drifts round to the open sea
+      if (!this.titleYawSet) {
+        this.titleYawSet = true;
+        this.camYaw = 0.25;
+      }
+      this.camYaw += dt * 0.05;
+      target.set(this.boat.x, 4, this.boat.z + 6);
+      dist = 30;
+      pitch = 0.26;
     } else if (this.showcase) {
       this.camYaw += dt * 0.22;
       target.set(this.boat.x, this.store.data.vessel === 'sloop' ? 3 : 1.2, this.boat.z);
@@ -1735,7 +1786,7 @@ export class Game implements GameAPI {
       const key = `seen_${poi.id}`;
       if (!s.data.flags.includes(key) && Math.hypot(px - poi.x, pz - poi.z) < 140) {
         s.data.flags.push(key);
-        this.ui.banner(poi.name, SETTLEMENT_MAP[poi.id]?.blurb ?? SALVAGE_SITES.find((x) => Math.hypot(x.x - poi.x, x.z - poi.z) < 60)?.blurb ?? '');
+        this.ui.banner(poi.name, poi.blurb ?? SETTLEMENT_MAP[poi.id]?.blurb ?? SALVAGE_SITES.find((x) => Math.hypot(x.x - poi.x, x.z - poi.z) < 60)?.blurb ?? '');
         audio.discover(2);
         if (poi.id === 'spire' && !s.data.flags.includes('reached_spire')) s.data.flags.push('reached_spire');
         s.commit();

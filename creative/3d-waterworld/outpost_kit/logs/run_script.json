@@ -1,0 +1,15 @@
+{
+ "stdout": "Info: Saved as \"tb_outpost_kit.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-waterworld/outpost_kit/source/tb_outpost_kit.blend\", \"tris\": 4032, \"objects\": 10}\n",
+ "objects": [
+  "dead_tree",
+  "market_stall",
+  "net_tower",
+  "outpost_kit",
+  "pontoon",
+  "rain_catcher",
+  "salvage_barge",
+  "scrap_boat",
+  "scrap_heap",
+  "sinking_platform"
+ ]
+}

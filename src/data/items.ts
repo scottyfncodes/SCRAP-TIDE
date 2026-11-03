@@ -9,6 +9,7 @@ export type Category =
   | 'ocean'
   | 'wreck'
   | 'curiosity'
+  | 'living'
   | 'resource';
 
 export interface ItemDef {
@@ -25,13 +26,16 @@ export interface ItemDef {
 }
 
 export const RARITY_ORDER: Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+// Survivor-paint rarity scale. Green is deliberately absent: in this world green means *alive* (LIVING_GREEN).
 export const RARITY_COLOR: Record<Rarity, string> = {
-  common: '#c9b48a',
-  uncommon: '#5fc47a',
-  rare: '#4aa3ff',
-  epic: '#b26bff',
-  legendary: '#ffb627',
+  common: '#a99d80',
+  uncommon: '#4f9a95',
+  rare: '#d08a34',
+  epic: '#c0503a',
+  legendary: '#f0c445',
 };
+/** The one saturated colour in the world: living plants, and only living plants. */
+export const LIVING_GREEN = '#57e05f';
 export const RARITY_LABEL: Record<Rarity, string> = {
   common: 'Common',
   uncommon: 'Uncommon',
@@ -47,6 +51,7 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   ocean: 'Ocean Finds',
   wreck: 'Salvage Recovery',
   curiosity: 'Curiosities',
+  living: 'Living Green',
   resource: 'Materials',
 };
 
@@ -56,8 +61,8 @@ export const ITEMS: ItemDef[] = [
     desc: 'Heavy, slightly bent, and stamped with a king nobody remembers.' },
   { id: 'silver_piece', name: 'Silver Piece-of-Eight', category: 'treasure', rarity: 'common', value: 6, icon: 'coin', colors: ['#d9dde3', '#8a95a3'], stack: 20,
     desc: 'Cut into eight wedges for making change. Somebody got shortchanged.' },
-  { id: 'pearl', name: 'Lagoon Pearl', category: 'treasure', rarity: 'uncommon', value: 30, icon: 'pearl', colors: ['#fff6ea', '#e3c9b4'], stack: 10,
-    desc: 'Pale pink and perfectly round. Oysters in the Shallows are generous.' },
+  { id: 'pearl', name: 'Oil-Stained Pearl', category: 'treasure', rarity: 'uncommon', value: 30, icon: 'pearl', colors: ['#fff6ea', '#e3c9b4'], stack: 10,
+    desc: 'Grey-pink and nearly round. The oysters taste of diesel, but they still make these.' },
   { id: 'gold_ring', name: 'Signet Ring', category: 'treasure', rarity: 'uncommon', value: 40, icon: 'ring', colors: ['#f4c542', '#c0392b'], stack: 10,
     desc: 'Engraved with a leaping fish. Far too big for any finger you own.' },
   { id: 'sea_emerald', name: 'Sea Emerald', category: 'treasure', rarity: 'rare', value: 75, icon: 'gem', colors: ['#2ecc71', '#0e6b3a'], stack: 10,
@@ -80,18 +85,18 @@ export const ITEMS: ItemDef[] = [
     desc: 'The flag of the trawler Wren, Captain Redfinch’s salvage boat. More hole than flag, but unmistakable.' },
 
   // ── Ocean finds ──
-  { id: 'conch', name: 'Queen Conch', category: 'ocean', rarity: 'common', value: 5, icon: 'conch', colors: ['#f6b08a', '#e0607e'], stack: 10,
+  { id: 'conch', name: 'Bleached Conch', category: 'ocean', rarity: 'common', value: 5, icon: 'conch', colors: ['#f6b08a', '#e0607e'], stack: 10,
     desc: 'Hold it to your ear. Yes, it’s the ocean. It’s always the ocean.' },
   { id: 'spiral_shell', name: 'Spiral Shell', category: 'ocean', rarity: 'common', value: 3, icon: 'spiral', colors: ['#f3e0c2', '#a97a4f'], stack: 10,
     desc: 'A tidy little staircase someone used to live in.' },
   { id: 'sand_dollar', name: 'Sand Dollar', category: 'ocean', rarity: 'common', value: 4, icon: 'sanddollar', colors: ['#f2ead8', '#c9b48a'], stack: 10,
     desc: 'Not accepted as currency. You checked.' },
-  { id: 'starfish', name: 'Sunset Starfish', category: 'ocean', rarity: 'common', value: 4, icon: 'starfish', colors: ['#ff8a4c', '#c4472a'], stack: 10,
+  { id: 'starfish', name: 'Dried Starfish', category: 'ocean', rarity: 'common', value: 4, icon: 'starfish', colors: ['#ff8a4c', '#c4472a'], stack: 10,
     desc: 'Dried and harmless. Has five arms and zero opinions.' },
   { id: 'sea_glass', name: 'Sea Glass', category: 'ocean', rarity: 'common', value: 3, icon: 'seaglass', colors: ['#7fd8c9', '#2e8b7a'], stack: 10,
     desc: 'A bottle that took fifty years to become a gem.' },
-  { id: 'coral_branch', name: 'Fire Coral Branch', category: 'ocean', rarity: 'uncommon', value: 14, icon: 'coral', colors: ['#ff5d5d', '#a3202a'], stack: 10,
-    desc: 'Broken off by a storm. Do not touch the living kind.' },
+  { id: 'coral_branch', name: 'Dead Coral Branch', category: 'ocean', rarity: 'uncommon', value: 14, icon: 'coral', colors: ['#ff5d5d', '#a3202a'], stack: 10,
+    desc: 'White as bone. The reefs died with the cities; this is what is left of them.' },
 
   // ── Shipwreck recovery ──
   { id: 'ship_bell', name: 'Bronze Ship’s Bell', category: 'wreck', rarity: 'uncommon', value: 45, icon: 'bell', colors: ['#c98f3c', '#6b4416'], stack: 1, displayable: true,
@@ -125,18 +130,38 @@ export const ITEMS: ItemDef[] = [
     desc: '“HELIOS PRODUCTION · 2,000 DAYS WITHOUT INCIDENT.” The counter stopped.' },
   { id: 'transistor_radio', name: 'Transistor Radio', category: 'wreck', rarity: 'uncommon', value: 40, icon: 'radio', colors: ['#c8744a', '#3a4148'], stack: 1, displayable: true,
     desc: 'Dry it out, give it a battery, and it hisses. Some nights the hiss sounds like a voice.' },
-  { id: 'street_sign', name: 'Meridian Ave. Sign', category: 'wreck', rarity: 'uncommon', value: 45, icon: 'sign', colors: ['#3fa55a', '#f6ead0'], stack: 1, displayable: true,
+  { id: 'street_sign', name: 'Meridian Ave. Sign', category: 'wreck', rarity: 'uncommon', value: 45, icon: 'sign', colors: ['#4e6e5c', '#e6dcc4'], stack: 1, displayable: true,
     desc: 'Pried off a lamppost forty feet underwater. Traffic was lighter than expected.' },
   { id: 'traffic_light', name: 'Traffic Light', category: 'wreck', rarity: 'rare', value: 90, icon: 'light', colors: ['#2b2f36', '#f2b825'], stack: 1, displayable: true,
     desc: 'Stuck on amber forever. Proceed with caution.' },
   { id: 'ship_in_bottle', name: 'Ship in a Bottle', category: 'wreck', rarity: 'epic', value: 180, icon: 'shipbottle', colors: ['#7fc6a4', '#8a5a34'], stack: 1, displayable: true,
     desc: 'From the captain’s cabin of the Meridian Star. A ship, in a bottle, in a ship, in the sea.' },
-  { id: 'seed_packet', name: 'Sealed Seed Packet', category: 'curiosity', rarity: 'rare', value: 80, icon: 'seed', colors: ['#e8c46a', '#3fa55a'], stack: 5,
+  { id: 'seed_packet', name: 'Sealed Seed Packet', category: 'living', rarity: 'rare', value: 80, icon: 'seed', colors: ['#e8c46a', '#3fa55a'], stack: 5,
     desc: '“Heirloom Tomato. Plant after last frost.” Frost. Imagine.' },
   { id: 'snow_globe', name: 'Snow Globe', category: 'curiosity', rarity: 'rare', value: 65, icon: 'globe', colors: ['#cff1ff', '#c0392b'], stack: 1, displayable: true,
     desc: 'A tiny city under tiny snow. The city is dry. The snow is the only weather.' },
   { id: 'rubber_duck', name: 'Rubber Duck', category: 'curiosity', rarity: 'common', value: 8, icon: 'duck', colors: ['#f4c542', '#e8742a'], stack: 5, displayable: true,
     desc: 'The only species that thrived.' },
+
+  // ── Living green: the rarest thing in the world is anything still growing ──
+  { id: 'algae_mat', name: 'Algae Mat', category: 'living', rarity: 'common', value: 4, icon: 'algae', colors: ['#7a9a3a', '#3f5226'], stack: 10,
+    desc: 'Slimy, salty and alive. Pressed and dried it feeds fish, fires and the very poor.' },
+  { id: 'sea_lettuce', name: 'Sea-Lettuce Scrap', category: 'living', rarity: 'common', value: 5, icon: 'seaweed', colors: ['#6aa83e', '#2f5a2a'], stack: 10,
+    desc: 'A green rag of weed peeled off a drowned wall. People eat it. People are hungry.' },
+  { id: 'seedling_tin', name: 'Seedling in a Tin', category: 'living', rarity: 'uncommon', value: 45, icon: 'sprout', colors: ['#57e05f', '#8a8f96'], stack: 5,
+    desc: 'Two leaves in a bean can of real soil. Somebody watered this with their own ration.' },
+  { id: 'live_moss', name: 'Live Moss', category: 'living', rarity: 'uncommon', value: 35, icon: 'moss', colors: ['#5fbe3c', '#8a5a34'], stack: 5,
+    desc: 'A green cushion from the shaded side of the lighthouse. It drinks the fog and keeps it.' },
+  { id: 'jar_of_soil', name: 'Jar of Dry Earth', category: 'living', rarity: 'rare', value: 110, icon: 'soiljar', colors: ['#5a3f28', '#cfe2df'], stack: 5,
+    desc: 'Real dirt: brown, crumbling, full of tiny living things. Traders weigh it on gold scales.' },
+  { id: 'potted_green', name: 'Potted Green', category: 'living', rarity: 'rare', value: 130, icon: 'plant', colors: ['#3fcb45', '#2f6fb0'], stack: 1, displayable: true,
+    desc: 'A healthy, leafy plant in a blue bucket. People will stop you on the dock just to look at it.' },
+  { id: 'flowering_jar', name: 'Flowers Under Glass', category: 'living', rarity: 'rare', value: 160, icon: 'bloom', colors: ['#f6d343', '#3fcb45'], stack: 1, displayable: true,
+    desc: 'Yellow and white blooms in a sealed jar. Nobody born after the Water has smelled a flower outdoors.' },
+  { id: 'fruit_vine', name: 'Fruiting Tomato Vine', category: 'living', rarity: 'epic', value: 260, icon: 'fruitvine', colors: ['#d8402e', '#3fcb45'], stack: 1, displayable: true,
+    desc: 'Six red tomatoes on a staked vine in an oil drum. Worth a boat. Worth a fight.' },
+  { id: 'tree_sapling', name: 'Living Tree Sapling', category: 'living', rarity: 'legendary', value: 650, icon: 'sapling', colors: ['#3fcb45', '#3e8c80'], stack: 1, displayable: true,
+    desc: 'A lemon sapling from the last tree on Canopy Rise, caged in wire. Plant it and in ten years you have shade. Nobody has had shade in sixty.' },
 
   // ── Materials ──
   { id: 'driftwood', name: 'Driftwood', category: 'resource', rarity: 'common', value: 2, icon: 'plank', colors: ['#b48a5a', '#6e4b2a'], stack: 10,
@@ -171,6 +196,7 @@ export const ITEMS: ItemDef[] = [
 
 export const ITEM_MAP: Record<string, ItemDef> = Object.fromEntries(ITEMS.map((i) => [i.id, i]));
 export const CATALOG_ITEMS = ITEMS.filter((i) => i.category !== 'resource');
+export const isLiving = (id: string) => ITEM_MAP[id]?.category === 'living';
 
 export function item(id: string): ItemDef {
   const d = ITEM_MAP[id];

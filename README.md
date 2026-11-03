@@ -3,8 +3,9 @@
 *The world drowned. You didn't.*
 
 A mobile-first, stylized 3D survival adventure on a flooded Earth, built for iPhone Safari and Home Screen install.
-The look is grimy post-apocalyptic ocean survival: rust, oil-slicked water, storm-grey skies, scavenged machinery and wrecks
-on every horizon (see `docs/grimy-pass/`).
+The look is Waterworld-inspired ocean survival: everything salvaged, patched and fought over, scrap atolls and outposts
+in an immense dark sea, and **green means alive**: living plants are the rarest, most valuable thing in the world
+(see `docs/waterworld-pass/`, and `docs/grimy-pass/` for the weathering foundation).
 Civilization is under the sea. You start in a patchwork skiff at Driftholm, a raft-town lashed to the last hill of the old
 harbour, and build it, upgrade by upgrade, into an expedition boat that can pierce the Stormwall.
 
@@ -30,6 +31,13 @@ Drifting caches, castaways to rescue, 10 salvage sites with respawn timers and f
 
 **Survival:** fuel (engine burns it; solar/turbine trickle it back; refine crude on a workbench), hull integrity (storms,
 collisions and raider rams; armour, patch kits, a Mechanic), a day/night cycle and roaming storm cells.
+
+**Living green:** nothing grows on open ground. Algae and sea-lettuce drift and wash up; a seedling in a tin, live moss,
+potted greens, flowers under glass, a fruiting tomato vine and a sapling from the last tree wait as glowing finds, the
+rarest behind the scrap walls of Canopy Rise. Each comes aboard with a green ALIVE card and can ride on deck as a trophy.
+
+**Settlements:** outposts on drum pontoons, trading posts (Rooftop Hollow, Rig Helios), Driftholm's fortified scrap
+atoll with its salvaged propeller and freshwater tower, the raiders' Rustfang Hold, and Canopy Rise, the last garden.
 
 **Crew:** six survivors, six roles with real perks: Mechanic, Navigator, Salvager, Fisher, Lookout, Defender.
 **Captain's Log:** a 10-step goal chain after the first voyage that always points at the next big unlock.
@@ -58,8 +66,9 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | UI: HUD, radar, winch, settlements, workbench, crew | `src/ui/ui.ts` |
 | Procedural WebAudio (howling wind, groaning steel, bell buoys, hull strikes, engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
 
-3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`); item icons from VectorCraft
-(`creative/ui-drowned`).
+3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`, and the Waterworld atoll,
+outpost and flora kits in `creative/3d-waterworld`); item icons from VectorCraft (`creative/ui-drowned`) plus the living-plant
+icons in `src/ui/iconsLiving.ts`.
 
 ## Tech
 

@@ -1,0 +1,13 @@
+{
+ "stdout": "Info: Saved as \"tb_atoll_kit.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-waterworld/atoll_kit/source/tb_atoll_kit.blend\", \"tris\": 7872, \"objects\": 8}\n",
+ "objects": [
+  "atoll_gate",
+  "atoll_kit",
+  "atoll_wall",
+  "atoll_wall_burnt",
+  "container_home",
+  "propeller",
+  "watchtower",
+  "water_tank"
+ ]
+}

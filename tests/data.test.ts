@@ -8,6 +8,7 @@ import { CREW, ROLE_INFO } from '../src/data/crew';
 import { GOALS, MILESTONES, FIRST_VOYAGE } from '../src/data/progress';
 import { SALVAGE_SITES, CACHE_POOL, STRUCTURES, SETTLEMENTS, CASTAWAYS, RAIDER_ZONES, ISLANDS, BEACH_POOL, DIG_POOL, WORLD } from '../src/data/world';
 import { DROWNED_ICONS } from '../src/ui/iconsDrowned';
+import { LIVING_ICONS } from '../src/ui/iconsLiving';
 import { heightAt } from '../src/world/terrain';
 import { waveHeight, waveAmp } from '../src/world/ocean';
 
@@ -16,7 +17,7 @@ const BUILTIN_ICONS = ['coin', 'pearl', 'ring', 'gem', 'bar', 'idol', 'whistle',
 describe('items', () => {
   it('have unique ids and an icon', () => {
     expect(new Set(ITEMS.map((i) => i.id)).size).toBe(ITEMS.length);
-    for (const i of ITEMS) expect(BUILTIN_ICONS.includes(i.icon) || !!DROWNED_ICONS[i.icon], `icon for ${i.id}`).toBe(true);
+    for (const i of ITEMS) expect(BUILTIN_ICONS.includes(i.icon) || !!DROWNED_ICONS[i.icon] || !!LIVING_ICONS[i.icon], `icon for ${i.id}`).toBe(true);
   });
   it('every drowned-world icon renders SVG with both colours substituted', () => {
     for (const [k, f] of Object.entries(DROWNED_ICONS)) {
