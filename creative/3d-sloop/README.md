@@ -77,9 +77,9 @@ How each is fitted:
   height, where the base sail's stripe sits.
 - **Ship's Wheel & Ash Rudder.** Wheel and pedestal at the helm. With it fitted, the model's tiller is dropped and the
   captain stands to port of the wheel. The rudder blade is the model's own; the old code-built ash rudder is gone.
-- **Copper-Banded Hull.** MeshCraft lays the sheathing 3 cm off the hull loft, but the sloop's planking skin is 5 cm thick,
-  which hid it. It is pushed 4 cm out along its normals when mounted. The copper stays copper; its rub-strakes take
-  the paint's trim colour.
+- **Copper-Banded Hull.** Mounted as modelled: measured in Blender, the sheathing sits 7–17 mm proud of the sloop's
+  planking skin along the hull normal (up to 44 mm at its forward edge), so it shows as built. The copper stays copper;
+  its rub-strakes take the paint's trim colour.
 - **Brass Compass, Lashed Cargo Crates.** Mounted as modelled (brass, timber and rope: no cosmetic tint).
 
 Each falls back to its code-built part if its file fails to load. With the wheel fitted, the Twin Diesel kit housing
@@ -87,3 +87,8 @@ Each falls back to its code-built part if its file fails to load. With the wheel
 
 Preview every upgrade at once (in memory only, never saved): `?ship=trimaran&upgrades=all`, or a list such as
 `?ship=trimaran&upgrades=sail_canvas,rudder_ash`.
+
+## The rest of the upgrades, and the Cutter Rig
+
+The other 13 Trimaran upgrades are MeshCraft models too: see [`upgrades/`](upgrades/README.md). The sloop's jib is
+hidden until the Cutter Rig + Jib is owned.

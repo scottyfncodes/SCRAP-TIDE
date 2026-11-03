@@ -37,6 +37,20 @@ export const MODEL_FILES = [
   'tb_upg_brass_compass',
   'tb_upg_wheel_rudder',
   'tb_upg_copper_hull',
+  // the rest of the Trimaran's upgrades, modelled in MeshCraft in the sloop's frame (creative/3d-sloop/upgrades)
+  'tb_upg_container_cabin',
+  'tb_upg_solar_array',
+  'tb_upg_radar_mast',
+  'tb_upg_deck_turbine',
+  'tb_upg_fishing_rig',
+  'tb_upg_outboard',
+  'tb_upg_twin_diesel',
+  'tb_upg_harpoon_turret',
+  'tb_upg_salvage_crane',
+  'tb_upg_fuel_drums',
+  'tb_upg_cargo_nets',
+  'tb_upg_armour_plating',
+  'tb_upg_deck_lights',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
 
@@ -104,9 +118,13 @@ function isGlowMaterial(m: THREE.Material | THREE.Material[]) {
   return !!mm?.emissive && mm.emissive.r + mm.emissive.g + mm.emissive.b > 0.05 && (mm.emissiveIntensity ?? 1) > 0;
 }
 
-/** Flatten node `name` of `file` (its meshes, in the node's own space) into toon + glow geometries. */
-export function part(file: string, name: string) {
-  const key = `${file}#${name}`;
+/**
+ * Flatten node `name` of `file` (its meshes) into toon + glow geometries, in the node's own space, or with
+ * `inFile` in the file's space (for models built in a shared frame, e.g. the sloop's upgrades, whose parts keep
+ * their placement as node transforms).
+ */
+export function part(file: string, name: string, inFile = false) {
+  const key = `${file}#${name}${inFile ? '@file' : ''}`;
   if (partCache.has(key)) return partCache.get(key)!;
   const g = gltfs.get(file);
   const node = g?.scene.getObjectByName(name);
@@ -115,7 +133,7 @@ export function part(file: string, name: string) {
     return null;
   }
   g.scene.updateMatrixWorld(true);
-  const inv = node.matrixWorld.clone().invert();
+  const inv = inFile ? g.scene.matrixWorld.clone().invert() : node.matrixWorld.clone().invert();
   const solid: THREE.BufferGeometry[] = [];
   const glow: THREE.BufferGeometry[] = [];
   node.traverse((o) => {
@@ -276,24 +294,32 @@ export function cullModel(root: THREE.Object3D, material: string, tag: string, c
   });
 }
 
-/**
- * Push one material's surfaces out along their normals by `dist` metres: fits an overlay (e.g. copper sheathing)
- * proud of a skin it was modelled flush with. Shared, cached geometry; tint afterwards.
- */
-export function inflateModel(root: THREE.Object3D, material: string, dist: number) {
+/** Where node `name` of `file` sits in the file's space (a moving part's pivot), or null. */
+export function nodeOrigin(file: string, name: string) {
+  const g = gltfs.get(file);
+  const node = g?.scene.getObjectByName(name);
+  if (!g || !node) return null;
+  g.scene.updateMatrixWorld(true);
+  return node.getWorldPosition(new THREE.Vector3()).applyMatrix4(g.scene.matrixWorld.clone().invert());
+}
+
+/** Move one material's faces by `delta` (shared, cached geometry), e.g. a fitting relocated to make room. */
+export function offsetModel(root: THREE.Object3D, material: string, delta: THREE.Vector3) {
   root.traverse((o) => {
     const m = o as THREE.Mesh;
     if (!m.isMesh || m.userData.srcMaterial !== material) return;
     const src = (m.userData.srcGeometry as THREE.BufferGeometry | undefined) ?? m.geometry;
-    const key = `${src.uuid}|inflate:${dist}`;
+    const key = `${src.uuid}|move:${delta.toArray().join(',')}`;
     let geo = tintCache.get(key);
     if (!geo) {
       geo = src.clone();
-      const pos = src.attributes.position, nrm = src.attributes.normal;
-      if (!nrm) return;
+      const pos = src.attributes.position;
       const out = new Float32Array(pos.count * 3);
-      for (let i = 0; i < pos.count; i++)
-        for (let k = 0; k < 3; k++) out[i * 3 + k] = pos.getComponent(i, k) + nrm.getComponent(i, k) * dist;
+      for (let i = 0; i < pos.count; i++) {
+        out[i * 3] = pos.getX(i) + delta.x;
+        out[i * 3 + 1] = pos.getY(i) + delta.y;
+        out[i * 3 + 2] = pos.getZ(i) + delta.z;
+      }
       geo.setAttribute('position', new THREE.BufferAttribute(out, 3));
       geo.computeBoundingSphere();
       tintCache.set(key, geo);
