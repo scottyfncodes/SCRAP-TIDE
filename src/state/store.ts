@@ -142,8 +142,21 @@ export class Store {
   storageOk = true;
   isNew = false;
 
-  constructor() {
+  /**
+   * Set by a `?ship=` preview link: this visit starts in that vessel without unlocking it, on an in-memory copy of
+   * the save. A preview store never writes to (or clears) localStorage, so the real saved game is untouched.
+   */
+  readonly preview: VesselId | null;
+
+  constructor(opts: { preview?: VesselId | null } = {}) {
+    this.preview = opts.preview ?? null;
     this.data = this.load();
+    if (this.preview) {
+      this.data.vessel = this.preview;
+      if (!this.data.vesselsOwned.includes(this.preview)) this.data.vesselsOwned.push(this.preview);
+      this.data.hull = Math.min(this.data.hull, this.stats.hullMax);
+      if (this.isNew) this.data.hull = this.stats.hullMax;
+    }
   }
 
   private load(): SaveData {
@@ -170,6 +183,7 @@ export class Store {
 
   saveNow() {
     this.data.updated = Date.now();
+    if (this.preview) return; // preview visits are never saved
     try {
       const prev = localStorage.getItem(KEY);
       if (prev) localStorage.setItem(BACKUP_KEY, prev);
@@ -190,6 +204,16 @@ export class Store {
   }
 
   reset() {
+    if (this.preview) {
+      // in a preview, "new game" only restarts this visit; the real save stays as it is
+      this.data = freshSave();
+      this.data.vessel = this.preview;
+      if (!this.data.vesselsOwned.includes(this.preview)) this.data.vesselsOwned.push(this.preview);
+      this.data.hull = this.stats.hullMax;
+      this.isNew = true;
+      this.emit();
+      return;
+    }
     try {
       localStorage.removeItem(KEY);
       localStorage.removeItem(BACKUP_KEY);

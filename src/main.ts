@@ -1,6 +1,7 @@
 import './ui/styles.css';
 import { Game } from './game/game';
 import { loadReport } from './world/assets';
+import { VESSELS } from './data/ship';
 
 const fill = document.getElementById('loadFill')!;
 const msg = document.getElementById('loadMsg')!;
@@ -29,6 +30,13 @@ async function boot() {
   (window as any).__game = game;
   await game.init();
   (window as any).__loadReport = loadReport;
+  if (game.store.preview) {
+    // ?ship= preview link: say so, so nobody mistakes it for their real save
+    const tag = document.createElement('div');
+    tag.className = 'preview-tag';
+    tag.textContent = `PREVIEW · ${VESSELS[game.store.preview].name} · not saved`;
+    document.body.append(tag);
+  }
   loading.classList.add('done');
   setTimeout(() => loading.remove(), 900);
 }
