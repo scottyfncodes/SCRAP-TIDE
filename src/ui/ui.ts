@@ -61,10 +61,12 @@ const ICON = {
   settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>',
 };
 
-const WHEEL_SVG = `<svg class="wheel" viewBox="0 0 150 150"><g fill="none" stroke="#5a3a1e" stroke-linecap="round">
-${Array.from({ length: 8 }, (_, i) => { const a = (i / 8) * Math.PI * 2; return `<line x1="${75 + Math.cos(a) * 20}" y1="${75 + Math.sin(a) * 20}" x2="${75 + Math.cos(a) * 72}" y2="${75 + Math.sin(a) * 72}" stroke-width="8"/>`; }).join('')}
-<circle cx="75" cy="75" r="56" stroke-width="12" stroke="#8a5f36"/><circle cx="75" cy="75" r="56" stroke-width="3" stroke="#3f2a17"/></g>
-<circle cx="75" cy="75" r="60" fill="rgba(43,29,20,.18)"/></svg>`;
+// a ship's wheel cut from scrap steel: rust-scabbed rim, mismatched spokes, a welded hazard band
+const WHEEL_SVG = `<svg class="wheel" viewBox="0 0 150 150"><circle cx="75" cy="75" r="62" fill="rgba(10,13,14,.35)"/><g fill="none" stroke-linecap="butt">
+${Array.from({ length: 8 }, (_, i) => { const a = (i / 8) * Math.PI * 2; return `<line x1="${75 + Math.cos(a) * 18}" y1="${75 + Math.sin(a) * 18}" x2="${75 + Math.cos(a) * 71}" y2="${75 + Math.sin(a) * 71}" stroke="${i % 3 ? '#3b4246' : '#5c3420'}" stroke-width="${i % 2 ? 7 : 9}"/><rect x="${75 + Math.cos(a) * 68 - 4}" y="${75 + Math.sin(a) * 68 - 4}" width="8" height="8" fill="#2a3033" transform="rotate(${(i / 8) * 360} ${75 + Math.cos(a) * 68} ${75 + Math.sin(a) * 68})"/>`; }).join('')}
+<circle cx="75" cy="75" r="56" stroke-width="13" stroke="#2c3336"/><circle cx="75" cy="75" r="56" stroke-width="13" stroke="#7a3818" stroke-dasharray="18 26 6 40 30 22" opacity=".85"/>
+<circle cx="75" cy="75" r="56" stroke-width="5" stroke="#d6a62a" stroke-dasharray="46 306" opacity=".8" transform="rotate(-112 75 75)" pathLength="352"/>
+<circle cx="75" cy="75" r="62.5" stroke-width="1.5" stroke="rgba(217,210,191,.25)"/><circle cx="75" cy="75" r="49.5" stroke-width="1.5" stroke="rgba(0,0,0,.6)"/></g></svg>`;
 
 const el = (html: string) => {
   const t = document.createElement('template');
@@ -113,6 +115,7 @@ export class UI {
   private wpEl!: HTMLElement;
   private compassEl!: HTMLElement;
   private speedEl!: HTMLElement;
+  private hitEl!: HTMLElement;
   private digEl!: HTMLElement;
   private bannerEl!: HTMLElement;
   private fadeEl!: HTMLElement;
@@ -212,7 +215,8 @@ export class UI {
     this.toastsEl = el(`<div class="toasts"></div>`);
     this.wpEl = el(`<div class="waypoint" style="opacity:0"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgba(43,29,20,.55)" stroke="#f4c542" stroke-width="3"/><path d="M22 8 L30 26 L22 22 L14 26 Z" fill="#f4c542"/></svg><div class="wp-dist"></div></div>`);
     this.compassEl = el(`<div class="compass" style="display:none"><svg class="needle" viewBox="0 0 6 46"><path d="M3 0 L6 23 L0 23Z" fill="#c0392b"/><path d="M3 46 L6 23 L0 23Z" fill="#2b1d14"/></svg><div class="cl">X</div></div>`);
-    this.speedEl = el(`<div class="speed"><div class="wind"><svg viewBox="0 0 24 24"><path d="M12 3 L17 15 L12 12 L7 15Z" fill="#fff"/></svg><span>WIND</span></div><div class="kn"></div></div>`);
+    this.speedEl = el(`<div class="speed"><div class="wind"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="none" stroke="rgba(217,210,191,.35)" stroke-width="1.5"/><path d="M12 3 L17 15 L12 12 L7 15Z" fill="#d9d2bf"/></svg><span>WIND</span></div><div class="kn"><b>0.0</b> kn<small></small></div></div>`);
+    this.hitEl = el(`<div class="hit-flash"></div>`);
     this.digEl = el(`<div class="dig-meter" style="opacity:0"><div class="dm-text"></div><div class="dm-bar"><div class="dm-fill"></div></div></div>`);
     this.bannerEl = el(`<div class="region-banner"><div class="rb-inner"><div class="rb-title"></div><div class="rb-sub"></div></div></div>`);
     this.fadeEl = el(`<div class="fade"></div>`);
@@ -223,7 +227,7 @@ export class UI {
       this.game.toggleEngine();
     });
     this.radarEl = el(`<div class="radar"><canvas width="208" height="208"></canvas><div class="rl">RADAR</div></div>`);
-    this.hud.append(this.actionsEl, this.toastsEl, this.wpEl, this.compassEl, this.speedEl, this.digEl, this.bannerEl, this.engineEl, this.radarEl);
+    this.hud.append(this.hitEl, this.actionsEl, this.toastsEl, this.wpEl, this.compassEl, this.speedEl, this.digEl, this.bannerEl, this.engineEl, this.radarEl);
     this.root.append(this.hud, this.fadeEl);
 
     // keyboard for desktop testing
@@ -328,7 +332,24 @@ export class UI {
     }
     this.speedEl.style.display = '';
     (this.speedEl.querySelector('.wind svg') as SVGElement).style.transform = `rotate(${windAngle}rad)`;
-    this.speedEl.querySelector('.kn')!.textContent = `${knots.toFixed(1)} kn · ${motoring ? 'under power' : eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind'}`;
+    const kn = this.speedEl.querySelector('.kn')!;
+    kn.querySelector('b')!.textContent = knots.toFixed(1);
+    const sm = kn.querySelector('small')!;
+    const label = motoring ? 'under power' : eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind';
+    if (sm.textContent !== label) {
+      sm.textContent = label;
+      sm.className = motoring ? 'power' : eff > 0.92 ? 'good' : eff > 0.7 ? '' : 'bad';
+    }
+  }
+
+  /** Red edge flash when the hull takes a hit; a slow pulse while it is critical. */
+  hit() {
+    this.hitEl.classList.remove('on');
+    void this.hitEl.offsetWidth;
+    this.hitEl.classList.add('on');
+  }
+  setCritical(on: boolean) {
+    this.hud.classList.toggle('hull-critical', on);
   }
 
   setStatus(st: StatusInfo) {
@@ -357,20 +378,25 @@ export class UI {
     const ctx = c.getContext('2d')!;
     const W = c.width, R = W / 2;
     ctx.clearRect(0, 0, W, W);
-    ctx.strokeStyle = 'rgba(127,227,214,.25)';
+    ctx.strokeStyle = 'rgba(120,200,170,.22)';
     ctx.lineWidth = 2;
     for (const k of [0.33, 0.66]) {
       ctx.beginPath();
       ctx.arc(R, R, R * k, 0, Math.PI * 2);
       ctx.stroke();
     }
+    ctx.beginPath();
+    ctx.moveTo(R, 6); ctx.lineTo(R, W - 6); ctx.moveTo(6, R); ctx.lineTo(W - 6, R);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.lineWidth = 2;
     if (hasRadar) {
       const sweep = (performance.now() / 1000) * 2.2;
       const g = ctx.createConicGradient ? ctx.createConicGradient(sweep, R, R) : null;
       if (g) {
-        g.addColorStop(0, 'rgba(127,227,214,.35)');
-        g.addColorStop(0.12, 'rgba(127,227,214,0)');
-        g.addColorStop(1, 'rgba(127,227,214,0)');
+        g.addColorStop(0, 'rgba(140,220,180,.38)');
+        g.addColorStop(0.12, 'rgba(140,220,180,0)');
+        g.addColorStop(1, 'rgba(140,220,180,0)');
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(R, R, R, 0, Math.PI * 2);
@@ -378,7 +404,7 @@ export class UI {
       }
     }
     const cos = Math.cos(camYaw), sin = Math.sin(camYaw);
-    const col: Record<string, string> = { site: '#f2b825', site_done: 'rgba(242,184,37,.35)', town: '#7fe3d6', cache: '#9be36b', raider: '#ff4a3a', castaway: '#ffffff' };
+    const col: Record<string, string> = { site: '#e8b83a', site_done: 'rgba(232,184,58,.32)', town: '#8fe0c4', cache: '#b6e05a', raider: '#ff5a2a', castaway: '#f2ede0' };
     for (const b of blips) {
       // world → screen: camera forward is up
       const fx = b.x * sin + b.z * cos; // forward component
@@ -404,7 +430,7 @@ export class UI {
     ctx.save();
     ctx.translate(R, R);
     ctx.rotate(-rel);
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#e8f2e8';
     ctx.beginPath();
     ctx.moveTo(0, -11);
     ctx.lineTo(7, 8);
@@ -598,7 +624,9 @@ export class UI {
   showTitle(isNew: boolean) {
     this.setHUDVisible(false);
     const node = el(`<div class="title-screen"><div class="ts-inner">
+      <div class="ts-kicker">Year 61 · After the Water</div>
       <div class="ts-logo">TIDEBREAKERS</div>
+      <div class="ts-rule"></div>
       <div class="ts-sub">The world drowned. You didn’t.</div>
       <button class="act glow">${isNew ? 'Set Sail' : 'Continue Voyage'}</button>
       <div class="ts-small">${isNew ? 'Best with sound on · Add to Home Screen for full-screen' : `${this.store.discoveryCount} discoveries · ${this.store.data.gold} gold · ${VESSELS[this.store.data.vessel].name}`}</div>
