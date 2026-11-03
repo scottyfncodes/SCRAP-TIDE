@@ -43,6 +43,20 @@ const NEEDED: Record<string, string[]> = {
   tb_upg_brass_compass: ['upgrade_brass_compass'],
   tb_upg_wheel_rudder: ['upgrade_ship_s_wheel_ash_rudder'],
   tb_upg_copper_hull: ['upgrade_copper_banded_hull'],
+  // MeshCraft upgrade models (creative/3d-sloop/upgrades): the static bodies and moving pivots buildShip asks for
+  tb_upg_container_cabin: ['tb_upg_container_cabin', 'tb_upg_container_cabin_mesh'],
+  tb_upg_solar_array: ['tb_upg_solar_array_mesh'],
+  tb_upg_radar_mast: ['tb_upg_radar_mast_mesh', 'radar_scanner'],
+  tb_upg_deck_turbine: ['tb_upg_deck_turbine_mesh', 'deck_turbine_rotor'],
+  tb_upg_fishing_rig: ['tb_upg_fishing_rig_mesh'],
+  tb_upg_outboard: ['tb_upg_outboard_mesh'],
+  tb_upg_twin_diesel: ['tb_upg_twin_diesel_mesh'],
+  tb_upg_harpoon_turret: ['tb_upg_harpoon_turret_mesh', 'harpoon_mount'],
+  tb_upg_salvage_crane: ['salvage_crane'],
+  tb_upg_fuel_drums: ['tb_upg_fuel_drums_mesh'],
+  tb_upg_cargo_nets: ['tb_upg_cargo_nets_mesh'],
+  tb_upg_armour_plating: ['tb_upg_armour_plating_mesh'],
+  tb_upg_deck_lights: ['deck_lights_strings', 'deck_spotlight'],
 };
 
 describe('GITCRAFT models in public/models', () => {
@@ -67,6 +81,9 @@ describe('GITCRAFT models in public/models', () => {
     expect(sloop.has('GC_Wood_9a5a2e')).toBe(true);
     expect(names('tb_upg_canvas_mainsail').has('GC_Cloth_f6ead0')).toBe(true);
     expect(names('tb_upg_copper_hull').has('GC_Metal_c98a12_m9')).toBe(true);
+    // the Container Cabin's painted steel and trim, the lantern the wheel moves aside, the cabin it replaces
+    for (const mt of ['GC_Steel_4fb39a_m3', 'GC_Steel_f2ead8_m3']) expect(names('tb_upg_container_cabin').has(mt), mt).toBe(true);
+    for (const mt of ['GC_Plain_ff9f2e_e2', 'GC_Plank_f2ead8', 'GC_Plank_5e331b']) expect(sloop.has(mt), mt).toBe(true);
   });
   it('the cast are people, not block toys: one skinned primitive, 4k+ triangles, a sculpted head, smooth normals', () => {
     const NEED: Record<string, string[]> = { tb_captain: ['Idle', 'Walk', 'Sit', 'Dig', 'Cheer'], tb_raider: ['Idle', 'Attack'], tb_npc_trader: ['Idle', 'Interact'],

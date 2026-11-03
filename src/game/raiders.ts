@@ -185,8 +185,8 @@ export class Raiders {
 
   private fire(r: Raider) {
     const g = this.g;
-    const from = new THREE.Vector3(0, 1.4, g.ship.length * 0.36);
-    g.shipRoot.localToWorld(from);
+    // fire from the turret itself (on the Trimaran it rides the starboard outrigger beam)
+    const from = g.ship.harpoon ? g.ship.harpoon.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)) : g.shipRoot.localToWorld(new THREE.Vector3(0, 1.4, g.ship.length * 0.36));
     const to = r.obj.position.clone().setY(r.obj.position.y + 1);
     (this.bolt.geometry as THREE.BufferGeometry).setFromPoints([from, to]);
     this.boltLife = 0.35;

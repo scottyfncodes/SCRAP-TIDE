@@ -4,7 +4,7 @@ import { paint, xf, merge, vcMat, toonMat, canvasTex, weather } from '../world/m
 import { COSMETIC_MAP, type VesselId } from '../data/ship';
 import { item } from '../data/items';
 import type { Store } from '../state/store';
-import { model, crewModel, part, glowMat, kitGeo, sceneModel, tintModel, cullModel, inflateModel, type Tint } from '../world/assets';
+import { model, crewModel, part, glowMat, kitGeo, sceneModel, tintModel, cullModel, offsetModel, nodeOrigin, type Tint } from '../world/assets';
 import { CREW_MAP } from '../data/crew';
 
 interface HullSpec {
@@ -34,16 +34,47 @@ const OUTRIGGER_FILE = 'tb_sloop_outriggers';
 // Captain at the helm: in the cockpit between the cabin's after wall (z -3.7) and the transom, beside the tiller.
 const SLOOP_HELM = new THREE.Vector3(-0.55, 0, -4.3);
 // ...and with the ship's wheel fitted: standing to port of the wheel, clear of its rim, facing forward
-const SLOOP_WHEEL_HELM = new THREE.Vector3(-0.85, 0, -4.55);
+const SLOOP_WHEEL_HELM = new THREE.Vector3(-0.98, 0, -4.55);
+// the model's stern lantern hangs 3 cm in front of the wheel hub; with the wheel fitted it moves onto the starboard rail
+const SLOOP_LANTERN = 'GC_Plain_ff9f2e_e2';
+const SLOOP_LANTERN_SHIFT = new THREE.Vector3(1.25, -0.69, -0.1);
+const CONTAINER_FILE = 'tb_upg_container_cabin';
+const CONTAINER_ROOF = 2.28; // its roof: the solar array, radar and spotlight stand 0.22 m higher on it
+// the model's cabin (walls, roof, portholes), replaced by the Container Cabin
+const SLOOP_CABIN = ['GC_Plank_f2ead8', 'GC_Plank_5e331b', 'GC_Metal_f4c542_m9'];
+const inCabin = (c: THREE.Vector3) => Math.abs(c.x) < 1.2 && c.y > 0.95 && c.y < 2.2 && c.z > -3.9 && c.z < -1.3;
+
+/**
+ * The rest of the Trimaran's upgrades (MeshCraft, creative/3d-sloop/upgrades), modelled in the sloop's own frame and
+ * laid out together so that none overlaps another, the helm, the wheel or the captain with everything fitted (an
+ * overlap audit in Blender checks every pair, with the moving parts swept through their range). Static nodes join
+ * the ship's batched kit mesh; `pivot` is a moving part the game turns. `roof` nodes stand on the cabin roof.
+ */
+const SLOOP_KIT: Record<string, { file: string; body?: string[]; pivot?: string; roof?: string[]; restY?: number }> = {
+  solar_array: { file: 'tb_upg_solar_array', body: ['tb_upg_solar_array_mesh'], roof: ['tb_upg_solar_array_mesh'] },
+  radar_mast: { file: 'tb_upg_radar_mast', body: ['tb_upg_radar_mast_mesh'], pivot: 'radar_scanner', roof: ['tb_upg_radar_mast_mesh', 'radar_scanner'] },
+  deck_turbine: { file: 'tb_upg_deck_turbine', body: ['tb_upg_deck_turbine_mesh'], pivot: 'deck_turbine_rotor' },
+  fishing_rig: { file: 'tb_upg_fishing_rig', body: ['tb_upg_fishing_rig_mesh'] },
+  engine_outboard: { file: 'tb_upg_outboard', body: ['tb_upg_outboard_mesh'] },
+  engine_twin: { file: 'tb_upg_twin_diesel', body: ['tb_upg_twin_diesel_mesh'] },
+  harpoon_turret: { file: 'tb_upg_harpoon_turret', body: ['tb_upg_harpoon_turret_mesh'], pivot: 'harpoon_mount' },
+  salvage_crane: { file: 'tb_upg_salvage_crane', pivot: 'salvage_crane', restY: -Math.PI / 2 },
+  tank_drums: { file: 'tb_upg_fuel_drums', body: ['tb_upg_fuel_drums_mesh'] },
+  cargo_net: { file: 'tb_upg_cargo_nets', body: ['tb_upg_cargo_nets_mesh'] },
+  hull_armor: { file: 'tb_upg_armour_plating', body: ['tb_upg_armour_plating_mesh'] },
+  deck_lights: { file: 'tb_upg_deck_lights', body: ['deck_lights_strings', 'deck_spotlight'], roof: ['deck_spotlight'] },
+};
 
 /**
  * The sloop's upgrade models (GITCRAFT TIDEBREAKERS 3D package), each modelled at its socket's origin. An owned
  * upgrade mounts as a child of its socket_* node; if its file failed to load, the code-built part is drawn instead.
  */
-const SLOOP_UPGRADES: Record<string, { file: string; socket: string }> = {
+const SLOOP_UPGRADES: Record<string, { file: string; socket: string; at?: [number, number, number] }> = {
   sail_canvas: { file: 'tb_upg_canvas_mainsail', socket: 'socket_sail' },
-  cargo_crate: { file: 'tb_upg_cargo_crates', socket: 'socket_storage' },
-  compass_brass: { file: 'tb_upg_brass_compass', socket: 'socket_navigation' },
+  // the crates' rope hoop rises to 2.48 m on the centreline, through the boom (2.37 m): sit them 0.5 m to starboard
+  cargo_crate: { file: 'tb_upg_cargo_crates', socket: 'socket_storage', at: [0.5, 0, 0] },
+  // socket_navigation is 0.3 m inside the cabin's front wall: stand the binnacle just forward of it
+  compass_brass: { file: 'tb_upg_brass_compass', socket: 'socket_navigation', at: [0, 0, 0.42] },
   rudder_ash: { file: 'tb_upg_wheel_rudder', socket: 'socket_steering' },
   hull_copper: { file: 'tb_upg_copper_hull', socket: 'socket_hull' },
 };
@@ -69,6 +100,9 @@ function cosmeticTints(paint: string[], sail: string[]): Record<string, Tint> {
     GC_Cloth_f6ead0: { base: sail[0], band: sail[1], from: 0.3, to: 0.5 },
     // Copper-Banded Hull: the sheathing stays copper; its rub-strakes are painted in the trim colour
     GC_Metal_c98a12_m9: paint[1],
+    // Container Cabin: painted steel in the hull colour, corner posts and rails in the trim colour
+    GC_Steel_4fb39a_m3: paint[0],
+    GC_Steel_f2ead8_m3: paint[1],
   };
 }
 
@@ -414,6 +448,7 @@ export function buildShip(store: Store): ShipParts {
   if (outriggers) group.add(outriggers);
   // owned upgrades mount on the model's sockets; `fitted` marks the ones whose model loaded (else: code-built part)
   const fitted: Record<string, boolean> = {};
+  let container: THREE.Object3D | null = null;
   if (glb) {
     for (const [id, u] of Object.entries(SLOOP_UPGRADES)) {
       if (!store.has(id)) continue;
@@ -421,14 +456,9 @@ export function buildShip(store: Store): ShipParts {
       const m = socket && sceneModel(u.file, { shadows: true, side: THREE.DoubleSide });
       if (!socket || !m) continue;
       m.name = `upgrade_${id}`;
+      if (u.at) m.position.set(...u.at);
       socket.add(m);
       fitted[id] = true;
-      if (id === 'hull_copper') {
-        // MeshCraft lays the sheathing 3 cm off the hull loft, but the sloop's planking skin is 5 cm thick, so it
-        // sat just under the paint: lift the copper and its rub-strakes proud of the planking
-        inflateModel(m, 'GC_Metal_c77b4a_m8', 0.04);
-        inflateModel(m, 'GC_Metal_c98a12_m9', 0.04);
-      }
     }
     // the canvas mainsail (its model, or the code-built sail standing in for it) replaces the model's base
     // mainsail, keeping the jib; the wheel replaces the model's tiller
@@ -436,12 +466,30 @@ export function buildShip(store: Store): ShipParts {
       cullModel(glb.root, SLOOP_SAIL_CLOTH, 'mainsail', (c) => c.z < SLOOP_MAST_Z);
       cullModel(glb.root, SLOOP_SAIL_BAND, 'band', () => true);
     }
-    if (fitted.rudder_ash) cullModel(glb.root, SLOOP_TILLER_WOOD, 'tiller', isTiller);
+    // Cutter Rig + Jib: the model's jib (its cloth forward of the mast) only shows once that upgrade is owned
+    if (!store.has('sail_cutter')) cullModel(glb.root, SLOOP_SAIL_CLOTH, 'jib', (c) => c.z >= SLOOP_MAST_Z);
+    if (fitted.rudder_ash) {
+      cullModel(glb.root, SLOOP_TILLER_WOOD, 'tiller', isTiller);
+      offsetModel(glb.root, SLOOP_LANTERN, SLOOP_LANTERN_SHIFT);
+    }
+    // Container Cabin: replaces the model's cabin on the same footprint
+    if (store.has('cabin_container')) {
+      const c = sceneModel(CONTAINER_FILE, { shadows: true, side: THREE.DoubleSide });
+      if (c) {
+        c.name = 'upgrade_cabin_container';
+        group.add(c);
+        for (const mat of SLOOP_CABIN) cullModel(glb.root, mat, 'cabin', inCabin);
+        container = c;
+        fitted.cabin_container = true;
+      }
+    }
   }
   const sailCos = COSMETIC_MAP[s.equipped.sail] ?? COSMETIC_MAP.sail_plain;
   const tints = cosmeticTints(paintCos.colors, sailCos.colors);
   if (glb) tintModel(glb.root, tints);
   if (outriggers) tintModel(outriggers, tints);
+  if (container) tintModel(container, tints);
+  const roofTop = container ? CONTAINER_ROOF : SLOOP_ROOF;
   // Ironwake: two hulls; P() then measures from the outer side of each hull
   const P = cat
     ? (u: number, v: number) => {
@@ -570,7 +618,7 @@ export function buildShip(store: Store): ShipParts {
     parts.push(paint(xf(new THREE.BoxGeometry(0.06, 0.6 * sc, 0.62 * sc), 0.2 * sc, cy + 0.12 * sc, cz), '#d9b77a'));
     parts.push(paint(xf(new THREE.BoxGeometry(0.06, 0.6 * sc, 0.62 * sc), -0.2 * sc, cy + 0.12 * sc, cz), '#d9b77a'));
   }
-  if (store.has('cargo_net')) {
+  if (store.has('cargo_net') && !(glb && part(SLOOP_KIT.cargo_net.file, SLOOP_KIT.cargo_net.body![0], true))) {
     for (const side of [-1, 1]) {
       const p = P(0.45, side);
       for (let k = 0; k < 3; k++) parts.push(paint(xf(new THREE.SphereGeometry(0.22 * (vessel !== 'dinghy' ? 1.6 : 1), 7, 5), p.x + side * 0.12, p.y - 0.18, p.z - 0.4 + k * 0.4, 0, 0, 0, [0.7, 1, 1]), k % 2 ? '#d9b77a' : '#c9a46a', 0.1));
@@ -589,7 +637,7 @@ export function buildShip(store: Store): ShipParts {
   const trophyPos = cat
     ? [new THREE.Vector3(0, h.sheer + 0.15, 4.2), new THREE.Vector3(-1.6, h.sheer + 0.15, 2.8), new THREE.Vector3(1.6, h.sheer + 0.15, 2.8), new THREE.Vector3(0, h.sheer + 0.15, 1.6)]
     : glb
-      ? [new THREE.Vector3(0, glb.deckY, 3.2), new THREE.Vector3(-0.6, SLOOP_ROOF, -2.6), new THREE.Vector3(0.6, SLOOP_ROOF, -2.6)]
+      ? [new THREE.Vector3(0, glb.deckY, 3.2), new THREE.Vector3(-0.6, roofTop, -2.6), new THREE.Vector3(0.6, roofTop, -2.6)]
       : vessel !== 'dinghy'
       ? [new THREE.Vector3(0, h.sheer + 0.05, 3.2), new THREE.Vector3(-0.9, h.sheer + 1.3, -2.4), new THREE.Vector3(0.9, h.sheer + 1.3, -2.4)]
       : [new THREE.Vector3(0, h.sheer + 0.02, 1.85)];
@@ -743,13 +791,39 @@ export function buildShip(store: Store): ShipParts {
     group.add(m);
     return m;
   };
+  // the MeshCraft upgrade models on the sloop: static nodes join the kit batch, a moving part becomes its own group.
+  // Returns the moving part (or a marker), or null when the file failed to load (the caller then draws the kit part).
+  const roofLift = roofTop - SLOOP_ROOF;
+  const fit = (id: string): THREE.Object3D | null => {
+    const u = SLOOP_KIT[id];
+    if (!glb || !u) return null;
+    const bodies = (u.body ?? []).map((n) => ({ n, p: part(u.file, n, true) }));
+    if (bodies.some((b) => !b.p)) return null;
+    let obj: THREE.Object3D | null = null;
+    if (u.pivot) {
+      const g = model(u.file, u.pivot, { shadows: true, side: THREE.DoubleSide });
+      const at = nodeOrigin(u.file, u.pivot);
+      if (!g || !at) return null;
+      g.position.copy(at);
+      if (u.roof?.includes(u.pivot)) g.position.y += roofLift;
+      if (u.restY) g.rotation.y = u.restY;
+      obj = g;
+    } else obj = new THREE.Object3D();
+    obj.name = `upgrade_${id}`;
+    group.add(obj);
+    for (const b of bodies) {
+      const m4 = new THREE.Matrix4().makeTranslation(0, u.roof?.includes(b.n) ? roofLift : 0, 0);
+      kitSolid.push(b.p!.geo.clone().applyMatrix4(m4));
+      if (b.p!.glow) kitGlow.push(b.p!.glow.clone().applyMatrix4(m4));
+    }
+    fitted[id] = true;
+    return obj;
+  };
   const engineUp = store.bestInSlot('engine');
   const engine = engineUp
     ? engineUp.visual === 'engine_twin'
-      ? // with the wheel fitted on the model, the housing (1.4 m deep) would swallow the helm: mount it on the
-        // transom as a stern pod, its forward face just aft of the wheel
-        kit('engine_twin', 0, dy, fitted.rudder_ash ? -5.3 : -h.L / 2 + 0.6 * K)
-      : kit('engine_outboard', cat ? CAT_OFFSET : 0, h.sheer - 0.25, -h.L / 2 - 0.05)
+      ? fit('engine_twin') ?? kit('engine_twin', 0, dy, fitted.rudder_ash ? -5.3 : -h.L / 2 + 0.6 * K) // kit: stern pod clear of the wheel
+      : fit('engine_outboard') ?? kit('engine_outboard', cat ? CAT_OFFSET : 0, h.sheer - 0.25, -h.L / 2 - 0.05)
     : null;
   if (engineUp?.visual === 'engine_outboard' && cat) kit('engine_outboard', -CAT_OFFSET, h.sheer - 0.25, -h.L / 2 - 0.05);
   if (vessel === 'sloop' && !outriggers) {
@@ -757,13 +831,16 @@ export function buildShip(store: Store): ShipParts {
     kit('outrigger', h.W * 0.85, h.sheer - 0.6, -0.4, 0, 1.15);
     kit('outrigger', -h.W * 0.85, h.sheer - 0.6, -0.4, Math.PI, 1.15);
   }
-  const radar = store.has('radar_mast') ? kit('radar_mast', beam * 0.45, dy, -h.L * 0.3) : null;
-  const crane = store.has('salvage_crane') ? kit('salvage_crane', -beam * 0.55, dy, h.L * 0.06, -Math.PI / 2) : null;
-  const harpoon = store.has('harpoon_turret') ? kit('harpoon_turret', 0, dy + (vessel === 'sloop' ? 0.25 : 0), h.L * 0.36) : null;
-  if (store.has('cabin_container')) kit('cabin_container', 0, dy, vessel === 'dinghy' ? -0.9 : -2.3, 0, vessel === 'dinghy' ? 0.5 : K);
-  const roofY = store.has('cabin_container') ? dy + 2.0 * (vessel === 'dinghy' ? 0.5 : K) : glb ? SLOOP_ROOF : dy + 1.35;
-  if (store.has('solar_array')) kit('solar_array', 0, vessel === 'dinghy' ? dy : roofY, vessel === 'dinghy' ? -1.5 : -2.3, Math.PI, vessel === 'dinghy' ? 0.45 : K * 0.9);
-  if (store.has('deck_turbine')) {
+  const radar = store.has('radar_mast') ? fit('radar_mast') ?? kit('radar_mast', beam * 0.45, dy, -h.L * 0.3) : null;
+  if (radar && fitted.radar_mast) radar.userData.spin = true;
+  const crane = store.has('salvage_crane') ? fit('salvage_crane') ?? kit('salvage_crane', -beam * 0.55, dy, h.L * 0.06, -Math.PI / 2) : null;
+  const harpoon = store.has('harpoon_turret') ? fit('harpoon_turret') ?? kit('harpoon_turret', 0, dy + (vessel === 'sloop' ? 0.25 : 0), h.L * 0.36) : null;
+  if (store.has('cabin_container') && !fitted.cabin_container) kit('cabin_container', 0, dy, vessel === 'dinghy' ? -0.9 : -2.3, 0, vessel === 'dinghy' ? 0.5 : K);
+  const roofY = store.has('cabin_container') ? (container ? CONTAINER_ROOF : dy + 2.0 * (vessel === 'dinghy' ? 0.5 : K)) : glb ? SLOOP_ROOF : dy + 1.35;
+  if (store.has('solar_array') && !fit('solar_array')) kit('solar_array', 0, vessel === 'dinghy' ? dy : roofY, vessel === 'dinghy' ? -1.5 : -2.3, Math.PI, vessel === 'dinghy' ? 0.45 : K * 0.9);
+  const turbineRotor = store.has('deck_turbine') ? fit('deck_turbine') : null;
+  if (turbineRotor) rotors.push(turbineRotor);
+  else if (store.has('deck_turbine')) {
     const t = kit('deck_turbine', beam * 0.62, dy, -h.L * 0.43);
     const rotor = model('tb_boat_kit', 'deck_turbine_rotor');
     if (t && rotor) {
@@ -772,19 +849,22 @@ export function buildShip(store: Store): ShipParts {
       rotors.push(rotor);
     }
   }
-  if (store.has('tank_drums')) kit('fuel_drums', -beam * 0.5, dy, -h.L * 0.22, Math.PI / 2, vessel === 'dinghy' ? 0.5 : K);
-  if (store.has('fishing_rig')) kit('fishing_rig', -beam * 0.55, dy, -h.L * 0.42, Math.PI, vessel === 'dinghy' ? 0.55 : K);
+  if (store.has('tank_drums') && !fit('tank_drums')) kit('fuel_drums', -beam * 0.5, dy, -h.L * 0.22, Math.PI / 2, vessel === 'dinghy' ? 0.5 : K);
+  if (store.has('fishing_rig') && !fit('fishing_rig')) kit('fishing_rig', -beam * 0.55, dy, -h.L * 0.42, Math.PI, vessel === 'dinghy' ? 0.55 : K);
+  if (store.has('cargo_net')) fit('cargo_net'); // (its code-built fallback is drawn with the hull, above)
   let lamp: THREE.PointLight | null = null;
   if (store.has('deck_lights')) {
-    kit('spotlight', 0.25 * K, dy, h.L * 0.44, 0);
-    for (const side of [-1, 1]) {
-      kit('deck_lights', side * beam * 0.98, dy + 0.85 * K, -h.L * 0.05, Math.PI / 2, [K * (h.L / 9), K, K]);
+    if (!fit('deck_lights')) {
+      kit('spotlight', 0.25 * K, dy, h.L * 0.44, 0);
+      for (const side of [-1, 1]) {
+        kit('deck_lights', side * beam * 0.98, dy + 0.85 * K, -h.L * 0.05, Math.PI / 2, [K * (h.L / 9), K, K]);
+      }
     }
     lamp = new THREE.PointLight(0xffc46b, 0, 18 * K, 1.6);
     lamp.position.set(0, dy + 2.2, 0);
     group.add(lamp);
   }
-  if (store.has('hull_armor')) {
+  if (store.has('hull_armor') && !fit('hull_armor')) {
     for (const side of [-1, 1]) {
       for (let i = 0; i < (cat ? 6 : vessel === 'sloop' ? 5 : 3); i++) {
         const u = 0.18 + i * (cat ? 0.12 : vessel === 'sloop' ? 0.14 : 0.2);
@@ -915,10 +995,7 @@ function subdivideForBillow(g: THREE.BufferGeometry) {
 /** Billow sails based on wind fill (0..1), flutter flags, spin turbines and radar. */
 export function animateShip(p: ShipParts, t: number, fill: number) {
   for (const r of p.rotors) r.rotation.z = t * 9;
-  if (p.radar) {
-    const dish = p.radar.children[0];
-    if (dish) dish.rotation.y = 0; // dish is merged into the mast mesh; the whole mast top would spin oddly
-  }
+  if (p.radar?.userData.spin) p.radar.rotation.y = t * 1.6; // the MeshCraft radar's scanner sweeps
   for (const s of p.sails) {
     const g = s.geometry;
     const base = g.userData.base as Float32Array | undefined;
