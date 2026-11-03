@@ -71,7 +71,8 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | Procedural WebAudio (howling wind, groaning steel, bell buoys, hull strikes, engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
 
 3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`, and the Waterworld atoll,
-outpost and flora kits in `creative/3d-waterworld`, and the rigged cast in `creative/3d-characters`); item icons from VectorCraft (`creative/ui-drowned`) plus the living-plant
+outpost and flora kits in `creative/3d-waterworld`, the rigged cast in `creative/3d-characters`, and the Scrap Trimaran's Coastal Sloop body from GITCRAFT's TIDEBREAKERS 3D
+package, see `creative/3d-sloop`); item icons from VectorCraft (`creative/ui-drowned`) plus the living-plant
 icons in `src/ui/iconsLiving.ts`.
 
 ## Tech

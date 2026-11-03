@@ -4,7 +4,7 @@ import { paint, xf, merge, vcMat, toonMat, canvasTex, weather } from '../world/m
 import { COSMETIC_MAP, type VesselId } from '../data/ship';
 import { item } from '../data/items';
 import type { Store } from '../state/store';
-import { model, crewModel, part, glowMat, kitGeo } from '../world/assets';
+import { model, crewModel, part, glowMat, kitGeo, sceneModel } from '../world/assets';
 import { CREW_MAP } from '../data/crew';
 
 interface HullSpec {
@@ -23,6 +23,29 @@ const HULLS: Record<VesselId, HullSpec> = {
 };
 const CAT_OFFSET = 2.7; // Ironwake hull centre offset (x)
 const KIT_SCALE: Record<VesselId, number> = { dinghy: 0.62, sloop: 1, ironwake: 1.25 };
+
+// GITCRAFT TIDEBREAKERS Coastal Sloop (public/models/tb_coastal_sloop.glb). Its hull is lofted from HULLS.sloop, so it
+// shares this file's frame exactly: metres, Y-up, bow +Z, y = 0 at the waterline, scale 1.
+const SLOOP_FILE = 'tb_coastal_sloop';
+const SLOOP_ROOF = 2.06; // top of the model's cabin roof
+const SLOOP_FLAG_MATERIAL = 'GC_Cloth_0a2142'; // the model's masthead pennant (swapped for an equipped flag cosmetic)
+
+/** The sloop model with its socket_* nodes intact, or null (procedural fallback) if the GLB failed to load. */
+function sloopModel() {
+  const root = sceneModel(SLOOP_FILE, { shadows: true, side: THREE.DoubleSide });
+  const boat = root?.getObjectByName('tidebreakers_coastal_sloop');
+  if (!root || !boat) return null;
+  root.updateMatrixWorld(true);
+  const at = (n: string) => root.getObjectByName(n)?.getWorldPosition(new THREE.Vector3()) ?? null;
+  const deck = at('socket_storage');
+  const flag = at('socket_flag');
+  if (!deck || !flag) return null;
+  let pennant: THREE.Object3D | null = null;
+  root.traverse((o) => {
+    if (o.userData.srcMaterial === SLOOP_FLAG_MATERIAL) pennant = o;
+  });
+  return { root, deckY: deck.y, flag, pennant: pennant as THREE.Object3D | null };
+}
 
 const PATCH = [new THREE.Color('#a24b21'), new THREE.Color('#7f8a94'), new THREE.Color('#2f6fb0')];
 
@@ -339,6 +362,11 @@ export function buildShip(store: Store): ShipParts {
   const parts: THREE.BufferGeometry[] = [];
   const hullOut = hullGeometry(h, hullColor, trimColor);
   const cat = vessel === 'ironwake';
+  // the sloop is the GITCRAFT model: it replaces the lofted hull, deck, cabin, rails, helm, mast, rudder, sails and pennant
+  const glb = vessel === 'sloop' ? sloopModel() : null;
+  // how far the model's deck sits from the procedural one, so deck-mounted parts and the captain stand on it
+  const lift = glb ? glb.deckY - (h.sheer - 0.05) : 0;
+  if (glb) group.add(glb.root);
   // Ironwake: two hulls; P() then measures from the outer side of each hull
   const P = cat
     ? (u: number, v: number) => {
@@ -355,7 +383,7 @@ export function buildShip(store: Store): ShipParts {
     // bridge deck between the hulls, on cross-beams
     parts.push(paint(xf(new THREE.BoxGeometry(CAT_OFFSET * 2 + 0.6, 0.3, h.L * 0.72), 0, h.sheer - 0.05, -0.4), '#3a4148', 0.06));
     for (const z of [-3.8, 0, 3.8]) parts.push(paint(xf(new THREE.BoxGeometry(CAT_OFFSET * 2 + 1.6, 0.35, 0.5), 0, h.sheer - 0.35, z), '#a24b21'));
-  } else parts.push(hullOut.g);
+  } else if (!glb) parts.push(hullOut.g);
   const wood = '#a3784c';
   const woodDark = '#6e4b2a';
 
@@ -396,66 +424,69 @@ export function buildShip(store: Store): ShipParts {
   } else {
     // decked sloop: deck, cabin, bowsprit, rails, helm
     const deckY = h.sheer - 0.05;
-    const deck: THREE.BufferGeometry[] = [];
-    for (let i = 0; i < 16; i++) {
-      const u = 0.03 + i * 0.058;
-      const p = P(u, 1);
-      const w = Math.max(0.2, Math.abs(p.x) * 1.92);
-      deck.push(paint(xf(new THREE.BoxGeometry(w, 0.1, h.L * 0.058), 0, deckY + (p.y - h.sheer) * 0.6, p.z), i % 2 ? wood : '#97704a', 0.05));
-    }
-    parts.push(...deck);
-    if (!store.has('cabin_container')) {
-      // a wheelhouse knocked together from doors and a car roof
-      parts.push(paint(xf(new THREE.BoxGeometry(2.2, 1.2, 2.8), 0, deckY + 0.6, -2.4), cat ? '#7f8a94' : '#c9a074', 0.04));
-      parts.push(paint(xf(new THREE.BoxGeometry(2.5, 0.18, 3.1), 0, deckY + 1.25, -2.4), cat ? '#2f6fb0' : '#7a4a2a'));
-      for (const sx of [-1, 1]) parts.push(paint(xf(new THREE.BoxGeometry(0.05, 0.5, 0.6), sx * 1.11, deckY + 0.7, -2.2), '#2a4058'));
-    }
-    parts.push(paint(xf(new THREE.CylinderGeometry(0.1, 0.14, 3.2, 6), 0, h.sheer + h.bowRise + 0.1, h.L / 2 + 1.0, Math.PI / 2 - 0.2, 0, 0), woodDark));
-    // rails
-    for (let i = 0; i < 14; i++) {
+    if (!glb) {
+      const deck: THREE.BufferGeometry[] = [];
+      for (let i = 0; i < 16; i++) {
+        const u = 0.03 + i * 0.058;
+        const p = P(u, 1);
+        const w = Math.max(0.2, Math.abs(p.x) * 1.92);
+        deck.push(paint(xf(new THREE.BoxGeometry(w, 0.1, h.L * 0.058), 0, deckY + (p.y - h.sheer) * 0.6, p.z), i % 2 ? wood : '#97704a', 0.05));
+      }
+      parts.push(...deck);
+      if (!store.has('cabin_container')) {
+        // a wheelhouse knocked together from doors and a car roof
+        parts.push(paint(xf(new THREE.BoxGeometry(2.2, 1.2, 2.8), 0, deckY + 0.6, -2.4), cat ? '#7f8a94' : '#c9a074', 0.04));
+        parts.push(paint(xf(new THREE.BoxGeometry(2.5, 0.18, 3.1), 0, deckY + 1.25, -2.4), cat ? '#2f6fb0' : '#7a4a2a'));
+        for (const sx of [-1, 1]) parts.push(paint(xf(new THREE.BoxGeometry(0.05, 0.5, 0.6), sx * 1.11, deckY + 0.7, -2.2), '#2a4058'));
+      }
+      parts.push(paint(xf(new THREE.CylinderGeometry(0.1, 0.14, 3.2, 6), 0, h.sheer + h.bowRise + 0.1, h.L / 2 + 1.0, Math.PI / 2 - 0.2, 0, 0), woodDark));
+      // rails
+      for (let i = 0; i < 14; i++) {
+        for (const side of [-1, 1]) {
+          const u = 0.06 + i * 0.066;
+          const p = P(u, side);
+          parts.push(paint(xf(new THREE.CylinderGeometry(0.04, 0.04, 0.55, 4), p.x * 0.97, p.y + 0.27, p.z), woodDark));
+        }
+      }
       for (const side of [-1, 1]) {
-        const u = 0.06 + i * 0.066;
-        const p = P(u, side);
-        parts.push(paint(xf(new THREE.CylinderGeometry(0.04, 0.04, 0.55, 4), p.x * 0.97, p.y + 0.27, p.z), woodDark));
+        for (let i = 0; i < 13; i++) {
+          const u = 0.06 + i * 0.066;
+          const a = P(u, side), b = P(u + 0.066, side);
+          const len = a.distanceTo(b);
+          const mid = a.clone().add(b).multiplyScalar(0.5);
+          parts.push(paint(xf(new THREE.BoxGeometry(0.09, 0.07, len * 1.05), mid.x * 0.97, mid.y + 0.55, mid.z, 0, Math.atan2(b.x - a.x, b.z - a.z), 0), trimColor));
+        }
       }
+      // helm wheel at the stern
+      parts.push(paint(xf(new THREE.TorusGeometry(0.45, 0.05, 5, 12), 0, deckY + 1.0, -4.2, 0, 0, 0), woodDark));
+      for (let k = 0; k < 4; k++) parts.push(paint(xf(new THREE.BoxGeometry(0.04, 1.0, 0.04), 0, deckY + 1.0, -4.2, 0, 0, (k / 4) * Math.PI), woodDark));
+      parts.push(paint(xf(new THREE.BoxGeometry(0.2, 0.9, 0.2), 0, deckY + 0.45, -4.25), woodDark));
     }
-    for (const side of [-1, 1]) {
-      for (let i = 0; i < 13; i++) {
-        const u = 0.06 + i * 0.066;
-        const a = P(u, side), b = P(u + 0.066, side);
-        const len = a.distanceTo(b);
-        const mid = a.clone().add(b).multiplyScalar(0.5);
-        parts.push(paint(xf(new THREE.BoxGeometry(0.09, 0.07, len * 1.05), mid.x * 0.97, mid.y + 0.55, mid.z, 0, Math.atan2(b.x - a.x, b.z - a.z), 0), trimColor));
-      }
-    }
-    // helm wheel at the stern
-    parts.push(paint(xf(new THREE.TorusGeometry(0.45, 0.05, 5, 12), 0, deckY + 1.0, -4.2, 0, 0, 0), woodDark));
-    for (let k = 0; k < 4; k++) parts.push(paint(xf(new THREE.BoxGeometry(0.04, 1.0, 0.04), 0, deckY + 1.0, -4.2, 0, 0, (k / 4) * Math.PI), woodDark));
-    parts.push(paint(xf(new THREE.BoxGeometry(0.2, 0.9, 0.2), 0, deckY + 0.45, -4.25), woodDark));
     mastH = (sailTier >= 2 ? 10.5 : sailTier >= 1 ? 9.5 : 8.5) * (cat ? 1.2 : 1);
     mastZ = 0.8;
-    seat.set(0, deckY + 0.05, cat ? -4.6 : -3.6);
+    seat.set(0, deckY + 0.05 + lift, cat ? -4.6 : -3.6);
   }
 
   // mast
-  parts.push(paint(xf(new THREE.CylinderGeometry(0.06 * (vessel !== 'dinghy' ? 2.2 : 1), 0.08 * (vessel !== 'dinghy' ? 2.2 : 1), mastH, 7), 0, h.sheer - h.D * 0.6 + mastH / 2, mastZ), woodDark));
+  if (!glb) parts.push(paint(xf(new THREE.CylinderGeometry(0.06 * (vessel !== 'dinghy' ? 2.2 : 1), 0.08 * (vessel !== 'dinghy' ? 2.2 : 1), mastH, 7), 0, h.sheer - h.D * 0.6 + mastH / 2, mastZ), woodDark));
   const mastBase = h.sheer - h.D * 0.6;
 
   // rudder
   const bigRudder = store.has('rudder_ash');
   const rs = (vessel !== 'dinghy' ? 2 : 1) * (bigRudder ? 1.35 : 1);
-  parts.push(paint(xf(new THREE.BoxGeometry(0.07, 0.75 * rs, 0.42 * rs), 0, h.sheer - 0.55 * rs, -h.L / 2 - 0.16 * rs), bigRudder ? '#d9c08c' : woodDark));
-  parts.push(paint(xf(new THREE.CylinderGeometry(0.03 * rs, 0.03 * rs, 0.9 * rs, 5), 0, h.sheer + 0.12, -h.L / 2 + 0.25 * rs, Math.PI / 2 - 0.25, 0, 0), bigRudder ? '#c9a074' : woodDark));
+  if (!glb || bigRudder) parts.push(paint(xf(new THREE.BoxGeometry(0.07, 0.75 * rs, 0.42 * rs), 0, h.sheer - 0.55 * rs, -h.L / 2 - 0.16 * rs), bigRudder ? '#d9c08c' : woodDark));
+  if (!glb || bigRudder) parts.push(paint(xf(new THREE.CylinderGeometry(0.03 * rs, 0.03 * rs, 0.9 * rs, 5), 0, h.sheer + 0.12, -h.L / 2 + 0.25 * rs, Math.PI / 2 - 0.25, 0, 0), bigRudder ? '#c9a074' : woodDark));
   if (bigRudder) parts.push(paint(xf(new THREE.SphereGeometry(0.06 * rs, 6, 4), 0, h.sheer + 0.24, -h.L / 2 + 0.7 * rs), '#d4a64a'));
 
   // storage upgrades
   if (store.has('cargo_crate')) {
     const sc = vessel !== 'dinghy' ? 1.5 : 1;
     const cz = vessel !== 'dinghy' ? -0.6 : -1.75;
-    parts.push(paint(xf(new THREE.BoxGeometry(0.85 * sc, 0.55 * sc, 0.55 * sc), 0, h.sheer + 0.12 * sc, cz), '#b48a5a', 0.05));
-    parts.push(paint(xf(new THREE.BoxGeometry(0.9 * sc, 0.08, 0.6 * sc), 0, h.sheer + 0.4 * sc, cz), '#7a5534'));
-    parts.push(paint(xf(new THREE.BoxGeometry(0.06, 0.6 * sc, 0.62 * sc), 0.2 * sc, h.sheer + 0.12 * sc, cz), '#d9b77a'));
-    parts.push(paint(xf(new THREE.BoxGeometry(0.06, 0.6 * sc, 0.62 * sc), -0.2 * sc, h.sheer + 0.12 * sc, cz), '#d9b77a'));
+    const cy = h.sheer + lift;
+    parts.push(paint(xf(new THREE.BoxGeometry(0.85 * sc, 0.55 * sc, 0.55 * sc), 0, cy + 0.12 * sc, cz), '#b48a5a', 0.05));
+    parts.push(paint(xf(new THREE.BoxGeometry(0.9 * sc, 0.08, 0.6 * sc), 0, cy + 0.4 * sc, cz), '#7a5534'));
+    parts.push(paint(xf(new THREE.BoxGeometry(0.06, 0.6 * sc, 0.62 * sc), 0.2 * sc, cy + 0.12 * sc, cz), '#d9b77a'));
+    parts.push(paint(xf(new THREE.BoxGeometry(0.06, 0.6 * sc, 0.62 * sc), -0.2 * sc, cy + 0.12 * sc, cz), '#d9b77a'));
   }
   if (store.has('cargo_net')) {
     for (const side of [-1, 1]) {
@@ -466,7 +497,7 @@ export function buildShip(store: Store): ShipParts {
   // compass binnacle on bow
   if (store.has('compass_brass')) {
     const bz = vessel !== 'dinghy' ? -3.3 : 1.55;
-    const by = vessel !== 'dinghy' ? h.sheer + 0.05 : h.sheer - 0.05;
+    const by = (vessel !== 'dinghy' ? h.sheer + 0.05 : h.sheer - 0.05) + lift;
     parts.push(paint(xf(new THREE.CylinderGeometry(0.1, 0.13, 0.3, 8), 0, by + 0.15, bz), '#6e4b2a'));
     parts.push(paint(xf(new THREE.SphereGeometry(0.16, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), 0, by + 0.3, bz), '#d4a64a'));
     parts.push(paint(xf(new THREE.CylinderGeometry(0.17, 0.17, 0.04, 12), 0, by + 0.31, bz), '#b8862b'));
@@ -474,7 +505,9 @@ export function buildShip(store: Store): ShipParts {
   // trophies
   const trophyPos = cat
     ? [new THREE.Vector3(0, h.sheer + 0.15, 4.2), new THREE.Vector3(-1.6, h.sheer + 0.15, 2.8), new THREE.Vector3(1.6, h.sheer + 0.15, 2.8), new THREE.Vector3(0, h.sheer + 0.15, 1.6)]
-    : vessel !== 'dinghy'
+    : glb
+      ? [new THREE.Vector3(0, glb.deckY, 3.2), new THREE.Vector3(-0.6, SLOOP_ROOF, -2.6), new THREE.Vector3(0.6, SLOOP_ROOF, -2.6)]
+      : vessel !== 'dinghy'
       ? [new THREE.Vector3(0, h.sheer + 0.05, 3.2), new THREE.Vector3(-0.9, h.sheer + 1.3, -2.4), new THREE.Vector3(0.9, h.sheer + 1.3, -2.4)]
       : [new THREE.Vector3(0, h.sheer + 0.02, 1.85)];
   for (let i = 0; i < trophyPos.length; i++) {
@@ -504,72 +537,76 @@ export function buildShip(store: Store): ShipParts {
   rope.visible = false;
   group.add(rope);
 
-  const hull = new THREE.Mesh(merge(parts), vcMat({ side: THREE.DoubleSide }));
-  hull.castShadow = true;
-  hull.receiveShadow = true;
-  group.add(hull);
+  if (parts.length) {
+    const hull = new THREE.Mesh(merge(parts), vcMat({ side: THREE.DoubleSide }));
+    hull.castShadow = true;
+    hull.receiveShadow = true;
+    group.add(hull);
+  }
 
   // sails
   const sails: THREE.Mesh[] = [];
-  const sailMat = weather(new THREE.MeshToonMaterial({ map: sailTexture(s.equipped.sail, sailTier === 0), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 }), 0.7);
   const sc = vessel !== 'dinghy' ? 2.2 : 1;
-  if (sailTier === 0) {
-    // stubby patched lateen-ish triangle
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 0);
-    shape.lineTo(1.2 * sc, 0.1);
-    shape.lineTo(0, 2.4 * sc);
-    shape.closePath();
-    const g = new THREE.ShapeGeometry(shape, 1);
-    planeUVs(g);
-    subdivideForBillow(g);
-    const m = new THREE.Mesh(g, sailMat);
-    m.position.set(0, mastBase + 0.45 * sc + (vessel !== 'dinghy' ? 1.2 : 0), mastZ - 0.05);
-    m.rotation.y = Math.PI / 2;
-    m.castShadow = true;
-    sails.push(m);
-  } else {
-    // gaff mainsail: trapezoid, bigger at higher tiers
-    const H = (sailTier >= 2 ? 3.6 : 3.1) * sc * (vessel !== 'dinghy' ? 1.25 : 1);
-    const Wb = (sailTier >= 2 ? 2.2 : 1.9) * sc;
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 0);
-    shape.lineTo(Wb, 0);
-    shape.lineTo(Wb * 0.75, H * 0.92);
-    shape.lineTo(0, H);
-    shape.closePath();
-    const g = new THREE.ShapeGeometry(shape, 1);
-    planeUVs(g);
-    subdivideForBillow(g);
-    const m = new THREE.Mesh(g, sailMat);
-    m.position.set(0, mastBase + 0.55 * sc, mastZ - 0.06);
-    m.rotation.y = Math.PI / 2;
-    m.castShadow = true;
-    sails.push(m);
-    // boom + gaff spars
-    const spar = toonMat('#6e4b2a');
-    const boom = new THREE.Mesh(new THREE.CylinderGeometry(0.035 * sc, 0.035 * sc, Wb + 0.2, 5), spar);
-    m.add(boom);
-    boom.rotation.set(0, 0, Math.PI / 2);
-    boom.position.set(Wb / 2, 0, 0);
-    const gaff = new THREE.Mesh(new THREE.CylinderGeometry(0.03 * sc, 0.03 * sc, Wb * 0.8, 5), spar);
-    gaff.rotation.set(0, 0, Math.PI / 2 - 0.1);
-    gaff.position.set(Wb * 0.37, H * 0.96, 0);
-    m.add(gaff);
-    if (sailTier >= 2) {
-      const js = new THREE.Shape();
-      js.moveTo(0, 0);
-      js.lineTo(-1.5 * sc, 0);
-      js.lineTo(0, (mastH - 0.6) * 0.9);
-      js.closePath();
-      const jg = new THREE.ShapeGeometry(js, 1);
-      planeUVs(jg);
-      subdivideForBillow(jg);
-      const jib = new THREE.Mesh(jg, sailMat);
-      jib.position.set(0, mastBase + 0.5 * sc, mastZ + 0.1);
-      jib.rotation.y = Math.PI / 2;
-      jib.castShadow = true;
-      sails.push(jib);
+  if (!glb) {
+    const sailMat = weather(new THREE.MeshToonMaterial({ map: sailTexture(s.equipped.sail, sailTier === 0), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 }), 0.7);
+    if (sailTier === 0) {
+      // stubby patched lateen-ish triangle
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0);
+      shape.lineTo(1.2 * sc, 0.1);
+      shape.lineTo(0, 2.4 * sc);
+      shape.closePath();
+      const g = new THREE.ShapeGeometry(shape, 1);
+      planeUVs(g);
+      subdivideForBillow(g);
+      const m = new THREE.Mesh(g, sailMat);
+      m.position.set(0, mastBase + 0.45 * sc + (vessel !== 'dinghy' ? 1.2 : 0), mastZ - 0.05);
+      m.rotation.y = Math.PI / 2;
+      m.castShadow = true;
+      sails.push(m);
+    } else {
+      // gaff mainsail: trapezoid, bigger at higher tiers
+      const H = (sailTier >= 2 ? 3.6 : 3.1) * sc * (vessel !== 'dinghy' ? 1.25 : 1);
+      const Wb = (sailTier >= 2 ? 2.2 : 1.9) * sc;
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0);
+      shape.lineTo(Wb, 0);
+      shape.lineTo(Wb * 0.75, H * 0.92);
+      shape.lineTo(0, H);
+      shape.closePath();
+      const g = new THREE.ShapeGeometry(shape, 1);
+      planeUVs(g);
+      subdivideForBillow(g);
+      const m = new THREE.Mesh(g, sailMat);
+      m.position.set(0, mastBase + 0.55 * sc, mastZ - 0.06);
+      m.rotation.y = Math.PI / 2;
+      m.castShadow = true;
+      sails.push(m);
+      // boom + gaff spars
+      const spar = toonMat('#6e4b2a');
+      const boom = new THREE.Mesh(new THREE.CylinderGeometry(0.035 * sc, 0.035 * sc, Wb + 0.2, 5), spar);
+      m.add(boom);
+      boom.rotation.set(0, 0, Math.PI / 2);
+      boom.position.set(Wb / 2, 0, 0);
+      const gaff = new THREE.Mesh(new THREE.CylinderGeometry(0.03 * sc, 0.03 * sc, Wb * 0.8, 5), spar);
+      gaff.rotation.set(0, 0, Math.PI / 2 - 0.1);
+      gaff.position.set(Wb * 0.37, H * 0.96, 0);
+      m.add(gaff);
+      if (sailTier >= 2) {
+        const js = new THREE.Shape();
+        js.moveTo(0, 0);
+        js.lineTo(-1.5 * sc, 0);
+        js.lineTo(0, (mastH - 0.6) * 0.9);
+        js.closePath();
+        const jg = new THREE.ShapeGeometry(js, 1);
+        planeUVs(jg);
+        subdivideForBillow(jg);
+        const jib = new THREE.Mesh(jg, sailMat);
+        jib.position.set(0, mastBase + 0.5 * sc, mastZ + 0.1);
+        jib.rotation.y = Math.PI / 2;
+        jib.castShadow = true;
+        sails.push(jib);
+      }
     }
   }
   sails.forEach((m) => group.add(m));
@@ -581,6 +618,12 @@ export function buildShip(store: Store): ShipParts {
     fg.translate(0.35 * sc, 0, 0);
     flag = new THREE.Mesh(fg, weather(new THREE.MeshToonMaterial({ map: flagTexture(s.equipped.flag), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 }), 0.6));
     flag.position.set(0, mastBase + mastH - 0.2, mastZ);
+    if (glb) {
+      // fly the equipped flag from the model's masthead, streaming aft, in place of its plain pennant
+      flag.position.set(glb.flag.x, glb.flag.y - 0.21 * sc, glb.flag.z);
+      flag.rotation.y = Math.PI / 2;
+      if (glb.pennant) glb.pennant.visible = false;
+    }
     flag.userData.base = Float32Array.from(fg.attributes.position.array as Float32Array);
     group.add(flag);
   }
@@ -588,7 +631,7 @@ export function buildShip(store: Store): ShipParts {
   // ── GITCRAFT MeshCraft boat kit: every installed upgrade is a real model on its socket ──
   const K = KIT_SCALE[vessel];
   const beam = cat ? CAT_OFFSET + h.W : h.W;
-  const dy = vessel === 'dinghy' ? h.sheer - 0.15 : h.sheer + (cat ? 0.12 : -0.02);
+  const dy = vessel === 'dinghy' ? h.sheer - 0.15 : h.sheer + (cat ? 0.12 : -0.02) + lift;
   const rotors: THREE.Object3D[] = [];
   // static kit parts are baked into one toon mesh + one glow mesh (2 draw calls for every upgrade);
   // parts that move (crane, harpoon, turbine) stay separate objects
@@ -631,7 +674,7 @@ export function buildShip(store: Store): ShipParts {
   const crane = store.has('salvage_crane') ? kit('salvage_crane', -beam * 0.55, dy, h.L * 0.06, -Math.PI / 2) : null;
   const harpoon = store.has('harpoon_turret') ? kit('harpoon_turret', 0, dy + (vessel === 'sloop' ? 0.25 : 0), h.L * 0.36) : null;
   if (store.has('cabin_container')) kit('cabin_container', 0, dy, vessel === 'dinghy' ? -0.9 : -2.3, 0, vessel === 'dinghy' ? 0.5 : K);
-  const roofY = store.has('cabin_container') ? dy + 2.0 * (vessel === 'dinghy' ? 0.5 : K) : dy + 1.35;
+  const roofY = store.has('cabin_container') ? dy + 2.0 * (vessel === 'dinghy' ? 0.5 : K) : glb ? SLOOP_ROOF : dy + 1.35;
   if (store.has('solar_array')) kit('solar_array', 0, vessel === 'dinghy' ? dy : roofY, vessel === 'dinghy' ? -1.5 : -2.3, Math.PI, vessel === 'dinghy' ? 0.45 : K * 0.9);
   if (store.has('deck_turbine')) {
     const t = kit('deck_turbine', beam * 0.62, dy, -h.L * 0.43);
