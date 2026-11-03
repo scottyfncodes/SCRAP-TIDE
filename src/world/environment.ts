@@ -96,8 +96,8 @@ export class Environment {
       return false;
     };
 
-    const leaf = isl.style === 'jungle' ? '#2f9a3e' : '#45b54d';
-    const leafDark = isl.style === 'jungle' ? '#16602a' : '#1f7a37';
+    const leaf = isl.style === 'jungle' ? '#56602e' : '#6b6a3a';
+    const leafDark = isl.style === 'jungle' ? '#2e3a1c' : '#4a4528';
     for (let i = 0; i < isl.palms; i++) {
       place(40, 0.5, 6, 0.6, 1.4, (x, y, z) => {
         sway.push(xf(P.palm(rng, rng.range(6, 9.5), rng.range(0.15, 0.45), leaf, leafDark), x, y - 0.2, z));
@@ -107,21 +107,21 @@ export class Environment {
     for (let i = 0; i < isl.rocks; i++) {
       place(30, -1.2, 20, 2, 1.5, (x, y, z) => {
         const s = rng.range(0.8, isl.style === 'rocky' ? 3.2 : 2.2);
-        geos.push(xf(P.rock(rng, s, rng.range(0.5, 0.85), isl.style === 'jungle' ? '#8c9484' : '#a69a8c', isl.style === 'jungle'), x, y + s * 0.15, z, 0, rng.range(0, 6), 0));
+        geos.push(xf(P.rock(rng, s, rng.range(0.5, 0.85), isl.style === 'jungle' ? '#545a50' : '#625a52', isl.style === 'jungle'), x, y + s * 0.15, z, 0, rng.range(0, 6), 0));
         if (y > -0.3) this.colliders.push({ x, z, r: s * 0.9 });
       });
     }
     for (let i = 0; i < isl.foliage; i++) {
       place(30, 1.0, 30, 1.2, 1.6, (x, y, z) => {
         const kind = rng.next();
-        if (kind < 0.45) sway.push(xf(P.bigLeaves(rng, rng.range(0.9, 1.6), isl.style === 'jungle' ? '#2f8f3a' : '#3fa84a'), x, y, z));
-        else if (kind < 0.8) sway.push(xf(P.bush(rng, rng.range(0.8, 1.4), isl.style === 'jungle' ? '#2e8a3c' : '#52b84a'), x, y - 0.1, z));
+        if (kind < 0.45) sway.push(xf(P.bigLeaves(rng, rng.range(0.9, 1.6), isl.style === 'jungle' ? '#46522a' : '#5c5c34'), x, y, z));
+        else if (kind < 0.8) sway.push(xf(P.bush(rng, rng.range(0.8, 1.4), isl.style === 'jungle' ? '#3e4a26' : '#66623a'), x, y - 0.1, z));
         else sway.push(xf(P.grassTuft(rng), x, y, z));
       });
     }
     // grass tufts everywhere for richness
     for (let i = 0; i < isl.r * 2.4; i++) {
-      place(6, 1.0, 30, 1.5, 0.3, (x, y, z) => sway.push(xf(P.grassTuft(rng, isl.style === 'jungle' ? '#3d9e45' : '#7ccc55'), x, y, z)));
+      place(6, 1.0, 30, 1.5, 0.3, (x, y, z) => sway.push(xf(P.grassTuft(rng, isl.style === 'jungle' ? '#55602f' : '#857a4a'), x, y, z)));
     }
 
     // landmarks
@@ -277,10 +277,10 @@ export class Environment {
 
     // shops along the waterfront (decorative, each matches a harbor service)
     const shops: { x: number; name: string; wall: string; roof: string; awning: [string, string]; sign: string }[] = [
-      { x: -42, name: 'SHIPWRIGHT', wall: '#d4b48a', roof: '#7a4a2a', awning: ['#2f6fb0', '#f2ead8'], sign: '⚓' },
-      { x: -20, name: 'TRADER', wall: '#f0d8a8', roof: '#b0472f', awning: ['#e0a92a', '#fff4d6'], sign: '⚖' },
-      { x: 20, name: 'CHARTS', wall: '#cfe0d2', roof: '#3d6b5a', awning: ['#2e8b7a', '#f2ead8'], sign: '⌖' },
-      { x: 42, name: 'CURIOS', wall: '#f2c9c0', roof: '#6b3a5a', awning: ['#c0392b', '#fff4d6'], sign: '✦' },
+      { x: -42, name: 'SHIPWRIGHT', wall: '#7f735c', roof: '#5a3a26', awning: ['#3f5a66', '#b3a888'], sign: '⚓' },
+      { x: -20, name: 'TRADER', wall: '#8f8062', roof: '#7a3a22', awning: ['#a8822e', '#b8ad8c'], sign: '⚖' },
+      { x: 20, name: 'CHARTS', wall: '#6f7a70', roof: '#3d544c', awning: ['#3e6a60', '#b3a888'], sign: '⌖' },
+      { x: 42, name: 'CURIOS', wall: '#86685a', roof: '#4e3440', awning: ['#8a3226', '#b8ad8c'], sign: '✦' },
     ];
     for (const s of shops) {
       const z = shoreZ + 14;
@@ -317,8 +317,8 @@ export class Environment {
       for (let i = 0; i < 4; i++) geos.push(xf(P.crate(0.9), x + 5 + rng.range(-1, 1), y, z - 4 + i * 2.2));
     }
     // houses climbing the hill
-    const houseCols = ['#f7e1a0', '#a8d8ea', '#f4b6a6', '#c7e8b5', '#fdf1d6', '#e4c1f9', '#ffd6a5'];
-    const roofCols = ['#b0472f', '#3d6b5a', '#2f4f7a', '#7a4a2a', '#8a3b5a'];
+    const houseCols = ['#8a7a5a', '#5f7270', '#8a5a44', '#a89a74', '#6a6e66', '#9a8a62', '#7a5f4a'];
+    const roofCols = ['#7a3a22', '#3f5a52', '#4a4e52', '#6a4228', '#5a5a4a'];
     for (let i = 0; i < 26; i++) {
       const x = rng.range(-90, 90);
       const z = shoreZ + rng.range(26, 85);
@@ -339,7 +339,7 @@ export class Environment {
       geos.push(paint(xf(new THREE.BoxGeometry(3.4, 0.4, 3.4), x, y + 9, z), '#8f6640'));
       geos.push(paint(xf(new THREE.ConeGeometry(2.8, 2.2, 4), x, y + 10.8, z, 0, Math.PI / 4, 0), '#b0472f'));
       geos.push(paint(xf(new THREE.CylinderGeometry(0.08, 0.08, 6, 5), x, y + 14, z), '#3b3b3b'));
-      const flag = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.8, 8, 2), toonMat('#3a86ff', { side: THREE.DoubleSide }));
+      const flag = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.8, 8, 2), toonMat('#8a3226', { side: THREE.DoubleSide }));
       flag.position.set(x + 1.5, y + 16, z);
       this.scene.add(flag);
       const fp = flag.geometry.attributes.position;
@@ -353,7 +353,7 @@ export class Environment {
       });
     }
     // moored boats around the fingers for life
-    const boatCols = ['#c0392b', '#2f6fb0', '#e0a92a', '#4fb39a'];
+    const boatCols = ['#7e3a26', '#3f5560', '#9a7a34', '#4f6a5e'];
     for (let i = 0; i < 5; i++) {
       const f = fingers[i % 2];
       const x = f.dir * (5 + (i >> 1) * 5.5);
@@ -385,7 +385,7 @@ export class Environment {
     }
     // dockside folks
     for (let i = 0; i < 4; i++) {
-      const npc = new THREE.Mesh(P.person(rng, rng.pick(['#e07a5f', '#3d405b', '#81b29a', '#f2cc8f']), rng.next() > 0.5 ? '#2b1d14' : null), vcMat());
+      const npc = new THREE.Mesh(P.person(rng, rng.pick(['#7a4a36', '#3d4248', '#56685c', '#8a7a52']), rng.next() > 0.5 ? '#2b1d14' : null), vcMat());
       npc.position.set(rng.range(-1.5, 1.5), deckY + 0.1, pierStart - 8 - i * 9);
       npc.rotation.y = rng.range(0, Math.PI * 2);
       this.scene.add(npc);
@@ -439,30 +439,35 @@ export class Environment {
 function terrainColor(c: THREE.Color, x: number, z: number, h: number, slope: number, style: IslandDef['style']) {
   const n = fbm(x * 0.08, z * 0.08, 2, 3);
   if (h < -0.2) {
-    // seabed sand fading to teal in deeper water
+    // silted seabed: grey mud fading to murky teal-black in deeper water
     const d = Math.min(1, -h / 14);
-    c.set('#ecd9a8').lerp(new THREE.Color('#3c8f93'), Math.pow(d, 0.7));
-    c.multiplyScalar(0.92 + n * 0.16);
+    c.set('#6f6a58').lerp(new THREE.Color('#1c3433'), Math.pow(d, 0.7));
+    c.multiplyScalar(0.88 + n * 0.2);
     return;
   }
   if (h < 0.55) {
-    c.set('#d8bf8a').multiplyScalar(0.95 + n * 0.1); // wet sand
+    // the tide line: wet, oily sand with tar smears
+    c.set('#5e5646').multiplyScalar(0.9 + n * 0.16);
+    if (fbm(x * 0.21 + 9, z * 0.21, 2, 5) > 0.62) c.lerp(new THREE.Color('#1d1a17'), 0.65);
     return;
   }
-  const sand = new THREE.Color('#f4e2b2');
-  const grassBase = style === 'jungle' ? '#2f8f3a' : style === 'rocky' ? '#8cb85a' : style === 'harbor' ? '#79c25a' : '#6cc04a';
+  // salt-bleached grey sand, dead khaki scrub, the odd sickly green hollow, scorched rock
+  const sand = new THREE.Color(style === 'harbor' ? '#8a8170' : '#9a8f78');
+  const grassBase = style === 'jungle' ? '#4d5a2e' : style === 'rocky' ? '#77744a' : style === 'harbor' ? '#6b6a44' : '#7a7448';
   const grass = new THREE.Color(grassBase);
-  const rockC = new THREE.Color(style === 'jungle' ? '#7b8570' : '#a39686');
+  const rockC = new THREE.Color(style === 'jungle' ? '#4f5248' : '#5d5650');
   const grassLine = style === 'sandbar' ? 99 : style === 'rocky' ? 2.2 : 1.6;
   const gt = Math.min(1, Math.max(0, (h - grassLine) / 0.9 + (n - 0.5) * 0.8));
   c.copy(sand).lerp(grass, gt);
   if (gt > 0.3) {
-    // broad meadow patches: sunlit yellow-green vs. shady deep green
     const patch = fbm(x * 0.025 + 40, z * 0.025, 3, 8);
-    c.lerp(new THREE.Color(style === 'jungle' ? '#1f6e2c' : '#3f9a3c'), Math.max(0, (patch - 0.45) * 1.6) * gt);
-    c.lerp(new THREE.Color(style === 'jungle' ? '#5aa83f' : '#a9d65a'), Math.max(0, (0.45 - patch) * 1.4) * gt);
+    c.lerp(new THREE.Color(style === 'jungle' ? '#33421f' : '#4a5130'), Math.max(0, (patch - 0.45) * 1.6) * gt);
+    c.lerp(new THREE.Color('#8f8058'), Math.max(0, (0.45 - patch) * 1.4) * gt); // dead, sun-dried patches
   }
   const rt = Math.min(1, Math.max(0, (slope - (style === 'rocky' ? 0.55 : 0.8)) * 2.5));
   c.lerp(rockC, rt);
-  c.multiplyScalar(0.94 + n * 0.12);
+  // scattered scorch and rust bleed from buried junk
+  const junk = fbm(x * 0.13 - 17, z * 0.13 + 4, 2, 11);
+  if (junk > 0.64) c.lerp(new THREE.Color('#5a3220'), Math.min(1, (junk - 0.64) * 4) * 0.5);
+  c.multiplyScalar(0.9 + n * 0.16);
 }

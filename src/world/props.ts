@@ -1,17 +1,17 @@
-// Procedural storybook props. Each returns a vertex-colored geometry (or group) to be merged.
+// Procedural weathered props (drowned-world palette; the shared toon material adds grime and rust). Each returns a vertex-colored geometry (or group) to be merged.
 import * as THREE from 'three';
 import { paint, paintGradient, xf, merge } from './materials';
 import { RNG, valueNoise } from '../core/noise';
 
 const C = {
-  trunkA: '#8a5a34',
-  trunkB: '#6e4527',
-  leafA: '#3fae4a',
-  leafB: '#1f7a37',
+  trunkA: '#5e4b3b',
+  trunkB: '#463829',
+  leafA: '#6b6a3a',
+  leafB: '#3e3f24',
   coconut: '#5a3a1e',
-  rock: '#9c9188',
-  rockDark: '#6f675f',
-  moss: '#5f9e48',
+  rock: '#5f5852',
+  rockDark: '#3f3a36',
+  moss: '#4a5530',
 };
 
 export function palm(rng: RNG, height = 7, lean = 0.3, leafColor = C.leafA, darkLeaf = C.leafB): THREE.BufferGeometry {
@@ -139,7 +139,7 @@ export function rock(rng: RNG, r = 1.5, squash = 0.7, color = C.rock, mossy = fa
   return ng;
 }
 
-export function bush(rng: RNG, s = 1, green = '#4fb14a'): THREE.BufferGeometry {
+export function bush(rng: RNG, s = 1, green = '#5e5e36'): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   const n = rng.int(3, 5);
   const base = new THREE.Color(green);
@@ -150,7 +150,7 @@ export function bush(rng: RNG, s = 1, green = '#4fb14a'): THREE.BufferGeometry {
   }
   // a few blooms
   if (rng.next() > 0.4) {
-    const fc = rng.pick(['#ff5e7e', '#ffd34e', '#ff8a3d', '#ffffff', '#c86bff']);
+    const fc = rng.pick(['#8a6a3a', '#9a8a52', '#6a4a30', '#a89a7a', '#5a4a3a']);
     for (let i = 0; i < 4; i++) {
       parts.push(paint(xf(new THREE.IcosahedronGeometry(0.16 * s, 0), rng.range(-1, 1) * s, rng.range(0.9, 1.5) * s, rng.range(-1, 1) * s), fc, 0.1, 0.3));
     }
@@ -159,7 +159,7 @@ export function bush(rng: RNG, s = 1, green = '#4fb14a'): THREE.BufferGeometry {
 }
 
 /** Oversized tropical leaves (monstera / banana style) fanning from the ground. */
-export function bigLeaves(rng: RNG, s = 1, green = '#3d9e45'): THREE.BufferGeometry {
+export function bigLeaves(rng: RNG, s = 1, green = '#4e5530'): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   const n = rng.int(4, 7);
   for (let i = 0; i < n; i++) {
@@ -184,12 +184,12 @@ export function bigLeaves(rng: RNG, s = 1, green = '#3d9e45'): THREE.BufferGeome
     const pg = paintGradient(g, c.clone().multiplyScalar(0.7), c, 0.6);
     parts.push(pg);
     // stem
-    parts.push(paint(xf(new THREE.CylinderGeometry(0.04 * s, 0.06 * s, 0.5 * s, 4), 0, 0.25 * s, 0), '#2f7a36'));
+    parts.push(paint(xf(new THREE.CylinderGeometry(0.04 * s, 0.06 * s, 0.5 * s, 4), 0, 0.25 * s, 0), '#3d4226'));
   }
   return merge(parts);
 }
 
-export function grassTuft(rng: RNG, color = '#69c24f'): THREE.BufferGeometry {
+export function grassTuft(rng: RNG, color = '#7a7246'): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 5; i++) {
     const h = rng.range(0.5, 1.1);
@@ -233,10 +233,10 @@ export function lighthouse(): THREE.BufferGeometry {
     const r0 = 2.6 - (i / bands) * 1.0;
     const r1 = 2.6 - ((i + 1) / bands) * 1.0;
     const cyl = new THREE.CylinderGeometry(r1, r0, H / bands, 16, 1);
-    parts.push(paint(xf(cyl, 0, (i + 0.5) * (H / bands), 0), i % 2 ? '#c0392b' : '#f3ece0'));
+    parts.push(paint(xf(cyl, 0, (i + 0.5) * (H / bands), 0), i % 2 ? '#7e3324' : '#a8a08c'));
   }
   parts.push(paint(xf(new THREE.CylinderGeometry(2.2, 2.2, 0.4, 16), 0, H + 0.2, 0), '#3b3b3b'));
-  parts.push(paint(xf(new THREE.CylinderGeometry(1.3, 1.3, 2.2, 10), 0, H + 1.5, 0), '#ffe8a3'));
+  parts.push(paint(xf(new THREE.CylinderGeometry(1.3, 1.3, 2.2, 10), 0, H + 1.5, 0), '#d8c890'));
   parts.push(paint(xf(new THREE.ConeGeometry(1.8, 1.8, 10), 0, H + 3.5, 0), '#c0392b'));
   parts.push(paint(xf(new THREE.SphereGeometry(0.3, 8, 6), 0, H + 4.5, 0), '#f4c542'));
   // door + window
@@ -247,8 +247,8 @@ export function lighthouse(): THREE.BufferGeometry {
 
 export function hut(): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
-  parts.push(paint(xf(new THREE.BoxGeometry(4.2, 2.6, 3.6), 0, 1.3, 0), '#c9a074', 0.05));
-  parts.push(paint(xf(new THREE.ConeGeometry(3.6, 2.4, 4), 0, 3.8, 0, 0, Math.PI / 4, 0, [1.15, 1, 1]), '#d9b45a', 0.08));
+  parts.push(paint(xf(new THREE.BoxGeometry(4.2, 2.6, 3.6), 0, 1.3, 0), '#7d6c56', 0.05));
+  parts.push(paint(xf(new THREE.ConeGeometry(3.6, 2.4, 4), 0, 3.8, 0, 0, Math.PI / 4, 0, [1.15, 1, 1]), '#6a5a3a', 0.08));
   parts.push(paint(xf(new THREE.BoxGeometry(1, 1.8, 0.2), 0, 0.9, 1.82), '#5a3a1e'));
   for (const sx of [-1, 1]) parts.push(paint(xf(new THREE.BoxGeometry(0.15, 2.8, 0.15), sx * 2.1, 1.4, 1.8), '#6e4527'));
   return merge(parts);
@@ -256,16 +256,16 @@ export function hut(): THREE.BufferGeometry {
 
 export function arch(rng: RNG): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
-  const stone = '#8f9a82';
+  const stone = '#6c6e62';
   for (const sx of [-1, 1]) {
-    for (let i = 0; i < 4; i++) parts.push(paint(xf(new THREE.BoxGeometry(1.8, 1.4, 1.8), sx * 3.2 + rng.range(-0.1, 0.1), 0.7 + i * 1.4, 0, 0, rng.range(-0.08, 0.08), 0), i % 2 ? stone : '#7f8a74', 0.08));
+    for (let i = 0; i < 4; i++) parts.push(paint(xf(new THREE.BoxGeometry(1.8, 1.4, 1.8), sx * 3.2 + rng.range(-0.1, 0.1), 0.7 + i * 1.4, 0, 0, rng.range(-0.08, 0.08), 0), i % 2 ? stone : '#5c6054', 0.08));
   }
   const top = new THREE.TorusGeometry(3.2, 0.95, 6, 10, Math.PI);
   parts.push(paint(xf(top, 0, 5.6, 0), stone, 0.08));
   // carved sun disk at the keystone
   parts.push(paint(xf(new THREE.CylinderGeometry(1.0, 1.0, 0.4, 12), 0, 8.4, 0.5, Math.PI / 2, 0, 0), '#d8a63a'));
   // moss + vines
-  for (let i = 0; i < 6; i++) parts.push(paint(xf(new THREE.IcosahedronGeometry(0.6, 0), rng.range(-4, 4), rng.range(5, 8.5), rng.range(-0.8, 0.8)), '#4c8f3a', 0.15, 0.2));
+  for (let i = 0; i < 6; i++) parts.push(paint(xf(new THREE.IcosahedronGeometry(0.6, 0), rng.range(-4, 4), rng.range(5, 8.5), rng.range(-0.8, 0.8)), '#4a5230', 0.15, 0.2));
   return merge(parts);
 }
 
@@ -274,10 +274,10 @@ export function pillars(rng: RNG): THREE.BufferGeometry {
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2;
     const h = rng.range(2, 6.5);
-    parts.push(paint(xf(new THREE.CylinderGeometry(0.8, 0.9, h, 8), Math.cos(a) * 4.5, h / 2, Math.sin(a) * 4.5, rng.range(-0.08, 0.08), 0, rng.range(-0.08, 0.08)), '#a3ab93', 0.1));
-    parts.push(paint(xf(new THREE.BoxGeometry(2, 0.5, 2), Math.cos(a) * 4.5, h + 0.25, Math.sin(a) * 4.5), '#8f9a82', 0.1));
+    parts.push(paint(xf(new THREE.CylinderGeometry(0.8, 0.9, h, 8), Math.cos(a) * 4.5, h / 2, Math.sin(a) * 4.5, rng.range(-0.08, 0.08), 0, rng.range(-0.08, 0.08)), '#76786a', 0.1));
+    parts.push(paint(xf(new THREE.BoxGeometry(2, 0.5, 2), Math.cos(a) * 4.5, h + 0.25, Math.sin(a) * 4.5), '#686a5e', 0.1));
   }
-  parts.push(paint(xf(new THREE.CylinderGeometry(2.2, 2.4, 0.6, 12), 0, 0.3, 0), '#8f9a82'));
+  parts.push(paint(xf(new THREE.CylinderGeometry(2.2, 2.4, 0.6, 12), 0, 0.3, 0), '#686a5e'));
   return merge(parts);
 }
 
@@ -304,7 +304,7 @@ export function brokenWreck(rng: RNG): THREE.BufferGeometry {
   const sail = new THREE.PlaneGeometry(6, 4, 4, 3);
   const sp = sail.attributes.position;
   for (let i = 0; i < sp.count; i++) sp.setZ(i, Math.sin(sp.getX(i) * 0.8) * 0.5);
-  parts.push(paint(xf(sail, 7, 0.6, 5, -Math.PI / 2 + 0.2, 0.3, 0), '#d9cbb0'));
+  parts.push(paint(xf(sail, 7, 0.6, 5, -Math.PI / 2 + 0.2, 0.3, 0), '#9c907a'));
   // captain's cabin stern
   parts.push(paint(xf(new THREE.BoxGeometry(6, 3.2, 4), 0.4, 2.0, 9, 0.05, 0, -0.12), '#7d5a36', 0.06));
   parts.push(paint(xf(new THREE.BoxGeometry(1.2, 1.0, 0.2), -1.4, 2.6, 11.05), '#2a4058'));
@@ -316,11 +316,11 @@ export function brokenWreck(rng: RNG): THREE.BufferGeometry {
 export function waterfallRocks(rng: RNG): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 7; i++) {
-    const r = rock(rng, rng.range(2.5, 4), 1.3, '#7d8a74', true);
+    const r = rock(rng, rng.range(2.5, 4), 1.3, '#555a4e', true);
     parts.push(xf(r, rng.range(-5, 5), rng.range(1, 7), rng.range(-3, -1)));
   }
   // pool
-  parts.push(paint(xf(new THREE.CylinderGeometry(4, 4.2, 0.3, 16), 0, 0.15, 3), '#3fbfd0'));
+  parts.push(paint(xf(new THREE.CylinderGeometry(4, 4.2, 0.3, 16), 0, 0.15, 3), '#2c4a46'));
   return merge(parts);
 }
 

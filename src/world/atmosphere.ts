@@ -19,19 +19,21 @@ interface Key {
 }
 
 // 0 = midnight, 0.25 = sunrise, 0.5 = noon, 0.75 = sunset
+// Drowned-world palette: storm-grey overcast days with a dirty-teal haze, sour amber dawns, rust and burnt-sienna
+// sunsets, oil-black nights under a cold moon. Strong contrast, never pastel.
 const KEYS: Key[] = [
-  { t: 0.0, top: '#081a33', hor: '#1d3a5c', fog: '#16304d', sun: '#9fb6e8', sunI: 0.55, hemiSky: '#5a78b8', hemiGnd: '#1b2a3c', hemiI: 0.9 },
-  { t: 0.2, top: '#0d2240', hor: '#3a4d72', fog: '#2c4466', sun: '#a9b8e0', sunI: 0.5, hemiSky: '#6680b8', hemiGnd: '#2a3346', hemiI: 0.95 },
-  { t: 0.26, top: '#2f5d93', hor: '#f0a57a', fog: '#c9a08e', sun: '#ffb37a', sunI: 1.5, hemiSky: '#c9b8d8', hemiGnd: '#8a6c5c', hemiI: 1.2 },
-  { t: 0.33, top: '#3a8fd6', hor: '#bfe3ee', fog: '#b9dbe6', sun: '#ffe2bd', sunI: 2.2, hemiSky: '#cfeeff', hemiGnd: '#b8a98a', hemiI: 1.45 },
-  { t: 0.5, top: '#2f86d8', hor: '#c4ebf4', fog: '#c1e5ee', sun: '#fff4dc', sunI: 2.5, hemiSky: '#d6f1ff', hemiGnd: '#c2b28e', hemiI: 1.55 },
-  { t: 0.66, top: '#3576b8', hor: '#f3c58c', fog: '#e3c39c', sun: '#ffc27a', sunI: 2.2, hemiSky: '#e6d6c0', hemiGnd: '#b48e6a', hemiI: 1.4 },
-  { t: 0.74, top: '#3b4f8a', hor: '#ff8a5a', fog: '#d88a6e', sun: '#ff8c4a', sunI: 1.6, hemiSky: '#d79a8a', hemiGnd: '#7a4f48', hemiI: 1.15 },
-  { t: 0.8, top: '#1f2c5a', hor: '#8a5a7a', fog: '#5a4a68', sun: '#c08ab8', sunI: 0.7, hemiSky: '#7a6aa0', hemiGnd: '#3a3044', hemiI: 0.95 },
-  { t: 0.88, top: '#0b1d38', hor: '#24405f', fog: '#1b3452', sun: '#9fb6e8', sunI: 0.55, hemiSky: '#5a78b8', hemiGnd: '#1b2a3c', hemiI: 0.9 },
-  { t: 1.0, top: '#081a33', hor: '#1d3a5c', fog: '#16304d', sun: '#9fb6e8', sunI: 0.55, hemiSky: '#5a78b8', hemiGnd: '#1b2a3c', hemiI: 0.9 },
+  { t: 0.0, top: '#070b0d', hor: '#18232a', fog: '#141d22', sun: '#86a4ab', sunI: 0.6, hemiSky: '#3f565d', hemiGnd: '#14120f', hemiI: 0.95 },
+  { t: 0.2, top: '#0d1418', hor: '#2a3433', fog: '#232c2c', sun: '#93a29d', sunI: 0.55, hemiSky: '#4c5d5d', hemiGnd: '#201c17', hemiI: 1.0 },
+  { t: 0.26, top: '#344046', hor: '#b5764a', fog: '#866a55', sun: '#e39b5d', sunI: 1.5, hemiSky: '#a09283', hemiGnd: '#5c4535', hemiI: 1.15 },
+  { t: 0.33, top: '#4f6266', hor: '#a3aaa0', fog: '#949d95', sun: '#ead6b2', sunI: 2.1, hemiSky: '#b6bfb6', hemiGnd: '#7c6b53', hemiI: 1.35 },
+  { t: 0.5, top: '#4b6165', hor: '#adb4aa', fog: '#9fa89f', sun: '#f0e3c6', sunI: 2.35, hemiSky: '#c2cac2', hemiGnd: '#877357', hemiI: 1.45 },
+  { t: 0.66, top: '#475558', hor: '#bb976b', fog: '#a08a6f', sun: '#ebba7a', sunI: 2.05, hemiSky: '#bdb09a', hemiGnd: '#7d6147', hemiI: 1.35 },
+  { t: 0.74, top: '#36383b', hor: '#c45a2b', fog: '#874a31', sun: '#ea7a3c', sunI: 1.65, hemiSky: '#ab7d68', hemiGnd: '#5c3626', hemiI: 1.15 },
+  { t: 0.8, top: '#1a1c20', hor: '#57392f', fog: '#3a2c28', sun: '#a06e5c', sunI: 0.75, hemiSky: '#5c5452', hemiGnd: '#2b211d', hemiI: 0.95 },
+  { t: 0.88, top: '#090d10', hor: '#1d272c', fog: '#172024', sun: '#86a4ab', sunI: 0.6, hemiSky: '#3f565d', hemiGnd: '#14120f', hemiI: 0.95 },
+  { t: 1.0, top: '#070b0d', hor: '#18232a', fog: '#141d22', sun: '#86a4ab', sunI: 0.6, hemiSky: '#3f565d', hemiGnd: '#14120f', hemiI: 0.95 },
 ];
-const STORM = { top: new THREE.Color('#2e3a48'), hor: new THREE.Color('#5d6a76'), fog: new THREE.Color('#56636f'), hemiSky: new THREE.Color('#8496a8') };
+const STORM = { top: new THREE.Color('#22282a'), hor: new THREE.Color('#465050'), fog: new THREE.Color('#414a49'), hemiSky: new THREE.Color('#77827e') };
 
 export interface StormCell {
   x: number;
@@ -126,8 +128,9 @@ export class Atmosphere {
     this.fogColor.lerp(STORM.fog.clone().multiplyScalar(1 - this.night * 0.6), st * 0.9);
     this.hemiSky.lerp(STORM.hemiSky, st * 0.6);
     this.sunIntensity *= 1 - st * 0.7;
-    this.fogNear = 260 - st * 200 - this.night * 60;
-    this.fogFar = 1150 - st * 780 - this.night * 250;
+    // a permanent sea haze: the horizon is always a little lost
+    this.fogNear = 150 - st * 100 - this.night * 40;
+    this.fogFar = 860 - st * 520 - this.night * 200;
 
     // lightning
     this.lightning = Math.max(0, this.lightning - dt * 4);
@@ -143,8 +146,8 @@ export class Atmosphere {
     this.flashT += dt;
     const flash = this.lightning * (0.6 + 0.4 * Math.sin(this.flashT * 60));
     this.hemiIntensity += flash * 2.2;
-    this.skyTop.lerp(_a.set('#c9d6ff'), flash * 0.5);
-    this.skyHorizon.lerp(_a.set('#dfe6ff'), flash * 0.4);
+    this.skyTop.lerp(_a.set('#c4d2d8'), flash * 0.5);
+    this.skyHorizon.lerp(_a.set('#dce6e6'), flash * 0.4);
   }
 
   /** 0 = clear, 1 = heavy, for wind/wave strength. */

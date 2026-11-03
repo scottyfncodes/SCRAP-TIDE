@@ -650,6 +650,175 @@ def debris_kit():
 
 BUILDERS = {f.__name__: f for f in (tower_glass, tower_brick, tower_spire, tower_stump, oil_rig, containers, tanker_wreck,
                                      settlement_kit, boat_kit, raider_skiff, debris_kit)}
+
+# ----------------------------------------------------------------- salvage pass (grimy art-direction revamp)
+def trawler_wreck():
+    """A fishing trawler that went down by the stern and never finished sinking: listing, rusted through,
+    nets still hanging from the A-frame. Reads as a story at a glance and from the horizon."""
+    root = kit.empty("trawler_wreck", (0, 0, 0), kind="ARROWS", size=2)  # noqa: F821
+    L, W, H = 22.0, 3.4, 4.2
+    p = []
+    n = 8
+    for i in range(n):
+        u0, u1 = i / n, (i + 1) / n
+        def half(u):
+            return W * (1.0 if u < 0.62 else max(0.06, math.cos((u - 0.62) / 0.38 * math.pi / 2)) ** 0.8)
+        y0, y1 = -L / 2 + u0 * L, -L / 2 + u1 * L
+        w0, w1 = half(u0), half(u1)
+        role = "rust" if i % 3 else "rust_dark"
+        if i == 5:
+            role = "oxide"  # a patched plate from some other wreck
+        sec = kit.prism("p", [(-w0 * 0.82, -H * 0.5), (w0 * 0.82, -H * 0.5), (w0, H * 0.5), (-w0, H * 0.5)], y1 - y0,  # noqa: F821
+                        loc=(0, (y0 + y1) / 2, 0), axis="Y", mat=M[role])
+        if abs(w1 - w0) > 0.01:
+            def taper(v, y0=y0, y1=y1, w0=w0, w1=w1):
+                t = (v.y - y0) / (y1 - y0)
+                k = (w0 + (w1 - w0) * t) / w0
+                return Vector((v.x * k, v.y, v.z))
+            kit.deform(sec, taper)  # noqa: F821
+        p.append(sec)
+        # faded hull band (old company colours), above the boot-top
+        p.append(kit.prism("p", [(-w0 * 1.02, H * 0.18), (w0 * 1.02, H * 0.18), (w0 * 1.02, H * 0.34), (-w0 * 1.02, H * 0.34)], (y1 - y0) * 0.97,  # noqa: F821
+                           loc=(0, (y0 + y1) / 2, 0), axis="Y", mat=M["hazard" if i % 2 else "rust_hi"]))
+    # bulwark rail, gaps where it tore away
+    for s in (-1, 1):
+        for k in range(6):
+            if k in (2, 4) and s > 0:
+                continue
+            p.append(B((0.12, 2.6, 0.7), (s * W * 0.97, -L / 2 + 2 + k * 3.0, H * 0.5 + 0.35), "rust_dark"))
+    # wheelhouse with blown-out windows and a stove pipe
+    p += [B((4.2, 4.0, 2.8), (0, 2.5, H * 0.5 + 1.4), "concrete_dk", bevel=0.06), B((4.4, 4.2, 0.25), (0, 2.5, H * 0.5 + 2.95), "rust_dark"),
+          B((4.25, 0.12, 0.8), (0, 4.52, H * 0.5 + 2.0), "navy"), B((0.12, 3.2, 0.8), (2.13, 2.5, H * 0.5 + 2.0), "navy"),
+          C(0.18, 2.2, (1.3, 1.2, H * 0.5 + 4.0), "gun", verts=8), C(0.08, 3.5, (-1.0, 3.0, H * 0.5 + 4.6), "steel", verts=6),
+          B((1.6, 0.08, 0.08), (-1.0, 3.0, H * 0.5 + 5.6), "steel")]
+    # mast with a dead radar bar and a hanging lamp
+    p += [C(0.16, 7.0, (0, 6.5, H * 0.5 + 3.5), "rust_hi", verts=8), B((2.4, 0.18, 0.12), (0, 6.5, H * 0.5 + 6.2), "gun"),
+          C(0.12, 0.25, (0.6, 6.5, H * 0.5 + 5.8), "lamp", verts=8)]
+    # stern A-frame gantry, net drum, hanging nets, outrigger booms
+    for s in (-1, 1):
+        p.append(beam((s * 2.6, -L / 2 + 1.0, H * 0.5), (s * 0.4, -L / 2 - 0.6, H * 0.5 + 5.5), 0.3, "hazard"))
+        p.append(beam((s * 0.5, -L / 2 + 6, H * 0.5), (s * 7.5, -L / 2 + 7, H * 0.5 + 4.8), 0.18, "rust_hi"))
+        for k in range(4):
+            p.append(B((0.05, 0.05, 2.6 + k * 0.4), (s * (2.0 + k * 1.4), -L / 2 + 6.3 + k * 0.2, H * 0.5 + 2.2 - k * 0.2), "wood_deep"))
+    p.append(B((5.4, 0.3, 0.3), (0, -L / 2 - 0.5, H * 0.5 + 5.4), "hazard"))
+    p.append(C(1.0, 4.2, (0, -L / 2 + 3.0, H * 0.5 + 1.1), "kelp", axis="X", verts=12))
+    p.append(tf(B((3.6, 0.06, 4.2), (0, -L / 2 - 0.4, H * 0.5 + 2.9), "kelp"), rot=(0.12, 0, 0), pivot=(0, -L / 2, H * 0.5 + 5)))
+    for k in range(5):
+        p.append(C(0.18, 0.2, (-1.4 + k * 0.7, -L / 2 - 0.45, H * 0.5 + 0.9 + (k % 2) * 0.3), "red", verts=8))
+    # barrels and a tarp lashed on deck, a buoy hanging off the side
+    for k in range(3):
+        p.append(C(0.32, 0.9, (-1.2 + k * 0.7, -2.0, H * 0.5 + 0.45), "rust_hi" if k % 2 else "slate", verts=10))
+    p.append(tf(B((2.2, 1.8, 0.05), (1.0, -1.5, H * 0.5 + 0.8), "tarp"), rot=(0.25, 0.1, 0), pivot=(1.0, -1.5, H * 0.5)))
+    p.append(kit.torus("p", 0.45, 0.14, (W * 1.05, 5.5, H * 0.3), mat=M["red"], major=12, minor=5))  # noqa: F821
+    body = finish(p, "trawler_body", root)
+    # down by the stern, listing to port
+    tf(body, rot=(math.radians(11), math.radians(-17), 0), pivot=(0, 0, 0), move=(0, 0, -1.6))
+    meta({"ground": False, "nodes": {"root": "trawler_wreck", "body": "trawler_body"}, "origin": "waterline; bow points +Y (-Z in three.js)"})
+
+
+def port_crane():
+    """A harbour gantry crane that buckled when the quay went under: two legs standing, two folded into the
+    sea, the boom snapped and trailing in the water. A silhouette you can steer by."""
+    root = kit.empty("port_crane", (0, 0, 0), kind="ARROWS", size=2)  # noqa: F821
+    p = []
+    S, D, Hh = 7.0, 6.0, 26.0
+    # two standing legs (lattice), two buckled ones
+    p += lattice(-S, -D, -6, 1.6, 1.6, Hh + 6, 6, 0.32, "hazard")
+    p += lattice(-S, D, -6, 1.6, 1.6, Hh + 6, 6, 0.32, "hazard")
+    p.append(beam((S, -D, -6), (S + 1.5, -D, 9), 1.0, "rust"))
+    p.append(beam((S + 1.5, -D, 9), (S - 2.0, -D + 1.0, Hh - 2), 1.0, "rust_hi"))
+    p.append(beam((S, D, -6), (S + 3.5, D + 1.0, 4), 1.0, "rust_dark"))
+    # portal frame and machinery house, tilted on the failed side
+    top = [B((2 * S + 2.5, 1.4, 1.6), (0, -D, Hh), "hazard"), B((2 * S + 2.5, 1.4, 1.6), (0, D, Hh), "hazard"),
+           B((1.4, 2 * D + 1.4, 1.6), (-S, 0, Hh), "rust_hi"), B((1.4, 2 * D + 1.4, 1.6), (S, 0, Hh), "rust_hi"),
+           B((6.0, 7.0, 4.2), (-1.0, 0, Hh + 2.9), "concrete_dk", bevel=0.08), B((6.4, 7.4, 0.3), (-1.0, 0, Hh + 5.1), "rust_dark"),
+           B((0.1, 4.0, 1.2), (2.0, 0, Hh + 3.2), "navy"), C(0.25, 3.0, (-3.0, 2.0, Hh + 6.5), "gun", verts=8),
+           B((0.15, 2.2, 0.9), (-4.05, 0, Hh + 3.0), "red")]
+    for o in top:
+        tf(o, rot=(0, math.radians(-6), 0), pivot=(-S, 0, Hh))
+    p += top
+    # the boom: lattice girder out over the water, snapped, the outer half hanging into the sea
+    bx0, bz = -S - 2, Hh + 0.6
+    for side in (-1.1, 1.1):
+        p.append(beam((bx0, side, bz), (bx0 - 18, side, bz + 1.0), 0.35, "hazard"))
+        p.append(beam((bx0, side, bz - 1.6), (bx0 - 18, side, bz - 0.4), 0.35, "hazard"))
+        p.append(beam((bx0 - 18, side, bz + 1.0), (bx0 - 24, side * 1.3, -3), 0.35, "rust_hi"))
+    for k in range(7):
+        x = bx0 - 1.5 - k * 2.5
+        p.append(beam((x, -1.1, bz - 1.5 + k * 0.17), (x - 1.2, 1.1, bz + 0.9 + k * 0.14), 0.16, "rust"))
+    # hoist cables hanging slack, a spreader dangling at the end
+    for side in (-0.5, 0.5):
+        p.append(C(0.05, 14.0, (bx0 - 9, side, bz - 8), "gun", verts=4))
+    p.append(B((3.0, 1.0, 0.6), (bx0 - 9, 0, bz - 15.2), "rust_dark"))
+    # lattice tie-backs over the house
+    p.append(beam((-S, 0, Hh + 5.2), (-S + 2, 0, Hh + 11), 0.4, "hazard"))
+    p.append(beam((-S + 2, 0, Hh + 11), (bx0 - 12, 0, bz + 1.1), 0.12, "gun"))
+    p.append(beam((-S + 2, 0, Hh + 11), (S, 0, Hh + 0.8), 0.12, "gun"))
+    p.append(C(0.2, 0.3, (-S + 2, 0, Hh + 11.3), "red_glow", verts=8))
+    finish(p, "crane_body", root)
+    meta({"ground": False, "nodes": {"root": "port_crane", "body": "crane_body"}, "origin": "waterline under the portal centre"})
+
+
+def flotsam_kit():
+    """Small floating dressing for the open sea: what's left of other people's lives, lashed, tangled, drifting."""
+    root = kit.empty("flotsam_kit", (0, 0, 0), kind="ARROWS", size=0.5)  # noqa: F821
+    X = [0.0]
+
+    def node(name, parts):
+        o = finish(parts, name, root)
+        o.data.transform(Matrix.Translation((-X[0], 0, 0)))
+        o.location = (X[0], 0, 0)
+        X[0] += 7.0
+
+    x = X[0]
+    # barrel raft: drums lashed under a pallet, a sagging tarp shelter, a jerry can, rope
+    q = []
+    for ix in (-0.75, 0.0, 0.75):
+        q.append(C(0.34, 2.2, (x + ix, 0, -0.05), "rust_hi" if ix else "slate", axis="Y", verts=10))
+    q.append(B((2.4, 2.4, 0.14), (x, 0, 0.36), "wood_dk"))
+    for k in range(4):
+        q.append(B((2.5, 0.16, 0.05), (x, -0.9 + k * 0.6, 0.46), "wood"))
+    q += [C(0.04, 1.6, (x - 1.0, -1.0, 1.2), "wood_deep", verts=5), C(0.04, 1.6, (x + 1.0, -1.0, 1.2), "wood_deep", verts=5),
+          tf(B((2.2, 1.5, 0.04), (x, -0.3, 1.5), "tarp2"), rot=(0.45, 0, 0), pivot=(x, -1.0, 2.0)),
+          B((0.4, 0.22, 0.5), (x + 0.6, 0.7, 0.72), "red", bevel=0.03), C(0.25, 0.1, (x - 0.6, 0.7, 0.53), "wood_deep", verts=10)]
+    node("barrel_raft", q)
+    x = X[0]
+    # ghost net: a drifting knot of net, floats, a tyre and a snapped boom
+    q = []
+    for i in range(7):
+        a = i / 7 * math.tau
+        q.append(C(0.2, 0.22, (x + math.cos(a) * 1.4, math.sin(a) * 1.1, 0.05), "hazard" if i % 3 else "red", verts=8))
+    q.append(tf(B((3.0, 2.4, 0.04), (x, 0, 0.0), "kelp"), rot=(0.05, 0.08, 0.4), pivot=(x, 0, 0)))
+    q.append(tf(B((2.2, 1.8, 0.04), (x + 0.4, 0.3, 0.06), "barnacle"), rot=(0, -0.06, 1.2), pivot=(x, 0, 0)))
+    q += [kit.torus("p", 0.42, 0.16, (x - 0.9, 0.6, 0.05), mat=M["navy"], major=12, minor=5),  # noqa: F821
+          tf(B((3.4, 0.2, 0.2), (x + 0.5, -0.8, 0.08), "wood_dk"), rot=(0, 0, 0.3), pivot=(x, 0, 0))]
+    node("net_tangle", q)
+    x = X[0]
+    # bell buoy: an old navigation buoy, cage and bell, still tolling in the swell
+    q = [C(0.9, 1.0, (x, 0, 0.1), "rust", verts=12, r2=0.7), C(0.92, 0.18, (x, 0, 0.5), "rust_hi", verts=12),
+         C(0.7, 0.1, (x, 0, 0.66), "rust_dark", verts=12)]
+    for i in range(4):
+        a = i / 4 * math.tau + 0.4
+        q.append(beam((x + math.cos(a) * 0.6, math.sin(a) * 0.6, 0.66), (x + math.cos(a) * 0.2, math.sin(a) * 0.2, 2.6), 0.08, "rust_hi"))
+    q += [C(0.3, 0.12, (x, 0, 2.62), "rust_dark", verts=10), C(0.24, 0.45, (x, 0, 1.75), "oxide", verts=10, r2=0.12),
+          C(0.06, 0.25, (x, 0, 1.45), "gun", verts=6), C(0.11, 0.18, (x, 0, 2.8), "red_glow", verts=8)]
+    node("bell_buoy", q)
+    x = X[0]
+    # capsized hull: a small boat floating keel-up, weed on the bottom, a rudder sticking up
+    q = []
+    for k in range(5):
+        y0 = -2.2 + k * 0.9
+        w = 1.0 * (1.0 if k < 3 else 0.75 - (k - 3) * 0.25)
+        q.append(kit.prism("p", [(-w, 0.0), (w, 0.0), (w * 0.7, 0.55), (-w * 0.7, 0.55)], 0.92, loc=(x, y0, 0), axis="Y",  # noqa: F821
+                           mat=M["wood_dk" if k % 2 else "tarp"]))
+    q += [B((0.1, 4.4, 0.18), (x, -0.4, 0.62), "wood_deep"), B((0.08, 0.5, 0.7), (x, -2.6, 0.75), "wood_deep"),
+          B((1.6, 2.2, 0.03), (x, -0.6, 0.57), "kelp")]
+    node("hull_shard", q)
+    meta({"ground": False, "nodes": {"root": "flotsam_kit", "raft": "barrel_raft", "net": "net_tangle", "bell": "bell_buoy", "hull": "hull_shard"},
+          "origin": "each node: waterline centre"})
+
+
+BUILDERS.update({f.__name__: f for f in (trawler_wreck, port_crane, flotsam_kit)})
 BUILDERS[ASSET]()
 for o in bpy.context.scene.objects:  # noqa: F821
     if o.type == "MESH":

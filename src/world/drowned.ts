@@ -6,6 +6,7 @@ import { STRUCTURES, SALVAGE_SITES, type StructureDef } from '../data/world';
 import { model } from './assets';
 import { vcMat, paint, xf, merge } from './materials';
 import { RNG } from '../core/noise';
+import { heightAt } from './terrain';
 
 export interface Circle { x: number; z: number; r: number }
 
@@ -18,10 +19,12 @@ const FILE: Record<StructureDef['kind'], [string, string]> = {
   tanker: ['tb_tanker_wreck', 'tanker_body'],
   container: ['tb_containers', 'container_red'],
   mega_spire: ['tb_tower_spire', 'tower_spire_body'],
+  trawler: ['tb_trawler_wreck', 'trawler_body'],
+  crane: ['tb_port_crane', 'crane_body'],
 };
 
 function fallback(kind: StructureDef['kind']) {
-  const h = kind === 'container' ? 2.6 : kind === 'oil_rig' ? 26 : kind === 'tanker' ? 30 : kind === 'tower_stump' ? 14 : 40;
+  const h = kind === 'container' ? 2.6 : kind === 'oil_rig' ? 26 : kind === 'tanker' ? 30 : kind === 'tower_stump' ? 14 : kind === 'trawler' ? 6 : 40;
   const w = kind === 'container' ? 12 : 14;
   const g = paint(xf(new THREE.BoxGeometry(w, h + 10, kind === 'container' ? 2.4 : w), 0, h / 2 - 5, 0), kind === 'container' ? '#c8352a' : '#7f8a94');
   return new THREE.Mesh(g, vcMat());
@@ -33,6 +36,12 @@ export class DrownedWorld {
   glows: THREE.Object3D[] = [];
   siteMarkers = new Map<string, THREE.Object3D>();
   hollowTop = 21.5;
+  /** world positions of tolling bell buoys (the audio listens for these) */
+  bells: THREE.Vector3[] = [];
+  /** camera position, set by the game each frame: distant small dressing is hidden (it is lost in the haze anyway) */
+  focus = new THREE.Vector3();
+  /** drifting flotsam the player can pick over by sailing slowly through it */
+  flotsam: { x: number; z: number; kind: string; picked: boolean; obj: THREE.Object3D }[] = [];
 
   constructor(private scene: THREE.Scene) {
     for (const s of STRUCTURES) this.place(s);
@@ -40,6 +49,7 @@ export class DrownedWorld {
     this.buildRooftopHollow();
     this.buildHeliosDock();
     this.scatterDebris();
+    this.bellBuoys();
     this.markSites();
   }
 
@@ -63,7 +73,7 @@ export class DrownedWorld {
     const name = s.kind === 'container' ? `container_${s.variant ?? 'red'}` : node;
     const obj = model(file, name) ?? fallback(s.kind);
     const scale = (s.scale ?? 1) * (s.kind === 'mega_spire' ? 2.4 : 1);
-    this.add(obj, s.x, s.kind === 'container' ? -1.1 : s.kind === 'tower_stump' ? -2.5 : 0, s.z, s.rot ?? 0, scale);
+    this.add(obj, s.x, s.kind === 'container' ? -1.1 : s.kind === 'tower_stump' ? -2.5 : s.kind === 'crane' ? -1.5 : 0, s.z, s.rot ?? 0, scale);
     if (s.kind === 'container') {
       // half-sunk and gently rolling
       obj.rotation.z = 0.12;
@@ -176,12 +186,55 @@ export class DrownedWorld {
       const ph = o.position.x * 0.2 + o.position.z * 0.1;
       const y0 = -0.05;
       this.animators.push((t) => {
+        o.visible = Math.abs(o.position.x - this.focus.x) < 340 && Math.abs(o.position.z - this.focus.z) < 340;
+        if (!o.visible) return;
         o.position.y = y0 + Math.sin(t * 1.3 + ph) * 0.15;
         o.rotation.z = Math.sin(t * 1.1 + ph) * 0.08;
       });
     }
+    // flotsam in open water: rafts, ghost nets, capsized hulls drifting between the landmarks
+    const kinds = ['barrel_raft', 'net_tangle', 'hull_shard'].map((n) => model('tb_flotsam_kit', n)).filter(Boolean) as THREE.Group[];
+    if (kinds.length) {
+      for (let i = 0, tries = 0; i < 46 && tries < 600; tries++) {
+        const x = rng.range(-1000, 1000), z = rng.range(-1000, 1000);
+        if (heightAt(x, z) > -4 || STRUCTURES.some((s) => Math.hypot(s.x - x, s.z - z) < s.r + 12)) continue;
+        const o = this.add(kinds[i % kinds.length].clone(), x, -0.05, z, rng.range(0, 6), rng.range(0.85, 1.25));
+        o.traverse((m) => (m.castShadow = false)); // waterline-height and small: not worth a shadow pass
+        this.flotsam.push({ x, z, kind: kinds[i % kinds.length].name, picked: false, obj: o });
+        const ph = x * 0.13 + z * 0.07;
+        this.animators.push((t) => {
+          o.visible = Math.abs(o.position.x - this.focus.x) < 340 && Math.abs(o.position.z - this.focus.z) < 340;
+          if (!o.visible) return;
+          o.position.y = -0.05 + Math.sin(t * 1.1 + ph) * 0.18;
+          o.rotation.z = Math.sin(t * 0.9 + ph) * 0.07;
+          o.rotation.x = Math.sin(t * 0.7 + ph * 1.3) * 0.05;
+        });
+        i++;
+      }
+    }
     void parts;
     void merge;
+  }
+
+  /** Old navigation bell buoys, still tolling, mark the way into each region. */
+  private bellBuoys() {
+    const bell = model('tb_flotsam_kit', 'bell_buoy');
+    if (!bell) return;
+    for (const [x, z] of [[60, 120], [-170, 150], [150, -40], [380, -330], [-460, 120], [250, 520], [-190, -900]]) {
+      if (heightAt(x, z) > -2) continue;
+      const o = this.add(bell.clone(), x, 0, z, (x + z) % 6);
+      this.bells.push(o.position);
+      const glow = o.children.find((c) => c.userData.glow);
+      const ph = x * 0.05;
+      this.animators.push((t) => {
+        o.visible = Math.abs(o.position.x - this.focus.x) < 520 && Math.abs(o.position.z - this.focus.z) < 520;
+        if (!o.visible) return;
+        o.position.y = Math.sin(t * 1.2 + ph) * 0.3 - 0.15;
+        o.rotation.z = Math.sin(t * 0.95 + ph) * 0.14;
+        o.rotation.x = Math.sin(t * 0.8 + ph) * 0.08;
+        if (glow) glow.visible = Math.sin(t * 2.2 + ph) > 0.3;
+      });
+    }
   }
 
   /** A blinking beacon buoy beside every salvage site. */

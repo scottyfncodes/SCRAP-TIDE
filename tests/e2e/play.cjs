@@ -182,6 +182,37 @@ const check = (name, ok, detail = '') => {
   });
   check('workbench refines crude into fuel', craft.after === craft.before + 1 && craft.crude === 0, JSON.stringify(craft));
 
+  // ── grimy art-direction pass: new landmarks, flotsam scavenging, hull-strike feedback
+  const placed = await g(() => {
+    const names = new Set();
+    window.__game.scene.traverse((o) => o.name && names.add(o.name));
+    return { trawler: names.has('trawler_body'), crane: names.has('crane_body'), flotsam: window.__game.drowned.flotsam.length, bells: window.__game.drowned.bells.length };
+  });
+  check('salvage-pass landmarks and flotsam are placed (trawlers, cranes, flotsam, bell buoys)', placed.trawler && placed.crane && placed.flotsam > 20 && placed.bells > 3, JSON.stringify(placed));
+  const fl = await g(() => {
+    const G = window.__game, s = G.store;
+    s.data.cargo = [];
+    const f = G.drowned.flotsam.find((x) => !x.picked);
+    G.ui.closePanel();
+    Object.assign(G.boat, { x: f.x, z: f.z, heading: 0, speed: 1, docked: false, anchored: false, busy: false });
+    G.mode = 'sail';
+    return { kind: f.kind, x: f.x, z: f.z };
+  });
+  await playFor(1.5);
+  const flAfter = await g((fl) => {
+    const G = window.__game;
+    const f = G.drowned.flotsam.find((x) => x.x === fl.x && x.z === fl.z);
+    return { picked: f.picked, slots: G.store.slotsUsed() };
+  }, fl);
+  check('sailing slowly through flotsam picks it over', flAfter.picked, JSON.stringify({ ...fl, ...flAfter }));
+  const hit = await g(() => {
+    const G = window.__game, h0 = G.store.data.hull;
+    G.damage(10, 'Test strike');
+    return { h0, h1: G.store.data.hull, flash: document.querySelector('.hit-flash')?.classList.contains('on') };
+  });
+  check('a hull strike costs hull and flashes the HUD', hit.h1 < hit.h0 && hit.flash, JSON.stringify(hit));
+  await g(() => { const G = window.__game; G.store.data.hull = G.store.stats.hullMax; });
+
   // ── save & reload
   await g(() => { window.__game.persistShip?.(); window.__game.store.saveNow(); });
   await page.reload();

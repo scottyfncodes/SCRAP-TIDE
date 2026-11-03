@@ -228,7 +228,7 @@ export const DIG_POOL: { id: string; w: number }[] = [
 
 // ───────────────────────── Drowned World ─────────────────────────
 
-export type StructureKind = 'tower_glass' | 'tower_brick' | 'tower_spire' | 'tower_stump' | 'oil_rig' | 'tanker' | 'container' | 'mega_spire';
+export type StructureKind = 'tower_glass' | 'tower_brick' | 'tower_spire' | 'tower_stump' | 'oil_rig' | 'tanker' | 'container' | 'mega_spire' | 'trawler' | 'crane';
 
 /** Drowned structures placed in open water. Models come from the GITCRAFT MeshCraft kit (public/models). */
 export interface StructureDef {
@@ -274,6 +274,15 @@ export const STRUCTURES: StructureDef[] = [
   { kind: 'tower_stump', x: 190, z: 590, rot: 2.0, scale: 0.9, r: 9 },
   // The Stormwall: the Meridian Spire
   { kind: 'mega_spire', x: -210, z: -1040, r: 16 },
+  // Wrecks and dead machinery: storytelling silhouettes between the landmarks (GITCRAFT salvage pass)
+  { kind: 'trawler', x: -300, z: 120, rot: 1.1, r: 9 },
+  { kind: 'trawler', x: 330, z: 60, rot: -2.3, scale: 0.9, r: 8 },
+  { kind: 'trawler', x: 40, z: -60, rot: 0.4, r: 9 },
+  { kind: 'trawler', x: 360, z: 560, rot: 2.8, scale: 1.15, r: 10 },
+  { kind: 'trawler', x: -470, z: 260, rot: -0.7, r: 9 },
+  { kind: 'crane', x: 380, z: -520, rot: 0.9, r: 13 },
+  { kind: 'crane', x: 330, z: 760, rot: -1.4, scale: 1.1, r: 14 },
+  { kind: 'crane', x: -330, z: -170, rot: 2.2, scale: 0.9, r: 12 },
   { kind: 'tower_glass', x: -150, z: -990, rot: 0.3, scale: 1.4, r: 17 },
   { kind: 'tower_brick', x: -280, z: -990, rot: -0.2, scale: 1.3, r: 16 },
 ];

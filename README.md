@@ -3,6 +3,8 @@
 *The world drowned. You didn't.*
 
 A mobile-first, stylized 3D survival adventure on a flooded Earth, built for iPhone Safari and Home Screen install.
+The look is grimy post-apocalyptic ocean survival: rust, oil-slicked water, storm-grey skies, scavenged machinery and wrecks
+on every horizon (see `docs/grimy-pass/`).
 Civilization is under the sea. You start in a patchwork skiff at Driftholm, a raft-town lashed to the last hill of the old
 harbour, and build it, upgrade by upgrade, into an expedition boat that can pierce the Stormwall.
 
@@ -10,7 +12,7 @@ harbour, and build it, upgrade by upgrade, into an expedition boat that can pier
 
 **Explore → discover → salvage → collect → craft → upgrade → explore further.**
 
-- **The Drift** (start): turquoise shallows over a drowned county. The Sunken Tower, the Box Yard, Rooftop Hollow (a fishing
+- **The Drift** (start): silted, oil-streaked shallows over a drowned county. The Sunken Tower, the Box Yard, Rooftop Hollow (a fishing
   community on a drowned apartment roof), Turtle Atoll, Lantern Rock, Gull Shoal and the wreck of the *Wren*.
 - **The Sunken Reach** (needs the Scrap Trimaran to cross the open swell): Old Meridian's drowned towers, Rig Helios (an oil
   platform turned market), Canopy Rise, and the Rustfang tanker graveyard, where raiders hunt.
@@ -20,6 +22,8 @@ harbour, and build it, upgrade by upgrade, into an expedition boat that can pier
 engine, hull/armour, storage, fuel tank, steering, navigation/radar, salvage crane, harpoon, power (solar, turbine),
 container-cabin quarters, lighting, fishing. **Every upgrade is a model you can see on the boat.** Paint, sails, flags and
 trophies too. Crew members ride on deck.
+
+**Flotsam:** ease through drifting barrel rafts, ghost nets and capsized hulls to pick them over for rope, scrap, oil and wood.
 
 **Salvage:** slow down beside a beacon buoy and SALVAGE: a winch mini-game where better gear and a Salvager widen the window.
 Drifting caches, castaways to rescue, 10 salvage sites with respawn timers and first-haul story finds.
@@ -43,6 +47,7 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | Workbench recipes / crew roles / Captain's Log goals and milestones | `src/data/crafting.ts`, `src/data/crew.ts`, `src/data/progress.ts` |
 | Save/load (localStorage, v2, backup slot, migration from v1) | `src/state/store.ts` |
 | GITCRAFT model loader (GLB → toon vertex-colour meshes, skinned crew) | `src/world/assets.ts` |
+| Shared toon materials + world-space weathering shader (grime, rust streaks, tide line, salt) | `src/world/materials.ts` |
 | Time of day, storms, Stormwall | `src/world/atmosphere.ts` |
 | Gerstner ocean with wake, storm swell, reflections | `src/world/ocean.ts` |
 | Sky, clouds, storm decks, rain, lightning, skylines | `src/world/sky.ts` |
@@ -51,7 +56,7 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | Salvage and raiders | `src/game/salvage.ts`, `src/game/raiders.ts` |
 | Game loop | `src/game/game.ts` |
 | UI: HUD, radar, winch, settlements, workbench, crew | `src/ui/ui.ts` |
-| Procedural WebAudio (engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
+| Procedural WebAudio (howling wind, groaning steel, bell buoys, hull strikes, engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
 
 3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`); item icons from VectorCraft
 (`creative/ui-drowned`).

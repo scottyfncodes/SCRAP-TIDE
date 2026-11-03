@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { merge, vcMat, toonGradient } from './materials';
+import { merge, vcMat, toonGradient, weather } from './materials';
 
 export const MODEL_FILES = [
   'tb_tower_glass',
@@ -20,6 +20,9 @@ export const MODEL_FILES = [
   'tb_boat_kit',
   'tb_raider_skiff',
   'tb_debris_kit',
+  'tb_trawler_wreck',
+  'tb_port_crane',
+  'tb_flotsam_kit',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
 
@@ -155,7 +158,7 @@ export function crewModel(role: string): { root: THREE.Object3D; mixer: THREE.An
     const src = m.material as THREE.MeshStandardMaterial;
     let tm = skinMats.get(src);
     if (!tm) {
-      tm = new THREE.MeshToonMaterial({ vertexColors: !!m.geometry.attributes.color, color: m.geometry.attributes.color ? 0xffffff : src.color, gradientMap: toonGradient() });
+      tm = weather(new THREE.MeshToonMaterial({ vertexColors: !!m.geometry.attributes.color, color: m.geometry.attributes.color ? 0xffffff : src.color, gradientMap: toonGradient() }), 0.45);
       skinMats.set(src, tm);
     }
     m.material = tm;
@@ -202,7 +205,7 @@ function mergeSkinned(root: THREE.Object3D) {
     const merged = mergeGeometries(geos, false);
     if (!merged) continue;
     const first = list[0];
-    const sm = new THREE.SkinnedMesh(merged, new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: toonGradient() }));
+    const sm = new THREE.SkinnedMesh(merged, weather(new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: toonGradient() }), 0.45));
     sm.name = first.name;
     sm.position.copy(first.position);
     sm.quaternion.copy(first.quaternion);
