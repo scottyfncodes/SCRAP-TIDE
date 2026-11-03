@@ -1,5 +1,6 @@
 // Illustrated SVG icons for every collectible. Silhouette mode renders undiscovered entries.
 import { ITEM_MAP } from '../data/items';
+import { DROWNED_ICONS } from './iconsDrowned';
 
 function shape(icon: string, a: string, b: string): string {
   switch (icon) {
@@ -63,7 +64,7 @@ function shape(icon: string, a: string, b: string): string {
     case 'map':
       return `<path d="M10 16l14-4 16 4 14-4v36l-14 4-16-4-14 4z" fill="#efdcb0"/><path d="M24 12v36M40 16v36" stroke="#b08a50" stroke-width="1.5"/><path d="M14 40c6-6 10 2 16-6s10-2 14-8" stroke="#7a4a21" stroke-width="2" stroke-dasharray="3 3" fill="none"/><path d="M42 22l6 6M48 22l-6 6" stroke="#c0392b" stroke-width="3"/>`;
     default:
-      return `<circle cx="32" cy="32" r="16" fill="${a}"/>`;
+      return DROWNED_ICONS[icon]?.(a, b) ?? `<circle cx="32" cy="32" r="16" fill="${a}"/>`;
   }
 }
 

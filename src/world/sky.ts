@@ -1,90 +1,158 @@
-// Painted sky dome, sun, drifting storybook clouds, gulls.
+// Sky for the Drowned World: day/night dome with sun, moon and stars; clouds tinted by the hour; dark
+// storm decks riding the storm cells; the Stormwall ring on the horizon; rain, lightning bolts, gulls,
+// and the silhouettes of drowned cities where mountains used to be.
 import * as THREE from 'three';
-import { merge, paint, xf, vcMat } from './materials';
+import { merge, paint, xf } from './materials';
 import { RNG } from '../core/noise';
+import { WORLD } from '../data/world';
+import type { Atmosphere } from './atmosphere';
 
 export const SUN_DIR = new THREE.Vector3(0.55, 0.62, -0.42).normalize();
-export const SKY_HORIZON = new THREE.Color('#bfe8f2');
-export const SKY_TOP = new THREE.Color('#3e9be0');
-export const FOG = { color: new THREE.Color('#c4e9f0'), near: 220, far: 720 };
+
+const domeVert = `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`;
+const domeFrag = `uniform vec3 uTop; uniform vec3 uHorizon; uniform vec3 uSun; uniform vec3 uSunColor; uniform float uNight; uniform float uStorm; uniform float uTime;
+varying vec3 vDir;
+float hash(vec3 p){ return fract(sin(dot(p, vec3(127.1,311.7,74.7))) * 43758.5453); }
+void main(){
+  vec3 d = normalize(vDir);
+  float h = clamp(d.y, -0.2, 1.0);
+  vec3 c = mix(uHorizon, uTop, pow(smoothstep(0.0, 0.7, h), 0.75));
+  float s = max(dot(d, uSun), 0.0);
+  // sun / moon glow and disc
+  c += uSunColor * pow(s, 18.0) * mix(0.55, 0.25, uNight) * (1.0 - uStorm);
+  c += mix(vec3(1.0, 0.97, 0.88), vec3(0.9, 0.95, 1.0), uNight) * smoothstep(0.9975, 0.999, s) * mix(2.2, 1.2, uNight) * (1.0 - uStorm * 0.9);
+  // stars
+  vec3 q = floor(d * 260.0);
+  float st = step(0.9965, hash(q)) * smoothstep(0.05, 0.4, h) * uNight * (1.0 - uStorm);
+  c += vec3(st) * (0.6 + 0.4 * sin(uTime * 3.0 + hash(q) * 40.0));
+  c = mix(c, uHorizon * 1.02, smoothstep(0.05, -0.1, h));
+  gl_FragColor = vec4(c, 1.0);
+  #include <colorspace_fragment>
+}`;
 
 export class Sky {
   group = new THREE.Group();
+  private dome: THREE.Mesh;
+  private domeU: Record<string, THREE.IUniform>;
   private clouds: THREE.Mesh[] = [];
+  private cloudMat: THREE.MeshToonMaterial;
+  private stormDecks: THREE.Mesh[] = [];
+  private stormMat: THREE.MeshToonMaterial;
+  private wallMat: THREE.MeshToonMaterial;
+  private skylineMat: THREE.MeshBasicMaterial;
+  private rain: THREE.LineSegments;
+  private rainMat: THREE.LineBasicMaterial;
+  private bolt: THREE.Mesh;
+  private boltLife = 0;
   private gulls: { m: THREE.Group; r: number; c: THREE.Vector3; sp: number; ph: number; wingL: THREE.Mesh; wingR: THREE.Mesh }[] = [];
 
-  constructor(scene: THREE.Scene) {
-    const dome = new THREE.Mesh(
-      new THREE.SphereGeometry(2400, 32, 16),
-      new THREE.ShaderMaterial({
-        side: THREE.BackSide,
-        depthWrite: false,
-        fog: false,
-        uniforms: {
-          uTop: { value: SKY_TOP },
-          uHorizon: { value: SKY_HORIZON },
-          uSun: { value: SUN_DIR },
-        },
-        vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-        fragmentShader: `uniform vec3 uTop; uniform vec3 uHorizon; uniform vec3 uSun; varying vec3 vDir;
-          void main(){
-            float h = clamp(vDir.y, -0.2, 1.0);
-            vec3 c = mix(uHorizon, uTop, pow(smoothstep(0.0, 0.75, h), 0.8));
-            float s = max(dot(normalize(vDir), uSun), 0.0);
-            c += vec3(1.0, 0.85, 0.55) * pow(s, 24.0) * 0.6;
-            c += vec3(1.0, 0.98, 0.9) * smoothstep(0.9975, 0.999, s) * 2.0;
-            c = mix(c, uHorizon * 1.02, smoothstep(0.05, -0.1, h));
-            gl_FragColor = vec4(c, 1.0);
-            #include <colorspace_fragment>
-          }`,
-      })
-    );
-    dome.renderOrder = -10;
-    this.group.add(dome);
+  constructor(scene: THREE.Scene, private atmo: Atmosphere) {
+    this.domeU = {
+      uTop: { value: new THREE.Color() },
+      uHorizon: { value: new THREE.Color() },
+      uSun: { value: new THREE.Vector3() },
+      uSunColor: { value: new THREE.Color() },
+      uNight: { value: 0 },
+      uStorm: { value: 0 },
+      uTime: { value: 0 },
+    };
+    this.dome = new THREE.Mesh(new THREE.SphereGeometry(3200, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: this.domeU, vertexShader: domeVert, fragmentShader: domeFrag }));
+    this.dome.renderOrder = -10;
+    this.group.add(this.dome);
 
-    // Puffy clouds: clusters of squashed spheres, toon-shaded.
     const rng = new RNG(99);
-    const cloudMat = new THREE.MeshToonMaterial({ color: 0xffffff, emissive: 0x8fb8cc, fog: false });
-    for (let i = 0; i < 22; i++) {
+    // fair-weather clouds
+    this.cloudMat = new THREE.MeshToonMaterial({ color: 0xffffff, emissive: 0x8fb8cc, fog: false });
+    for (let i = 0; i < 24; i++) {
       const parts: THREE.BufferGeometry[] = [];
       const n = rng.int(4, 7);
       for (let k = 0; k < n; k++) {
         const r = rng.range(14, 30);
-        parts.push(paint(xf(new THREE.SphereGeometry(r, 12, 8), rng.range(-45, 45), rng.range(0, 10), rng.range(-14, 14), 0, 0, 0, [1, 0.62, 1]), '#ffffff'));
+        parts.push(paint(xf(new THREE.SphereGeometry(r, 10, 7), rng.range(-45, 45), rng.range(0, 10), rng.range(-14, 14), 0, 0, 0, [1, 0.62, 1]), '#ffffff'));
       }
-      const g = merge(parts);
-      const m = new THREE.Mesh(g, cloudMat);
+      const m = new THREE.Mesh(merge(parts), this.cloudMat);
       const ang = rng.range(0, Math.PI * 2);
-      const dist = rng.range(500, 1300);
-      m.position.set(Math.cos(ang) * dist, rng.range(140, 260), Math.sin(ang) * dist);
-      m.scale.setScalar(rng.range(0.8, 1.6));
+      const dist = rng.range(500, 1500);
+      m.position.set(Math.cos(ang) * dist, rng.range(150, 280), Math.sin(ang) * dist);
+      m.scale.setScalar(rng.range(0.8, 1.7));
       this.clouds.push(m);
       this.group.add(m);
     }
 
-    // Distant mountain silhouettes along the horizon: the wider world.
-    const far: THREE.BufferGeometry[] = [];
-    for (let i = 0; i < 16; i++) {
-      const ang = (i / 16) * Math.PI * 2 + rng.range(-0.1, 0.1);
-      const d = rng.range(1700, 2000);
-      const h = rng.range(40, 110);
-      const cone = new THREE.SphereGeometry(rng.range(140, 280), 16, 8, 0, Math.PI * 2, 0, Math.PI / 2);
-      cone.scale(1, h / 200, 1);
-      far.push(paint(xf(cone, Math.cos(ang) * d, -10, Math.sin(ang) * d, 0, rng.range(0, 3), 0, [1, 1, rng.range(0.6, 1.2)]), '#8fbfcc'));
+    // storm decks: heavy flat-bottomed clouds that ride each storm cell
+    this.stormMat = new THREE.MeshToonMaterial({ color: 0x4a5664, emissive: 0x1a222c, fog: true, transparent: true, opacity: 0.96 });
+    for (let s = 0; s < atmo.storms.length; s++) {
+      const parts: THREE.BufferGeometry[] = [];
+      for (let k = 0; k < 26; k++) {
+        const a = rng.range(0, Math.PI * 2), d = Math.sqrt(rng.next()) * 130;
+        const r = rng.range(26, 48);
+        parts.push(paint(xf(new THREE.SphereGeometry(r, 9, 6), Math.cos(a) * d, rng.range(0, 24), Math.sin(a) * d, 0, 0, 0, [1, 0.5, 1]), '#ffffff'));
+      }
+      const m = new THREE.Mesh(merge(parts), this.stormMat);
+      this.stormDecks.push(m);
+      this.group.add(m);
     }
-    const farMesh = new THREE.Mesh(merge(far), new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, transparent: true, opacity: 0.45 }));
-    this.group.add(farMesh);
 
-    // Gulls circling around the world.
+    // the Stormwall: a ring of towering cloud columns at the edge of the Reach
+    this.wallMat = new THREE.MeshToonMaterial({ color: 0x3c4a5c, emissive: 0x141c26, fog: true });
+    const wall: THREE.BufferGeometry[] = [];
+    const c0 = WORLD.shallowsCenter;
+    const R = WORLD.stormRadius + 90;
+    for (let i = 0; i < 64; i++) {
+      const a = (i / 64) * Math.PI * 2 + rng.range(-0.03, 0.03);
+      for (let k = 0; k < 4; k++) {
+        const r = rng.range(50, 85);
+        wall.push(paint(xf(new THREE.SphereGeometry(r, 8, 6), c0.x + Math.cos(a) * (R + rng.range(-30, 60)), 40 + k * 70 + rng.range(-10, 20), c0.z + Math.sin(a) * (R + rng.range(-30, 60)), 0, 0, 0, [1.2, 1.1, 1.2]), '#ffffff'));
+      }
+    }
+    const wallMesh = new THREE.Mesh(merge(wall), this.wallMat);
+    wallMesh.frustumCulled = false;
+    scene.add(wallMesh);
+
+    // drowned skylines on the horizon (where mountains used to be)
+    this.skylineMat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, transparent: true, opacity: 0.55 });
+    const far: THREE.BufferGeometry[] = [];
+    for (let cluster = 0; cluster < 9; cluster++) {
+      const ang = (cluster / 9) * Math.PI * 2 + rng.range(-0.15, 0.15);
+      const d = rng.range(2300, 2700);
+      const cx = Math.cos(ang) * d, cz = Math.sin(ang) * d;
+      const n = rng.int(6, 13);
+      for (let k = 0; k < n; k++) {
+        const w = rng.range(18, 45), h = rng.range(30, 160) * (k % 4 === 0 ? 1.6 : 1);
+        const ox = rng.range(-160, 160);
+        const tang = new THREE.Vector3(-Math.sin(ang), 0, Math.cos(ang));
+        far.push(paint(xf(new THREE.BoxGeometry(w, h, w), cx + tang.x * ox, h / 2 - 20, cz + tang.z * ox, 0, rng.range(0, 3), 0), '#ffffff'));
+        if (k % 5 === 0) far.push(paint(xf(new THREE.CylinderGeometry(1.5, 3, 60, 4), cx + tang.x * ox, h + 10, cz + tang.z * ox), '#ffffff'));
+      }
+    }
+    this.group.add(new THREE.Mesh(merge(far), this.skylineMat));
+
+    // rain: streaks in a box that follows the camera
+    const rp = new Float32Array(1400 * 6);
+    for (let i = 0; i < 1400; i++) {
+      const x = rng.range(-45, 45), y = rng.range(0, 40), z = rng.range(-45, 45);
+      rp.set([x, y, z, x + 0.15, y - 1.6, z + 0.1], i * 6);
+    }
+    const rg = new THREE.BufferGeometry();
+    rg.setAttribute('position', new THREE.BufferAttribute(rp, 3));
+    this.rainMat = new THREE.LineBasicMaterial({ color: 0xbfd2e2, transparent: true, opacity: 0, depthWrite: false });
+    this.rain = new THREE.LineSegments(rg, this.rainMat);
+    this.rain.frustumCulled = false;
+    scene.add(this.rain);
+
+    // lightning bolt (re-shaped on every strike)
+    this.bolt = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color: 0xeef4ff, transparent: true, opacity: 0, fog: false, side: THREE.DoubleSide }));
+    this.bolt.frustumCulled = false;
+    scene.add(this.bolt);
+
+    // gulls circling landmarks and settlements
     const gullBody = new THREE.MeshToonMaterial({ color: 0xffffff });
     const gullWing = new THREE.MeshToonMaterial({ color: 0xf2f2f2, side: THREE.DoubleSide });
     const wingGeo = new THREE.BufferGeometry();
     wingGeo.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, -0.3, 0, 0, 0.35, 1.6, 0.1, 0.1], 3));
     wingGeo.computeVertexNormals();
-    const spots = [
-      [0, 260], [-150, 70], [175, 10], [40, -175], [-330, -320], [60, 120], [-60, -60],
-    ];
-    for (let i = 0; i < 14; i++) {
+    const spots = [[0, 260], [-150, 70], [175, 10], [40, -175], [92, 150], [-235, -70], [-540, 170], [500, -440], [270, 650], [-330, -320]];
+    for (let i = 0; i < 18; i++) {
       const g = new THREE.Group();
       const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.18, 0.6, 3, 6).rotateX(Math.PI / 2), gullBody);
       const wl = new THREE.Mesh(wingGeo, gullWing);
@@ -93,24 +161,89 @@ export class Sky {
       g.add(body, wl, wr);
       g.scale.setScalar(1.6);
       const s = spots[i % spots.length];
-      this.gulls.push({ m: g, r: rng.range(12, 40), c: new THREE.Vector3(s[0], rng.range(14, 30), s[1]), sp: rng.range(0.2, 0.45) * (rng.next() > 0.5 ? 1 : -1), ph: rng.range(0, 6), wingL: wl, wingR: wr });
+      this.gulls.push({ m: g, r: rng.range(12, 40), c: new THREE.Vector3(s[0], rng.range(16, 40), s[1]), sp: rng.range(0.2, 0.45) * (rng.next() > 0.5 ? 1 : -1), ph: rng.range(0, 6), wingL: wl, wingR: wr });
       this.group.add(g);
     }
     scene.add(this.group);
-    void vcMat;
+  }
+
+  strike(origin: THREE.Vector3) {
+    const pts: number[] = [];
+    let x = origin.x, y = 260, z = origin.z;
+    const segs = 9;
+    for (let i = 0; i < segs; i++) {
+      const nx = x + (Math.random() - 0.5) * 40, ny = y - 260 / segs, nz = z + (Math.random() - 0.5) * 40;
+      const w = 2.2 * (1 - i / segs) + 0.6;
+      pts.push(x - w, y, z, x + w, y, z, nx + w, ny, nz, x - w, y, z, nx + w, ny, nz, nx - w, ny, nz);
+      x = nx; y = ny; z = nz;
+    }
+    this.bolt.geometry.dispose();
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    this.bolt.geometry = g;
+    this.boltLife = 0.35;
   }
 
   update(t: number, dt: number, focus: THREE.Vector3) {
-    // sky follows camera so it's always "at infinity"
-    this.group.children[0].position.copy(focus);
+    const a = this.atmo;
+    this.dome.position.copy(focus);
+    this.domeU.uTop.value.copy(a.skyTop);
+    this.domeU.uHorizon.value.copy(a.skyHorizon);
+    this.domeU.uSun.value.copy(a.sunDir);
+    this.domeU.uSunColor.value.copy(a.sunColor);
+    this.domeU.uNight.value = a.night;
+    this.domeU.uStorm.value = a.storm;
+    this.domeU.uTime.value = t;
+
+    // clouds take the colour of the hour
+    this.cloudMat.color.copy(a.sunColor).lerp(new THREE.Color(1, 1, 1), 0.55).multiplyScalar(1 - a.night * 0.65);
+    this.cloudMat.emissive.copy(a.skyHorizon).multiplyScalar(0.55);
+    this.cloudMat.opacity = 1 - a.storm * 0.5;
     for (const c of this.clouds) {
       c.position.x += dt * 2.2;
-      if (c.position.x - focus.x > 1400) c.position.x -= 2800;
+      if (c.position.x - focus.x > 1500) c.position.x -= 3000;
+      if (c.position.x - focus.x < -1500) c.position.x += 3000;
     }
+    for (let i = 0; i < this.stormDecks.length; i++) {
+      const s = a.storms[i];
+      this.stormDecks[i].position.set(s.x, 95, s.z);
+      this.stormDecks[i].scale.setScalar(s.r / 150);
+    }
+    const dark = 1 - a.night * 0.55;
+    this.stormMat.color.setRGB(0.29 * dark, 0.34 * dark, 0.39 * dark).lerp(new THREE.Color('#dfe6ff'), a.lightning * 0.6);
+    this.wallMat.color.setRGB(0.24 * dark, 0.29 * dark, 0.36 * dark).lerp(new THREE.Color('#dfe6ff'), a.lightning * 0.3);
+    this.skylineMat.color.copy(a.skyHorizon).multiplyScalar(0.62);
+
+    // rain follows the camera, intensity follows the storm
+    this.rain.position.set(focus.x, focus.y - 18, focus.z);
+    const rp = (this.rain.geometry.attributes.position as THREE.BufferAttribute);
+    const fall = dt * 38;
+    const arr = rp.array as Float32Array;
+    for (let i = 0; i < arr.length; i += 6) {
+      arr[i + 1] -= fall;
+      arr[i + 4] -= fall;
+      if (arr[i + 4] < 0) {
+        arr[i + 1] += 40;
+        arr[i + 4] += 40;
+      }
+    }
+    rp.needsUpdate = a.storm > 0.05;
+    this.rainMat.opacity = Math.min(0.55, a.storm * 0.75);
+    this.rain.visible = a.storm > 0.05;
+
+    // lightning
+    if (a.lightning > 0.98 && this.boltLife <= 0) {
+      const ang = Math.random() * Math.PI * 2;
+      this.strike(new THREE.Vector3(focus.x + Math.cos(ang) * 260, 0, focus.z + Math.sin(ang) * 260));
+    }
+    this.boltLife -= dt;
+    (this.bolt.material as THREE.MeshBasicMaterial).opacity = Math.max(0, this.boltLife / 0.35);
+
     for (const g of this.gulls) {
-      const a = t * g.sp + g.ph;
-      g.m.position.set(g.c.x + Math.cos(a) * g.r, g.c.y + Math.sin(t * 0.7 + g.ph) * 2, g.c.z + Math.sin(a) * g.r);
-      g.m.rotation.y = -a + (g.sp > 0 ? 0 : Math.PI);
+      const an = t * g.sp + g.ph;
+      g.m.visible = a.storm < 0.6 && a.night < 0.7;
+      g.m.position.set(g.c.x + Math.cos(an) * g.r, g.c.y + Math.sin(t * 0.7 + g.ph) * 2, g.c.z + Math.sin(an) * g.r);
+      g.m.rotation.y = -an + (g.sp > 0 ? 0 : Math.PI);
       const flap = Math.sin(t * 7 + g.ph) * 0.5;
       g.wingL.rotation.z = flap;
       g.wingR.rotation.z = -flap;

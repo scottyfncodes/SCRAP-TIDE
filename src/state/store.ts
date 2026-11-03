@@ -1,12 +1,14 @@
 // Persistent player state. Saved to localStorage with schema versioning + backup slot.
 import { CATALOG_ITEMS, ITEM_MAP, item, type Category } from '../data/items';
-import { VESSELS, UPGRADE_MAP, type UpgradeDef, type VesselId, type Cost } from '../data/ship';
+import { VESSELS, UPGRADE_MAP, BASE_FUEL, type UpgradeDef, type VesselId, type Cost } from '../data/ship';
+import { CREW_MAP, type CrewRole } from '../data/crew';
+import { GOALS } from '../data/progress';
 import { MILESTONES, FIRST_VOYAGE, type QuestStepId } from '../data/progress';
 import { WORLD } from '../data/world';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export interface Stack {
   id: string;
@@ -46,8 +48,20 @@ export interface SaveData {
   chestsOpened: number;
   flags: string[];
   stats: { goldEarned: number; digs: number; distance: number; trips: number };
-  ship: { x: number; z: number; heading: number; anchored: boolean; docked: boolean };
+  ship: { x: number; z: number; heading: number; anchored: boolean; docked: boolean; dockedAt: string };
   settings: { sfx: number; music: number; haptics: boolean };
+  // v2: the drowned world
+  fuel: number;
+  hull: number;
+  crew: string[];
+  hauls: number;
+  salvaged: Record<string, number>; // site id -> Date.now() of the last haul
+  firstHauls: string[];
+  castaways: string[];
+  goal: number; // index into GOALS
+  timeOfDay: number; // 0..1 (0.25 = sunrise, 0.5 = noon, 0.75 = sunset)
+  raidersRepelled: number;
+  settlementsVisited: string[];
 }
 
 export function freshSave(): SaveData {
@@ -73,14 +87,25 @@ export function freshSave(): SaveData {
     upgrades: [],
     cosmetics: ['paint_driftwood', 'sail_plain', 'flag_none'],
     equipped: { paint: 'paint_driftwood', sail: 'sail_plain', flag: 'flag_none' },
-    trophies: [null, null, null],
+    trophies: [null, null, null, null],
     milestones: [],
     quest: 'steer',
     chestsOpened: 0,
     flags: [],
     stats: { goldEarned: 0, digs: 0, distance: 0, trips: 0 },
-    ship: { x: WORLD.spawn.x, z: WORLD.spawn.z, heading: WORLD.spawn.heading, anchored: false, docked: true },
+    ship: { x: WORLD.spawn.x, z: WORLD.spawn.z, heading: WORLD.spawn.heading, anchored: false, docked: true, dockedAt: 'driftholm' },
     settings: { sfx: 0.8, music: 0.5, haptics: true },
+    fuel: 30,
+    hull: 60,
+    crew: [],
+    hauls: 0,
+    salvaged: {},
+    firstHauls: [],
+    castaways: [],
+    goal: 0,
+    timeOfDay: 0.33,
+    raidersRepelled: 0,
+    settlementsVisited: ['driftholm'],
   };
 }
 
@@ -95,7 +120,14 @@ function migrate(raw: any): SaveData {
   merged.settings = { ...base.settings, ...(raw.settings || {}) };
   merged.cargo = (merged.cargo || []).filter((s) => ITEM_MAP[s.id]);
   merged.vault = (merged.vault || []).filter((s) => ITEM_MAP[s.id]);
-  while (merged.trophies.length < 3) merged.trophies.push(null);
+  while (merged.trophies.length < 4) merged.trophies.push(null);
+  merged.crew = (merged.crew || []).filter((c) => CREW_MAP[c]);
+  merged.salvaged = { ...(raw.salvaged || {}) };
+  if (!VESSELS[merged.vessel]) merged.vessel = 'dinghy';
+  merged.vesselsOwned = (merged.vesselsOwned || ['dinghy']).filter((v) => VESSELS[v]);
+  merged.upgrades = (merged.upgrades || []).filter((u) => UPGRADE_MAP[u]);
+  if (raw.hull === undefined) merged.hull = VESSELS[merged.vessel].hull;
+  merged.goal = Math.max(0, Math.min(GOALS.length - 1, merged.goal | 0));
   merged.version = SAVE_VERSION;
   return merged;
 }
@@ -193,20 +225,49 @@ export class Store {
     }
     return best;
   }
+  hasRole(role: CrewRole) {
+    return this.data.crew.some((c) => CREW_MAP[c]?.role === role);
+  }
   get stats() {
     const v = this.vesselDef;
-    const sail = this.bestInSlot('sail');
-    const storage = this.bestInSlot('storage');
-    const steer = this.bestInSlot('steering');
+    const b = (slot: UpgradeDef['slot']) => this.bestInSlot(slot)?.effects ?? {};
+    const sail = b('sail'), storage = b('storage'), steer = b('steering'), eng = b('engine'), hull = b('hull'), nav = b('navigation');
+    const power = b('power'), tank = b('tank');
+    const crewNav = this.hasRole('navigator') ? 1.1 : 1;
     return {
-      speed: v.speed * (sail?.effects.speedMul ?? 1),
-      turn: v.turn * (steer?.effects.turnMul ?? 1),
-      cargo: v.cargo + (storage?.effects.cargo ?? 0),
-      reef: this.has('hull_copper') || this.data.vessel === 'sloop',
-      compass: this.has('compass_brass'),
+      speed: v.speed * (sail.speedMul ?? 1) * crewNav,
+      turn: v.turn * (steer.turnMul ?? 1),
+      cargo: v.cargo + (storage.cargo ?? 0),
+      reef: !!hull.reef || this.data.vessel !== 'dinghy',
+      compass: !!nav.compass,
       crossSwell: v.crossSwell,
+      crossStorm: v.crossStorm,
       trophySlots: v.trophySlots,
+      engine: eng.engine ?? 0,
+      fuelUse: (eng.fuelUse ?? 0) * (this.hasRole('mechanic') ? 0.65 : 1),
+      fuelCap: BASE_FUEL + (tank.fuelCap ?? 0),
+      hullMax: v.hull + (hull.hull ?? 0),
+      armor: hull.armor ?? 0,
+      salvage: b('salvage').salvage ?? 0,
+      harpoon: b('defense').harpoon ?? 0,
+      radar: nav.radar ?? 0,
+      berths: v.berths + (b('quarters').berths ?? 0),
+      light: b('lighting').light ?? 0,
+      fishing: b('fishing').fishing ?? 0,
+      solar: power.solar ?? 0,
     };
+  }
+  get goal() {
+    return GOALS[this.data.goal];
+  }
+  /** Advance the Captain's Log if the current goal matches. Returns the reward, or 0. */
+  completeGoal(id: string): number {
+    const g = GOALS[this.data.goal];
+    if (!g || g.id !== id || this.data.goal >= GOALS.length - 1) return 0;
+    this.data.goal++;
+    this.data.gold += g.reward;
+    this.data.stats.goldEarned += g.reward;
+    return g.reward;
   }
 
   // ── Cargo ──
@@ -305,6 +366,8 @@ export class Store {
       if (c.kind === 'category') ok = this.categoryCount(c.category) >= c.n;
       else if (c.kind === 'chests') ok = this.data.chestsOpened >= c.n;
       else if (c.kind === 'discoveries') ok = this.discoveryCount >= c.n;
+      else if (c.kind === 'hauls') ok = this.data.hauls >= c.n;
+      else if (c.kind === 'flag') ok = this.data.flags.includes(c.flag);
       if (ok) {
         this.data.milestones.push(m.id);
         if (m.reward.gold) {

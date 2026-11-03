@@ -1,9 +1,16 @@
-// TIDEBREAKERS core: rendering loop, sailing, going ashore, digging, treasure, harbor and quests.
+// TIDEBREAKERS core: rendering loop, sailing and motoring, weather and hull, salvage, crew, raiders,
+// settlements, going ashore, digging, treasure, the first voyage and the Captain's Log.
 import * as THREE from 'three';
 import { Store } from '../state/store';
 import { UI, type GameAPI, type Action } from '../ui/ui';
 import { Ocean } from '../world/ocean';
-import { Sky, SUN_DIR, FOG, SKY_HORIZON } from '../world/sky';
+import { Sky } from '../world/sky';
+import { Atmosphere } from '../world/atmosphere';
+import { DrownedWorld } from '../world/drowned';
+import { loadModels, loadCrew, model, loadReport } from '../world/assets';
+import { oceanState } from '../world/ocean';
+import { Salvage } from './salvage';
+import { Raiders } from './raiders';
 import { Environment } from '../world/environment';
 import { heightAt, isReef, swellFactor, findShore, nearestIsland } from '../world/terrain';
 import { swayUniforms } from '../world/materials';
@@ -11,9 +18,12 @@ import { buildShip, animateShip, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
 import { audio } from '../audio/audio';
 import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh } from './fx';
-import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, type IslandDef, type ScriptedFind } from '../data/world';
+import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
 import { item, RARITY_ORDER } from '../data/items';
 import { UPGRADE_MAP, VESSELS, COSMETIC_MAP, type VesselId } from '../data/ship';
+import { RECIPE_MAP } from '../data/crafting';
+import { CREW_MAP, ROLE_INFO } from '../data/crew';
+import { GOALS } from '../data/progress';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
 
 type Mode = 'sail' | 'foot';
@@ -38,16 +48,29 @@ export class Game implements GameAPI {
   scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
   sunLight: THREE.DirectionalLight;
+  hemi: THREE.HemisphereLight;
+  atmo = new Atmosphere();
   ocean!: Ocean;
   sky!: Sky;
   env!: Environment;
+  drowned!: DrownedWorld;
+  salvage!: Salvage;
+  raiders!: Raiders;
+  engineOn = false;
+  private fishTimer = 0;
+  private castawayObjs = new Map<string, THREE.Object3D>();
+  private caches: { obj: THREE.Object3D; x: number; z: number; region: string }[] = [];
+  private cacheTimer = 0;
+  private lastHullWarn = 0;
+  private goalTimer = 0;
+  private stormSaid = false;
   foam!: Particles;
   sparkle!: Particles;
   dirt!: Particles;
 
   ship!: ShipParts;
   shipRoot = new THREE.Group();
-  boat = { x: 0, z: 0, heading: 0, speed: 0, anchored: false, docked: true, anchorDepth: 0 };
+  boat = { x: 0, z: 0, heading: 0, speed: 0, anchored: false, docked: true, dockedAt: 'driftholm', anchorDepth: 0, busy: false };
   captain = new Captain();
   mode: Mode = 'sail';
   foot = { x: 0, z: 0, heading: 0, landX: 0, landZ: 0, island: ISLANDS[0] as IslandDef, speed: 0 };
@@ -58,7 +81,10 @@ export class Game implements GameAPI {
   zoom = 1;
   private lastDrag = -10;
   private t = 0;
-  private started = false;
+  started = false;
+  get renderT() {
+    return this.t;
+  }
   showcase = false;
 
   private pickups: Pickup[] = [];
@@ -86,13 +112,12 @@ export class Game implements GameAPI {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.NoToneMapping;
     this.camera = new THREE.PerspectiveCamera(55, 1, 0.3, 4000);
-    this.scene.fog = new THREE.Fog(FOG.color, FOG.near, FOG.far);
-    this.scene.background = SKY_HORIZON.clone();
+    this.scene.fog = new THREE.Fog(0xc1e5ee, 240, 1000);
+    this.scene.background = new THREE.Color(0xc4ebf4);
 
-    const hemi = new THREE.HemisphereLight(0xcfeeff, 0xc9b48a, 1.5);
-    this.scene.add(hemi);
+    this.hemi = new THREE.HemisphereLight(0xcfeeff, 0xc9b48a, 1.5);
+    this.scene.add(this.hemi);
     this.sunLight = new THREE.DirectionalLight(0xfff1d6, 2.4);
-    this.sunLight.position.copy(SUN_DIR).multiplyScalar(80);
     this.sunLight.castShadow = true;
     this.sunLight.shadow.mapSize.set(1024, 1024);
     const sc = this.sunLight.shadow.camera;
@@ -114,22 +139,33 @@ export class Game implements GameAPI {
   }
 
   async init() {
-    await this.progress(0.1, 'Charting the Shallows…');
-    this.ocean = new Ocean(this.scene, SUN_DIR, FOG, SKY_HORIZON);
-    await this.progress(0.35, 'Raising islands…');
+    this.atmo.time = this.store.data.timeOfDay;
+    await this.progress(0.05, 'Hauling salvage out of the deep…');
+    await loadModels((k) => void this.progress(0.05 + k * 0.3, 'Hauling salvage out of the deep…'));
+    await this.progress(0.38, 'Flooding the world…');
+    this.ocean = new Ocean(this.scene);
+    await this.progress(0.5, 'Raising the last high ground…');
     this.env = new Environment(this.scene);
-    await this.progress(0.7, 'Painting the sky…');
-    this.sky = new Sky(this.scene);
+    await this.progress(0.62, 'Drowning the cities…');
+    this.drowned = new DrownedWorld(this.scene);
+    await this.progress(0.74, 'Brewing storms…');
+    this.sky = new Sky(this.scene, this.atmo);
+    this.atmo.onThunder = (d) => setTimeout(() => audio.thunder(1 - d * 0.6), d * 1400);
+    this.salvage = new Salvage(this);
+    this.raiders = new Raiders(this);
+    this.placeCastaways();
     this.foam = new Particles(this.scene, 500, 0.7);
     this.sparkle = new Particles(this.scene, 300, 0.6, true);
     this.dirt = new Particles(this.scene, 200, 0.35);
-    await this.progress(0.85, 'Caulking the dinghy…');
+    await this.progress(0.85, 'Patching the skiff…');
     this.scene.add(this.shipRoot);
     this.rebuildShip();
     this.scene.add(this.captain.root);
     this.restoreState();
     this.placeFinds();
     await this.progress(1, 'Ready');
+    if (this.store.data.crew.length) loadCrew().then(() => this.rebuildShip());
+    else void loadCrew();
     this.renderer.compile(this.scene, this.camera);
     let last = performance.now();
     const loop = (now: number) => {
@@ -142,6 +178,7 @@ export class Game implements GameAPI {
     requestAnimationFrame(loop);
     const save = () => {
       this.persistShip();
+      this.store.data.timeOfDay = this.atmo.time;
       this.store.saveNow();
     };
     document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && save());
@@ -153,7 +190,7 @@ export class Game implements GameAPI {
     this.started = true;
     audio.unlock();
     if (this.store.isNew) {
-      this.ui.revealInfo('Port Saltwhistle', 'Wake up, Captain!', 'You own one leaky dinghy, fifteen gold and a head full of stories. The ocean is full of secrets. Time to find some.<br><br><b>Drag the ship’s wheel</b> (bottom-left) toward where you want to sail.', 'Let’s go');
+      this.ui.revealInfo('Driftholm · Year 61 After the Water', 'Wake up, Captain!', 'The sea took the cities, the roads and the mountains. It left you a patchwork skiff, fifteen gold and a head full of stories.<br><br>Out there: drowned towers full of the old world, castaways who need a berth, and a boat that could become a home.<br><br><b>Drag the wheel</b> (bottom-left) toward where you want to sail.', 'Let’s go');
       this.store.isNew = false;
       this.store.saveNow();
     } else {
@@ -221,7 +258,8 @@ export class Game implements GameAPI {
     this.boat.heading = s.heading;
     this.boat.anchored = s.anchored;
     this.boat.docked = s.docked;
-    if (this.boat.docked) this.dockPose();
+    this.boat.dockedAt = s.dockedAt || 'driftholm';
+    if (this.boat.docked && this.boat.dockedAt === 'driftholm') this.dockPose();
     this.camYaw = this.boat.heading;
   }
 
@@ -232,6 +270,7 @@ export class Game implements GameAPI {
     s.heading = this.boat.heading;
     s.anchored = this.boat.anchored;
     s.docked = this.boat.docked;
+    s.dockedAt = this.boat.dockedAt;
   }
 
   private dockPose() {
@@ -241,13 +280,17 @@ export class Game implements GameAPI {
     this.boat.speed = 0;
     this.boat.anchored = false;
     this.boat.docked = true;
+    this.boat.dockedAt = 'driftholm';
   }
 
   rebuildShip() {
     if (this.ship) this.shipRoot.remove(this.ship.group);
     this.ship = buildShip(this.store);
     this.shipRoot.add(this.ship.group);
-    this.camDist = this.store.data.vessel === 'sloop' ? 24 : 15;
+    this.camDist = this.store.data.vessel === 'ironwake' ? 30 : this.store.data.vessel === 'sloop' ? 24 : 15;
+    const st = this.store.stats;
+    this.store.data.hull = Math.min(this.store.data.hull, st.hullMax);
+    this.store.data.fuel = Math.min(this.store.data.fuel, st.fuelCap);
   }
 
   // ───────── GameAPI ─────────
@@ -256,6 +299,9 @@ export class Game implements GameAPI {
   }
   isDocked() {
     return this.boat.docked && this.mode === 'sail';
+  }
+  dockedSettlement(): SettlementDef | null {
+    return this.isDocked() ? SETTLEMENT_MAP[this.boat.dockedAt] ?? null : null;
   }
   setShowcase(on: boolean) {
     this.showcase = on;
@@ -310,7 +356,7 @@ export class Game implements GameAPI {
     this.sparkle.emit(new THREE.Vector3(this.boat.x, 2, this.boat.z), 50, '#ffd25e', 4, 5, 1.4, 4, 2);
     this.ui.toast(`${u.name} installed!`, { color: '#3fa55a', life: 3 });
     if (s.data.quest === 'free' && s.data.upgrades.length === 1) {
-      setTimeout(() => this.ui.revealInfo('First upgrade!', 'She looks better already', 'Every upgrade changes your ship — look at her! Now the ocean is yours: follow Wren’s rumours, find the wreck of the Wren, and save up for a Sloop to cross the open swell.', 'Fair winds'), 900);
+      setTimeout(() => this.ui.revealInfo('First upgrade!', 'She looks better already', 'Every part you fit shows up on your boat. Now open your Captain’s Log (top of the screen): salvage the drowned tower, fit an engine, find a crew, and build her into something that can cross the swell.', 'Fair winds'), 900);
     }
   }
 
@@ -325,9 +371,10 @@ export class Game implements GameAPI {
       }
       s.pay(v.cost);
       s.data.vesselsOwned.push(v.id);
+      s.data.hull = v.hull + (s.bestInSlot('hull')?.effects.hull ?? 0);
       audio.hammer();
       setTimeout(() => audio.discover(4), 500);
-      this.ui.revealInfo('New vessel commissioned', v.name, `${v.desc}<br><br>Your upgrades, paint and trophies came with you. The open swell is no longer a wall.`, 'Hoist the sails');
+      this.ui.revealInfo('New vessel commissioned', v.name, `${v.desc}<br><br>Your upgrades, paint, trophies and crew came with you.${v.id === 'ironwake' ? ' The Stormwall is no longer a wall.' : ' The open swell is no longer a wall.'}`, 'Hoist the sails');
     }
     s.data.vessel = v.id;
     s.commit();
@@ -385,7 +432,7 @@ export class Game implements GameAPI {
     location.reload();
   }
 
-  private haptic(ms: number) {
+  haptic(ms: number) {
     if (this.store.data.settings.haptics && navigator.vibrate) navigator.vibrate(ms);
   }
 
@@ -467,7 +514,7 @@ export class Game implements GameAPI {
   }
 
   /** Give items to the player. force = ignore cargo capacity (story finds / chests). */
-  private gain(id: string, n: number, where: string, opts: { force?: boolean; reveal?: 'card' | 'toast' | 'none' } = {}): number {
+  gain(id: string, n: number, where: string, opts: { force?: boolean; reveal?: 'card' | 'toast' | 'none' } = {}): number {
     const s = this.store;
     let got: number;
     if (opts.force) {
@@ -497,7 +544,7 @@ export class Game implements GameAPI {
     return got;
   }
 
-  private checkMilestones() {
+  checkMilestones() {
     const done = this.store.checkMilestones();
     for (const m of done) {
       const reward = [m.reward.gold ? `${m.reward.gold} gold` : '', m.reward.cosmetic ? `${COSMETIC_MAP[m.reward.cosmetic].name} (${COSMETIC_MAP[m.reward.cosmetic].slot})` : ''].filter(Boolean).join(' + ');
@@ -550,7 +597,378 @@ export class Game implements GameAPI {
       case 'nofit':
         this.say('nofit', 'The swell is too rough for this boat.');
         break;
+      case 'salvage':
+        this.salvage.begin();
+        break;
+      default:
+        if (id.startsWith('dock:')) this.dockAt(id.slice(5));
+        else if (id.startsWith('rescue:')) this.rescue(id.slice(7));
     }
+  }
+
+  // ───────── drowned world systems ─────────
+  private applyAtmosphere() {
+    const a = this.atmo;
+    this.sunLight.color.copy(a.sunColor);
+    this.sunLight.intensity = a.sunIntensity;
+    this.hemi.color.copy(a.hemiSky);
+    this.hemi.groundColor.copy(a.hemiGround);
+    this.hemi.intensity = a.hemiIntensity;
+    const fog = this.scene.fog as THREE.Fog;
+    fog.color.copy(a.fogColor);
+    fog.near = a.fogNear;
+    fog.far = a.fogFar;
+    (this.scene.background as THREE.Color).copy(a.skyHorizon);
+    const u = this.ocean.uniforms;
+    u.uSunDir.value.copy(a.sunDir);
+    u.uSunColor.value.copy(a.sunColor).multiplyScalar(Math.min(1.2, a.sunIntensity / 2));
+    u.uFogColor.value.copy(a.fogColor);
+    u.uFogNear.value = a.fogNear;
+    u.uFogFar.value = a.fogFar;
+    u.uSkyColor.value.copy(a.skyHorizon);
+    u.uSkyTop.value.copy(a.skyTop);
+    u.uStorm.value = a.storm;
+    u.uNight.value = a.night;
+    const amb = 0.3 + 0.7 * (1 - a.night) * (1 - a.storm * 0.45) + a.lightning * 0.5;
+    u.uAmbient.value.setRGB(amb * 0.9, amb * 0.97, amb);
+    oceanState.storm = a.storm;
+    if (this.ship.lamp) this.ship.lamp.intensity = a.night * 3 + a.storm * 1.2;
+  }
+
+  /** Storms batter the hull; a Mechanic patches it at sea. */
+  private updateHull(dt: number) {
+    const s = this.store.data, st = this.store.stats;
+    const b = this.boat;
+    if (b.docked || this.mode !== 'sail') return;
+    const storm = this.atmo.storm;
+    if (storm > 0.4) {
+      const wallMul = this.atmo.wall > 0.5 ? (st.crossStorm ? 0.55 : 2) : 1;
+      this.damage((storm - 0.4) * 1.6 * wallMul * dt, null);
+      if (!this.stormSaid) {
+        this.stormSaid = true;
+        this.ui.toast(this.store.hasRole('lookout') ? 'Kai: “Storm on us! Hold her steady, she’ll take a beating.”' : 'Storm! Waves are battering the hull.', { color: '#9aa9b4', life: 3.5 });
+        audio.discover(0);
+      }
+    } else if (storm < 0.2) this.stormSaid = false;
+    if (this.store.hasRole('mechanic') && s.hull < st.hullMax && storm < 0.4) s.hull = Math.min(st.hullMax, s.hull + dt * 0.35);
+    // Lookout: early warning of a storm cell ahead
+    if (this.store.hasRole('lookout')) {
+      const ax = b.x + Math.sin(b.heading) * 160, az = b.z + Math.cos(b.heading) * 160;
+      if (this.atmo.stormAt(ax, az) > 0.5 && storm < 0.2) this.say('lookout_storm', 'Kai: “Storm ahead, Captain. Go round, or brace.”', 25, { color: '#b26bff' });
+    }
+    // Fishing: rods and/or a Fisher bring in Silverfin while under way
+    const rate = st.fishing + (this.store.hasRole('fisher') ? (st.fishing ? 2 : 1) : 0);
+    if (rate && b.speed > 1.2) {
+      this.fishTimer += dt * rate;
+      if (this.fishTimer > 40) {
+        this.fishTimer = 0;
+        const got = this.gain('fish', 1, 'the open sea', { reveal: 'none' });
+        if (got) {
+          this.ui.toast('+1 Silverfin', { icon: 'fish', color: '#9ec5e8', life: 1.6 });
+          audio.splash();
+          this.store.commit();
+        }
+      }
+    }
+  }
+
+  damage(n: number, msg: string | null) {
+    const s = this.store.data, st = this.store.stats;
+    const dmg = n * (1 - st.armor);
+    s.hull = Math.max(0, s.hull - dmg);
+    if (msg && dmg > 0.5) this.say('dmg', `${msg} −${Math.round(dmg)} hull`, 2, { color: '#ff6b4a' });
+    if (s.hull < st.hullMax * 0.25 && this.t - this.lastHullWarn > 20) {
+      this.lastHullWarn = this.t;
+      this.ui.toast('Hull critical! Patch it from the SHIP screen or head for a settlement.', { color: '#ff6b4a', life: 4 });
+      audio.creak();
+      this.haptic(60);
+    }
+    if (s.hull <= 0) this.swamped();
+  }
+
+  private swamped() {
+    const s = this.store;
+    this.engineOn = false;
+    this.ui.fade(() => {
+      // lose half of everything that isn't story loot
+      let lost = 0;
+      for (const st of [...s.data.cargo]) {
+        const d = item(st.id);
+        if (d.rarity === 'legendary' || d.rarity === 'epic') continue;
+        const n = Math.ceil(st.n / 2);
+        lost += s.removeFrom(s.data.cargo, st.id, n);
+      }
+      this.mode = 'sail';
+      this.dockPose();
+      s.data.hull = Math.round(s.stats.hullMax * 0.4);
+      s.data.stats.trips++;
+      this.clearPickups();
+      this.persistShip();
+      s.commit();
+      this.ui.revealInfo('Swamped', 'Towed home to Driftholm', `The sea came over the rails. A Driftholm tug found you and towed you home${lost ? `, but ${lost} items went over the side` : ''}. Marlo patched the worst of it.<br><br>Armour plating, a Mechanic and hull patch kits keep you afloat in storms.`, 'Never again');
+    });
+  }
+
+  private placeCastaways() {
+    for (const cw of CASTAWAYS) {
+      if (this.store.data.castaways.includes(cw.id)) continue;
+      const o = model('tb_debris_kit', 'castaway_raft', { shadows: true }) ?? new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.4, 2), new THREE.MeshToonMaterial({ color: 0x8a5a34 }));
+      o.position.set(cw.x, 0, cw.z);
+      o.rotation.y = cw.x * 0.1;
+      this.scene.add(o);
+      this.castawayObjs.set(cw.id, o);
+    }
+  }
+
+  private rescue(id: string) {
+    const cw = CASTAWAYS.find((c) => c.id === id);
+    const s = this.store;
+    if (!cw || s.data.castaways.includes(id)) return;
+    if (this.boat.speed > 3) return this.say('slow', 'Slow down to bring them aboard.');
+    const def = CREW_MAP[cw.crew];
+    s.data.castaways.push(id);
+    const obj = this.castawayObjs.get(id);
+    if (obj) this.scene.remove(obj);
+    this.castawayObjs.delete(id);
+    this.sparkle.emit(new THREE.Vector3(cw.x, 1, cw.z), 40, '#bff7e6', 2, 4, 1, 4, 0.6);
+    audio.discover(2);
+    this.haptic(40);
+    if (s.data.crew.length < s.stats.berths) {
+      s.data.crew.push(def.id);
+      this.ui.revealInfo(`Rescued · ${ROLE_INFO[def.role].label}`, def.name, `${def.pitch}<br><br><b>${ROLE_INFO[def.role].icon} ${ROLE_INFO[def.role].perk}</b>`, 'Welcome aboard');
+      loadCrew().then(() => this.rebuildShip());
+    } else {
+      this.ui.revealInfo('Rescued', def.name, `${def.pitch}<br><br>No berth free aboard, so ${def.name.split(' ')[0]} will wait for you at Driftholm. Recruit them from the Crew board once you have room (a Container Cabin adds berths).`, 'Understood');
+    }
+    s.commit();
+  }
+
+  recruit(id: string) {
+    const s = this.store;
+    const def = CREW_MAP[id];
+    if (!def || s.data.crew.includes(id)) return;
+    if (s.data.crew.length >= s.stats.berths) {
+      audio.deny();
+      return this.ui.toast('No free berth. Commission a bigger boat or fit a Container Cabin.', { color: '#ff6b4a' });
+    }
+    if (def.cost && s.data.gold < def.cost) {
+      audio.deny();
+      return this.ui.toast(`${def.name} wants ${def.cost}g to sign on.`);
+    }
+    if (def.cost) s.data.gold -= def.cost;
+    s.data.crew.push(id);
+    audio.discover(2);
+    this.ui.toast(`${def.name} joined your crew! ${ROLE_INFO[def.role].icon}`, { color: '#3fa55a', life: 3 });
+    s.commit();
+    loadCrew().then(() => this.rebuildShip());
+  }
+
+  dismiss(id: string) {
+    const s = this.store;
+    s.data.crew = s.data.crew.filter((c) => c !== id);
+    if (!s.data.castaways.length || CREW_MAP[id].home !== 'castaway') void 0;
+    s.commit();
+    this.rebuildShip();
+  }
+
+  private dockAt(id: string) {
+    const sett = SETTLEMENT_MAP[id];
+    if (!sett) return;
+    if (this.boat.speed > 3.2) return this.say('slow', 'Too fast! Ease off to come alongside.');
+    this.boat.docked = true;
+    this.boat.dockedAt = id;
+    this.boat.speed = 0;
+    this.engineOn = false;
+    const s = this.store.data;
+    if (!s.settlementsVisited.includes(id)) s.settlementsVisited.push(id);
+    const flag = `docked_${id}`;
+    if (!s.flags.includes(flag)) s.flags.push(flag);
+    audio.anchor(true);
+    audio.phrase('harbor');
+    this.persistShip();
+    this.store.commit();
+    this.checkMilestones();
+    setTimeout(() => this.ui.openPanel('harbor'), 250);
+  }
+
+  toggleEngine() {
+    const st = this.store.stats;
+    if (!st.engine) return this.ui.toast('No engine yet. Marlo can fit a Salvaged Outboard.', { life: 3 });
+    if (!this.engineOn && this.store.data.fuel <= 0) {
+      audio.deny();
+      return this.ui.toast('Tank is empty.', { color: '#ff6b4a' });
+    }
+    this.engineOn = !this.engineOn;
+    audio.engineStart(this.engineOn);
+    this.haptic(20);
+  }
+
+  craft(id: string) {
+    const r = RECIPE_MAP[id];
+    const s = this.store;
+    if (!r || !s.canAfford({ gold: 0, mats: r.needs })) return audio.deny();
+    s.pay({ gold: 0, mats: r.needs });
+    s.addTo(this.boat.docked ? s.data.vault : s.data.cargo, r.makes.id, r.makes.n);
+    s.discover(r.makes.id, 'your workbench', r.makes.n);
+    audio.hammer();
+    this.ui.toast(`Crafted ${item(r.makes.id).name} ×${r.makes.n}`, { icon: r.makes.id, color: '#3fa55a' });
+    s.commit();
+  }
+
+  /** Use fuel cans from cargo/vault to fill the tank. */
+  refuel() {
+    const s = this.store, st = s.stats;
+    let used = 0;
+    while (s.data.fuel < st.fuelCap - 2 && s.countOwned('fuel_can') > 0) {
+      s.consume('fuel_can', 1);
+      s.data.fuel = Math.min(st.fuelCap, s.data.fuel + 20);
+      used++;
+    }
+    if (!used) return audio.deny();
+    audio.splash();
+    this.ui.toast(`Poured ${used} fuel can${used > 1 ? 's' : ''} into the tank`, { icon: 'fuel_can', color: '#f2b825' });
+    s.commit();
+  }
+
+  buyFuel() {
+    const s = this.store, st = s.stats;
+    const sett = this.dockedSettlement();
+    const price = sett?.fuelPrice ?? 3;
+    const want = Math.floor(st.fuelCap - s.data.fuel);
+    const n = Math.min(want, Math.floor(s.data.gold / price));
+    if (n <= 0) return audio.deny();
+    s.data.gold -= n * price;
+    s.data.fuel += n;
+    audio.coins(4);
+    this.ui.toast(`Filled ${n} fuel for ${n * price}g`, { color: '#f2b825' });
+    s.commit();
+  }
+
+  /** Repair at a settlement for gold, or at sea with a patch kit. */
+  repair(withKit: boolean) {
+    const s = this.store, st = s.stats;
+    const miss = st.hullMax - s.data.hull;
+    if (miss < 1) return;
+    if (withKit) {
+      if (!s.consume('hull_patch', 1)) return audio.deny();
+      s.data.hull = Math.min(st.hullMax, s.data.hull + 35);
+    } else {
+      const cost = Math.ceil(miss * 0.6);
+      if (s.data.gold < cost) return audio.deny();
+      s.data.gold -= cost;
+      s.data.hull = st.hullMax;
+    }
+    audio.hammer();
+    s.commit();
+  }
+
+  private updateCaches(dt: number) {
+    if (!this.started || this.mode !== 'sail') return;
+    const b = this.boat;
+    // pick up
+    for (let i = this.caches.length - 1; i >= 0; i--) {
+      const c = this.caches[i];
+      const w = this.ocean.sample(c.x, c.z, this.t);
+      c.obj.position.y = w.y - 0.15;
+      c.obj.rotation.z = w.dx * 0.5;
+      c.obj.rotation.x = w.dz * 0.5;
+      const d = Math.hypot(c.x - b.x, c.z - b.z);
+      if (d < this.ship.beam + 3.2) {
+        this.scene.remove(c.obj);
+        this.caches.splice(i, 1);
+        this.salvage.openCache(c.region as 'shallows');
+      } else if (d > 420) {
+        this.scene.remove(c.obj);
+        this.caches.splice(i, 1);
+      }
+    }
+    // spawn ahead and around, in open water
+    this.cacheTimer -= dt;
+    const max = 3 + (this.store.hasRole('lookout') ? 2 : 0) + (this.store.stats.radar ? 1 : 0);
+    if (this.cacheTimer <= 0 && this.caches.length < max) {
+      this.cacheTimer = 6;
+      for (let tries = 0; tries < 8; tries++) {
+        const a = b.heading + this.rng.range(-1.3, 1.3);
+        const d = this.rng.range(90, 260);
+        const x = b.x + Math.sin(a) * d, z = b.z + Math.cos(a) * d;
+        if (heightAt(x, z) > -3 || Math.hypot(x, z) > WORLD.size / 2 - 80) continue;
+        if (this.drowned.colliders.some((c) => Math.hypot(c.x - x, c.z - z) < c.r + 6)) continue;
+        const obj = model('tb_debris_kit', 'cache_crate', { shadows: true });
+        if (!obj) return;
+        obj.position.set(x, 0, z);
+        obj.rotation.y = this.rng.range(0, 6);
+        this.scene.add(obj);
+        const region = this.atmo.wallAt(x, z) > 0.5 ? 'stormwall' : swellFactor(x, z) > 0.5 ? 'emerald' : 'shallows';
+        this.caches.push({ obj, x, z, region });
+        break;
+      }
+    }
+  }
+
+  chartExtras() {
+    const d = this.store.data;
+    return {
+      flags: d.flags,
+      sites: SALVAGE_SITES.map((s) => ({ x: s.x, z: s.z, name: s.name, ready: this.salvage.ready(s), region: s.region })),
+      settlements: SETTLEMENTS.map((s) => ({ x: s.x, z: s.z, name: s.name, visited: d.settlementsVisited.includes(s.id) })),
+      castaways: CASTAWAYS.filter((c) => !d.castaways.includes(c.id) && (this.store.hasRole('navigator') || this.store.stats.radar > 0)).map((c) => ({ x: c.x, z: c.z })),
+      structures: STRUCTURES.map((s) => ({ x: s.x, z: s.z, kind: s.kind })),
+      raiders: RAIDER_ZONES.map((r) => ({ x: r.x, z: r.z, r: r.r, name: r.name })),
+      pois: POIS,
+    };
+  }
+
+  cacheList() {
+    return this.caches.map((c) => ({ x: c.x, z: c.z }));
+  }
+
+  private updateGoals(dt: number) {
+    this.goalTimer -= dt;
+    if (this.goalTimer > 0) return;
+    this.goalTimer = 0.5;
+    const s = this.store;
+    if (s.data.quest !== 'free') return;
+    const g = GOALS[s.data.goal];
+    if (!g) return;
+    const d = s.data;
+    const done: Record<string, () => boolean> = {
+      g_salvage: () => d.firstHauls.includes('sv_stump') || d.hauls > 0,
+      g_engine: () => s.has('engine_outboard'),
+      g_crew: () => d.crew.length > 0,
+      g_trimaran: () => d.vesselsOwned.includes('sloop'),
+      g_helios: () => d.flags.includes('docked_helios'),
+      g_meridian: () => d.firstHauls.some((h) => h.startsWith('sv_meridian')),
+      g_raiders: () => d.raidersRepelled > 0,
+      g_ironwake: () => d.vesselsOwned.includes('ironwake'),
+      g_spire: () => d.flags.includes('reached_spire'),
+    };
+    if (done[g.id]?.()) {
+      const reward = s.completeGoal(g.id);
+      const next = GOALS[s.data.goal];
+      audio.discover(3);
+      this.ui.revealInfo('Captain’s Log', `✔ ${g.text}`, `${reward ? `<b>+${reward} gold.</b><br><br>` : ''}Next: <b>${next.text}</b><br>${next.hint}`, 'Onward');
+      s.commit();
+    }
+  }
+
+  private updateHUD() {
+    const s = this.store.data, st = this.store.stats;
+    const lbl = this.atmo.label();
+    this.ui.setStatus({
+      fuel: s.fuel, fuelCap: st.fuelCap, hull: s.hull, hullMax: st.hullMax,
+      clock: lbl.clock, phase: lbl.phase, weather: lbl.weather, engine: st.engine > 0, engineOn: this.engineOn, sailing: this.mode === 'sail',
+    });
+    const px = this.mode === 'sail' ? this.boat.x : this.foot.x, pz = this.mode === 'sail' ? this.boat.z : this.foot.z;
+    const range = st.radar || 160;
+    const blips: { x: number; z: number; kind: string }[] = [];
+    for (const site of SALVAGE_SITES) if (Math.hypot(site.x - px, site.z - pz) < range * 1.4) blips.push({ x: site.x - px, z: site.z - pz, kind: this.salvage.ready(site) ? 'site' : 'site_done' });
+    for (const st2 of SETTLEMENTS) if (Math.hypot(st2.x - px, st2.z - pz) < range * 1.4) blips.push({ x: st2.x - px, z: st2.z - pz, kind: 'town' });
+    if (st.radar || this.store.hasRole('lookout')) {
+      for (const c of this.caches) blips.push({ x: c.x - px, z: c.z - pz, kind: 'cache' });
+      for (const r of this.raiders.positions()) blips.push({ x: r.x - px, z: r.z - pz, kind: 'raider' });
+    }
+    for (const cw of CASTAWAYS) if (!s.castaways.includes(cw.id) && Math.hypot(cw.x - px, cw.z - pz) < range * 1.4) blips.push({ x: cw.x - px, z: cw.z - pz, kind: 'castaway' });
+    this.ui.setRadar(blips, range, this.mode === 'sail' ? this.boat.heading : this.foot.heading, this.camYaw, !!st.radar);
   }
 
   private dock() {
@@ -587,7 +1005,7 @@ export class Game implements GameAPI {
       audio.splash();
       this.store.advanceQuest('ashore');
       this.store.commit();
-      if (isl.id === 'harbor') this.say('harborwalk', 'Port Saltwhistle — dock at the pier to visit the merchants.', 5);
+      if (isl.id === 'harbor') this.say('harborwalk', 'Driftholm: dock at the raft pier to visit the traders.', 5);
     });
   }
 
@@ -812,9 +1230,23 @@ export class Game implements GameAPI {
     else this.updateFoot(dt);
     this.updateCamera(dt);
     const focus = this.camera.position;
-    this.ocean.update(this.t, focus);
+    const pxz = this.mode === 'sail' ? this.boat : this.foot;
+    this.atmo.update(dt * (this.ui.panelOpen ? 0.25 : 1), pxz.x, pxz.z);
+    this.applyAtmosphere();
+    this.ocean.update(this.t, dt, focus);
     this.sky.update(this.t, dt, focus);
     this.env.update(this.t, dt);
+    this.drowned.update(this.t, dt, this.atmo.night);
+    this.salvage.update(dt);
+    this.raiders.update(dt);
+    for (const c of this.ship.crew) c.mixer.update(dt);
+    for (const [id, o] of this.castawayObjs) {
+      const cw = CASTAWAYS.find((c) => c.id === id)!;
+      const w = this.ocean.sample(cw.x, cw.z, this.t);
+      o.position.y = w.y - 0.1;
+      o.rotation.z = w.dx * 0.4;
+    }
+    this.updateCaches(dt);
     this.foam.update(dt);
     this.sparkle.update(dt);
     this.dirt.update(dt);
@@ -838,16 +1270,19 @@ export class Game implements GameAPI {
     }
     // sun & shadows follow the action
     const fp = this.mode === 'sail' ? new THREE.Vector3(this.boat.x, 0, this.boat.z) : new THREE.Vector3(this.foot.x, 0, this.foot.z);
-    this.sunLight.position.copy(fp).addScaledVector(SUN_DIR, 100);
+    this.sunLight.position.copy(fp).addScaledVector(this.atmo.sunDir, 100);
     this.sunLight.target.position.copy(fp);
     if (this.started) {
       this.updateIslands(dt);
       this.updateQuest();
+      this.updateGoals(dt);
       this.updateGuidance();
+      this.updateHUD();
       this.saveTimer += dt;
       if (this.saveTimer > 8) {
         this.saveTimer = 0;
         this.persistShip();
+        this.store.data.timeOfDay = this.atmo.time;
         this.store.saveNow();
       }
     }
@@ -884,15 +1319,34 @@ export class Game implements GameAPI {
         this.steerTime += dt;
       }
     }
-    if (b.docked) this.dockPose();
+    if (b.docked && b.dockedAt === 'driftholm') this.dockPose();
+    if (b.docked || b.busy) throttle = 0;
     const diff = angleDiff(b.heading, target);
-    const turnRate = st.turn * (0.45 + 0.55 * Math.min(1, b.speed / (st.speed * 0.5)));
+    const turnRate = st.turn * (0.45 + 0.55 * Math.min(1, b.speed / (Math.max(st.speed, st.engine) * 0.5)));
     b.heading += clamp(diff, -turnRate * dt, turnRate * dt);
     const eff = this.windEff(b.heading);
-    const targetSpeed = throttle * st.speed * eff * (Math.abs(diff) > 1.4 ? 0.55 : 1);
+    const gust = 1 + this.atmo.storm * 0.25;
+    let targetSpeed = throttle * st.speed * eff * gust * (Math.abs(diff) > 1.4 ? 0.55 : 1);
+    // engine: wind-independent, burns fuel
+    const s = this.store.data;
+    const motoring = this.engineOn && st.engine > 0 && s.fuel > 0 && throttle > 0.05 && !b.anchored;
+    if (motoring) {
+      targetSpeed = Math.max(targetSpeed, throttle * st.engine * (Math.abs(diff) > 1.4 ? 0.7 : 1));
+      s.fuel = Math.max(0, s.fuel - st.fuelUse * throttle * dt);
+      if (s.fuel <= 0) {
+        this.engineOn = false;
+        this.say('nofuel', 'Out of fuel! The engine sputters out. Salvage fuel cans, refine crude, or trade for fuel.', 6, { color: '#ff6b4a' });
+        audio.deny();
+      }
+    }
+    if (this.engineOn && st.engine <= 0) this.engineOn = false;
+    audio.engine(motoring ? 0.35 + throttle * 0.65 : 0, st.engine > 12);
+    // power upgrades trickle fuel back into the tank
+    if (st.solar && s.fuel < st.fuelCap) s.fuel = Math.min(st.fuelCap, s.fuel + (st.solar / 60) * dt * (1 - this.atmo.night * 0.6 + this.atmo.storm * 0.5));
     const k = targetSpeed > b.speed ? 0.7 : 0.9;
     b.speed += (targetSpeed - b.speed) * (1 - Math.exp(-dt * k));
-    if (b.anchored) b.speed *= Math.exp(-dt * 4);
+    if (b.anchored || b.busy) b.speed *= Math.exp(-dt * 4);
+    this.updateHull(dt);
 
     const fx = Math.sin(b.heading), fz = Math.cos(b.heading);
     const nx = b.x + fx * b.speed * dt;
@@ -904,8 +1358,11 @@ export class Game implements GameAPI {
         if (!st.reef) return 'reef';
       } else if (h > -draft) return 'land';
       if (!st.crossSwell && swellFactor(x, z) > 0.55) return 'swell';
+      if (!st.crossStorm && this.atmo.wallAt(x, z) > 0.55) return 'wall';
       if (Math.hypot(x, z) > WORLD.size / 2 - 40) return 'edge';
       for (const r of this.env.boatRects) if (x > r.x0 - 0.8 && x < r.x1 + 0.8 && z > r.z0 - 0.8 && z < r.z1 + 0.8) return 'pier';
+      const br = this.ship.beam * 0.8;
+      for (const c of this.drowned.colliders) if (Math.hypot(x - c.x, z - c.z) < c.r + br) return 'wreck';
       return null;
     };
     if (!b.docked) {
@@ -924,18 +1381,27 @@ export class Game implements GameAPI {
             audio.splash(true);
             this.foam.emit(new THREE.Vector3(nx, 0.3, nz), 30, '#ffffff', 3, 4, 1, 9, 1);
           } else if (why === 'swell') {
-            this.say('swell', 'The open swell is far too rough for this boat. A Sloop could cross it.', 6);
+            this.say('swell', 'The open swell is far too rough for this boat. The Scrap Trimaran could cross it.', 6);
             audio.splash(true);
           } else if (why === 'edge') {
             this.say('edge', 'Uncharted waters. Wren hasn\u2019t drawn this part of the world yet.', 6);
           } else if (why === 'land') {
             this.say('land', 'Aground! Steer back toward deeper water.', 4);
             audio.creak();
+          } else if (why === 'wall') {
+            this.say('wall', 'The Stormwall throws you back. Only the Ironwake Expedition Cat can survive inside it.', 6, { color: '#ff6b4a' });
+            audio.splash(true);
+          } else if (why === 'wreck') {
+            if (b.speed > 3) {
+              this.damage(b.speed * 1.4, 'Crunch! You hit drowned steel.');
+              audio.clunk();
+              this.foam.emit(new THREE.Vector3(nx, 0.4, nz), 20, '#ffffff', 2, 3, 1, 6, 0.8);
+            }
           }
           this.haptic(25);
         }
-        b.speed *= why === 'swell' ? 0.2 : 0.4;
-        if (why === 'swell') {
+        b.speed *= why === 'swell' || why === 'wall' ? 0.2 : 0.4;
+        if (why === 'swell' || why === 'wall') {
           // push back toward the shallows
           const c = WORLD.shallowsCenter;
           const a = Math.atan2(c.x - b.x, c.z - b.z);
@@ -981,6 +1447,17 @@ export class Game implements GameAPI {
     this.captain.root.rotation.y = b.heading;
     this.captain.update(dt, 0);
 
+    // wake trail in the water + foam spray
+    if (b.speed > 1.2) {
+      const stern = this.ship.wake.clone();
+      this.shipRoot.localToWorld(stern);
+      this.ocean.addWake(stern.x, stern.z, Math.min(1, b.speed / 9), dt);
+    }
+    if (motoring && Math.random() < 0.5) {
+      const ex = this.ship.wake.clone().add(new THREE.Vector3(0, 0.4, -0.3));
+      this.shipRoot.localToWorld(ex);
+      this.foam.emit(ex, 1, '#ffffff', 0.8, 1.2, 0.6, 2, 0.3);
+    }
     // wake foam
     if (b.speed > 1) {
       const stern = this.ship.wake.clone();
@@ -991,8 +1468,8 @@ export class Game implements GameAPI {
       if (Math.random() < b.speed * 0.15) this.foam.emit(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, '#ffffff', 1.2, 1, 0.8, 4, 0.6);
     }
 
-    audio.ambience(dt, b.speed, false, swellFactor(b.x, b.z), this.currentRegion);
-    this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff);
+    audio.ambience(dt, b.speed, false, Math.max(swellFactor(b.x, b.z), this.atmo.storm), this.currentRegion, this.atmo.storm);
+    this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff, motoring);
     this.ui.setDigMeter(null);
 
     // contextual actions
@@ -1000,10 +1477,25 @@ export class Game implements GameAPI {
     const acts: Action[] = [];
     const q = this.store.data.quest;
     if (b.docked) {
-      acts.push({ id: 'harbor', label: '⚓ HARBOR', glow: ['sell', 'catalog', 'upgrade', 'return_harbor'].includes(q) });
+      const sett = SETTLEMENT_MAP[b.dockedAt];
+      acts.push({ id: 'harbor', label: `⚓ ${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['sell', 'catalog', 'upgrade', 'return_harbor'].includes(q) });
     } else {
       const pierD = Math.hypot(b.x - this.env.pierTip.x, b.z - this.env.pierTip.z);
       if (pierD < 18) acts.push({ id: 'dock', label: '⚓ DOCK', glow: true });
+      for (const st2 of SETTLEMENTS) {
+        if (st2.id === 'driftholm') continue;
+        if (Math.hypot(b.x - st2.x, b.z - st2.z) < st2.dockR + this.ship.beam) acts.push({ id: `dock:${st2.id}`, label: `⚓ DOCK AT ${st2.name.toUpperCase()}`, glow: true });
+      }
+      const site = this.salvage.siteInReach();
+      if (site && !b.anchored) {
+        const ready = this.salvage.ready(site);
+        const heavyBlocked = site.heavy && !st.salvage;
+        acts.push({ id: 'salvage', label: `\u{1FA9D} SALVAGE ${site.name.toUpperCase()}`, glow: ready && !heavyBlocked && b.speed < 3, disabled: !ready || heavyBlocked || b.speed > 3 });
+      }
+      for (const cw of CASTAWAYS) {
+        if (this.store.data.castaways.includes(cw.id)) continue;
+        if (Math.hypot(b.x - cw.x, b.z - cw.z) < 12 + this.ship.beam) acts.push({ id: `rescue:${cw.id}`, label: '\u{1F6DF} RESCUE', glow: true, disabled: b.speed > 3 });
+      }
       this.shoreTimer -= dt;
       if (this.shoreTimer <= 0) {
         this.shoreTimer = 0.4;
@@ -1174,13 +1666,26 @@ export class Game implements GameAPI {
       audio.discover(1);
       s.commit();
     }
-    const region = isl.id === 'harbor' && d < 60 ? 'harbor' : d < 150 ? isl.region : swellFactor(px, pz) > 0.5 ? 'emerald' : 'shallows';
+    const wall = this.atmo.wallAt(px, pz) > 0.5;
+    const region = wall ? 'stormwall' : isl.id === 'harbor' && d < 60 ? 'harbor' : d < 150 ? isl.region : swellFactor(px, pz) > 0.5 ? 'emerald' : 'shallows';
     if (region !== this.currentRegion) {
       this.currentRegion = region;
-      if (region === 'emerald' && !s.data.regionsSeen.includes('emerald')) {
-        s.data.regionsSeen.push('emerald');
-        this.ui.banner(REGIONS.emerald.name, REGIONS.emerald.blurb);
+      if ((region === 'emerald' || region === 'stormwall') && !s.data.regionsSeen.includes(region)) {
+        s.data.regionsSeen.push(region);
+        this.ui.banner(REGIONS[region].name, REGIONS[region].blurb);
         s.commit();
+      }
+    }
+    // named places announce themselves the first time
+    for (const poi of POIS) {
+      const key = `seen_${poi.id}`;
+      if (!s.data.flags.includes(key) && Math.hypot(px - poi.x, pz - poi.z) < 140) {
+        s.data.flags.push(key);
+        this.ui.banner(poi.name, SETTLEMENT_MAP[poi.id]?.blurb ?? SALVAGE_SITES.find((x) => Math.hypot(x.x - poi.x, x.z - poi.z) < 60)?.blurb ?? '');
+        audio.discover(2);
+        if (poi.id === 'spire' && !s.data.flags.includes('reached_spire')) s.data.flags.push('reached_spire');
+        s.commit();
+        this.checkMilestones();
       }
     }
   }
@@ -1261,6 +1766,14 @@ export class Game implements GameAPI {
       case 'return_harbor':
         target = this.mode === 'foot' ? { x: this.foot.landX, z: this.foot.landZ, y: 1 } : { x: this.env.pierTip.x, z: this.env.pierTip.z, y: 3 };
         break;
+    }
+    if (q === 'free' && !target && this.mode === 'sail') {
+      const g = GOALS[s.data.goal];
+      if (g?.target) target = { x: g.target.x, z: g.target.z, y: 12 };
+      else if (this.store.hasRole('navigator')) {
+        const near = this.salvage.nearestReady(this.boat.x, this.boat.z);
+        if (near) target = { x: near.x, z: near.z, y: 8 };
+      }
     }
     if (this.showcase || this.ui.panelOpen) target = null;
     this.wpTarget = target;

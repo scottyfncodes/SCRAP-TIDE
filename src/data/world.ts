@@ -1,4 +1,5 @@
-// Data-driven world layout: regions, islands, landmarks, hidden caches and treasure maps.
+// Data-driven world layout for the Drowned World: regions, islands (the last high ground), landmarks,
+// hidden caches, treasure maps, drowned structures, settlements, salvage sites and hazard zones.
 
 export type IslandStyle = 'harbor' | 'tropical' | 'rocky' | 'sandbar' | 'jungle';
 export type LandmarkType =
@@ -60,7 +61,7 @@ export interface IslandDef {
   blurb: string;
 }
 
-export type RegionId = 'shallows' | 'emerald';
+export type RegionId = 'shallows' | 'emerald' | 'stormwall';
 
 export interface RegionDef {
   id: RegionId;
@@ -69,15 +70,17 @@ export interface RegionDef {
 }
 
 export const REGIONS: Record<RegionId, RegionDef> = {
-  shallows: { id: 'shallows', name: 'The Shallows', blurb: 'Friendly turquoise water, small islands and smaller secrets.' },
-  emerald: { id: 'emerald', name: 'The Emerald Coast', blurb: 'Jungle-choked islands and the ruins of people who loved the sun.' },
+  shallows: { id: 'shallows', name: 'The Drift', blurb: 'Warm shallows over a drowned county. Rooftops, reefs and rumours.' },
+  emerald: { id: 'emerald', name: 'The Sunken Reach', blurb: 'Open swell over the old cities. Towers, rigs and raiders.' },
+  stormwall: { id: 'stormwall', name: 'The Stormwall', blurb: 'A storm that never ends. Something tall stands inside it.' },
 };
 
 export const WORLD = {
-  size: 1300, // square extent centered on origin
+  size: 2400, // square extent centered on origin
   deepFloor: -18,
   shallowsCenter: { x: 0, z: 30 },
-  shallowsRadius: 365, // beyond this, the open swell begins (needs a sloop)
+  shallowsRadius: 365, // beyond this, the open swell begins (needs the Scrap Trimaran)
+  stormRadius: 900, // beyond this, the permanent Stormwall (needs the Ironwake)
   harborDock: { x: 0, z: 200, endZ: 172 },
   spawn: { x: 6, z: 168, heading: Math.PI }, // facing north (-z)
   reef: { x: 40, z: -175, r: 72, w: 5 },
@@ -86,12 +89,12 @@ export const WORLD = {
 
 export const ISLANDS: IslandDef[] = [
   {
-    id: 'harbor', name: 'Port Saltwhistle', region: 'shallows', x: 0, z: 320, r: 112, peak: 13, seed: 11, style: 'harbor',
+    id: 'harbor', name: 'Driftholm', region: 'shallows', x: 0, z: 320, r: 112, peak: 13, seed: 11, style: 'harbor',
     palms: 26, rocks: 10, foliage: 30, shells: 0, landmarks: [], caches: [], finds: [],
-    blurb: 'Home port. Smells of tar, fried fish and big plans.',
+    blurb: 'Rafts lashed to the last hill of the old harbour town. Home.',
   },
   {
-    id: 'turtle', name: 'Turtle Cay', region: 'shallows', x: -150, z: 70, r: 40, peak: 9, seed: 23, style: 'tropical',
+    id: 'turtle', name: 'Turtle Atoll', region: 'shallows', x: -150, z: 70, r: 40, peak: 9, seed: 23, style: 'tropical',
     palms: 18, rocks: 6, foliage: 16, shells: 7,
     landmarks: [
       { type: 'skull_rock', x: 14, z: -12 },
@@ -106,7 +109,7 @@ export const ISLANDS: IslandDef[] = [
     finds: [
       { id: 'turtle_bottle', kind: 'bottle', x: 6, z: 33, label: 'Search the bottle', loot: [], fragment: 'turtle_scrap' },
     ],
-    blurb: 'Shaped like a sleeping turtle, if you squint and are kind.',
+    blurb: 'A coral ring around the top of a drowned hill. Shaped like a turtle, if you squint.',
   },
   {
     id: 'lantern', name: 'Lantern Rock', region: 'shallows', x: 175, z: 10, r: 32, peak: 15, seed: 37, style: 'rocky',
@@ -123,10 +126,10 @@ export const ISLANDS: IslandDef[] = [
       { id: 'lantern_drawer', kind: 'drawer', x: -6, z: 13, label: 'Open the keeper’s sea-chest', loot: [{ id: 'gold_bar', n: 1 }, { id: 'journal_redfinch', n: 1 }],
         fragment: 'redfinch_b', requiresItem: 'old_key', requiresText: 'The sea-chest is locked tight. A barnacled lock… someone buried the key nearby, maybe on another island.' },
     ],
-    blurb: 'A lighthouse that has not been lit in thirty years. It still watches.',
+    blurb: 'The old coast light. The coast is gone. The light still watches.',
   },
   {
-    id: 'gull', name: 'Gull Sandbar', region: 'shallows', x: 40, z: -175, r: 22, peak: 2.4, seed: 51, style: 'sandbar',
+    id: 'gull', name: 'Gull Shoal', region: 'shallows', x: 40, z: -175, r: 22, peak: 2.4, seed: 51, style: 'sandbar',
     palms: 3, rocks: 3, foliage: 3, shells: 8,
     landmarks: [{ type: 'wreck', x: 2, z: 0, rot: 0.5 }],
     caches: [{ id: 'gull_c1', x: -12, z: 8, loot: [{ id: 'coral_branch', n: 2 }] }],
@@ -135,10 +138,10 @@ export const ISLANDS: IslandDef[] = [
       { id: 'wreck_bell', kind: 'crate', x: -0.4, z: -4.4, label: 'Pry loose the ship’s bell', loot: [{ id: 'ship_bell', n: 1 }, { id: 'rope', n: 3 }] },
       { id: 'wreck_hold', kind: 'crate', x: 0.9, z: 1.2, label: 'Dig through the cargo hold', loot: [{ id: 'spyglass', n: 1 }, { id: 'iron_nails', n: 4 }, { id: 'canvas', n: 3 }] },
     ],
-    blurb: 'A ring of breakers guards the wreck of the Wren. Only a strong hull gets through.',
+    blurb: 'A ring of breakers guards the wreck of the trawler Wren. Only a strong hull gets through.',
   },
   {
-    id: 'mossjaw', name: 'Mossjaw Isle', region: 'emerald', x: -330, z: -320, r: 58, peak: 22, seed: 77, style: 'jungle',
+    id: 'mossjaw', name: 'Canopy Rise', region: 'emerald', x: -330, z: -320, r: 58, peak: 22, seed: 77, style: 'jungle',
     palms: 22, rocks: 10, foliage: 40, shells: 6,
     landmarks: [
       { type: 'arch', x: -8, z: 10, rot: 0.3 },
@@ -150,7 +153,7 @@ export const ISLANDS: IslandDef[] = [
       { id: 'moss_c2', x: -30, z: 0, loot: [{ id: 'clay_whistle', n: 1 }, { id: 'doubloon', n: 3 }] },
     ],
     finds: [],
-    blurb: 'Green on green on green. Somewhere under the moss, someone carved a sun.',
+    blurb: 'A hill-town swallowed by jungle, high above the drowned valley. Someone carved a sun here.',
   },
 ];
 
@@ -212,10 +215,190 @@ export const BEACH_POOL: Record<RegionId, { id: string; w: number }[]> = {
   ],
   emerald: [
     { id: 'conch', w: 4 }, { id: 'starfish', w: 3 }, { id: 'coral_branch', w: 3 }, { id: 'driftwood', w: 6 }, { id: 'pearl', w: 1 },
+    { id: 'plastic', w: 3 }, { id: 'rubber_duck', w: 1 },
   ],
+  stormwall: [{ id: 'driftwood', w: 4 }, { id: 'scrap_metal', w: 3 }],
 };
 
 // Random dig finds when you dig somewhere that isn't a cache or treasure.
 export const DIG_POOL: { id: string; w: number }[] = [
-  { id: 'spiral_shell', w: 5 }, { id: 'silver_piece', w: 2 }, { id: 'sea_glass', w: 3 }, { id: 'iron_nails', w: 1 }, { id: 'doubloon', w: 1 },
+  { id: 'spiral_shell', w: 5 }, { id: 'silver_piece', w: 2 }, { id: 'sea_glass', w: 3 }, { id: 'iron_nails', w: 2 }, { id: 'doubloon', w: 1 },
+  { id: 'scrap_metal', w: 2 }, { id: 'plastic', w: 2 }, { id: 'gold_watch', w: 0.3 },
+];
+
+// ───────────────────────── Drowned World ─────────────────────────
+
+export type StructureKind = 'tower_glass' | 'tower_brick' | 'tower_spire' | 'tower_stump' | 'oil_rig' | 'tanker' | 'container' | 'mega_spire';
+
+/** Drowned structures placed in open water. Models come from the GITCRAFT MeshCraft kit (public/models). */
+export interface StructureDef {
+  kind: StructureKind;
+  x: number;
+  z: number;
+  rot?: number; // radians around Y
+  scale?: number;
+  variant?: string; // e.g. container colour
+  r: number; // boat collision radius (0 = none)
+}
+
+const city = (cx: number, cz: number): StructureDef[] => [
+  { kind: 'tower_glass', x: cx, z: cz, rot: 0.2, r: 13 },
+  { kind: 'tower_spire', x: cx + 70, z: cz - 40, r: 9 },
+  { kind: 'tower_brick', x: cx - 55, z: cz + 30, rot: -0.3, r: 13 },
+  { kind: 'tower_glass', x: cx + 30, z: cz + 75, rot: 0.9, scale: 0.8, r: 11 },
+  { kind: 'tower_stump', x: cx - 40, z: cz - 60, rot: 1.4, r: 10 },
+  { kind: 'tower_brick', x: cx + 95, z: cz + 40, rot: 1.2, scale: 1.1, r: 14 },
+  { kind: 'tower_glass', x: cx - 110, z: cz - 15, rot: -0.6, scale: 1.25, r: 15 },
+  { kind: 'tower_stump', x: cx + 10, z: cz - 120, rot: 2.6, scale: 1.2, r: 11 },
+];
+
+export const STRUCTURES: StructureDef[] = [
+  // The Drift: the first drowned buildings you see from Driftholm
+  { kind: 'tower_stump', x: 92, z: 150, rot: 0.4, r: 10 },
+  { kind: 'tower_brick', x: -235, z: -70, rot: 0.5, r: 13 },
+  { kind: 'tower_glass', x: 255, z: 210, rot: -0.4, scale: 0.85, r: 12 },
+  { kind: 'container', x: 212, z: -118, rot: 0.3, variant: 'red', r: 7 },
+  { kind: 'container', x: 220, z: -108, rot: 0.25, variant: 'blue', r: 7 },
+  { kind: 'container', x: 202, z: -132, rot: 1.6, variant: 'yellow', r: 7 },
+  { kind: 'container', x: 230, z: -128, rot: -0.9, variant: 'teal', r: 7 },
+  // The Sunken Reach: Old Meridian, the drowned city
+  ...city(500, -440),
+  // Rig Helios, the trading post on the old production platform
+  { kind: 'oil_rig', x: -540, z: 170, rot: 0.6, r: 22 },
+  // Rustfang Graveyard: the tanker and its spilled boxes
+  { kind: 'tanker', x: 270, z: 650, rot: 2.2, r: 26 },
+  { kind: 'container', x: 300, z: 600, rot: 0.8, variant: 'red', r: 7 },
+  { kind: 'container', x: 240, z: 610, rot: 2.1, variant: 'yellow', r: 7 },
+  { kind: 'container', x: 320, z: 690, rot: 1.1, variant: 'teal', r: 7 },
+  { kind: 'container', x: 215, z: 700, rot: -0.4, variant: 'blue', r: 7 },
+  { kind: 'tower_stump', x: 190, z: 590, rot: 2.0, scale: 0.9, r: 9 },
+  // The Stormwall: the Meridian Spire
+  { kind: 'mega_spire', x: -210, z: -1040, r: 16 },
+  { kind: 'tower_glass', x: -150, z: -990, rot: 0.3, scale: 1.4, r: 17 },
+  { kind: 'tower_brick', x: -280, z: -990, rot: -0.2, scale: 1.3, r: 16 },
+];
+
+export type ServiceId = 'appraiser' | 'shipwright' | 'cartographer' | 'curios' | 'fuel' | 'repair' | 'workbench' | 'recruit';
+
+export interface SettlementDef {
+  id: string;
+  name: string;
+  kind: string;
+  x: number; // dock point
+  z: number;
+  dockR: number;
+  services: ServiceId[];
+  blurb: string;
+  fuelPrice: number; // gold per unit
+}
+
+export const SETTLEMENTS: SettlementDef[] = [
+  { id: 'driftholm', name: 'Driftholm', kind: 'Home raft-town', x: 6, z: 168, dockR: 18,
+    services: ['appraiser', 'shipwright', 'cartographer', 'curios', 'fuel', 'repair', 'workbench', 'recruit'], fuelPrice: 2,
+    blurb: 'Rafts lashed to the last hill of the old harbour. Your vault and your people are here.' },
+  { id: 'hollow', name: 'Rooftop Hollow', kind: 'Fishing community', x: -228, z: -48, dockR: 16,
+    services: ['appraiser', 'shipwright', 'fuel', 'repair', 'recruit'], fuelPrice: 3,
+    blurb: 'Forty fishers living on the roof of a drowned apartment block. They trade fish for anything.' },
+  { id: 'helios', name: 'Rig Helios', kind: 'Trading post', x: -540, z: 170, dockR: 30,
+    services: ['appraiser', 'shipwright', 'fuel', 'repair', 'workbench', 'recruit'], fuelPrice: 2,
+    blurb: 'An oil platform turned market. The flare still burns. Engines, radar and hard bargains.' },
+];
+export const SETTLEMENT_MAP: Record<string, SettlementDef> = Object.fromEntries(SETTLEMENTS.map((s) => [s.id, s]));
+
+export interface LootRoll {
+  id: string;
+  w: number;
+  n: [number, number];
+}
+
+export type SalvageKind = 'rooftop' | 'containers' | 'wreck' | 'rig' | 'spire';
+
+export interface SalvageSiteDef {
+  id: string;
+  name: string;
+  kind: SalvageKind;
+  x: number;
+  z: number;
+  r: number; // interaction radius
+  region: RegionId;
+  difficulty: number; // 1..3: narrows the winch window
+  heavy?: boolean; // needs the Salvage Crane
+  rolls: number; // loot rolls per haul
+  respawn: number; // seconds until it can be salvaged again (0 = only once)
+  loot: LootRoll[];
+  first?: { id: string; n: number }[]; // guaranteed loot on the first haul
+  blurb: string;
+}
+
+const L = (id: string, w: number, a: number, b = a): LootRoll => ({ id, w, n: [a, b] });
+
+export const SALVAGE_SITES: SalvageSiteDef[] = [
+  { id: 'sv_stump', name: 'The Sunken Tower', kind: 'rooftop', x: 92, z: 150, r: 20, region: 'shallows', difficulty: 1, rolls: 3, respawn: 240,
+    loot: [L('scrap_metal', 6, 1, 3), L('wire', 4, 1, 2), L('plastic', 4, 1, 3), L('rubber_duck', 1, 1), L('fuel_can', 2, 1)],
+    first: [{ id: 'transistor_radio', n: 1 }, { id: 'scrap_metal', n: 3 }],
+    blurb: 'The top four floors of an office block. Somebody already took the chairs.' },
+  { id: 'sv_boxyard', name: 'The Box Yard', kind: 'containers', x: 216, z: -120, r: 22, region: 'shallows', difficulty: 1, rolls: 3, respawn: 300,
+    loot: [L('plastic', 5, 2, 4), L('canvas', 3, 1, 3), L('rope', 3, 1, 3), L('electronics', 2, 1), L('snow_globe', 1, 1), L('fuel_can', 2, 1)],
+    first: [{ id: 'electronics', n: 2 }, { id: 'canvas', n: 2 }],
+    blurb: 'Four shipping containers that floated in on a storm and never left.' },
+  { id: 'sv_hollow_sub', name: 'Hollow Underfloors', kind: 'rooftop', x: -250, z: -88, r: 18, region: 'shallows', difficulty: 2, rolls: 3, respawn: 360,
+    loot: [L('scrap_metal', 4, 1, 3), L('vinyl_record', 1, 1), L('wire', 3, 1, 2), L('gold_watch', 1, 1), L('iron_nails', 4, 2, 4)],
+    blurb: 'The flooded floors under Rooftop Hollow. The fishers let you dive if you share.' },
+  { id: 'sv_meridian_a', name: 'Meridian Plaza', kind: 'rooftop', x: 500, z: -440, r: 24, region: 'emerald', difficulty: 2, rolls: 4, respawn: 420,
+    loot: [L('electronics', 4, 1, 2), L('scrap_metal', 5, 2, 4), L('street_sign', 1, 1), L('polaroid', 1, 1), L('gold_watch', 1, 1), L('wire', 4, 1, 3)],
+    first: [{ id: 'street_sign', n: 1 }],
+    blurb: 'The tallest roof of Old Meridian. The view is the whole drowned city.' },
+  { id: 'sv_meridian_b', name: 'Broadcast Spire', kind: 'rooftop', x: 570, z: -480, r: 20, region: 'emerald', difficulty: 3, heavy: true, rolls: 4, respawn: 480,
+    loot: [L('electronics', 5, 2, 3), L('wire', 4, 2, 3), L('seed_packet', 1, 1), L('traffic_light', 1, 1), L('engine_parts', 2, 1)],
+    first: [{ id: 'traffic_light', n: 1 }],
+    blurb: 'The antenna still hums when the wind is right. Heavy gear down there.' },
+  { id: 'sv_meridian_c', name: 'The Leaning Block', kind: 'rooftop', x: 460, z: -500, r: 18, region: 'emerald', difficulty: 2, rolls: 3, respawn: 420,
+    loot: [L('scrap_metal', 5, 2, 4), L('plastic', 4, 2, 3), L('vinyl_record', 2, 1), L('rubber_duck', 2, 1), L('diamond_ring', 1, 1)],
+    blurb: 'It has been falling over for fifty years. Very slowly.' },
+  { id: 'sv_rig', name: 'Helios Lower Deck', kind: 'rig', x: -555, z: 150, r: 26, region: 'emerald', difficulty: 2, heavy: true, rolls: 3, respawn: 360,
+    loot: [L('crude_oil', 6, 1, 3), L('scrap_metal', 4, 1, 3), L('engine_parts', 2, 1), L('rig_badge', 1, 1)],
+    first: [{ id: 'rig_badge', n: 1 }, { id: 'crude_oil', n: 3 }],
+    blurb: 'The flooded pump deck. Crude still seeps from the old lines.' },
+  { id: 'sv_tanker', name: 'Hull of the Meridian Star', kind: 'wreck', x: 270, z: 650, r: 34, region: 'emerald', difficulty: 3, heavy: true, rolls: 5, respawn: 600,
+    loot: [L('crude_oil', 5, 2, 4), L('scrap_metal', 6, 3, 5), L('engine_parts', 3, 1, 2), L('alloy_plate', 2, 1), L('ship_in_bottle', 1, 1), L('gold_bar', 1, 1)],
+    first: [{ id: 'ship_in_bottle', n: 1 }, { id: 'engine_parts', n: 2 }],
+    blurb: 'A supertanker, standing on her stern. Rustfang raiders call it theirs.' },
+  { id: 'sv_graveyard', name: 'Graveyard Boxes', kind: 'containers', x: 280, z: 620, r: 22, region: 'emerald', difficulty: 2, rolls: 4, respawn: 420,
+    loot: [L('electronics', 3, 1, 3), L('canvas', 3, 2, 3), L('plastic', 4, 2, 4), L('snow_globe', 1, 1), L('fuel_can', 3, 1, 2)],
+    blurb: 'Boxes spilled from the tanker when she went down.' },
+  { id: 'sv_spire', name: 'The Meridian Spire', kind: 'spire', x: -210, z: -1040, r: 30, region: 'stormwall', difficulty: 3, heavy: true, rolls: 5, respawn: 900,
+    loot: [L('electronics', 4, 2, 4), L('alloy_plate', 3, 1, 2), L('diamond_ring', 2, 1), L('gold_bar', 2, 1), L('seed_packet', 2, 1)],
+    first: [{ id: 'summit_chart', n: 1 }, { id: 'gold_bar', n: 2 }],
+    blurb: 'The tallest thing left in the world. At the top: the chart everybody whispers about.' },
+];
+export const SALVAGE_MAP: Record<string, SalvageSiteDef> = Object.fromEntries(SALVAGE_SITES.map((s) => [s.id, s]));
+
+/** Floating caches drift into open water near the player. */
+export const CACHE_POOL: Record<RegionId, LootRoll[]> = {
+  shallows: [L('fuel_can', 4, 1), L('scrap_metal', 4, 1, 2), L('plastic', 4, 1, 3), L('rope', 3, 1, 2), L('driftwood', 4, 2, 4), L('bottle_letter', 1, 1), L('rubber_duck', 1, 1)],
+  emerald: [L('fuel_can', 5, 1, 2), L('scrap_metal', 4, 2, 3), L('electronics', 2, 1), L('wire', 3, 1, 2), L('canvas', 2, 1, 2), L('vinyl_record', 1, 1)],
+  stormwall: [L('fuel_can', 4, 2), L('alloy_plate', 2, 1), L('engine_parts', 2, 1), L('electronics', 3, 1, 2), L('diamond_ring', 1, 1)],
+};
+
+/** Castaways adrift: sail up and rescue them to recruit crew. */
+export interface CastawayDef { id: string; crew: string; x: number; z: number; text: string }
+export const CASTAWAYS: CastawayDef[] = [
+  { id: 'cw_kai', crew: 'kai', x: -60, z: -150, text: 'A raft with a ragged flag, and someone waving both arms.' },
+  { id: 'cw_bram', crew: 'bram', x: 455, z: -390, text: 'Someone is shouting from a raft tied to a drowned lamppost.' },
+];
+
+/** Hostile waters: Rustfang raider skiffs patrol these zones. */
+export interface RaiderZone { id: string; name: string; x: number; z: number; r: number; count: number; speed: number }
+export const RAIDER_ZONES: RaiderZone[] = [
+  { id: 'rz_graveyard', name: 'Rustfang Graveyard', x: 270, z: 640, r: 230, count: 3, speed: 9.5 },
+  { id: 'rz_meridian', name: 'Old Meridian', x: 520, z: -450, r: 200, count: 2, speed: 8.5 },
+];
+
+/** Named points of interest drawn on the chart. */
+export const POIS = [
+  { id: 'meridian', name: 'Old Meridian', x: 500, z: -440 },
+  { id: 'helios', name: 'Rig Helios', x: -540, z: 170 },
+  { id: 'graveyard', name: 'Rustfang Graveyard', x: 270, z: 650 },
+  { id: 'hollow', name: 'Rooftop Hollow', x: -235, z: -70 },
+  { id: 'spire', name: 'The Meridian Spire', x: -210, z: -1040 },
 ];

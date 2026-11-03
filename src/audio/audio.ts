@@ -1,4 +1,5 @@
-// Procedural WebAudio soundscape: waves, wind, creaks, gulls, discovery stingers, light music.
+// Procedural WebAudio soundscape: waves against the hull, wind in the rigging, engines, rain and thunder,
+// winches and harpoons, creaks, gulls, discovery stingers and sparse drowned-world music.
 // Everything is synthesized so the game ships with zero audio assets.
 
 type Ctx = AudioContext;
@@ -19,6 +20,14 @@ export class Audio {
   private nextCreak = 2;
   private nextPhrase = 20;
   private region = 'shallows';
+  private engineOsc: OscillatorNode | null = null;
+  private engineOsc2: OscillatorNode | null = null;
+  private engineGain!: GainNode;
+  private rainGain!: GainNode;
+  private rigGain!: GainNode;
+  private winchGain!: GainNode;
+  private winchOsc: OscillatorNode | null = null;
+  private nextSlap = 1;
 
   unlock() {
     if (this.ctx) {
@@ -83,6 +92,139 @@ export class Audio {
     this.wind.gain.value = 0.0;
     wn.connect(wf).connect(this.wind).connect(this.sfxBus);
     wn.start();
+    // engine: two detuned saws through a lowpass, amplitude-modulated by a putter LFO
+    this.engineGain = ctx.createGain();
+    this.engineGain.gain.value = 0;
+    const ef = ctx.createBiquadFilter();
+    ef.type = 'lowpass';
+    ef.frequency.value = 420;
+    this.engineOsc = ctx.createOscillator();
+    this.engineOsc.type = 'sawtooth';
+    this.engineOsc.frequency.value = 48;
+    this.engineOsc2 = ctx.createOscillator();
+    this.engineOsc2.type = 'square';
+    this.engineOsc2.frequency.value = 24.3;
+    const putter = ctx.createOscillator();
+    putter.frequency.value = 11;
+    const putterG = ctx.createGain();
+    putterG.gain.value = 0.35;
+    const am = ctx.createGain();
+    am.gain.value = 0.6;
+    putter.connect(putterG).connect(am.gain);
+    this.engineOsc.connect(ef);
+    this.engineOsc2.connect(ef);
+    ef.connect(am).connect(this.engineGain).connect(this.sfxBus);
+    this.engineOsc.start();
+    this.engineOsc2.start();
+    putter.start();
+    // rain: bright filtered noise
+    const rn = ctx.createBufferSource();
+    rn.buffer = this.noiseBuf;
+    rn.loop = true;
+    rn.playbackRate.value = 3.2;
+    const rf = ctx.createBiquadFilter();
+    rf.type = 'highpass';
+    rf.frequency.value = 2500;
+    this.rainGain = ctx.createGain();
+    this.rainGain.gain.value = 0;
+    rn.connect(rf).connect(this.rainGain).connect(this.sfxBus);
+    rn.start();
+    // wind whistling in the rigging: resonant band that wanders
+    const rg = ctx.createBufferSource();
+    rg.buffer = this.noiseBuf;
+    rg.loop = true;
+    rg.playbackRate.value = 2.4;
+    const rgf = ctx.createBiquadFilter();
+    rgf.type = 'bandpass';
+    rgf.frequency.value = 1700;
+    rgf.Q.value = 14;
+    const wander = ctx.createOscillator();
+    wander.frequency.value = 0.21;
+    const wanderG = ctx.createGain();
+    wanderG.gain.value = 500;
+    wander.connect(wanderG).connect(rgf.frequency);
+    wander.start();
+    this.rigGain = ctx.createGain();
+    this.rigGain.gain.value = 0;
+    rg.connect(rgf).connect(this.rigGain).connect(this.sfxBus);
+    rg.start();
+    this.winchGain = ctx.createGain();
+    this.winchGain.gain.value = 0;
+    this.winchGain.connect(this.sfxBus);
+  }
+
+  /** Engine drone; level 0 = off. */
+  engine(level: number, big = false) {
+    if (!this.ctx || !this.engineOsc || !this.engineOsc2) return;
+    const t = this.ctx.currentTime;
+    this.engineGain.gain.setTargetAtTime(level * (big ? 0.16 : 0.11), t, 0.25);
+    const base = big ? 34 : 48;
+    this.engineOsc.frequency.setTargetAtTime(base + level * (big ? 30 : 46), t, 0.3);
+    this.engineOsc2.frequency.setTargetAtTime((base + level * (big ? 30 : 46)) * 0.506, t, 0.3);
+  }
+  engineStart(on: boolean) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    if (on) {
+      for (let i = 0; i < 4; i++) {
+        this.tone(55 + i * 6, t + i * 0.11, 0.1, 'sawtooth', 0.12);
+        this.noiseBurst(t + i * 0.11, 0.08, 400, 0.2, 'lowpass');
+      }
+    } else this.tone(60, t, 0.4, 'sawtooth', 0.06);
+  }
+  thunder(strength = 1) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.noiseBurst(t, 2.4 * strength + 0.6, 120, 0.9 * strength, 'lowpass');
+    this.noiseBurst(t + 0.05, 0.25, 1800, 0.25 * strength, 'bandpass');
+    this.tone(38, t, 1.8, 'sine', 0.25 * strength);
+  }
+  winch(on: boolean) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    if (on && !this.winchOsc) {
+      const o = this.ctx.createOscillator();
+      o.type = 'square';
+      o.frequency.value = 7;
+      const f = this.ctx.createBiquadFilter();
+      f.type = 'bandpass';
+      f.frequency.value = 2200;
+      f.Q.value = 3;
+      o.connect(f).connect(this.winchGain);
+      o.start();
+      this.winchOsc = o;
+      this.winchGain.gain.setTargetAtTime(0.05, t, 0.1);
+    } else if (!on && this.winchOsc) {
+      this.winchGain.gain.setTargetAtTime(0, t, 0.1);
+      const o = this.winchOsc;
+      setTimeout(() => o.stop(), 400);
+      this.winchOsc = null;
+    }
+  }
+  reel(ok: boolean) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    if (ok) {
+      this.tone(220, t, 0.15, 'square', 0.08);
+      this.tone(330, t + 0.08, 0.2, 'square', 0.08);
+      this.noiseBurst(t, 0.3, 900, 0.3, 'lowpass');
+    } else {
+      this.tone(140, t, 0.3, 'sawtooth', 0.1);
+      this.noiseBurst(t, 0.2, 3000, 0.2);
+    }
+  }
+  harpoon() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.noiseBurst(t, 0.12, 2500, 0.5, 'highpass');
+    this.tone(900, t, 0.25, 'sawtooth', 0.06);
+    setTimeout(() => this.splash(true), 250);
+  }
+  raiderHorn() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.tone(196, t, 0.7, 'sawtooth', 0.08);
+    this.tone(185, t + 0.75, 0.9, 'sawtooth', 0.08);
   }
 
   setVolumes(sfx: number, music: number) {
@@ -94,11 +236,20 @@ export class Audio {
   }
 
   /** Called every frame with sailing state. */
-  ambience(dt: number, speed: number, onShore: boolean, swell: number, region: string) {
+  ambience(dt: number, speed: number, onShore: boolean, swell: number, region: string, storm = 0) {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
-    this.wind.gain.setTargetAtTime(Math.min(0.18, speed * 0.016 + swell * 0.12), t, 0.5);
-    this.wavesFilter.frequency.setTargetAtTime(onShore ? 900 : 500 + speed * 40 + swell * 500, t, 0.5);
+    this.wind.gain.setTargetAtTime(Math.min(0.26, speed * 0.016 + swell * 0.12 + storm * 0.12), t, 0.5);
+    this.wavesFilter.frequency.setTargetAtTime(onShore ? 900 : 500 + speed * 40 + swell * 500 + storm * 400, t, 0.5);
+    this.waves.gain.setTargetAtTime(0.25 + storm * 0.25, t, 1);
+    this.rainGain.gain.setTargetAtTime(storm > 0.08 ? storm * 0.14 : 0, t, 0.8);
+    this.rigGain.gain.setTargetAtTime(onShore ? 0 : Math.min(0.05, speed * 0.003 + storm * 0.04), t, 0.6);
+    // waves slapping the hull
+    this.nextSlap -= dt * (0.6 + speed * 0.08 + storm);
+    if (!onShore && this.nextSlap < 0) {
+      this.nextSlap = 1.2 + Math.random() * 1.6;
+      this.noiseBurst(t, 0.22, 260 + Math.random() * 160, 0.18 + storm * 0.2, 'lowpass');
+    }
     this.nextGull -= dt;
     if (this.nextGull < 0) {
       this.nextGull = 6 + Math.random() * 12;
@@ -277,9 +428,10 @@ export class Audio {
     if (!this.ctx || this.musicVol <= 0) return;
     const t = this.ctx.currentTime;
     const sets: Record<string, number[]> = {
-      shallows: [392, 440, 523.25, 587.33, 659.25, 783.99], // G major pentatonic-ish, breezy
-      emerald: [293.66, 349.23, 392, 440, 523.25, 587.33], // dorian-ish, mysterious
-      harbor: [523.25, 587.33, 659.25, 783.99, 880],
+      shallows: [293.66, 329.63, 392, 440, 493.88, 587.33], // open, hopeful D pentatonic
+      emerald: [220, 261.63, 293.66, 329.63, 392, 440], // A minor pentatonic: the drowned cities
+      stormwall: [155.56, 185, 207.65, 233.08, 277.18], // low and uneasy
+      harbor: [392, 440, 493.88, 587.33, 659.25],
     };
     const notes = sets[region] ?? sets.shallows;
     let w = t;
@@ -289,6 +441,7 @@ export class Audio {
       const dur = [0.3, 0.45, 0.6][Math.floor(Math.random() * 3)];
       this.tone(f, w, dur * 1.6, 'triangle', 0.07, this.musicBus);
       if (i % 3 === 0) this.tone(f / 2, w, dur * 3, 'sine', 0.05, this.musicBus);
+      if (i === 0) this.tone(f / 4, w, len * 0.5, 'sine', 0.035, this.musicBus, 3); // long drone under the phrase
       w += dur;
     }
   }

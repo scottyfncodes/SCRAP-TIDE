@@ -26,9 +26,9 @@ export class Captain {
     };
     // torso: striped shirt
     const torsoParts: THREE.BufferGeometry[] = [];
-    for (let i = 0; i < 4; i++) torsoParts.push(paint(xf(new THREE.CylinderGeometry(0.34 - i * 0.015, 0.36 - i * 0.015, 0.16, 12), 0, 0.82 + i * 0.16, 0), i % 2 ? '#f2ead8' : '#2f5fa0'));
-    torsoParts.push(paint(xf(new THREE.CylinderGeometry(0.37, 0.37, 0.1, 12), 0, 0.72, 0), '#5a3a1e')); // belt
-    torsoParts.push(paint(xf(new THREE.BoxGeometry(0.16, 0.12, 0.06), 0, 0.72, 0.36), '#f4c542')); // buckle
+    for (let i = 0; i < 4; i++) torsoParts.push(paint(xf(new THREE.CylinderGeometry(0.34 - i * 0.015, 0.36 - i * 0.015, 0.16, 12), 0, 0.82 + i * 0.16, 0), i % 2 ? '#3e8c80' : '#2e5872'));
+    torsoParts.push(paint(xf(new THREE.CylinderGeometry(0.37, 0.37, 0.1, 12), 0, 0.72, 0), '#3a4148')); // belt
+    torsoParts.push(paint(xf(new THREE.BoxGeometry(0.16, 0.12, 0.06), 0, 0.72, 0.36), '#f2b825')); // buckle
     const torso = new THREE.Mesh(merge(torsoParts), mat);
     torso.castShadow = true;
     this.body.add(torso);
@@ -41,12 +41,12 @@ export class Captain {
     hp.push(paint(xf(new THREE.SphereGeometry(0.055, 6, 4), 0.12, 0.04, 0.31), '#1a1a1a'));
     hp.push(paint(xf(new THREE.SphereGeometry(0.06, 6, 4), 0, -0.05, 0.34), '#d99a7a'));
     hp.push(paint(xf(new THREE.TorusGeometry(0.08, 0.018, 4, 8, Math.PI), 0, -0.12, 0.3, 0, 0, Math.PI), '#7a3a2a'));
-    hp.push(paint(xf(new THREE.SphereGeometry(0.35, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.45), 0, 0.03, 0), '#c0392b')); // bandana
-    // tricorn hat
-    const brim = new THREE.CylinderGeometry(0.55, 0.55, 0.06, 3);
-    hp.push(paint(xf(brim, 0, 0.27, 0, 0, Math.PI / 6 + Math.PI, 0), '#2b1d14'));
-    hp.push(paint(xf(new THREE.CylinderGeometry(0.26, 0.32, 0.28, 10), 0, 0.42, 0), '#2b1d14'));
-    hp.push(paint(xf(new THREE.TorusGeometry(0.31, 0.025, 4, 12), 0, 0.3, 0, Math.PI / 2, 0, 0), '#f4c542'));
+    hp.push(paint(xf(new THREE.SphereGeometry(0.35, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.45), 0, 0.03, 0), '#e8742a')); // bandana
+    // weathered wide-brim sun hat with salvage goggles on the band
+    hp.push(paint(xf(new THREE.CylinderGeometry(0.62, 0.66, 0.05, 14), 0, 0.27, 0), '#c9a97a'));
+    hp.push(paint(xf(new THREE.CylinderGeometry(0.27, 0.33, 0.26, 12), 0, 0.41, 0), '#b8956a'));
+    hp.push(paint(xf(new THREE.TorusGeometry(0.315, 0.035, 4, 14), 0, 0.31, 0, Math.PI / 2, 0, 0), '#3a4148'));
+    for (const gx of [-0.11, 0.11]) hp.push(paint(xf(new THREE.CylinderGeometry(0.085, 0.085, 0.07, 10), gx, 0.36, 0.3, Math.PI / 2, 0, 0), '#7fe3d6'));
     const hm = new THREE.Mesh(merge(hp), mat);
     hm.castShadow = true;
     head.add(hm);
@@ -54,8 +54,8 @@ export class Captain {
     this.head = head;
     this.body.add(head);
 
-    this.legL = limb(0.42, '#6b4a2e', 0.12);
-    this.legR = limb(0.42, '#6b4a2e', 0.12);
+    this.legL = limb(0.42, '#46525f', 0.12);
+    this.legR = limb(0.42, '#46525f', 0.12);
     this.legL.position.set(-0.15, 0.72, 0);
     this.legR.position.set(0.15, 0.72, 0);
     // boots

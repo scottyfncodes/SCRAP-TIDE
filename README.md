@@ -1,40 +1,60 @@
 # TIDEBREAKERS
 
-*A treasure-hunting pirate adventure. The ocean is full of secrets.*
+*The world drowned. You didn't.*
 
-A mobile-first, stylized 3D browser game built for iPhone Safari and Home Screen install.
-You start in a leaky dinghy at Port Saltwhistle and work your way up to a decorated sloop that crosses the open swell.
+A mobile-first, stylized 3D survival adventure on a flooded Earth, built for iPhone Safari and Home Screen install.
+Civilization is under the sea. You start in a patchwork skiff at Driftholm, a raft-town lashed to the last hill of the old
+harbour, and build it, upgrade by upgrade, into an expedition boat that can pierce the Stormwall.
 
-## What's playable now
+## The loop
 
-**The first voyage (guided):** learn to steer → sail out of the harbor → find Turtle Cay → anchor → go ashore →
-find a message bottle with a map scrap → read the clue → dig up the buried chest → sail home → sell to Pip →
-check your Discovery Catalog → buy your first upgrade from Marlo and **see it on your boat**. Progress saves automatically.
+**Explore → discover → salvage → collect → craft → upgrade → explore further.**
 
-**After that, open play:**
-- **Gull Sandbar & the wreck of the *Wren*.** Inside a ring of reef breakers. You need the Copper-Banded Hull to cross the reef. Three salvage spots, half of Redfinch's chart.
-- **Lantern Rock.** An abandoned lighthouse and a locked sea-chest. The key is buried on another island (use the shovel-sense meter).
-- **Mossjaw Isle (Emerald Coast).** Past the open swell, so you need the Sloop. Jungle, ruins, a waterfall, and the grand chest from Redfinch's two-piece map.
-- **Hidden caches** on every island, plus random dig finds, beachcombing, and crabs.
+- **The Drift** (start): turquoise shallows over a drowned county. The Sunken Tower, the Box Yard, Rooftop Hollow (a fishing
+  community on a drowned apartment roof), Turtle Atoll, Lantern Rock, Gull Shoal and the wreck of the *Wren*.
+- **The Sunken Reach** (needs the Scrap Trimaran to cross the open swell): Old Meridian's drowned towers, Rig Helios (an oil
+  platform turned market), Canopy Rise, and the Rustfang tanker graveyard, where raiders hunt.
+- **The Stormwall** (needs the Ironwake Expedition Cat): a storm that never ends, and the Meridian Spire inside it.
+
+**The boat is the game.** 3 vessels (Patchwork Skiff → Scrap Trimaran → Ironwake twin-hull) and 13 upgrade slots: sails,
+engine, hull/armour, storage, fuel tank, steering, navigation/radar, salvage crane, harpoon, power (solar, turbine),
+container-cabin quarters, lighting, fishing. **Every upgrade is a model you can see on the boat.** Paint, sails, flags and
+trophies too. Crew members ride on deck.
+
+**Salvage:** slow down beside a beacon buoy and SALVAGE: a winch mini-game where better gear and a Salvager widen the window.
+Drifting caches, castaways to rescue, 10 salvage sites with respawn timers and first-haul story finds.
+
+**Survival:** fuel (engine burns it; solar/turbine trickle it back; refine crude on a workbench), hull integrity (storms,
+collisions and raider rams; armour, patch kits, a Mechanic), a day/night cycle and roaming storm cells.
+
+**Crew:** six survivors, six roles with real perks: Mechanic, Navigator, Salvager, Fisher, Lookout, Defender.
+**Captain's Log:** a 10-step goal chain after the first voyage that always points at the next big unlock.
+
+Everything from the first release still works: the guided first voyage, anchoring and going ashore, digging, treasure maps,
+the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 migrate automatically.
 
 ## Systems
 
 | System | Where |
 |---|---|
-| Collectibles (23 catalog entries, 6 categories, 5 rarities, plus materials) | `src/data/items.ts` |
-| World: islands, landmarks, caches, scripted finds, treasure maps | `src/data/world.ts` |
-| Vessels, functional upgrades, cosmetics | `src/data/ship.ts` |
-| Collection milestones + first-voyage quest | `src/data/progress.ts` |
-| Save/load (localStorage, versioned, backup slot, migration) | `src/state/store.ts` |
-| Heightfield used by terrain, water depth, collision and walking | `src/world/terrain.ts` |
-| Depth-aware stylized ocean shader | `src/world/ocean.ts` |
-| Modular ship builder (each upgrade and cosmetic is visible) | `src/ship/shipModel.ts` |
-| Game loop: sailing, anchoring, on-foot exploration, digging, treasure, harbor | `src/game/game.ts` |
-| UI: HUD, joystick, harbor merchants, catalog, maps, ship, cargo | `src/ui/ui.ts` |
-| Procedural WebAudio soundscape (no audio files) | `src/audio/audio.ts` |
+| Items, materials and relics | `src/data/items.ts` |
+| World: islands, drowned structures, settlements, salvage sites, caches, castaways, raider zones | `src/data/world.ts` |
+| Vessels, 13 upgrade slots, cosmetics | `src/data/ship.ts` |
+| Workbench recipes / crew roles / Captain's Log goals and milestones | `src/data/crafting.ts`, `src/data/crew.ts`, `src/data/progress.ts` |
+| Save/load (localStorage, v2, backup slot, migration from v1) | `src/state/store.ts` |
+| GITCRAFT model loader (GLB → toon vertex-colour meshes, skinned crew) | `src/world/assets.ts` |
+| Time of day, storms, Stormwall | `src/world/atmosphere.ts` |
+| Gerstner ocean with wake, storm swell, reflections | `src/world/ocean.ts` |
+| Sky, clouds, storm decks, rain, lightning, skylines | `src/world/sky.ts` |
+| Drowned structures and raft-towns | `src/world/drowned.ts` |
+| Boat builder (procedural hulls + MeshCraft boat kit + crew) | `src/ship/shipModel.ts` |
+| Salvage and raiders | `src/game/salvage.ts`, `src/game/raiders.ts` |
+| Game loop | `src/game/game.ts` |
+| UI: HUD, radar, winch, settlements, workbench, crew | `src/ui/ui.ts` |
+| Procedural WebAudio (engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
 
-All content is data-driven: to add an island, collectible, upgrade, map or milestone, add an entry to the data files.
-Treasure maps are drawn from the real island heightfield, so the map always matches the island.
+3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`); item icons from VectorCraft
+(`creative/ui-drowned`).
 
 ## Tech
 
@@ -46,14 +66,13 @@ Treasure maps are drawn from the real island heightfield, so the map always matc
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # typecheck + production build to dist/
+npm test         # data, save-migration and model tests (Vitest)
+# end-to-end gameplay check in mobile Chromium (Playwright):
+npx vite preview --port 4173 & node tests/e2e/play.cjs http://localhost:4173/
 ```
 
-Desktop controls: WASD/arrows to steer or walk, Space/E for the main action, drag to orbit the camera, mouse wheel to zoom.
+Desktop controls: WASD/arrows to steer or walk, Space/E for the main action, drag to orbit the camera, mouse wheel to zoom. Q (or the ENGINE button) toggles the engine.
 
 ## Roadmap
 
-Following the master build phases:
-- Phase 3+: crafting bench, duplicate trading, more catalog entries
-- Phase 4: decoration placement on deck and in the captain's quarters (trophy displays already work)
-- Phase 5: underwater diving, fishing, more regions (Broken Reaches, Forgotten Isles, Haunted Waters, Frozen Expanse), traveling merchants, dynamic events
-- Phase 6: performance profiling on device, more art polish
+See `docs/drowned-world/` for the production report and the prioritized list of remaining work.
