@@ -92,3 +92,12 @@ Preview every upgrade at once (in memory only, never saved): `?ship=trimaran&upg
 
 The other 13 Trimaran upgrades are MeshCraft models too: see [`upgrades/`](upgrades/README.md). The sloop's jib is
 hidden until the Cutter Rig + Jib is owned.
+
+## Delivery: compression and lazy loading
+
+- **Compressed:** every model here ships Meshopt-compressed: 1.81 MB → 0.69 MB for the 20 files, palette untouched.
+  See [`compression/README.md`](compression/README.md).
+- **Loaded lazily:** at boot the game fetches only the upgrade models the saved game already owns (on the Trimaran).
+  Each other upgrade's file is fetched when it is bought, and its code-built part stands in until the file arrives,
+  so the slot is never empty. `?upgrades=all` owns everything, so it loads everything. Code: `loadModels` /
+  `loadModelFiles` in `src/world/assets.ts`, `ensureUpgradeModels` in `src/game/game.ts`.

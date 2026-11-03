@@ -27,29 +27,40 @@ not the part's. Moving parts are child nodes whose origin is their pivot.
 | Fuel Drum Rack | `tank_drums` | [`fuel_drums/`](fuel_drums/) | 848 | 13 / 1 / 0 | pass | four drums in a rack on the port side deck beside the cabin | — |
 | Rope Cargo Nets | `cargo_net` | [`cargo_nets/`](cargo_nets/) | 3,200 | 14 / 0 / 0 | pass | nets slung over both sides between the outrigger beams, tied off on gunwale cleats | — |
 | Riveted Armour Plating | `hull_armor` | [`armour_plating/`](armour_plating/) | 1,728 | 14 / 0 / 0 | pass | plates above the copper band in a forward and an aft belt, leaving amidships for the nets | — |
-| String Lights & Spotlight | `deck_lights` | [`deck_lights/`](deck_lights/) | 2,392 | 14 / 0 / 0 | pass | bulb strings swagged along both rails (glow at night), spotlight on the roof's forward starboard corner | — |
+| String Lights & Spotlight | `deck_lights` | [`deck_lights/`](deck_lights/) | 2,728 | 14 / 0 / 0 | pass | bulb strings swagged along both rails (glow at night), spotlight on the roof's forward starboard corner | — |
 
 The Cutter Rig + Jib needs no model: the sloop's own jib is hidden until it is owned, and takes the sail cosmetic.
 
 ## Fit: nothing overlaps
 
-[`audit_overlaps.py`](audit_overlaps.py) assembles the boat the way the game does and tests every pair of parts for
-intersecting triangles (Blender BVH):
+The fit is checked with GITCRAFT MeshCraft's **`audit_overlaps`** tool (MeshCraft README, "Overlap audit").
+[`audit_spec.py`](audit_spec.py) writes the specs (`logs/audit_full.json`, `logs/audit_early.json`); each assembles the
+boat the way `src/ship/shipModel.ts` does:
 - **Parts:** every upgrade, the wheel, the boom, mast and jib, the relocated lantern, the outrigger beams, and a
   0.24 m × 1.85 m captain at the helm.
-- **Moving parts:** swept through their range: harpoon aim every 30°, crane slewed to port ±0.6 rad, turbine rotor
-  and radar scanner at several angles.
+- **Moving parts:** swept through their range: harpoon aim every 30°, crane slewed to port ±0.6 rad, turbine rotor and
+  radar scanner at several angles.
+- **Pairs:** every pair is tested for intersecting triangles, and for one part buried inside another.
 - **Not tested:** hull, deck and rails, on purpose; parts sit on, clamp to and hang from them by design.
 
-| Configuration | Poses | Pairs | Overlaps |
-|---|---|---|---|
-| `full`: every upgrade (Twin Diesel, Container Cabin, Canvas Mainsail) | 288 | 210 | 0 |
-| `early`: Salvaged Outboard, the sloop's own cabin, its base mainsail | 288 | 210 | 0 |
+It runs on the **compressed files that ship** (the tool decodes Meshopt for Blender).
 
-The audit also caught three clashes between existing pieces, which the game now fits around:
+| Configuration | Parts | Poses | Pairs | Overlaps | Result |
+|---|---|---|---|---|---|
+| `full`: every upgrade (Twin Diesel, Container Cabin, Canvas Mainsail) | 24 | 288 | 269 | 0 | [`logs/audit_full.result.json`](logs/audit_full.result.json) |
+| `early`: Salvaged Outboard, the sloop's own cabin, its base mainsail | 24 | 288 | 268 | 0 | [`logs/audit_early.result.json`](logs/audit_early.result.json) |
+| negative control: the captain and crates back where they clashed | 24 | 288 | 269 | 2 (boom x crates, captain x wheel) | [`logs/audit_negative_control.result.json`](logs/audit_negative_control.result.json) |
+
+The audit caught five clashes, all fixed:
 - the Lashed Cargo Crates' rope hoop (2.48 m) ran through the boom, so the crates sit 0.5 m to starboard;
 - `socket_navigation` was inside the cabin wall, so the compass stands 0.42 m forward;
-- the sloop's stern lantern hung in front of the wheel hub, so it moves to the starboard rail when the wheel is fitted.
+- the sloop's stern lantern hung in front of the wheel hub, so it moves to the starboard rail when the wheel is
+  fitted;
+- the string lights sagged onto the outrigger beams where they cross the rail (the beams pass at rail height), so the
+  strings now hop over each beam. My first, one-off audit script missed this one: Blender renames a second import's
+  materials (`GC_Wood_9a5a2e.001`), so its beams part was empty and silently untested. The GITCRAFT tool matches
+  across those suffixes and reports empty parts.
+- the fuel drums pierced the hull side and grazed the cabin's porthole, so they are now slimmer and further inboard.
 
 ## Rebuild
 
@@ -57,7 +68,8 @@ The audit also caught three clashes between existing pieces, which the game now 
 ./run_meshcraft.sh                 # every model: build, export three-web-toon, validate (+Khronos), previews, engine check
 ./run_meshcraft.sh harpoon         # one model
 ```
-Then copy `<name>/exports/<asset>.three-web-toon.glb` to `public/models/<asset>.glb` and re-run the audit
-(`logs/args_audit.json`, `logs/args_audit_early.json`). If a model's file fails to load, the game draws that
-upgrade's old code-built part.
+Then compress into `public/models` (`node ../compress_models.mjs <export> public/models/<asset>.glb`, see
+[`../compression/README.md`](../compression/README.md)) and re-run the audit: `python3 audit_spec.py`, then MeshCraft
+`audit_overlaps` with `logs/audit_full.json` and `logs/audit_early.json`. If a model's file fails to load, the game
+draws that upgrade's old code-built part.
 

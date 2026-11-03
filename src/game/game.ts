@@ -7,7 +7,7 @@ import { Ocean } from '../world/ocean';
 import { Sky } from '../world/sky';
 import { Atmosphere } from '../world/atmosphere';
 import { DrownedWorld } from '../world/drowned';
-import { loadModels, loadCrew, model, loadReport, characterModel } from '../world/assets';
+import { loadModels, loadModelFiles, modelRequested, loadCrew, model, loadReport, characterModel } from '../world/assets';
 import { oceanState } from '../world/ocean';
 import { Salvage } from './salvage';
 import { Raiders } from './raiders';
@@ -15,7 +15,7 @@ import { Environment } from '../world/environment';
 import { heightAt, isReef, swellFactor, findShore, nearestIsland } from '../world/terrain';
 import { swayUniforms } from '../world/materials';
 import { pagePreviewShip, pagePreviewUpgrades } from '../state/preview';
-import { buildShip, animateShip, type ShipParts } from '../ship/shipModel';
+import { buildShip, animateShip, sloopUpgradeFiles, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
 import { audio } from '../audio/audio';
 import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh, plantFindMesh } from './fx';
@@ -150,7 +150,8 @@ export class Game implements GameAPI {
   async init() {
     this.atmo.time = this.store.data.timeOfDay;
     await this.progress(0.05, 'Hauling salvage out of the deep…');
-    await loadModels((k) => void this.progress(0.05 + k * 0.3, 'Hauling salvage out of the deep…'));
+    // upgrade models load lazily: only the ones this save already shows (see rebuildShip / ensureUpgradeModels)
+    await loadModels((k) => void this.progress(0.05 + k * 0.3, 'Hauling salvage out of the deep…'), this.upgradeModelsNeeded());
     await this.progress(0.38, 'Flooding the world…');
     this.ocean = new Ocean(this.scene);
     await this.progress(0.5, 'Raising the last high ground…');
@@ -318,6 +319,21 @@ export class Game implements GameAPI {
     const st = this.store.stats;
     this.store.data.hull = Math.min(this.store.data.hull, st.hullMax);
     this.store.data.fuel = Math.min(this.store.data.fuel, st.fuelCap);
+    this.ensureUpgradeModels();
+  }
+
+  /** Upgrade model files the current boat shows: the Trimaran's owned upgrades (other boats use kit parts). */
+  private upgradeModelsNeeded() {
+    return this.store.data.vessel === 'sloop' ? sloopUpgradeFiles(this.store.data.upgrades) : [];
+  }
+
+  /**
+   * Fetch any upgrade model the boat now needs (an upgrade just bought, or a switch to the Trimaran). Until it
+   * arrives the upgrade's code-built part is drawn, so the slot is never empty; then the ship is rebuilt with it.
+   */
+  private ensureUpgradeModels() {
+    const need = this.upgradeModelsNeeded().filter((f) => !modelRequested(f));
+    if (need.length) loadModelFiles(need).then(() => this.rebuildShip());
   }
 
   // ───────── GameAPI ─────────

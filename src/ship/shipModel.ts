@@ -79,6 +79,16 @@ const SLOOP_UPGRADES: Record<string, { file: string; socket: string; at?: [numbe
   hull_copper: { file: 'tb_upg_copper_hull', socket: 'socket_hull' },
 };
 const SLOOP_MAST_Z = 1.0; // the model's mast (socket_sail)
+
+/** The upgrade model files the Trimaran needs for these owned upgrades (loaded lazily: see world/assets.ts). */
+export function sloopUpgradeFiles(owned: readonly string[]): string[] {
+  const files = new Set<string>();
+  for (const id of owned) {
+    const f = SLOOP_UPGRADES[id]?.file ?? SLOOP_KIT[id]?.file ?? (id === 'cabin_container' ? CONTAINER_FILE : null);
+    if (f) files.add(f);
+  }
+  return [...files];
+}
 // the model's base mainsail and its band (the jib, forward of the mast, shares the cloth material)
 const SLOOP_SAIL_CLOTH = 'GC_Cloth_f1e6cc';
 const SLOOP_SAIL_BAND = 'GC_Cloth_c0392b';

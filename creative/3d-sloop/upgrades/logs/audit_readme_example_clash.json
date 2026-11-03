@@ -1,0 +1,116 @@
+{
+ "frame": "gltf",
+ "parts": [
+  {
+   "name": "boom",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Wood_9a5a2e"
+   ],
+   "min": [
+    -0.2,
+    2.0,
+    -99
+   ],
+   "max": [
+    0.2,
+    99,
+    99
+   ]
+  },
+  {
+   "name": "jib",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Cloth_f1e6cc"
+   ],
+   "min": [
+    -99,
+    -99,
+    1.0
+   ]
+  },
+  {
+   "name": "beams_starboard",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_sloop_outriggers.glb",
+   "min": [
+    1.95,
+    1.12,
+    -99
+   ]
+  },
+  {
+   "name": "wheel",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_wheel_rudder.glb",
+   "transform": {
+    "location": [
+     0,
+     1.05,
+     -4.8
+    ]
+   }
+  },
+  {
+   "name": "crates",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_cargo_crates.glb",
+   "transform": {
+    "location": [
+     0.5,
+     1.05,
+     -0.5
+    ]
+   }
+  },
+  {
+   "name": "captain",
+   "cylinder": {
+    "radius": 0.24,
+    "height": 1.85
+   },
+   "transform": {
+    "location": [
+     -0.85,
+     1.1,
+     -4.55
+    ]
+   }
+  },
+  {
+   "name": "harpoon",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_harpoon_turret.glb"
+  },
+  {
+   "name": "crane",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_salvage_crane.glb"
+  },
+  {
+   "name": "lights",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_deck_lights.glb",
+   "node": "deck_lights_strings"
+  }
+ ],
+ "motion": [
+  {
+   "part": "harpoon",
+   "node": "harpoon_mount",
+   "axis": "y",
+   "from": 0,
+   "to": 330,
+   "steps": 12
+  },
+  {
+   "part": "crane",
+   "node": "salvage_crane",
+   "axis": "y",
+   "from": -124.4,
+   "to": -55.6,
+   "steps": 3
+  }
+ ],
+ "contacts": [
+  [
+   "harpoon",
+   "beams_starboard"
+  ]
+ ]
+}

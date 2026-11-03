@@ -1,1 +1,296 @@
-{"ok": true, "result": {"stdout": "20:49:00 | INFO: Data are loaded, start creating Blender stuff\n20:49:00 | INFO: Blender create Mesh node tidebreakers_coastal_sloop_mesh\n20:49:00 | INFO: glTF import finished in 0.04s\n20:49:00 | INFO: Data are loaded, start creating Blender stuff\n20:49:00 | INFO: Blender create Mesh node outrigger_port\n20:49:00 | INFO: Blender create Mesh node outrigger_starboard\n20:49:01 | INFO: glTF import finished in 0.02s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node upgrade_lashed_cargo_crates_mesh\n20:49:01 | INFO: glTF import finished in 0.01s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node upgrade_brass_compass_mesh\n20:49:01 | INFO: glTF import finished in 0.01s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node upgrade_ship_s_wheel_ash_rudder_mesh\n20:49:01 | INFO: glTF import finished in 0.01s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node tb_upg_solar_array_mesh\n20:49:01 | INFO: glTF import finished in 0.01s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node radar_scanner_mesh\n20:49:01 | INFO: Blender create Mesh node tb_upg_radar_mast_mesh\n20:49:01 | INFO: glTF import finished in 0.01s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node deck_turbine_rotor_mesh\n20:49:01 | INFO: Blender create Mesh node tb_upg_deck_turbine_mesh\n20:49:01 | INFO: glTF import finished in 0.01s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node tb_upg_fishing_rig_mesh\n20:49:01 | INFO: glTF import finished in 0.01s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node harpoon_mount_mesh\n20:49:01 | INFO: Blender create Mesh node tb_upg_harpoon_turret_mesh\n20:49:01 | INFO: glTF import finished in 0.02s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node salvage_crane_mesh\n20:49:01 | INFO: glTF import finished in 0.01s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node tb_upg_fuel_drums_mesh\n20:49:01 | INFO: glTF import finished in 0.02s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node tb_upg_cargo_nets_mesh\n20:49:01 | INFO: glTF import finished in 0.03s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node tb_upg_armour_plating_mesh\n20:49:01 | INFO: glTF import finished in 0.02s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node deck_lights_strings\n20:49:01 | INFO: Blender create Mesh node deck_spotlight\n20:49:01 | INFO: glTF import finished in 0.03s\n20:49:01 | INFO: Data are loaded, start creating Blender stuff\n20:49:01 | INFO: Blender create Mesh node tb_upg_outboard_mesh\n20:49:01 | INFO: glTF import finished in 0.02s\n{\"variant\": \"early\", \"poses_tested\": 288, \"pairs_tested\": 210, \"overlaps\": {}}\n", "objects": ["Cylinder", "deck_lights_strings", "deck_spotlight", "deck_turbine_rotor", "deck_turbine_rotor_mesh", "harpoon_mount", "harpoon_mount_mesh", "outrigger_port", "outrigger_starboard", "radar_scanner", "radar_scanner_mesh", "salvage_crane", "salvage_crane_mesh", "socket_flag", "socket_hull", "socket_navigation", "socket_sail", "socket_steering", "socket_storage", "tb_sloop_outriggers", "tb_upg_armour_plating", "tb_upg_armour_plating_mesh", "tb_upg_cargo_nets", "tb_upg_cargo_nets_mesh", "tb_upg_deck_lights", "tb_upg_deck_turbine", "tb_upg_deck_turbine_mesh", "tb_upg_fishing_rig", "tb_upg_fishing_rig_mesh", "tb_upg_fuel_drums", "tb_upg_fuel_drums_mesh", "tb_upg_harpoon_turret", "tb_upg_harpoon_turret_mesh", "tb_upg_outboard", "tb_upg_outboard_mesh", "tb_upg_radar_mast", "tb_upg_radar_mast_mesh", "tb_upg_salvage_crane", "tb_upg_solar_array", "tb_upg_solar_array_mesh", "tidebreakers_coastal_sloop", "tidebreakers_coastal_sloop_mesh", "upgrade_brass_compass", "upgrade_brass_compass_mesh", "upgrade_lashed_cargo_crates", "upgrade_lashed_cargo_crates_mesh", "upgrade_ship_s_wheel_ash_rudder", "upgrade_ship_s_wheel_ash_rudder_mesh"]}}
+{
+ "frame": "gltf",
+ "parts": [
+  {
+   "name": "boom",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Wood_9a5a2e"
+   ],
+   "min": [
+    -0.2,
+    2.0,
+    -99
+   ],
+   "max": [
+    0.2,
+    99,
+    99
+   ]
+  },
+  {
+   "name": "mast",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Wood_9a5a2e",
+    "GC_Wood_5e331b"
+   ],
+   "min": [
+    -0.25,
+    1.3,
+    0.7
+   ],
+   "max": [
+    0.25,
+    99,
+    1.3
+   ]
+  },
+  {
+   "name": "jib",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Cloth_f1e6cc"
+   ],
+   "min": [
+    -99,
+    -99,
+    1.0
+   ]
+  },
+  {
+   "name": "lantern",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Plain_ff9f2e_e2"
+   ],
+   "transform": {
+    "location": [
+     1.25,
+     -0.69,
+     -0.1
+    ]
+   }
+  },
+  {
+   "name": "beams_port",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_sloop_outriggers.glb",
+   "materials": [
+    "GC_Wood_9a5a2e",
+    "GC_Wood_5e331b",
+    "GC_Cloth_c9a46b"
+   ],
+   "min": [
+    -99,
+    1.12,
+    -99
+   ],
+   "max": [
+    -1.95,
+    99,
+    99
+   ]
+  },
+  {
+   "name": "beams_starboard",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_sloop_outriggers.glb",
+   "materials": [
+    "GC_Wood_9a5a2e",
+    "GC_Wood_5e331b",
+    "GC_Cloth_c9a46b"
+   ],
+   "min": [
+    1.95,
+    1.12,
+    -99
+   ]
+  },
+  {
+   "name": "crates",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_cargo_crates.glb",
+   "transform": {
+    "location": [
+     0.5,
+     1.0503,
+     -0.5
+    ]
+   }
+  },
+  {
+   "name": "compass",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_brass_compass.glb",
+   "transform": {
+    "location": [
+     0,
+     1.0503,
+     -1.1800000000000002
+    ]
+   }
+  },
+  {
+   "name": "wheel",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_wheel_rudder.glb",
+   "transform": {
+    "location": [
+     0,
+     1.0503,
+     -4.8
+    ]
+   }
+  },
+  {
+   "name": "captain",
+   "cylinder": {
+    "radius": 0.24,
+    "height": 1.85
+   },
+   "transform": {
+    "location": [
+     -0.98,
+     1.1,
+     -4.55
+    ]
+   }
+  },
+  {
+   "name": "turbine",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_deck_turbine.glb"
+  },
+  {
+   "name": "fishing",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_fishing_rig.glb"
+  },
+  {
+   "name": "harpoon",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_harpoon_turret.glb"
+  },
+  {
+   "name": "crane",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_salvage_crane.glb"
+  },
+  {
+   "name": "drums",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_fuel_drums.glb"
+  },
+  {
+   "name": "nets",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_cargo_nets.glb"
+  },
+  {
+   "name": "armour",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_armour_plating.glb"
+  },
+  {
+   "name": "lights",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_deck_lights.glb",
+   "node": "deck_lights_strings"
+  },
+  {
+   "name": "solar",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_solar_array.glb"
+  },
+  {
+   "name": "radar",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_radar_mast.glb"
+  },
+  {
+   "name": "spotlight",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_deck_lights.glb",
+   "node": "deck_spotlight"
+  },
+  {
+   "name": "cabin",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Plank_f2ead8",
+    "GC_Plank_5e331b",
+    "GC_Metal_f4c542_m9"
+   ],
+   "min": [
+    -1.2,
+    0.95,
+    -3.9
+   ],
+   "max": [
+    1.2,
+    2.2,
+    -1.3
+   ]
+  },
+  {
+   "name": "base_mainsail",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Cloth_f1e6cc",
+    "GC_Cloth_c0392b"
+   ],
+   "max": [
+    99,
+    99,
+    1.0
+   ]
+  },
+  {
+   "name": "outboard",
+   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_outboard.glb"
+  }
+ ],
+ "motion": [
+  {
+   "part": "crane",
+   "node": "salvage_crane",
+   "axis": "y",
+   "from": -124.37746770784939,
+   "to": -55.62253229215061,
+   "steps": 3
+  },
+  {
+   "part": "harpoon",
+   "node": "harpoon_mount",
+   "axis": "y",
+   "from": 0,
+   "to": 330,
+   "steps": 12
+  },
+  {
+   "part": "turbine",
+   "node": "deck_turbine_rotor",
+   "axis": "z",
+   "from": 0,
+   "to": 60,
+   "steps": 2
+  },
+  {
+   "part": "radar",
+   "node": "radar_scanner",
+   "axis": "y",
+   "from": 0,
+   "to": 135,
+   "steps": 4
+  }
+ ],
+ "contacts": [
+  [
+   "solar",
+   "cabin"
+  ],
+  [
+   "radar",
+   "cabin"
+  ],
+  [
+   "spotlight",
+   "cabin"
+  ],
+  [
+   "compass",
+   "cabin"
+  ],
+  [
+   "base_mainsail",
+   "boom"
+  ],
+  [
+   "base_mainsail",
+   "mast"
+  ],
+  [
+   "harpoon",
+   "beams_starboard"
+  ],
+  [
+   "boom",
+   "mast"
+  ]
+ ]
+}
