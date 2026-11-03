@@ -1,5 +1,6 @@
-// Procedural WebAudio soundscape: waves against the hull, wind in the rigging, engines, rain and thunder,
-// winches and harpoons, creaks, gulls, discovery stingers and sparse drowned-world music.
+// Procedural WebAudio soundscape: waves against the hull, a low gusting howl, wind in the rigging, engines,
+// rain and thunder, distant groaning steel, tolling bell buoys, hull strikes, winches and harpoons, creaks,
+// a few lonely gulls, discovery stingers and sparse drowned-world music.
 // Everything is synthesized so the game ships with zero audio assets.
 
 type Ctx = AudioContext;
@@ -28,6 +29,11 @@ export class Audio {
   private winchGain!: GainNode;
   private winchOsc: OscillatorNode | null = null;
   private nextSlap = 1;
+  private howl!: GainNode;
+  private nextGroan = 9;
+  private nextBell = 2;
+  private bellDist = Infinity;
+  private wreckDist = Infinity;
 
   unlock() {
     if (this.ctx) {
@@ -151,6 +157,95 @@ export class Audio {
     this.winchGain = ctx.createGain();
     this.winchGain.gain.value = 0;
     this.winchGain.connect(this.sfxBus);
+    // the howl: a low, gusting moan of wind over open water, never quite silent
+    const hw = ctx.createBufferSource();
+    hw.buffer = this.noiseBuf;
+    hw.loop = true;
+    hw.playbackRate.value = 0.6;
+    const hf = ctx.createBiquadFilter();
+    hf.type = 'bandpass';
+    hf.frequency.value = 320;
+    hf.Q.value = 3.5;
+    const hfl = ctx.createOscillator();
+    hfl.frequency.value = 0.07;
+    const hflG = ctx.createGain();
+    hflG.gain.value = 140;
+    hfl.connect(hflG).connect(hf.frequency);
+    hfl.start();
+    this.howl = ctx.createGain();
+    this.howl.gain.value = 0;
+    const gust = ctx.createOscillator();
+    gust.frequency.value = 0.11;
+    const gustG = ctx.createGain();
+    gustG.gain.value = 0.025;
+    gust.connect(gustG).connect(this.howl.gain);
+    gust.start();
+    hw.connect(hf).connect(this.howl).connect(this.sfxBus);
+    hw.start();
+  }
+
+  /** Distances (m) to the nearest bell buoy and the nearest wreck/structure, for positional ambience. */
+  proximity(bell: number, wreck: number) {
+    this.bellDist = bell;
+    this.wreckDist = wreck;
+  }
+
+  /** A drowned structure settling: a long, low, resonant groan of stressed steel somewhere out there. */
+  groan(vol = 1) {
+    if (!this.ctx) return;
+    const ctx = this.ctx, t = ctx.currentTime;
+    const o = ctx.createOscillator();
+    o.type = 'sawtooth';
+    const f0 = 46 + Math.random() * 30;
+    o.frequency.setValueAtTime(f0, t);
+    o.frequency.linearRampToValueAtTime(f0 * (0.7 + Math.random() * 0.2), t + 2.6);
+    const o2 = ctx.createOscillator();
+    o2.type = 'triangle';
+    o2.frequency.setValueAtTime(f0 * 2.03, t);
+    o2.frequency.linearRampToValueAtTime(f0 * 1.6, t + 2.6);
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = 18;
+    bp.frequency.setValueAtTime(240 + Math.random() * 200, t);
+    bp.frequency.exponentialRampToValueAtTime(140, t + 2.8);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.09 * vol, t + 0.7);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 3.2);
+    const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    let node: AudioNode = g;
+    if (pan) {
+      pan.pan.value = Math.random() * 1.6 - 0.8;
+      g.connect(pan);
+      node = pan;
+    }
+    o.connect(bp);
+    o2.connect(bp);
+    bp.connect(g);
+    node.connect(this.sfxBus);
+    o.start(t);
+    o2.start(t);
+    o.stop(t + 3.3);
+    o2.stop(t + 3.3);
+  }
+
+  /** A bell buoy tolling in the swell: inharmonic partials with a long ring. */
+  bell(vol = 1) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const f = 392 + Math.random() * 6;
+    [1, 2.76, 5.4, 8.93].forEach((k, i) => this.tone(f * k, t, 2.8 - i * 0.55, 'sine', (0.05 / (i + 1)) * vol));
+    this.noiseBurst(t, 0.03, 2200, 0.05 * vol, 'highpass');
+  }
+
+  /** Steel against steel: a crunch, a clang and the hull complaining about it. */
+  hullHit(k = 0.5) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.noiseBurst(t, 0.35, 180, 0.35 + k * 0.4, 'lowpass');
+    this.noiseBurst(t, 0.12, 1400, 0.15 + k * 0.15, 'bandpass');
+    [1, 2.4, 3.9].forEach((m, i) => this.tone(130 * m + Math.random() * 10, t, 0.6 - i * 0.12, 'triangle', (0.07 - i * 0.015) * (0.6 + k)));
+    setTimeout(() => this.creak(), 220);
   }
 
   /** Engine drone; level 0 = off. */
@@ -240,6 +335,20 @@ export class Audio {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
     this.wind.gain.setTargetAtTime(Math.min(0.26, speed * 0.016 + swell * 0.12 + storm * 0.12), t, 0.5);
+    this.howl.gain.setTargetAtTime(onShore ? 0.02 : 0.035 + swell * 0.03 + storm * 0.07, t, 1.2);
+    // groaning steel: rare in open water, frequent among the wrecks
+    this.nextGroan -= dt * (this.wreckDist < 90 ? 2.5 : this.wreckDist < 220 ? 1.2 : 0.5);
+    if (this.nextGroan < 0) {
+      this.nextGroan = 14 + Math.random() * 18;
+      this.groan(this.wreckDist < 90 ? 1 : this.wreckDist < 220 ? 0.6 : 0.3);
+    }
+    if (this.bellDist < 160) {
+      this.nextBell -= dt * (1 + storm);
+      if (this.nextBell < 0) {
+        this.nextBell = 3.2 + Math.random() * 3.5;
+        this.bell(Math.max(0.08, 1 - this.bellDist / 160));
+      }
+    }
     this.wavesFilter.frequency.setTargetAtTime(onShore ? 900 : 500 + speed * 40 + swell * 500 + storm * 400, t, 0.5);
     this.waves.gain.setTargetAtTime(0.25 + storm * 0.25, t, 1);
     this.rainGain.gain.setTargetAtTime(storm > 0.08 ? storm * 0.14 : 0, t, 0.8);
@@ -252,7 +361,7 @@ export class Audio {
     }
     this.nextGull -= dt;
     if (this.nextGull < 0) {
-      this.nextGull = 6 + Math.random() * 12;
+      this.nextGull = 18 + Math.random() * 24;
       this.gull();
     }
     this.nextCreak -= dt;
@@ -317,8 +426,8 @@ export class Audio {
       f.type = 'bandpass';
       f.frequency.value = 1800;
       const w = t + i * 0.22;
-      o.frequency.setValueAtTime(1300, w);
-      o.frequency.exponentialRampToValueAtTime(800, w + 0.18);
+      o.frequency.setValueAtTime(1050, w);
+      o.frequency.exponentialRampToValueAtTime(600, w + 0.2);
       this.env(g, w, 0.02, 0.03, 0.16);
       o.connect(f).connect(g).connect(this.sfxBus);
       o.start(w);

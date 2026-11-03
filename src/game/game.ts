@@ -104,6 +104,8 @@ export class Game implements GameAPI {
   private currentRegion = 'harbor';
   private wpTarget: { x: number; z: number } | null = null;
   private rng = new RNG(Date.now() & 0xffff);
+  private shake = 0;
+  private proxTimer = 0;
 
   constructor(private canvas: HTMLCanvasElement, private progress: (p: number, msg: string) => Promise<void>) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -112,10 +114,10 @@ export class Game implements GameAPI {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.NoToneMapping;
     this.camera = new THREE.PerspectiveCamera(55, 1, 0.3, 4000);
-    this.scene.fog = new THREE.Fog(0xc1e5ee, 240, 1000);
-    this.scene.background = new THREE.Color(0xc4ebf4);
+    this.scene.fog = new THREE.Fog(0x9fa89f, 150, 860);
+    this.scene.background = new THREE.Color(0xadb4aa);
 
-    this.hemi = new THREE.HemisphereLight(0xcfeeff, 0xc9b48a, 1.5);
+    this.hemi = new THREE.HemisphereLight(0xc2cac2, 0x877357, 1.45);
     this.scene.add(this.hemi);
     this.sunLight = new THREE.DirectionalLight(0xfff1d6, 2.4);
     this.sunLight.castShadow = true;
@@ -677,6 +679,13 @@ export class Game implements GameAPI {
     const dmg = n * (1 - st.armor);
     s.hull = Math.max(0, s.hull - dmg);
     if (msg && dmg > 0.5) this.say('dmg', `${msg} −${Math.round(dmg)} hull`, 2, { color: '#ff6b4a' });
+    // a real strike (not the slow grind of a storm): feel it
+    if (dmg >= 1.5) {
+      this.shake = Math.min(1, this.shake + 0.25 + dmg / 14);
+      this.ui.hit();
+      audio.hullHit(Math.min(1, dmg / 12));
+      this.haptic(Math.min(80, 20 + dmg * 4));
+    }
     if (s.hull < st.hullMax * 0.25 && this.t - this.lastHullWarn > 20) {
       this.lastHullWarn = this.t;
       this.ui.toast('Hull critical! Patch it from the SHIP screen or head for a settlement.', { color: '#ff6b4a', life: 4 });
@@ -865,6 +874,34 @@ export class Game implements GameAPI {
   private updateCaches(dt: number) {
     if (!this.started || this.mode !== 'sail') return;
     const b = this.boat;
+    // pick over flotsam: ease through it slowly and the crew hooks out whatever is worth keeping
+    for (const f of this.drowned.flotsam) {
+      if (f.picked || Math.abs(f.x - b.x) > 12 || Math.abs(f.z - b.z) > 12) continue;
+      if (Math.hypot(f.x - b.x, f.z - b.z) > this.ship.beam + 3) continue;
+      if (b.speed > 4.5) {
+        this.say('flotsam_fast', 'Too fast to hook anything. Ease off to pick through the flotsam.', 6);
+        continue;
+      }
+      f.picked = true;
+      const table: Record<string, [string, number][]> = {
+        barrel_raft: [['crude_oil', 1], ['scrap_metal', 2], ['rope', 1]],
+        net_tangle: [['rope', 2], ['plastic', 2], ['fish', 1]],
+        hull_shard: [['driftwood', 2], ['iron_nails', 2], ['canvas', 1]],
+      };
+      const got: string[] = [];
+      for (const [id, n] of table[f.kind] ?? table.hull_shard) {
+        if (this.rng.next() < 0.35) continue;
+        const k = 1 + Math.floor(this.rng.next() * n);
+        const fit = this.gain(id, k, 'flotsam', { reveal: 'none' });
+        if (fit) got.push(`+${fit} ${item(id).name}`);
+      }
+      audio.splash();
+      audio.pickup();
+      this.foam.emit(new THREE.Vector3(f.x, 0.3, f.z), 14, '#b8b2a0', 1.5, 2, 1, 4, 0.6);
+      this.ui.toast(got.length ? `Picked over ${f.kind === 'barrel_raft' ? 'a barrel raft' : f.kind === 'net_tangle' ? 'a ghost net' : 'a capsized hull'}: ${got.join(', ')}` : 'Picked clean long ago. Nothing worth keeping.', { icon: got.length ? 'rope' : undefined, color: '#9a8a5a', life: 2.8 });
+      this.store.commit();
+      setTimeout(() => (f.picked = false), 240000); // the sea brings more
+    }
     // pick up
     for (let i = this.caches.length - 1; i >= 0; i--) {
       const c = this.caches[i];
@@ -969,6 +1006,7 @@ export class Game implements GameAPI {
     }
     for (const cw of CASTAWAYS) if (!s.castaways.includes(cw.id) && Math.hypot(cw.x - px, cw.z - pz) < range * 1.4) blips.push({ x: cw.x - px, z: cw.z - pz, kind: 'castaway' });
     this.ui.setRadar(blips, range, this.mode === 'sail' ? this.boat.heading : this.foot.heading, this.camYaw, !!st.radar);
+    this.ui.setCritical(this.mode === 'sail' && s.hull < st.hullMax * 0.25);
   }
 
   private dock() {
@@ -1236,6 +1274,7 @@ export class Game implements GameAPI {
     this.ocean.update(this.t, dt, focus);
     this.sky.update(this.t, dt, focus);
     this.env.update(this.t, dt);
+    this.drowned.focus.copy(focus);
     this.drowned.update(this.t, dt, this.atmo.night);
     this.salvage.update(dt);
     this.raiders.update(dt);
@@ -1468,6 +1507,14 @@ export class Game implements GameAPI {
       if (Math.random() < b.speed * 0.15) this.foam.emit(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, '#ffffff', 1.2, 1, 0.8, 4, 0.6);
     }
 
+    this.proxTimer -= dt;
+    if (this.proxTimer <= 0) {
+      this.proxTimer = 0.5;
+      let bell = Infinity, wreck = Infinity;
+      for (const p of this.drowned.bells) bell = Math.min(bell, Math.hypot(p.x - b.x, p.z - b.z));
+      for (const c of this.drowned.colliders) wreck = Math.min(wreck, Math.hypot(c.x - b.x, c.z - b.z) - c.r);
+      audio.proximity(bell, wreck);
+    }
     audio.ambience(dt, b.speed, false, Math.max(swellFactor(b.x, b.z), this.atmo.storm), this.currentRegion, this.atmo.storm);
     this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff, motoring);
     this.ui.setDigMeter(null);
@@ -1613,6 +1660,7 @@ export class Game implements GameAPI {
   }
 
   private updateCamera(dt: number) {
+    this.shake = Math.max(0, this.shake - dt * 2.2);
     const target = new THREE.Vector3();
     let dist: number, pitch: number;
     if (!this.started) {
@@ -1649,6 +1697,12 @@ export class Game implements GameAPI {
     cy = Math.max(cy, heightAt(cx, cz) + 1.5, 1.2);
     const desired = new THREE.Vector3(cx, cy, cz);
     this.camera.position.lerp(desired, 1 - Math.exp(-dt * 6));
+    if (this.shake > 0.001) {
+      const k = this.shake * this.shake * 0.6;
+      this.camera.position.x += (Math.random() - 0.5) * k;
+      this.camera.position.y += (Math.random() - 0.5) * k;
+      target.x += (Math.random() - 0.5) * k * 0.4;
+    }
     this.camera.lookAt(target);
   }
 
