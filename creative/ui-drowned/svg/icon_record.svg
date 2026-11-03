@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_record</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <circle cx="32" cy="32" r="22" fill="#ff00fe"/>
+    <circle cx="32" cy="32" r="17" fill="none" stroke="#3a4148" stroke-width="1.2" stroke-miterlimit="10"/>
+    <circle cx="32" cy="32" r="12" fill="none" stroke="#3a4148" stroke-width="1.2" stroke-miterlimit="10"/>
+    <circle cx="32" cy="32" r="7" fill="#00feff"/>
+    <circle cx="32" cy="32" r="1.8" fill="#ffffff"/>
+    <path d="M18 22 C22 16.667 27.333 13.667 34 13" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_chip</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M15 14 L49 14 C50.657 14 52 15.343 52 17 L52 47 C52 48.657 50.657 50 49 50 L15 50 C13.343 50 12 48.657 12 47 L12 17 C12 15.343 13.343 14 15 14 Z" fill="#ff00fe"/>
+    <path d="M28 24 L38 24 C39.105 24 40 24.895 40 26 L40 36 C40 37.105 39.105 38 38 38 L28 38 C26.895 38 26 37.105 26 36 L26 26 C26 24.895 26.895 24 28 24 Z" fill="#1c2229"/>
+    <path d="M16 20 L24 20 L24 30 M48 22 L40 22 L40 28 M16 44 L22 44 L26 38 M48 42 L40 42" fill="none" stroke="#00feff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M18 10 L18 14 M26 10 L26 14 M34 10 L34 14 M42 10 L42 14 M18 50 L18 54 M26 50 L26 54 M34 50 L34 54 M42 50 L42 54" fill="none" stroke="#00feff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

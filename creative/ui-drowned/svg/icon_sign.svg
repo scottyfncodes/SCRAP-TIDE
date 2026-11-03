@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_sign</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <rect x="30" y="26" width="4" height="32" fill="#7f8a94"/>
+    <path d="M11 12 L53 12 C54.657 12 56 13.343 56 15 L56 27 C56 28.657 54.657 30 53 30 L11 30 C9.343 30 8 28.657 8 27 L8 15 C8 13.343 9.343 12 11 12 Z" fill="#ff00fe"/>
+    <path d="M12 14 L52 14 C53.105 14 54 14.895 54 16 L54 26 C54 27.105 53.105 28 52 28 L12 28 C10.895 28 10 27.105 10 26 L10 16 C10 14.895 10.895 14 12 14 Z" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-miterlimit="10"/>
+    <line x1="16" y1="21" x2="48" y2="21" fill="none" stroke="#00feff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

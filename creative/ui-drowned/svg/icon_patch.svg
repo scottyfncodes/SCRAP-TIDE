@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_patch</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M14 18 L50 18 C52.209 18 54 19.791 54 22 L54 42 C54 44.209 52.209 46 50 46 L14 46 C11.791 46 10 44.209 10 42 L10 22 C10 19.791 11.791 18 14 18 Z" fill="#ff00fe"/>
+    <line x1="10" y1="32" x2="54" y2="32" fill="none" stroke="#00feff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M24 18 L24 46 M40 18 L40 46" fill="none" stroke="#00feff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M14 22 L20 28 M44 38 L50 44" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_oil</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M22 12 L42 12 C45.314 12 48 14.686 48 18 L48 48 C48 51.314 45.314 54 42 54 L22 54 C18.686 54 16 51.314 16 48 L16 18 C16 14.686 18.686 12 22 12 Z" fill="#ff00fe"/>
+    <rect x="16" y="22" width="32" height="4" fill="#00feff"/>
+    <rect x="16" y="40" width="32" height="4" fill="#00feff"/>
+    <path d="M28 30 C30.667 24.667 33.333 24.667 36 30 C36 34 34.667 36 32 36 C29.333 36 28 34 28 30" fill="#00feff"/>
+  </g>
+</svg>

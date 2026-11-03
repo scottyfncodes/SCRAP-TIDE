@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_scrap</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <polygon points="10,40 20,22 34,30 46,16 54,30 44,48 22,50" fill="#ff00fe"/>
+    <path d="M20 22 L22 50 M34 30 L44 48" fill="none" stroke="#00feff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="26" cy="40" r="2" fill="#00feff"/>
+    <circle cx="40" cy="30" r="2" fill="#00feff"/>
+    <line x1="14" y1="44" x2="24" y2="46" fill="none" stroke="#d2702f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_wire</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <circle cx="32" cy="32" r="20" fill="none" stroke="#ff00fe" stroke-width="7" stroke-miterlimit="10"/>
+    <circle cx="32" cy="32" r="12" fill="none" stroke="#ff00fe" stroke-width="5" stroke-miterlimit="10"/>
+    <circle cx="32" cy="32" r="5" fill="#00feff"/>
+    <path d="M50 26 C55.333 35.333 54 43.333 46 50" fill="none" stroke="#ff00fe" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

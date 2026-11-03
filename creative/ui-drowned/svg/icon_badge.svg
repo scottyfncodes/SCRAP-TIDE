@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_badge</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M32 8 L48 14 L48 30 C48 40.667 42.667 49.333 32 56 C21.333 49.333 16 40.667 16 30 L16 14 Z" fill="#ff00fe"/>
+    <path d="M32 14 L43 18 L43 30 C43 37.333 39.333 43.667 32 49 C24.667 43.667 21 37.333 21 30 L21 18 Z" fill="#00feff"/>
+    <circle cx="32" cy="30" r="6" fill="#ff00fe"/>
+    <path d="M32 20 L32 24 M32 36 L32 40 M22 30 L26 30 M38 30 L42 30" fill="none" stroke="#ff00fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

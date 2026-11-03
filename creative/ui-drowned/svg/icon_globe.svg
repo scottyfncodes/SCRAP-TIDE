@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_globe</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M21 46 L43 46 C44.657 46 46 47.343 46 49 L46 53 C46 54.657 44.657 56 43 56 L21 56 C19.343 56 18 54.657 18 53 L18 49 C18 47.343 19.343 46 21 46 Z" fill="#00feff"/>
+    <circle cx="32" cy="30" r="18" fill="#ff00fe"/>
+    <path d="M22 40 L22 30 L26 30 L26 24 L30 24 L30 40 M34 40 L34 28 L38 28 L38 34 L42 34 L42 40" fill="#3a4148"/>
+    <circle cx="26" cy="22" r="1.5" fill="#ffffff"/>
+    <circle cx="36" cy="18" r="1.5" fill="#ffffff"/>
+    <circle cx="40" cy="26" r="1.2" fill="#ffffff"/>
+    <ellipse cx="24" cy="22" rx="5" ry="3" fill="#ffffff"/>
+  </g>
+</svg>

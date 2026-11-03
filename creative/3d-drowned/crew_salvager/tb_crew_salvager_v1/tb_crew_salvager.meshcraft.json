@@ -1,0 +1,368 @@
+{
+ "asset_id": "tb_crew_salvager",
+ "brief": {
+  "asset_id": "tb_crew_salvager",
+  "out_dir": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft",
+  "parent_job": "job-20261102-220852-7316ca",
+  "template": "deckhand",
+  "params": {
+   "seed": 834,
+   "colors": {
+    "skin": "#E6B999",
+    "shirt": "#A24B21",
+    "vest": "#E8742A",
+    "pants": "#3A4148",
+    "bandana": "#F2B825"
+   },
+   "weapon": false,
+   "clips": [
+    "Idle",
+    "Walk",
+    "Interact",
+    "Attack"
+   ]
+  },
+  "palette": "/root/.gitcraft/runtime/forgecraft/palettes/tidebreakers-palette.json",
+  "title": "tb_crew_salvager",
+  "tags": [
+   "tidebreakers",
+   "crew",
+   "salvager"
+  ],
+  "profiles": [
+   "three-web-toon"
+  ],
+  "preview": {
+   "size": 512,
+   "views": [
+    "three_quarter",
+    "front",
+    "side",
+    "top"
+   ],
+   "poses": [
+    {
+     "clip": "Attack",
+     "at": "end"
+    }
+   ]
+  }
+ },
+ "steps": [
+  {
+   "step": "build",
+   "ok": true,
+   "seconds": 0.33
+  },
+  {
+   "step": "preview",
+   "ok": true,
+   "seconds": 17.87
+  },
+  {
+   "step": "validate_scene",
+   "ok": true,
+   "seconds": 0.01
+  },
+  {
+   "step": "export",
+   "ok": true,
+   "seconds": 0.82
+  },
+  {
+   "step": "contact_sheet",
+   "ok": true,
+   "seconds": 0.4
+  }
+ ],
+ "build": {
+  "blend": {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/source/tb_crew_salvager.blend",
+   "kind": "blend",
+   "bytes": 145937,
+   "sha256": "7e6c64f3ae21f2dd361736bc500f7c8bda332bd958a2d37c1c4a77df5e908b4a"
+  },
+  "seconds": 0.21,
+  "roles": {
+   "skin_e6b999": "#E6B999",
+   "cloth_a24b21": "#A24B21",
+   "cloth_e8742a": "#E8742A",
+   "cloth_3a4148": "#3A4148",
+   "plain_5e331b": "#5E331B",
+   "cloth_f2b825": "#F2B825",
+   "metal_f4c542_m9": "#F4C542",
+   "plain_1b1b1f": "#1B1B1F"
+  },
+  "objects": [
+   "tb_crew_salvager",
+   "tb_crew_salvager_mesh",
+   "tb_crew_salvager_rig"
+  ],
+  "actions": [
+   "Attack",
+   "Idle",
+   "Interact",
+   "Walk"
+  ],
+  "contract": {
+   "root": "tb_crew_salvager",
+   "ground": true,
+   "clips": [
+    "Idle",
+    "Walk",
+    "Interact",
+    "Attack"
+   ]
+  },
+  "expect": {
+   "base_z": 0.0
+  }
+ },
+ "previews": [
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/previews/tb_crew_salvager_three_quarter.png",
+   "kind": "preview",
+   "bytes": 138148,
+   "sha256": "848aaef225a3864067e789e1329564004912936acfc6419876ce19ffbe2ac2e7",
+   "view": "three_quarter",
+   "clip": null,
+   "pose": null,
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/previews/tb_crew_salvager_front.png",
+   "kind": "preview",
+   "bytes": 139451,
+   "sha256": "7430760cb1ce2adc6a061b3e0030f6f9650fd9805292001dbc7b99032f7d674d",
+   "view": "front",
+   "clip": null,
+   "pose": null,
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/previews/tb_crew_salvager_side.png",
+   "kind": "preview",
+   "bytes": 118322,
+   "sha256": "9e90374287009f05c158b52b5f961e76f4e358fcff362815a92426371adda529",
+   "view": "side",
+   "clip": null,
+   "pose": null,
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/previews/tb_crew_salvager_top.png",
+   "kind": "preview",
+   "bytes": 83299,
+   "sha256": "c1b90ec46ab41ac4b680ec60866f69c385a1e240122eeca709db439d5dcf5195",
+   "view": "top",
+   "clip": null,
+   "pose": null,
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/previews/tb_crew_salvager_three_quarter_Attack-end.png",
+   "kind": "preview",
+   "bytes": 138148,
+   "sha256": "585f82b947c669f1989227994c933214e287b4971745c9dc10b87ccf69998883",
+   "view": "three_quarter",
+   "clip": "Attack",
+   "pose": "end",
+   "size": 512
+  },
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/previews/tb_crew_salvager_sheet.png",
+   "kind": "contact_sheet",
+   "bytes": 108932,
+   "sha256": "aa9a3ef8f7e7bcba9e719989b0a3ba90aff020e0c84cbd26b90b055845521364"
+  }
+ ],
+ "exports": [
+  {
+   "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/exports/tb_crew_salvager.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 227472,
+   "sha256": "20c918e1e2a0530ae957688e0fb31c9dc7b8972056a5debcfda2cf25cf7849a9",
+   "profile": "three-web-toon",
+   "format": "glb",
+   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+   "extras": [
+    {
+     "kind": "lod",
+     "skipped": "asset has skinned meshes; decimating them would break their weights (author LODs by hand or per template)"
+    },
+    {
+     "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/exports/tb_crew_salvager.three-web-toon.collision.glb",
+     "kind": "collision",
+     "bytes": 10752,
+     "sha256": "1a8006be7885245b86c794cd76b2e9adfa68c6256872db95e7460f6c4ab616be",
+     "shape": "convex_hull",
+     "triangles": 146
+    }
+   ],
+   "sidecars": [
+    {
+     "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/exports/tb_crew_salvager.three-web-toon.collision.glb",
+     "kind": "sidecar",
+     "bytes": 10752,
+     "sha256": "1a8006be7885245b86c794cd76b2e9adfa68c6256872db95e7460f6c4ab616be"
+    }
+   ],
+   "roundtrip": {
+    "path": "/root/.gitcraft/3d-library/jobs/job-20261102-220852-7316ca/meshcraft/exports/tb_crew_salvager.three-web-toon.glb",
+    "objects": [
+     "Icosphere (MESH)",
+     "tb_crew_salvager (EMPTY)",
+     "tb_crew_salvager_mesh (MESH)",
+     "tb_crew_salvager_rig (ARMATURE)"
+    ],
+    "triangles": 1352,
+    "materials": [
+     "GC_Cloth_3a4148",
+     "GC_Cloth_a24b21",
+     "GC_Cloth_e8742a",
+     "GC_Cloth_f2b825",
+     "GC_Metal_f4c542_m9",
+     "GC_Plain_1b1b1f",
+     "GC_Plain_5e331b",
+     "GC_Skin_e6b999"
+    ],
+    "actions": [
+     "Attack",
+     "Idle",
+     "Interact",
+     "Walk"
+    ],
+    "armatures": 1,
+    "size_m": [
+     0.867,
+     0.44,
+     1.798
+    ],
+    "min_z": -0.0
+   }
+  }
+ ],
+ "validation": {
+  "checks": [
+   {
+    "check": "has_meshes",
+    "level": "pass",
+    "detail": "1 mesh objects"
+   },
+   {
+    "check": "triangle_budget",
+    "level": "pass",
+    "detail": "1352 triangles (budget 6000)",
+    "tris": 1352
+   },
+   {
+    "check": "degenerate_faces",
+    "level": "pass",
+    "detail": "0 zero-area faces"
+   },
+   {
+    "check": "non_manifold_edges",
+    "level": "info",
+    "detail": "14 non-manifold edges (expected for kit-bashed props built from closed parts)"
+   },
+   {
+    "check": "applied_scale",
+    "level": "pass",
+    "detail": "all mesh scales are 1"
+   },
+   {
+    "check": "naming",
+    "level": "pass",
+    "detail": "no default object names"
+   },
+   {
+    "check": "origin_base",
+    "level": "pass",
+    "detail": "lowest point at z=0.000 m (expected 0.0; the asset sits on its origin)",
+    "min_z": 0.0
+   },
+   {
+    "check": "origin_centered",
+    "level": "pass",
+    "detail": "footprint centre (0.000, 0.000)"
+   },
+   {
+    "check": "materials_assigned",
+    "level": "pass",
+    "detail": "every mesh has materials"
+   },
+   {
+    "check": "vertex_colors",
+    "level": "pass",
+    "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+   },
+   {
+    "check": "textures_resolvable",
+    "level": "pass",
+    "detail": "no missing texture files"
+   },
+   {
+    "check": "animation_clips",
+    "level": "pass",
+    "detail": "actions: ['Attack', 'Idle', 'Interact', 'Walk']",
+    "clips": [
+     "Attack",
+     "Idle",
+     "Interact",
+     "Walk"
+    ]
+   },
+   {
+    "check": "skinning:tb_crew_salvager_rig",
+    "level": "pass",
+    "detail": "22 bones, 1 skinned meshes, 0 unweighted verts, 0 verts with >4 influences"
+   },
+   {
+    "check": "gltf_version",
+    "level": "pass",
+    "detail": "glTF 2.0, generator Khronos glTF Blender I/O v5.2.41",
+    "file": "tb_crew_salvager.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_color0",
+    "level": "pass",
+    "detail": "every primitive has COLOR_0",
+    "file": "tb_crew_salvager.three-web-toon.glb"
+   },
+   {
+    "check": "gltf_counts",
+    "level": "info",
+    "detail": "25 nodes, 1 meshes, 8 primitives, 8 materials, 4 animations, 1 skins, 0 images",
+    "animations": [
+     "Attack",
+     "Idle",
+     "Interact",
+     "Walk"
+    ],
+    "file": "tb_crew_salvager.three-web-toon.glb"
+   },
+   {
+    "check": "khronos_validator",
+    "level": "pass",
+    "detail": "0 errors, 1 warnings, 0 infos",
+    "messages": [
+     "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh."
+    ],
+    "file": "tb_crew_salvager.three-web-toon.glb"
+   },
+   {
+    "check": "roundtrip_reimport",
+    "level": "pass",
+    "detail": "re-imported tb_crew_salvager.three-web-toon.glb: 1352 tris, size [0.867, 0.44, 1.798] m, clips ['Attack', 'Idle', 'Interact', 'Walk']",
+    "file": "tb_crew_salvager.three-web-toon.glb"
+   }
+  ],
+  "summary": {
+   "pass": 16,
+   "warn": 0,
+   "fail": 0,
+   "info": 2
+  }
+ },
+ "seconds": 20.4
+}

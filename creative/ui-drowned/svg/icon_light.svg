@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_light</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M27 6 L37 6 C39.761 6 42 8.239 42 11 L42 51 C42 53.761 39.761 56 37 56 L27 56 C24.239 56 22 53.761 22 51 L22 11 C22 8.239 24.239 6 27 6 Z" fill="#ff00fe"/>
+    <circle cx="32" cy="16" r="6" fill="#c8352a"/>
+    <circle cx="32" cy="31" r="6" fill="#00feff"/>
+    <circle cx="32" cy="46" r="6" fill="#3e8c80"/>
+    <path d="M22 12 L16 14 M42 12 L48 14 M22 27 L16 29 M42 27 L48 29" fill="none" stroke="#ff00fe" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

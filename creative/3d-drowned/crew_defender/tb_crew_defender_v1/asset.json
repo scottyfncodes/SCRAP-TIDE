@@ -1,0 +1,331 @@
+{
+ "id": "tb_crew_defender",
+ "version": 1,
+ "created": "2026-11-02T22:10:29Z",
+ "tool": "run_pipeline",
+ "template": "deckhand",
+ "tags": [
+  "boat",
+  "crew",
+  "deckhand",
+  "defender",
+  "meshcraft_template",
+  "tidebreakers"
+ ],
+ "brief": {
+  "asset_id": "tb_crew_defender",
+  "out_dir": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft",
+  "parent_job": "job-20261102-221008-728d60",
+  "template": "deckhand",
+  "params": {
+   "seed": 37,
+   "colors": {
+    "skin": "#7A4B32",
+    "shirt": "#06182E",
+    "vest": "#C8352A",
+    "pants": "#3A4148",
+    "bandana": "#C8352A"
+   },
+   "weapon": true,
+   "clips": [
+    "Idle",
+    "Walk",
+    "Interact",
+    "Attack"
+   ]
+  },
+  "palette": "/root/.gitcraft/runtime/forgecraft/palettes/tidebreakers-palette.json",
+  "title": "tb_crew_defender",
+  "tags": [
+   "tidebreakers",
+   "crew",
+   "defender"
+  ],
+  "profiles": [
+   "three-web-toon"
+  ],
+  "preview": {
+   "size": 512,
+   "views": [
+    "three_quarter",
+    "front",
+    "side",
+    "top"
+   ],
+   "poses": [
+    {
+     "clip": "Attack",
+     "at": "end"
+    }
+   ]
+  }
+ },
+ "job": "job-20261102-221009-436ed2",
+ "same_as": null,
+ "inputs": [
+  {
+   "path": "/root/.gitcraft/runtime/forgecraft/palettes/tidebreakers-palette.json",
+   "sha256": "768522f8d4b53b21428a6244f92de5a16f8e5a2bf1fe84fd634beb4a93934d3f"
+  }
+ ],
+ "validation": {
+  "status": "pass",
+  "summary": {
+   "pass": 15,
+   "warn": 1,
+   "fail": 0,
+   "info": 2
+  }
+ },
+ "triangles": 1488,
+ "clips": [
+  "Attack",
+  "Idle",
+  "Interact",
+  "Walk"
+ ],
+ "contract": {
+  "root": "tb_crew_defender",
+  "ground": true,
+  "clips": [
+   "Idle",
+   "Walk",
+   "Interact",
+   "Attack"
+  ]
+ },
+ "files": [
+  {
+   "path": "source/tb_crew_defender.blend",
+   "kind": "blend",
+   "bytes": 148458,
+   "sha256": "34556f04f5e4ab84d9ead588f6d7261a3c1a88ced5408415ff212a5b3265b577",
+   "content": "34556f04f5e4ab84d9ead588f6d7261a3c1a88ced5408415ff212a5b3265b577",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/source/tb_crew_defender.blend"
+  },
+  {
+   "path": "exports/tb_crew_defender.three-web-toon.glb",
+   "kind": "export",
+   "bytes": 241996,
+   "sha256": "bf31c4c70b6317e896e9ce2f0ad14a23aa4f6be7d3fc88cd9e30e7f0a4c3ad4c",
+   "content": "703678c08539f715e3adcb902eb9cb07db2511cae16793a3a1f02f5d4c63db49",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/exports/tb_crew_defender.three-web-toon.glb"
+  },
+  {
+   "path": "exports/tb_crew_defender.three-web-toon.collision.glb",
+   "kind": "collision",
+   "bytes": 9084,
+   "sha256": "6efdd6474f6655ee21f9f7b01df6d8c7588ffdd482334ef1097c42edb6275bd6",
+   "content": "89815cf449c21ad86bfa26ea3aca56592c1e64790c1358d27f1c00802eee0ec6",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/exports/tb_crew_defender.three-web-toon.collision.glb"
+  },
+  {
+   "path": "previews/tb_crew_defender_three_quarter.png",
+   "kind": "preview",
+   "bytes": 125991,
+   "sha256": "e28a5fe8826ff6b6d353db0b5fa88b2c488ccc795744529edf4d554f69d0cc32",
+   "content": "e28a5fe8826ff6b6d353db0b5fa88b2c488ccc795744529edf4d554f69d0cc32",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_three_quarter.png"
+  },
+  {
+   "path": "previews/tb_crew_defender_front.png",
+   "kind": "preview",
+   "bytes": 128839,
+   "sha256": "d201537386b16f9c5db9234c07ddde4d3c908f194027f30da0fc8a8df5511654",
+   "content": "d201537386b16f9c5db9234c07ddde4d3c908f194027f30da0fc8a8df5511654",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_front.png"
+  },
+  {
+   "path": "previews/tb_crew_defender_side.png",
+   "kind": "preview",
+   "bytes": 107798,
+   "sha256": "95d81c4c5d6cd3313a02240cf215b326f369ff52322ac0a40fed631d84a712be",
+   "content": "95d81c4c5d6cd3313a02240cf215b326f369ff52322ac0a40fed631d84a712be",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_side.png"
+  },
+  {
+   "path": "previews/tb_crew_defender_top.png",
+   "kind": "preview",
+   "bytes": 80503,
+   "sha256": "5d1aaf702415bf2c824fafc6282c6e1c2e722e15ede10a98b321c29ea67c7af7",
+   "content": "5d1aaf702415bf2c824fafc6282c6e1c2e722e15ede10a98b321c29ea67c7af7",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_top.png"
+  },
+  {
+   "path": "previews/tb_crew_defender_three_quarter_Attack-end.png",
+   "kind": "preview",
+   "bytes": 125991,
+   "sha256": "7d498c041e5c5f4ce4b6f23dc3115476af728e5d4a52a6f3dd533c5d30d57523",
+   "content": "7d498c041e5c5f4ce4b6f23dc3115476af728e5d4a52a6f3dd533c5d30d57523",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_three_quarter_Attack-end.png"
+  },
+  {
+   "path": "previews/tb_crew_defender_sheet.png",
+   "kind": "preview",
+   "bytes": 99084,
+   "sha256": "8ca8daee50e76348c1c04c9fbef04e9000ff344f791d8c0eb9b8f1d1bf1a48b0",
+   "content": "8ca8daee50e76348c1c04c9fbef04e9000ff344f791d8c0eb9b8f1d1bf1a48b0",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/previews/tb_crew_defender_sheet.png"
+  },
+  {
+   "path": "tb_crew_defender.meshcraft.json",
+   "kind": "report",
+   "bytes": 8989,
+   "sha256": "ffeaae1353616d48b9d7179fb52746022c4badf6a6294239a4d7d7f8f3d2dc20",
+   "content": "ffeaae1353616d48b9d7179fb52746022c4badf6a6294239a4d7d7f8f3d2dc20",
+   "source": "/root/.gitcraft/3d-library/jobs/job-20261102-221008-728d60/meshcraft/tb_crew_defender.meshcraft.json"
+  }
+ ],
+ "title": "tb_crew_defender",
+ "kind": "boat",
+ "source_tool": "meshcraft",
+ "route": {
+  "route": "template",
+  "chosen": "meshcraft_template",
+  "preferred": "meshcraft_template",
+  "fallback_used": false,
+  "explanation": "A MeshCraft template fits: deterministic Blender modelling in the project palette, validated and exported per engine profile."
+ },
+ "license": {
+  "asset": "Owned by the project that commissioned it",
+  "tools": [
+   {
+    "tool": "MeshCraft (GITCRAFT, Blender 5.2 bpy)",
+    "license": "GITCRAFT code; Blender GPL-2.0-or-later (wheel GPL-3.0) does not extend to models, renders or .blend content"
+   }
+  ],
+  "ai_generated": false
+ },
+ "provenance": {
+  "forgecraft_job": "job-20261102-221008-728d60",
+  "meshcraft_job": "job-20261102-221009-436ed2",
+  "inputs": [],
+  "blender": "5.2.3",
+  "machine": {
+   "cpu_threads": 4,
+   "ram_gb": 15.7,
+   "gpus": []
+  },
+  "recorded": "2026-11-02T22:10:32Z"
+ },
+ "generation": {
+  "method": "meshcraft template",
+  "template": "deckhand",
+  "params": {
+   "seed": 37,
+   "colors": {
+    "skin": "#7A4B32",
+    "shirt": "#06182E",
+    "vest": "#C8352A",
+    "pants": "#3A4148",
+    "bandana": "#C8352A"
+   },
+   "weapon": true,
+   "clips": [
+    "Idle",
+    "Walk",
+    "Interact",
+    "Attack"
+   ]
+  },
+  "palette": "tidebreakers-palette.json",
+  "request": "TIDEBREAKERS crew member: defender, a flooded-world survivor who rides on the player's boat"
+ },
+ "rig": {
+  "armatures": 1,
+  "convention": "Mixamo skeleton (22 mixamorig:* bones)"
+ },
+ "geometry": {
+  "triangles": 1488,
+  "size_m": [
+   1.432,
+   0.44,
+   1.798
+  ],
+  "meshes": null
+ },
+ "animations": [
+  {
+   "name": "Attack"
+  },
+  {
+   "name": "Idle"
+  },
+  {
+   "name": "Interact"
+  },
+  {
+   "name": "Walk"
+  }
+ ],
+ "sockets": [],
+ "previews": {
+  "thumbnail": "previews/tb_crew_defender_three_quarter.png",
+  "views": [
+   "previews/tb_crew_defender_three_quarter.png",
+   "previews/tb_crew_defender_front.png",
+   "previews/tb_crew_defender_side.png",
+   "previews/tb_crew_defender_top.png",
+   "previews/tb_crew_defender_three_quarter_Attack-end.png",
+   "previews/tb_crew_defender_sheet.png"
+  ]
+ },
+ "engine_check": {
+  "status": "passed",
+  "glb": "exports/tb_crew_defender.three-web-toon.glb",
+  "three": null,
+  "checks": [
+   {
+    "check": "engine_load",
+    "level": "pass",
+    "detail": "GLTFLoader (three@0.170) loaded the file"
+   },
+   {
+    "check": "engine_vertex_colors",
+    "level": "pass",
+    "detail": "8/8 meshes carry COLOR_0 for the toon material"
+   },
+   {
+    "check": "engine_base_on_ground",
+    "level": "pass",
+    "detail": "lowest point y=-0.032 m"
+   },
+   {
+    "check": "engine_clip:Idle",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:Walk",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:Interact",
+    "level": "pass",
+    "detail": "clip present"
+   },
+   {
+    "check": "engine_clip:Attack",
+    "level": "pass",
+    "detail": "clip present"
+   }
+  ],
+  "screenshot": "previews/tb_crew_defender_engine_check.png"
+ },
+ "deliverable_validation": {
+  "status": "passed-with-warnings",
+  "meshcraft": {
+   "pass": 15,
+   "warn": 1,
+   "fail": 0,
+   "info": 2
+  },
+  "engine_check": "passed"
+ },
+ "orchestration": {
+  "forgecraft_job": "job-20261102-221008-728d60",
+  "route": "template",
+  "tool": "meshcraft_template"
+ }
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <title>icon_seed</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M17 8 L47 8 C48.657 8 50 9.343 50 11 L50 53 C50 54.657 48.657 56 47 56 L17 56 C15.343 56 14 54.657 14 53 L14 11 C14 9.343 15.343 8 17 8 Z" fill="#ff00fe"/>
+    <path d="M17 8 L47 8 C48.657 8 50 9.343 50 11 L50 15 C50 16.657 48.657 18 47 18 L17 18 C15.343 18 14 16.657 14 15 L14 11 C14 9.343 15.343 8 17 8 Z" fill="#00feff"/>
+    <circle cx="32" cy="36" r="10" fill="#c8352a"/>
+    <path d="M32 26 C34.667 22 37.333 20.667 40 22 C37.333 24.667 34.667 26 32 26" fill="#3e8c80"/>
+    <line x1="18" y1="50" x2="46" y2="50" fill="none" stroke="#00feff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

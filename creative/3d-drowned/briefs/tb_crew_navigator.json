@@ -1,0 +1,41 @@
+{
+ "asset_id": "tb_crew_navigator",
+ "template": "deckhand",
+ "params": {
+  "colors": {
+   "skin": "Skin Deep",
+   "shirt": "Sailcloth Cream",
+   "vest": "Open Water",
+   "pants": "Deep Timber",
+   "bandana": "Turquoise Shelf"
+  },
+  "weapon": false,
+  "clips": [
+   "Idle",
+   "Walk",
+   "Interact",
+   "Attack"
+  ],
+  "seed": 37
+ },
+ "palette": "/home/user/TIDEBREAKERS/creative/branding/palette/tidebreakers-drowned-palette.json",
+ "material_prefix": "TBC",
+ "out_dir": "/home/user/TIDEBREAKERS/creative/3d-drowned/crew_navigator",
+ "profiles": [
+  "three-web-toon"
+ ],
+ "preview": {
+  "size": 420,
+  "views": [
+   "three_quarter",
+   "front"
+  ],
+  "poses": [
+   {
+    "clip": "Interact",
+    "at": "mid"
+   }
+  ]
+ },
+ "manifest": "/home/user/TIDEBREAKERS/creative/MANIFEST.json"
+}
