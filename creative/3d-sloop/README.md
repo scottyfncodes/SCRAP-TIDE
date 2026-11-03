@@ -56,3 +56,34 @@ materials that carry those colours from the equipped cosmetics, keeping each ver
 
 So Seafoam Green + Red Stripe shows the model exactly as built. The default Bare Driftwood paint and Plain Canvas sail
 give a driftwood hull and an all-canvas sail.
+
+## Upgrade models
+
+Five sloop upgrades from the same GITCRAFT package (`acceptance/tidebreakers-3d/library/assets/<id>/v1/exports/<id>.three-web-toon.glb`,
+GITCRAFT commit `4ba1554`). Each is modelled at its socket's origin, and an owned upgrade mounts as a
+child of the sloop's matching `socket_*` node, as the package's composed Turtle Cay scene does.
+
+| Game upgrade | File | Socket | Triangles | SHA-256 (first 16) |
+|---|---|---|---|---|
+| `sail_canvas` | `public/models/tb_upg_canvas_mainsail.glb` | `socket_sail` | 588 | `01c43590a8499f4b` |
+| `cargo_crate` | `public/models/tb_upg_cargo_crates.glb` | `socket_storage` | 492 | `d761b5a7dd6721bd` |
+| `compass_brass` | `public/models/tb_upg_brass_compass.glb` | `socket_navigation` | 698 | `86a7fb600d053994` |
+| `rudder_ash` | `public/models/tb_upg_wheel_rudder.glb` | `socket_steering` | 1,016 | `9f1ec17f5ca1a5db` |
+| `hull_copper` | `public/models/tb_upg_copper_hull.glb` | `socket_hull` | 1,912 | `c4543ce10e37ba96` |
+
+How each is fitted:
+- **Canvas Mainsail.** Replaces the model's base mainsail (its faces aft of the mast and its band are dropped); the jib
+  stays. The canvas takes the sail cosmetic's colour, with the cosmetic's second colour as a band at 30–50% of its
+  height, where the base sail's stripe sits.
+- **Ship's Wheel & Ash Rudder.** Wheel and pedestal at the helm. With it fitted, the model's tiller is dropped and the
+  captain stands to port of the wheel. The rudder blade is the model's own; the old code-built ash rudder is gone.
+- **Copper-Banded Hull.** MeshCraft lays the sheathing 3 cm off the hull loft, but the sloop's planking skin is 5 cm thick,
+  which hid it. It is pushed 4 cm out along its normals when mounted. The copper stays copper; its rub-strakes take
+  the paint's trim colour.
+- **Brass Compass, Lashed Cargo Crates.** Mounted as modelled (brass, timber and rope: no cosmetic tint).
+
+Each falls back to its code-built part if its file fails to load. With the wheel fitted, the Twin Diesel kit housing
+(1.4 m deep) mounts on the transom as a stern pod instead of over the helm.
+
+Preview every upgrade at once (in memory only, never saved): `?ship=trimaran&upgrades=all`, or a list such as
+`?ship=trimaran&upgrades=sail_canvas,rudder_ash`.

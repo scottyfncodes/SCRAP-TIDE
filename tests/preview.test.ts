@@ -11,7 +11,8 @@ const writes: string[] = [];
 (globalThis as any).window = globalThis;
 
 const { Store } = await import('../src/state/store');
-const { previewShip } = await import('../src/state/preview');
+const { previewShip, previewUpgrades } = await import('../src/state/preview');
+const { UPGRADES } = await import('../src/data/ship');
 
 describe('preview link', () => {
   beforeEach(() => {
@@ -60,5 +61,39 @@ describe('preview link', () => {
     const after = new Store();
     expect(after.data.vessel).toBe('dinghy');
     expect(after.data.vesselsOwned).not.toContain('sloop');
+  });
+
+  it('parses upgrades=all and upgrade lists', () => {
+    expect(previewUpgrades('?ship=trimaran&upgrades=all')).toEqual(UPGRADES.map((u) => u.id));
+    expect(previewUpgrades('?upgrades=sail_canvas,compass_brass,bogus')).toEqual(['sail_canvas', 'compass_brass']);
+    expect(previewUpgrades('?upgrades=bogus')).toBeNull();
+    expect(previewUpgrades('?ship=trimaran')).toBeNull();
+  });
+
+  it('fits every upgrade for the visit only, never saving it', () => {
+    const real = new Store();
+    real.data.gold = 50;
+    real.saveNow();
+    const saved = mem.get('tidebreakers.save.v1');
+    writes.length = 0;
+
+    const p = new Store({ preview: 'sloop', upgrades: UPGRADES.map((u) => u.id) });
+    for (const id of ['sail_canvas', 'cargo_crate', 'compass_brass', 'rudder_ash', 'hull_copper']) expect(p.has(id), id).toBe(true);
+    expect(p.data.hull).toBe(p.stats.hullMax);
+    p.saveNow();
+    p.commit();
+    p.reset();
+    expect(p.has('hull_copper')).toBe(true);
+    expect(writes).toEqual([]);
+    expect(mem.get('tidebreakers.save.v1')).toBe(saved);
+    expect(new Store().data.upgrades).toEqual([]);
+  });
+
+  it('an upgrades-only link previews the save’s own boat', () => {
+    const p = new Store({ upgrades: ['cargo_crate'] });
+    expect(p.preview).toBe('dinghy');
+    expect(p.has('cargo_crate')).toBe(true);
+    p.saveNow();
+    expect(writes).toEqual([]);
   });
 });

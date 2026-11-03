@@ -14,7 +14,7 @@ import { Raiders } from './raiders';
 import { Environment } from '../world/environment';
 import { heightAt, isReef, swellFactor, findShore, nearestIsland } from '../world/terrain';
 import { swayUniforms } from '../world/materials';
-import { pagePreviewShip } from '../state/preview';
+import { pagePreviewShip, pagePreviewUpgrades } from '../state/preview';
 import { buildShip, animateShip, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
 import { audio } from '../audio/audio';
@@ -46,7 +46,7 @@ function weighted<T extends { w: number }>(rng: () => number, list: T[]): T {
 const WAKE_PUFF = 0.55;
 
 export class Game implements GameAPI {
-  store = new Store({ preview: pagePreviewShip() });
+  store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades() });
   ui: UI;
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();

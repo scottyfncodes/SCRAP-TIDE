@@ -31,6 +31,12 @@ export const MODEL_FILES = [
   'tb_coastal_sloop',
   // its outrigger floats and cross-beams (MeshCraft, creative/3d-sloop/outriggers), placed in the sloop's frame
   'tb_sloop_outriggers',
+  // the sloop's upgrade models (GITCRAFT TIDEBREAKERS 3D package), each mounted on its socket_* node when owned
+  'tb_upg_canvas_mainsail',
+  'tb_upg_cargo_crates',
+  'tb_upg_brass_compass',
+  'tb_upg_wheel_rudder',
+  'tb_upg_copper_hull',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
 
@@ -166,12 +172,16 @@ export function sceneModel(file: string, opts: { shadows?: boolean; side?: THREE
 }
 
 const tintCache = new Map<string, THREE.BufferGeometry>();
+/** A colour for every face of a material, or a base colour with a horizontal band (a sail's stripe). */
+export type Tint = THREE.ColorRepresentation | { base: THREE.ColorRepresentation; band: THREE.ColorRepresentation; from: number; to: number };
+
 /**
- * Recolour a sceneModel() clone by source material name: every vertex of a matching mesh takes the new colour, keeping
- * its own light/dark variation from MeshCraft's per-face bake (vertex luminance relative to the mesh's mean). Geometry
- * is cloned once per (mesh, colour) and shared, never edited in place, so other clones keep their colours.
+ * Recolour a sceneModel() clone by source material name: every face of a matching mesh takes the new colour, keeping
+ * its own light/dark variation from MeshCraft's per-face bake (vertex luminance relative to the mesh's mean). A band
+ * tint colours the faces whose centre sits between `from` and `to` (0..1 of the mesh's own height) with `band`.
+ * Geometry is cloned once per (mesh, colours) and shared, never edited in place, so other clones keep their colours.
  */
-export function tintModel(root: THREE.Object3D, colors: Record<string, THREE.ColorRepresentation>) {
+export function tintModel(root: THREE.Object3D, colors: Record<string, Tint>) {
   const lum = (r: number, g: number, b: number) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
   root.traverse((o) => {
     const m = o as THREE.Mesh;
@@ -179,27 +189,117 @@ export function tintModel(root: THREE.Object3D, colors: Record<string, THREE.Col
     if (want === undefined) return;
     const src = (m.userData.srcGeometry as THREE.BufferGeometry | undefined) ?? m.geometry;
     m.userData.srcGeometry = src;
-    const target = new THREE.Color(want); // linear, like glTF COLOR_0
-    const key = `${src.uuid}|${target.getHexString()}`;
+    const banded = typeof want === 'object' && want !== null && 'band' in want;
+    const base = new THREE.Color(banded ? want.base : (want as THREE.ColorRepresentation)); // linear, like glTF COLOR_0
+    const band = banded ? new THREE.Color(want.band) : base;
+    const key = `${src.uuid}|${base.getHexString()}|${banded ? `${band.getHexString()}|${want.from}|${want.to}` : ''}`;
     let geo = tintCache.get(key);
     if (!geo) {
-      const c = src.attributes.color;
-      if (!c) return;
+      if (!src.attributes.color) return;
+      // bands need whole faces, so work on unshared vertices (MeshCraft already bakes colour per face)
+      const g = banded && src.index ? src.toNonIndexed() : src.clone();
+      const c = g.attributes.color;
+      const pos = g.attributes.position;
       let mean = 0;
       for (let i = 0; i < c.count; i++) mean += lum(c.getX(i), c.getY(i), c.getZ(i));
       mean = mean / c.count || 1;
+      let y0 = 0, y1 = 1;
+      if (banded) {
+        g.computeBoundingBox();
+        y0 = g.boundingBox!.min.y;
+        y1 = g.boundingBox!.max.y;
+      }
       const arr = new Float32Array(c.count * 3);
       for (let i = 0; i < c.count; i++) {
+        let col = base;
+        if (banded && !g.index) {
+          // a face's vertical mid-span (not its centroid): both triangles of a sail quad agree, so band edges stay straight
+          const f = i - (i % 3);
+          const ya = pos.getY(f), yb = pos.getY(f + 1), yc = pos.getY(f + 2);
+          const cy = (Math.min(ya, yb, yc) + Math.max(ya, yb, yc)) / 2;
+          const t = (cy - y0) / (y1 - y0 || 1);
+          if (t >= want.from && t <= want.to) col = band;
+        }
         const k = Math.min(1.35, Math.max(0.65, lum(c.getX(i), c.getY(i), c.getZ(i)) / mean));
-        arr[i * 3] = target.r * k;
-        arr[i * 3 + 1] = target.g * k;
-        arr[i * 3 + 2] = target.b * k;
+        arr[i * 3] = col.r * k;
+        arr[i * 3 + 1] = col.g * k;
+        arr[i * 3 + 2] = col.b * k;
       }
-      geo = src.clone();
-      geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
+      g.setAttribute('color', new THREE.BufferAttribute(arr, 3));
+      geo = g;
       tintCache.set(key, geo);
     }
     m.geometry = geo;
+  });
+}
+
+/**
+ * Drop the faces of one material whose centre (in `root`'s space) passes `cut`, e.g. a model's own mainsail when an
+ * upgrade sail replaces it. Shared, cached geometry like tintModel (tint afterwards: it starts from the cut mesh).
+ */
+export function cullModel(root: THREE.Object3D, material: string, tag: string, cut: (c: THREE.Vector3) => boolean) {
+  root.updateMatrixWorld(true);
+  const toRoot = root.matrixWorld.clone().invert();
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || m.userData.srcMaterial !== material) return;
+    const src = (m.userData.srcGeometry as THREE.BufferGeometry | undefined) ?? m.geometry;
+    const key = `${src.uuid}|cut:${tag}`;
+    let geo = tintCache.get(key);
+    if (!geo) {
+      const g = src.index ? src.toNonIndexed() : src.clone();
+      const pos = g.attributes.position;
+      const mtx = new THREE.Matrix4().multiplyMatrices(toRoot, m.matrixWorld);
+      const keep: number[] = [];
+      const c = new THREE.Vector3(), v = new THREE.Vector3();
+      for (let f = 0; f < pos.count; f += 3) {
+        c.set(0, 0, 0);
+        for (let k = 0; k < 3; k++) c.add(v.fromBufferAttribute(pos, f + k));
+        c.multiplyScalar(1 / 3).applyMatrix4(mtx);
+        if (!cut(c)) keep.push(f, f + 1, f + 2);
+      }
+      for (const [name, a] of Object.entries(g.attributes)) {
+        // read through getComponent (handles interleaved and normalized data); write plain floats
+        const attr = a as THREE.BufferAttribute;
+        const out = new Float32Array(keep.length * attr.itemSize);
+        keep.forEach((src2, i) => {
+          for (let k = 0; k < attr.itemSize; k++) out[i * attr.itemSize + k] = attr.getComponent(src2, k);
+        });
+        g.setAttribute(name, new THREE.BufferAttribute(out, attr.itemSize));
+      }
+      geo = g;
+      tintCache.set(key, geo);
+    }
+    m.geometry = geo;
+    m.userData.srcGeometry = geo;
+    m.visible = geo.attributes.position.count > 0;
+  });
+}
+
+/**
+ * Push one material's surfaces out along their normals by `dist` metres: fits an overlay (e.g. copper sheathing)
+ * proud of a skin it was modelled flush with. Shared, cached geometry; tint afterwards.
+ */
+export function inflateModel(root: THREE.Object3D, material: string, dist: number) {
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || m.userData.srcMaterial !== material) return;
+    const src = (m.userData.srcGeometry as THREE.BufferGeometry | undefined) ?? m.geometry;
+    const key = `${src.uuid}|inflate:${dist}`;
+    let geo = tintCache.get(key);
+    if (!geo) {
+      geo = src.clone();
+      const pos = src.attributes.position, nrm = src.attributes.normal;
+      if (!nrm) return;
+      const out = new Float32Array(pos.count * 3);
+      for (let i = 0; i < pos.count; i++)
+        for (let k = 0; k < 3; k++) out[i * 3 + k] = pos.getComponent(i, k) + nrm.getComponent(i, k) * dist;
+      geo.setAttribute('position', new THREE.BufferAttribute(out, 3));
+      geo.computeBoundingSphere();
+      tintCache.set(key, geo);
+    }
+    m.geometry = geo;
+    m.userData.srcGeometry = geo;
   });
 }
 
