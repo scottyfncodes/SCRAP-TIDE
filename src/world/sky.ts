@@ -8,6 +8,29 @@ import { RNG } from '../core/noise';
 import { WORLD } from '../data/world';
 import type { Atmosphere } from './atmosphere';
 
+/**
+ * Fog that dissolves a far object into whatever sky is behind it, instead of painting it the flat fog colour.
+ * Plain fog turned the distant Stormwall into a solid fog-coloured silhouette; harmless by day (fog ≈ sky), but at
+ * sunset the fog is orange and the high sky is charcoal, so a big orange blob hung near the top of the screen.
+ */
+function skyFade<M extends THREE.Material>(m: M): M {
+  m.transparent = true;
+  const prev = m.onBeforeCompile;
+  m.onBeforeCompile = (shader, r) => {
+    prev?.call(m, shader, r);
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <fog_fragment>',
+      `#ifdef USE_FOG
+        float skyFadeF = smoothstep(fogNear, fogFar, vFogDepth);
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, fogColor, skyFadeF * 0.55);
+        gl_FragColor.a *= 1.0 - skyFadeF;
+      #endif`
+    );
+  };
+  m.customProgramCacheKey = () => 'skyFade';
+  return m;
+}
+
 export const SUN_DIR = new THREE.Vector3(0.55, 0.62, -0.42).normalize();
 
 const domeVert = `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`;
@@ -86,7 +109,7 @@ export class Sky {
     }
 
     // storm decks: heavy flat-bottomed clouds that ride each storm cell
-    this.stormMat = new THREE.MeshToonMaterial({ color: 0x4a5664, emissive: 0x1a222c, fog: true, transparent: true, opacity: 0.96 });
+    this.stormMat = skyFade(new THREE.MeshToonMaterial({ color: 0x4a5664, emissive: 0x1a222c, fog: true, transparent: true, opacity: 0.96 }));
     for (let s = 0; s < atmo.storms.length; s++) {
       const parts: THREE.BufferGeometry[] = [];
       for (let k = 0; k < 26; k++) {
@@ -100,7 +123,7 @@ export class Sky {
     }
 
     // the Stormwall: a ring of towering cloud columns at the edge of the Reach
-    this.wallMat = new THREE.MeshToonMaterial({ color: 0x3c4a5c, emissive: 0x141c26, fog: true });
+    this.wallMat = skyFade(new THREE.MeshToonMaterial({ color: 0x3c4a5c, emissive: 0x141c26, fog: true }));
     const wall: THREE.BufferGeometry[] = [];
     const c0 = WORLD.shallowsCenter;
     const R = WORLD.stormRadius + 90;

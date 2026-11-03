@@ -30,6 +30,8 @@ export class Particles {
   private geo: THREE.BufferGeometry;
   points: THREE.Points;
   private cursor = 0;
+  /** >1 fades particles out sooner in their life (alpha = (life left)^fade). */
+  fade = 1;
 
   constructor(scene: THREE.Scene, max = 600, size = 0.5, additive = false) {
     this.max = max;
@@ -97,10 +99,14 @@ export class Particles {
       this.col[i * 4] = this.base[i * 3];
       this.col[i * 4 + 1] = this.base[i * 3 + 1];
       this.col[i * 4 + 2] = this.base[i * 3 + 2];
-      this.col[i * 4 + 3] = Math.min(1, f * 1.5);
+      this.col[i * 4 + 3] = Math.min(1, (this.fade === 1 ? f : Math.pow(f, this.fade)) * 1.5);
     }
     this.geo.attributes.position.needsUpdate = true;
     this.geo.attributes.color.needsUpdate = true;
+  }
+
+  setSize(size: number) {
+    (this.points.material as THREE.PointsMaterial).size = size;
   }
 }
 

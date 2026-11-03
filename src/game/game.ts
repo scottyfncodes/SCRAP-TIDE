@@ -14,6 +14,7 @@ import { Raiders } from './raiders';
 import { Environment } from '../world/environment';
 import { heightAt, isReef, swellFactor, findShore, nearestIsland } from '../world/terrain';
 import { swayUniforms } from '../world/materials';
+import { pagePreviewShip } from '../state/preview';
 import { buildShip, animateShip, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
 import { audio } from '../audio/audio';
@@ -41,8 +42,11 @@ function weighted<T extends { w: number }>(rng: () => number, list: T[]): T {
   return list[list.length - 1];
 }
 
+/** World size of a wake puff on a wide screen (it was 0.7, shared with every other splash). */
+const WAKE_PUFF = 0.55;
+
 export class Game implements GameAPI {
-  store = new Store();
+  store = new Store({ preview: pagePreviewShip() });
   ui: UI;
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();
@@ -65,6 +69,8 @@ export class Game implements GameAPI {
   private goalTimer = 0;
   private stormSaid = false;
   foam!: Particles;
+  /** Wake puffs behind the boat: their own system so they can stay small and short-lived on narrow screens. */
+  wakeFoam!: Particles;
   sparkle!: Particles;
   dirt!: Particles;
 
@@ -158,6 +164,9 @@ export class Game implements GameAPI {
     this.raiders = new Raiders(this);
     this.placeCastaways();
     this.foam = new Particles(this.scene, 500, 0.7);
+    this.wakeFoam = new Particles(this.scene, 300, WAKE_PUFF);
+    this.wakeFoam.fade = 1.6;
+    this.resize();
     this.sparkle = new Particles(this.scene, 300, 0.6, true);
     this.dirt = new Particles(this.scene, 200, 0.35);
     await this.progress(0.85, 'Patching the skiff…');
@@ -219,6 +228,10 @@ export class Game implements GameAPI {
     this.camera.aspect = w / h;
     this.camera.fov = w < h ? 68 : 55;
     this.camera.updateProjectionMatrix();
+    // points are sized against screen height, so on a tall, narrow phone the same puff covers far more of the
+    // width; shrink wake puffs with the aspect ratio (desktop keeps close to the old size)
+    this.ocean?.setWakeAspect(w / h);
+    this.wakeFoam?.setSize(WAKE_PUFF * Math.pow(Math.min(1, Math.max(0.4, w / h)), 0.75));
   }
 
   private bindCameraGestures() {
@@ -1326,6 +1339,7 @@ export class Game implements GameAPI {
     }
     this.updateCaches(dt);
     this.foam.update(dt);
+    this.wakeFoam.update(dt);
     this.sparkle.update(dt);
     this.dirt.update(dt);
     this.anims = this.anims.filter((a) => a(dt));
@@ -1552,16 +1566,16 @@ export class Game implements GameAPI {
     if (motoring && Math.random() < 0.5) {
       const ex = this.ship.wake.clone().add(new THREE.Vector3(0, 0.4, -0.3));
       this.shipRoot.localToWorld(ex);
-      this.foam.emit(ex, 1, '#ffffff', 0.8, 1.2, 0.6, 2, 0.3);
+      this.wakeFoam.emit(ex, 1, '#ffffff', 0.8, 1.2, 0.45, 2, 0.3);
     }
     // wake foam
     if (b.speed > 1) {
       const stern = this.ship.wake.clone();
       this.shipRoot.localToWorld(stern);
-      if (Math.random() < b.speed * 0.25) this.foam.emit(new THREE.Vector3(stern.x, w.y + 0.1, stern.z), 1, '#ffffff', 0.6, 0.6, 1.6, 1, 0.8);
+      if (Math.random() < b.speed * 0.25) this.wakeFoam.emit(new THREE.Vector3(stern.x, w.y + 0.1, stern.z), 1, '#ffffff', 0.6, 0.6, 1.0, 1, 0.8);
       const bow = new THREE.Vector3(0, 0, L * 0.5);
       this.shipRoot.localToWorld(bow);
-      if (Math.random() < b.speed * 0.15) this.foam.emit(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, '#ffffff', 1.2, 1, 0.8, 4, 0.6);
+      if (Math.random() < b.speed * 0.15) this.wakeFoam.emit(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, '#ffffff', 1.2, 1, 0.6, 4, 0.6);
     }
 
     this.proxTimer -= dt;

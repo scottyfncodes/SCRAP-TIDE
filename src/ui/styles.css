@@ -481,3 +481,7 @@ button { font-family: var(--label); cursor: pointer; border: none; color: inheri
 /* salvage tags: every manifest row is a tag with a punched, rope-threaded eyelet */
 .row { position: relative; padding-left: 20px; }
 .row::before { content: ''; position: absolute; left: 6px; top: 50%; width: 7px; height: 7px; margin-top: -4px; border-radius: 50%; background: var(--paper-2); box-shadow: inset 0 1px 2px rgba(0,0,0,.55), 0 0 0 1.5px rgba(140,128,104,.7); }
+/* ?ship= preview link badge: this visit is never saved */
+.preview-tag { position: fixed; left: 50%; bottom: calc(var(--safe-b) + 6px); transform: translateX(-50%); z-index: 6; pointer-events: none;
+  padding: 3px 10px; border-radius: 4px; background: rgba(8,10,10,.72); border: 1px solid rgba(217,210,191,.35); color: var(--bone);
+  font-family: var(--label); font-weight: 700; font-size: 11px; letter-spacing: 1.5px; white-space: nowrap; }

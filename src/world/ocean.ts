@@ -8,7 +8,9 @@ import { WORLD, STRUCTURES } from '../data/world';
 import { smoothstep } from '../core/noise';
 
 const DEPTH_RES = 512;
-export const WAKE_N = 20;
+export const WAKE_N = 24;
+/** Seconds a wake puff lasts on a wide screen (was 3.2 s, growing to 6 m radius; now ~2.9 m at most). */
+const WAKE_LIFE = 2.3;
 
 // direction (x,z), wavelength, amplitude weight, steepness
 const WAVES = [
@@ -126,6 +128,7 @@ uniform vec3 uSkyColor;
 uniform vec3 uSkyTop;
 uniform vec3 uAmbient;
 uniform vec4 uWake[${WAKE_N}];
+uniform vec2 uWakeShape; // x: size scale, y: lifetime (s)
 varying vec3 vWorld;
 varying vec2 vDUv;
 varying float vWave;
@@ -223,8 +226,9 @@ void main() {
     vec4 w = uWake[i];
     if (w.w <= 0.0) continue;
     float d = length(p - w.xy);
-    float width = 0.9 + w.z * 1.6;
-    float ring = smoothstep(width, width * 0.35, d) * w.w * (1.0 - smoothstep(0.0, 3.2, w.z));
+    float width = (1.1 + w.z * 0.78) * uWakeShape.x;
+    float fade = 1.0 - smoothstep(0.0, uWakeShape.y, w.z);
+    float ring = smoothstep(width, width * 0.35, d) * w.w * fade;
     wk = max(wk, ring);
   }
   foam = max(foam, wk * smoothstep(0.25, 0.7, fn + 0.35));
@@ -279,6 +283,7 @@ export class Ocean {
       uSkyTop: { value: new THREE.Color('#2f86d8') },
       uAmbient: { value: new THREE.Color(1, 1, 1) },
       uWake: { value: this.wake },
+      uWakeShape: { value: new THREE.Vector2(1, WAKE_LIFE) },
     };
     // denser near the centre (the camera), coarser at the horizon
     const size = 2200;
@@ -310,11 +315,20 @@ export class Ocean {
     scene.add(floor);
   }
 
+  /**
+   * Narrow (portrait phone) screens see the wake trail close and large; shrink the puffs and shorten their life
+   * there. aspect = width / height.
+   */
+  setWakeAspect(aspect: number) {
+    const k = Math.min(1, Math.max(0.45, aspect));
+    this.uniforms.uWakeShape.value.set(0.7 + 0.3 * k, WAKE_LIFE * (0.75 + 0.25 * k));
+  }
+
   /** Drop a wake point (call while the boat moves). strength 0..1 */
   addWake(x: number, z: number, strength: number, dt: number) {
     this.wakeTimer -= dt;
     if (this.wakeTimer > 0) return;
-    this.wakeTimer = 0.14;
+    this.wakeTimer = 0.095; // close enough that the puffs overlap into one trail
     const w = this.wake[this.wakeHead];
     w.set(x, z, 0, strength);
     this.wakeHead = (this.wakeHead + 1) % WAKE_N;
@@ -324,7 +338,7 @@ export class Ocean {
     this.uniforms.uTime.value = t;
     for (const w of this.wake) if (w.w > 0) {
       w.z += dt;
-      if (w.z > 3.2) w.w = 0;
+      if (w.z > this.uniforms.uWakeShape.value.y) w.w = 0;
     }
     this.mesh.position.x = Math.round(focus.x / this.step) * this.step;
     this.mesh.position.z = Math.round(focus.z / this.step) * this.step;
