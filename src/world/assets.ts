@@ -6,6 +6,8 @@ import * as THREE from 'three';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+// the ship models ship Meshopt-compressed (EXT_meshopt_compression + KHR_mesh_quantization); the decoder comes with three
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { merge, vcMat, toonGradient, weather } from './materials';
 
 export const MODEL_FILES = [
@@ -53,6 +55,12 @@ export const MODEL_FILES = [
   'tb_upg_deck_lights',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
+/**
+ * Upgrade models load lazily: at boot only the ones the save already owns (on the Trimaran), the rest when bought
+ * (loadModelFiles). Until a file arrives, its upgrade's code-built part stands in.
+ */
+export const UPGRADE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => f.startsWith('tb_upg_'));
+const CORE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => !f.startsWith('tb_upg_'));
 
 export const CREW_FILES = ['mechanic', 'navigator', 'salvager', 'fisher', 'lookout', 'defender'] as const;
 /** Apocalyptic-pirate cast (creative/3d-characters): the captain, Driftholm's townsfolk and the Rustfang raiders. */
@@ -84,14 +92,32 @@ async function loadOne(loader: GLTFLoader, name: string) {
   }
 }
 
-/** Load the world/boat models in parallel (blocking the loading screen). Failures fall back to procedural geometry. */
-export async function loadModels(onProgress?: (k: number) => void) {
-  const loader = new GLTFLoader();
-  const names = [...MODEL_FILES];
+const requested = new Map<string, Promise<void>>();
+let sharedLoader: GLTFLoader | null = null;
+const loaderFor = () => (sharedLoader ??= new GLTFLoader().setMeshoptDecoder(MeshoptDecoder));
+/** Load model files once each (a second request for the same file shares the first). Failures fall back. */
+export function loadModelFiles(files: readonly string[]) {
+  return Promise.all(
+    files.map((n) => {
+      let p = requested.get(n);
+      if (!p) requested.set(n, (p = loadOne(loaderFor(), n)));
+      return p;
+    })
+  ).then(() => undefined);
+}
+/** Has this file been asked for (loaded, loading or failed)? */
+export const modelRequested = (file: string) => requested.has(file);
+
+/**
+ * Load the world/boat models in parallel (blocking the loading screen), plus the upgrade models in `upgrades` (the
+ * ones the save owns). Failures fall back to procedural geometry.
+ */
+export async function loadModels(onProgress?: (k: number) => void, upgrades: readonly string[] = []) {
+  const names = [...CORE_MODEL_FILES, ...upgrades.filter((f) => UPGRADE_MODEL_FILES.includes(f))];
   let done = 0;
   await Promise.all(
     names.map((n) =>
-      loadOne(loader, n).then(() => {
+      loadModelFiles([n]).then(() => {
         done++;
         onProgress?.(done / names.length);
       })
@@ -103,7 +129,7 @@ export async function loadModels(onProgress?: (k: number) => void) {
 let crewPromise: Promise<void> | null = null;
 export function loadCrew() {
   if (!crewPromise) {
-    const loader = new GLTFLoader();
+    const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
     crewPromise = Promise.all([...CREW_FILES.map((r) => `tb_crew_${r}`), ...CHARACTER_FILES].map((n) => loadOne(loader, n))).then(() => undefined);
   }
   return crewPromise;
@@ -119,6 +145,22 @@ function isGlowMaterial(m: THREE.Material | THREE.Material[]) {
 }
 
 /**
+ * Plain float attributes: de-interleaved, and de-quantized (KHR_mesh_quantization stores positions/normals as
+ * normalized integers behind a node scale). Baking a node's matrix into an int16 position attribute would clamp the
+ * result to +-1, so anything that is transformed or merged goes through this first.
+ */
+function toFloat(geo: THREE.BufferGeometry) {
+  for (const [k, a] of Object.entries(geo.attributes)) {
+    const at = a as THREE.BufferAttribute;
+    if (!(at as unknown as THREE.InterleavedBufferAttribute).isInterleavedBufferAttribute && at.array instanceof Float32Array && !at.normalized) continue;
+    const out = new Float32Array(at.count * at.itemSize);
+    for (let i = 0; i < at.count; i++) for (let j = 0; j < at.itemSize; j++) out[i * at.itemSize + j] = at.getComponent(i, j);
+    geo.setAttribute(k, new THREE.BufferAttribute(out, at.itemSize));
+  }
+  return geo;
+}
+
+/**
  * Flatten node `name` of `file` (its meshes) into toon + glow geometries, in the node's own space, or with
  * `inFile` in the file's space (for models built in a shared frame, e.g. the sloop's upgrades, whose parts keep
  * their placement as node transforms).
@@ -127,8 +169,9 @@ export function part(file: string, name: string, inFile = false) {
   const key = `${file}#${name}${inFile ? '@file' : ''}`;
   if (partCache.has(key)) return partCache.get(key)!;
   const g = gltfs.get(file);
-  const node = g?.scene.getObjectByName(name);
-  if (!g || !node) {
+  if (!g) return null; // not loaded (yet): don't cache, the file may still arrive (lazy upgrade models)
+  const node = g.scene.getObjectByName(name);
+  if (!node) {
     partCache.set(key, null);
     return null;
   }
@@ -139,9 +182,7 @@ export function part(file: string, name: string, inFile = false) {
   node.traverse((o) => {
     const m = o as THREE.Mesh;
     if (!m.isMesh || (m as unknown as THREE.SkinnedMesh).isSkinnedMesh) return;
-    const geo = m.geometry.clone();
-    // de-interleave (some optimisers pack vertex attributes together; the static batcher needs plain arrays)
-    for (const [k, a] of Object.entries(geo.attributes)) if ((a as THREE.InterleavedBufferAttribute).isInterleavedBufferAttribute) geo.setAttribute(k, (a as THREE.InterleavedBufferAttribute).clone());
+    const geo = toFloat(m.geometry.clone());
     geo.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
     if (!geo.attributes.color) {
       const c = (m.material as THREE.MeshStandardMaterial).color ?? new THREE.Color(1, 1, 1);
@@ -305,20 +346,25 @@ export function nodeOrigin(file: string, name: string) {
 
 /** Move one material's faces by `delta` (shared, cached geometry), e.g. a fitting relocated to make room. */
 export function offsetModel(root: THREE.Object3D, material: string, delta: THREE.Vector3) {
+  root.updateMatrixWorld(true);
+  const toRoot = root.matrixWorld.clone().invert();
   root.traverse((o) => {
     const m = o as THREE.Mesh;
     if (!m.isMesh || m.userData.srcMaterial !== material) return;
     const src = (m.userData.srcGeometry as THREE.BufferGeometry | undefined) ?? m.geometry;
-    const key = `${src.uuid}|move:${delta.toArray().join(',')}`;
+    // `delta` is in the model's (root) space; the mesh's own space may be scaled (quantized meshes)
+    const toMesh = new THREE.Matrix4().multiplyMatrices(toRoot, m.matrixWorld).invert();
+    const d = delta.clone().applyMatrix3(new THREE.Matrix3().setFromMatrix4(toMesh));
+    const key = `${src.uuid}|move:${d.toArray().map((v) => v.toFixed(5)).join(',')}`;
     let geo = tintCache.get(key);
     if (!geo) {
       geo = src.clone();
       const pos = src.attributes.position;
       const out = new Float32Array(pos.count * 3);
       for (let i = 0; i < pos.count; i++) {
-        out[i * 3] = pos.getX(i) + delta.x;
-        out[i * 3 + 1] = pos.getY(i) + delta.y;
-        out[i * 3 + 2] = pos.getZ(i) + delta.z;
+        out[i * 3] = pos.getX(i) + d.x;
+        out[i * 3 + 1] = pos.getY(i) + d.y;
+        out[i * 3 + 2] = pos.getZ(i) + d.z;
       }
       geo.setAttribute('position', new THREE.BufferAttribute(out, 3));
       geo.computeBoundingSphere();
