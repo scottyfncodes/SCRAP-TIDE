@@ -299,6 +299,8 @@ interface LandLayer {
 }
 let landLayers: LandLayer[] | null = null;
 let baking = false;
+/** maps waiting on the bake (a chart reopened mid-bake must repaint too) */
+const bakeListeners = new Set<() => void>();
 
 function layerFor(isl: (typeof ISLANDS)[number]): LandLayer {
   const size = Math.ceil(isl.r * 2.7);
@@ -318,7 +320,9 @@ function chartLayers(): LandLayer[] {
  * (~10 ms slices) so opening the chart never stalls a frame. `onProgress` repaints as each island lands.
  */
 export function bakeChartLayers(onProgress: () => void) {
-  if (baking || chartLayers().every((l) => l.ready)) return;
+  if (chartLayers().every((l) => l.ready)) return;
+  bakeListeners.add(onProgress);
+  if (baking) return;
   baking = true;
   const jobs = chartLayers().filter((l) => !l.ready);
   let li = 0, row = 0;
@@ -336,10 +340,13 @@ export function bakeChartLayers(onProgress: () => void) {
       li++;
       row = 0;
       hs = null;
-      onProgress();
+      for (const f of bakeListeners) f();
     }
     if (li < jobs.length) setTimeout(step, 0);
-    else baking = false;
+    else {
+      baking = false;
+      bakeListeners.clear();
+    }
   };
   setTimeout(step, 0);
 }

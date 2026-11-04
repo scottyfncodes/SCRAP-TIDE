@@ -136,6 +136,12 @@ export class ZoomableMap {
   }
 
   private resize() {
+    if (!this.el.isConnected) {
+      // the panel re-rendered or closed: stop observing a detached map
+      this.ro?.disconnect();
+      this.ro = null;
+      return;
+    }
     const r = this.el.getBoundingClientRect();
     const w = Math.round(r.width), h = Math.round(r.width / this.content.aspect);
     if (!w || (w === this.w && h === this.h)) return;
@@ -230,7 +236,8 @@ export class ZoomableMap {
         const t = this.tap;
         this.tap = null;
         const now = performance.now();
-        if (t && now - t.t < 300 && t.moved < 10) {
+        // a cancelled pointer (an iOS system gesture took over) is never a tap
+        if (t && e.type === 'pointerup' && now - t.t < 300 && t.moved < 10) {
           const lt = this.lastTap;
           if (now - lt.t < 350 && Math.hypot(t.x - lt.x, t.y - lt.y) < 30) {
             // double-tap: zoom in about the tap; at max zoom, back out to the whole chart

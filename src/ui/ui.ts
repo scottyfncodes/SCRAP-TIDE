@@ -133,6 +133,8 @@ export class UI {
   private lastActionsKey = '';
   private seenCatalog = new Set<string>();
   panelOpen = false;
+  /** the Maps panel is up: the game draws the 3D scene behind it at half rate so pinch/pan get the GPU */
+  mapOpen = false;
 
   constructor(private game: GameAPI) {
     this.root = document.getElementById('ui')!;
@@ -691,6 +693,7 @@ export class UI {
     this.sheet.remove();
     this.sheet = null;
     this.panelOpen = false;
+    this.mapOpen = false;
     this.game.setShowcase(false);
   }
 
@@ -1204,6 +1207,7 @@ export class UI {
   mapsPanel(focus?: string) {
     const s = this.store;
     const { body, tabs } = this.openSheet('Maps & Charts', 'Treasure maps and the known world');
+    this.mapOpen = true;
     const owned = TREASURE_MAPS.filter((m) => m.fragments.some((f) => s.data.fragments.includes(f)));
     let tab = focus ?? s.data.activeMap ?? owned[0]?.id ?? 'world';
     if (tab !== 'world' && !owned.find((m) => m.id === tab)) tab = 'world';

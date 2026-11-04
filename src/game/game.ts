@@ -197,11 +197,14 @@ export class Game implements GameAPI {
     });
     this.renderer.compile(this.scene, this.camera);
     let last = performance.now();
+    let frame = 0;
     const loop = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       this.update(dt);
-      this.renderer.render(this.scene, this.camera);
+      // behind the Maps panel the scene is only a dimmed backdrop: draw it every other frame so the map's
+      // pinch and pan keep the GPU on a phone
+      if (!this.ui.mapOpen || (frame++ & 1) === 0) this.renderer.render(this.scene, this.camera);
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);

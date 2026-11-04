@@ -32,6 +32,7 @@ export class Captain {
   private loco: Loco | null = null;
   /** blend weight per action, eased toward the pose's targets and always normalised to 1 (no bind-pose leak) */
   private weights = new Map<THREE.AnimationAction, number>();
+  private targets = new Map<THREE.AnimationAction, number>(); // reused every frame (no per-frame allocation)
   private lastYaw = 0;
   private lastSpeed = 0;
   private lean = new THREE.Vector2();
@@ -95,7 +96,8 @@ export class Captain {
     const loco = this.loco;
     const moving = this.pose === 'walk' && speed > 0.05;
     const v = speed / this.rigScale;
-    const target = new Map<THREE.AnimationAction, number>();
+    const target = this.targets;
+    target.clear();
     let rate = 9;
     if (moving && loco) {
       const s = strideAt(WALK, RUN, v);

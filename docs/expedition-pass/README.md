@@ -64,6 +64,14 @@ renders the rig over ground lines that scroll at body speed, so foot sliding is 
 frame strips in `screens/gait_*` come from.
 
 ![gait before/after](screens/gait_before_after.png)
+*Gait lab, side-on over ground lines that scroll at body speed. Top: the shipped Walk at 2.2× (how the game "ran").
+Middle: the procedural walk. Bottom: the procedural run.*
+
+In game, before (the sped-up Walk, upright and stiff) and after (the procedural run, final build, side-on camera on
+Turtle Atoll; the last frame is a wading splash at the waterline):
+
+![in-game run before](screens/ingame_run_before.jpg)
+![in-game run after](screens/ingame_run_after.jpg)
 
 Known limits: the coat tails are skinned to the thighs (MeshCraft weights), so they kick out behind the leg in the run's
 recovery; fixing that means re-weighting the mesh. The procedural gait is for flat-ish ground; there is no foot IK
@@ -94,7 +102,13 @@ sites, and labels drawn over each other ("Rooftop Hollow" twice on top of itself
 - Treasure maps render at 2× with a finer coastline (one height grid feeds the shading and the outline: fewer samples
   than the old 1× map).
 
-![map zoom levels](screens/map_after_zoom_levels.jpg)
+| Before: fixed 480 px bitmap, overlapping labels | After: overview → zoomed on Driftholm → treasure map 1× and 3× |
+|---|---|
+| ![map before](screens/map_before.png) | ![map zoom levels](screens/map_after_zoom_levels.jpg) |
+
+iPhone landscape (the legend hides on small surfaces):
+
+![map landscape](screens/map_after_landscape.jpg)
 
 ## 3. The sea
 
@@ -105,6 +119,10 @@ crest highlights and dark troughs that recede into texture toward the horizon, f
 at dusk and night, and the wake visual check still passes for all three vessels.
 
 ![ocean](screens/ocean_before_after.jpg)
+*Left: before (value-noise ripples). Right: after (FFT chop), same moment of the first voyage.*
+
+![ocean dusk night noon](screens/ocean_dusk_night_noon.jpg)
+*Dusk, night and noon from the wake visual check.*
 
 ## GITCRAFT tools used
 - **StudioCraft WorldCraft `ocean`**: the FFT chop tile (and its loop/tile/spectrum/engine checks).
