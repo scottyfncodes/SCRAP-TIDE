@@ -270,6 +270,52 @@ const check = (name, ok, detail = '') => {
   check('taking the seedling stores it and shows the green ALIVE reveal', seedAfter.opened && seedAfter.have > 0 && seedAfter.living, JSON.stringify(seedAfter));
   await g(() => { const G = window.__game; G.mode = 'sail'; Object.assign(G.boat, { anchored: false }); });
 
+  // ── on foot: the procedural gait (docs/expedition-pass): momentum, walk → run blend, and a stop
+  await g(() => { const G = window.__game; G.ui.closePanel(); G.mode = 'foot'; Object.assign(G.foot, { x: -160, z: 72, heading: 0, vel: 0, speed: 0 }); G.camYaw = 0; });
+  await joy(0, 1);
+  await playFor(0.15);
+  const early = await g(() => window.__game.foot.speed);
+  await playFor(1.2);
+  const gait = await g(() => { const C = window.__game.captain; const a = C.char && C.char.actions;
+    return { speed: window.__game.foot.speed, run: C.runMix, runW: a && a.GaitRun ? a.GaitRun.getEffectiveWeight() : -1, pose: C.pose }; });
+  await joy(0, 0);
+  await playFor(0.7);
+  const stop = await g(() => ({ speed: window.__game.foot.speed, pose: window.__game.captain.pose }));
+  check('on foot the captain accelerates (no instant top speed) into the procedural run', early < 2.5 && gait.speed > 4.3 && gait.run > 0.9 && gait.runW > 0.8 && gait.pose === 'walk',
+    JSON.stringify({ early, ...gait }));
+  check('letting go decelerates the captain to a standstill and idle', stop.speed < 0.3 && stop.pose === 'idle', JSON.stringify(stop));
+  await g(() => { const G = window.__game; G.mode = 'sail'; });
+
+  // ── Maps & Charts: real two-finger pinch and a drag on the world chart; the game must not react underneath
+  {
+    await g(() => window.__game.ui.openPanel('maps', 'world'));
+    await page.waitForSelector('.zmap[data-zoom]', { timeout: 30000 });
+    const cdp = await ctx.newCDPSession(page);
+    const touch = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map(([x, y], i) => ({ x, y, id: i })) });
+    const zview = () => g(() => { const d = document.querySelector('.zmap').dataset; return { zoom: +d.zoom, cx: +d.cx, cz: +d.cz }; });
+    const game0 = await g(() => ({ yaw: window.__game.camYaw, zoom: window.__game.zoom, heading: window.__game.boat.heading }));
+    const box = await (await page.$('.zmap canvas')).boundingBox();
+    const mx = box.x + box.width / 2, my = box.y + box.height / 2;
+    const v0 = await zview();
+    await touch('touchStart', [[mx - 20, my], [mx + 20, my]]);
+    for (let i = 1; i <= 6; i++) await touch('touchMove', [[mx - 20 - i * 10, my], [mx + 20 + i * 10, my]]);
+    await touch('touchEnd', []);
+    await page.waitForTimeout(300);
+    const v1 = await zview();
+    await touch('touchStart', [[mx, my]]);
+    for (let i = 1; i <= 5; i++) await touch('touchMove', [[mx - i * 15, my]]);
+    await touch('touchEnd', []);
+    await page.waitForTimeout(300);
+    const v2 = await zview();
+    const game1 = await g(() => ({ yaw: window.__game.camYaw, zoom: window.__game.zoom, heading: window.__game.boat.heading, scale: window.visualViewport ? window.visualViewport.scale : 1 }));
+    await page.screenshot({ path: `${out}/map_pinch.png` });
+    check('pinch-to-zoom: two fingers zoom the world chart about their midpoint (40 → 160 px = 4×)', Math.abs(v1.zoom - 4 * v0.zoom) < 0.05, JSON.stringify({ v0, v1 }));
+    check('dragging the zoomed chart pans it', v2.cx > v1.cx + 5 && Math.abs(v2.zoom - v1.zoom) < 1e-3, JSON.stringify({ v1, v2 }));
+    check('map gestures never reach the game (camera, zoom, helm) or scale the page',
+      game1.yaw === game0.yaw && game1.zoom === game0.zoom && game1.heading === game0.heading && game1.scale === 1, JSON.stringify({ game0, game1 }));
+    await g(() => window.__game.ui.closePanel());
+  }
+
   // ── save & reload
   await g(() => { window.__game.persistShip?.(); window.__game.store.saveNow(); });
   await page.reload();

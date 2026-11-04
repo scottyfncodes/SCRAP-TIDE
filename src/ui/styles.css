@@ -487,3 +487,15 @@ button { font-family: var(--label); cursor: pointer; border: none; color: inheri
 .preview-tag { position: fixed; left: 50%; bottom: calc(var(--safe-b) + 6px); transform: translateX(-50%); z-index: 6; pointer-events: none;
   padding: 3px 10px; border-radius: 4px; background: rgba(8,10,10,.72); border: 1px solid rgba(217,210,191,.35); color: var(--bone);
   font-family: var(--label); font-weight: 700; font-size: 11px; letter-spacing: 1.5px; white-space: nowrap; }
+
+/* Zoomable maps (src/ui/mapView.ts): pinch, pan, double-tap; the surface owns its touches */
+.zmap { position: relative; width: min(100%, 64vh * var(--aspect, 1), 560px); margin: 0 auto 6px; border-radius: 3px; overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35); background: #c9a46a; }
+.zmap canvas { display: block; width: 100%; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  filter: sepia(.18) saturate(.85) contrast(1.04); cursor: grab; }
+.zmap canvas:active { cursor: grabbing; }
+.zmap-btns { position: absolute; right: 8px; bottom: 8px; display: flex; flex-direction: column; gap: 8px; }
+.zmap-btn { width: 44px; height: 44px; border-radius: 10px; border: 2px solid rgba(74,46,20,.75); background: rgba(240,226,190,.92);
+  color: #4a2e14; font: 700 24px/1 Georgia, serif; display: grid; place-items: center; padding: 0; box-shadow: 0 2px 6px rgba(0,0,0,.3); touch-action: manipulation; }
+.zmap-btn:active { transform: translateY(1px); background: #e3cf9f; }
+.zmap-hint { text-align: center; font-size: 12px; opacity: .75; margin: 0 0 6px; }

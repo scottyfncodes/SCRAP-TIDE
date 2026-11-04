@@ -5,3 +5,7 @@ dist
 *.blend1
 visual-check
 e2e-out
+/gitcraft-out
+creative/ocean/gitcraft-out/*_flipbook.png
+creative/ocean/gitcraft-out/*.gif
+creative/ocean/gitcraft-out/*_tile.glb

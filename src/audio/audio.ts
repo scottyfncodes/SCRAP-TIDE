@@ -460,6 +460,21 @@ export class Audio {
     if (!this.ctx) return;
     this.noiseBurst(this.ctx.currentTime, big ? 0.9 : 0.4, big ? 700 : 1200, big ? 0.5 : 0.25, 'lowpass');
   }
+  /** One footfall, fired by the gait at heel strike. `run` 0..1 (walk → run) makes it heavier; surfaces: dry sand
+   *  crunch or a wet slap in the shallows. Slight random pitch and level per step. */
+  footstep(surface: 'sand' | 'wet', run: number) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const v = (0.07 + run * 0.08) * (0.85 + Math.random() * 0.3);
+    if (surface === 'wet') {
+      this.noiseBurst(t, 0.12 + run * 0.06, 900 + Math.random() * 500, v * 1.5, 'lowpass');
+      this.noiseBurst(t + 0.03, 0.08, 2600 + Math.random() * 800, v * 0.6);
+    } else {
+      this.noiseBurst(t, 0.07 + run * 0.04, 1500 + Math.random() * 900, v);
+      this.noiseBurst(t + 0.012, 0.05, 4200 + Math.random() * 1200, v * 0.35);
+      if (run > 0.5) this.tone(60, t, 0.07, 'sine', v * 0.9);
+    }
+  }
   dig() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
