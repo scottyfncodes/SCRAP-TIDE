@@ -109,6 +109,8 @@ export class UI {
   private radarEl!: HTMLElement;
   private lastStatus = '';
   private cargoEl!: HTMLElement;
+  /** The hold went over capacity this visit (chests and story finds always come aboard); explained once per overflow. */
+  private holdOver = false;
   private questEl!: HTMLElement;
   private actionsEl!: HTMLElement;
   private toastsEl!: HTMLElement;
@@ -266,7 +268,14 @@ export class UI {
     const used = s.slotsUsed();
     const cap = s.stats.cargo;
     this.cargoEl.textContent = `${used}/${cap}`;
-    this.cargoEl.parentElement!.classList.toggle('full', used >= cap);
+    const pill = this.cargoEl.parentElement!;
+    pill.classList.toggle('full', used >= cap);
+    pill.classList.toggle('over', used > cap);
+    pill.title = used > cap ? `Hold over capacity by ${used - cap}: chests and story finds always come aboard. Dock to unload.` : '';
+    if (used > cap && !this.holdOver) {
+      this.toast(`Hold over capacity (${used}/${cap}). Chests and story finds always come aboard; dock to unload.`, { color: '#ffb9a8', life: 4.5 });
+    }
+    this.holdOver = used > cap;
     let q: { text: string; hint: string } = FIRST_VOYAGE.find((q) => q.id === s.data.quest)!;
     if (s.data.quest === 'free') q = GOALS[s.data.goal];
     const qt = this.questEl.querySelector('.q-text')!;
@@ -1089,7 +1098,7 @@ export class UI {
       });
       const list = tab === 'cargo' ? s.data.cargo : s.data.vault;
       body.innerHTML = list.length ? '' : `<div class="empty">${tab === 'cargo' ? 'Your hold is empty. Go find something!' : 'Nothing stored. Dock at Driftholm to unload cargo here.'}</div>`;
-      if (tab === 'cargo') body.prepend(el(`<div class="note">Small things stack. Treasure chests and story finds always come aboard. Docking unloads everything into your vault.</div>`));
+      if (tab === 'cargo') body.prepend(el(`<div class="note">Small things stack. Treasure chests and story finds always come aboard${s.slotsUsed() > s.stats.cargo ? `, so the hold can run over: <b>${s.slotsUsed()}/${s.stats.cargo}</b>; until you unload, only part-filled stacks have room` : ''}. Docking unloads everything into your vault.</div>`));
       for (const st of list) {
         const d = item(st.id);
         const slots = Math.ceil(st.n / d.stack);
