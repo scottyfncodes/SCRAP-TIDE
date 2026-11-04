@@ -127,6 +127,13 @@ export class Particles {
     this.geo.attributes.color.needsUpdate = true;
   }
 
+  /** World positions of the live particles (for checks; allocates). */
+  live(): THREE.Vector3[] {
+    const out: THREE.Vector3[] = [];
+    for (let i = 0; i < this.max; i++) if (this.life[i] > 0) out.push(new THREE.Vector3(this.pos[i * 3], this.pos[i * 3 + 1], this.pos[i * 3 + 2]));
+    return out;
+  }
+
   setSize(size: number) {
     (this.points.material as THREE.PointsMaterial).size = size;
   }

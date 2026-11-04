@@ -1,7 +1,4 @@
 import './ui/styles.css';
-import { Game } from './game/game';
-import { loadReport } from './world/assets';
-import { VESSELS } from './data/ship';
 
 const fill = document.getElementById('loadFill')!;
 const msg = document.getElementById('loadMsg')!;
@@ -26,6 +23,10 @@ async function boot() {
     msg.textContent = 'TIDEBREAKERS needs WebGL2. Please update your browser.';
     return;
   }
+  // The engine (three.js + the game, most of the download) is its own chunk: this small entry paints the loading
+  // screen and its progress bar first, and three.js sits in a vendor chunk that stays cached across game updates.
+  await progress(0.02, 'Warming the valves…');
+  const [{ Game }, { loadReport }, { VESSELS }] = await Promise.all([import('./game/game'), import('./world/assets'), import('./data/ship')]);
   const game = new Game(canvas, progress);
   (window as any).__game = game;
   await game.init();

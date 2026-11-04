@@ -91,6 +91,7 @@ button { font-family: var(--label); cursor: pointer; border: none; color: inheri
 .stats { display: flex; flex-direction: column; gap: 5px; }
 .cargo-pill { font-size: 13px; padding: 3px 9px 3px 7px; border-left-color: var(--copper); }
 .cargo-pill.full { border-left-color: var(--red); color: #ffb9a8; }
+.cargo-pill.over .cargo::after { content: ' +'; color: var(--red); font-weight: 700; }
 
 .quest {
   flex: 1; min-width: 0; margin: 0 auto; max-width: 400px; position: relative;

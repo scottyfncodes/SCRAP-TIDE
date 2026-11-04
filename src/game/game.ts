@@ -53,6 +53,8 @@ export class Game implements GameAPI {
   camera: THREE.PerspectiveCamera;
   sunLight: THREE.DirectionalLight;
   hemi: THREE.HemisphereLight;
+  /** Low-light fill on the player's boat from the camera side, so hull and sail stay readable at dusk and night. */
+  shipFill: THREE.PointLight;
   atmo = new Atmosphere();
   ocean!: Ocean;
   sky!: Sky;
@@ -137,6 +139,8 @@ export class Game implements GameAPI {
     this.sunLight.shadow.bias = -0.0008;
     this.sunLight.shadow.normalBias = 0.04;
     this.scene.add(this.sunLight, this.sunLight.target);
+    this.shipFill = new THREE.PointLight(0xffe2c0, 0, 40, 1);
+    this.scene.add(this.shipFill);
 
     this.ui = new UI(this);
     this.ui.onAction = (id) => this.action(id);
@@ -683,6 +687,54 @@ export class Game implements GameAPI {
     u.uAmbient.value.setRGB(amb * 0.9, amb * 0.97, amb);
     oceanState.storm = a.storm;
     if (this.ship.lamp) this.ship.lamp.intensity = a.night * 3 + a.storm * 1.2;
+  }
+
+  /** Dusk, night and storms flatten the boat into the dark sea (the sun is low or gone, and the ocean shader lights
+   *  the water separately). A warm fill from the camera side, above the boat, fades in as the sun's light drops and
+   *  only reaches about four boat-lengths, so the boat reads without brightening the world. Off in daylight. */
+  private updateShipFill() {
+    const f = this.shipFill;
+    const low = clamp((1.6 - this.atmo.sunIntensity) / 1.0, 0, 1);
+    if (this.mode !== 'sail' || low <= 0) {
+      f.intensity = 0;
+      return;
+    }
+    const L = this.ship.length;
+    const p = this.shipRoot.position;
+    const to = new THREE.Vector3(this.camera.position.x - p.x, 0, this.camera.position.z - p.z);
+    if (to.lengthSq() < 1e-6) to.set(0, 0, 1);
+    to.normalize();
+    f.position.set(p.x + to.x * L * 0.8, p.y + L * 0.9 + 1.5, p.z + to.z * L * 0.8);
+    f.distance = L * 4 + 6;
+    f.color.setRGB(1, 0.89, 0.76).lerp(new THREE.Color(0.75, 0.85, 1), this.atmo.night);
+    f.intensity = low * (L + 4) * 0.55;
+  }
+
+  /** Visual check (scripts/visual-check.mjs): of the live wake/spray puffs, how many are drawn over the boat, i.e. the
+   *  ray from the camera through the puff's centre or its sprite's edge hits the ship or captain behind the puff, above
+   *  the water. */
+  wakeOverlap() {
+    const ray = new THREE.Raycaster();
+    const targets = [this.shipRoot, this.captain.root];
+    const cam = this.camera.position;
+    const right = new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld, 0);
+    const up = new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld, 1);
+    const r = (this.wakeFoam.points.material as THREE.PointsMaterial).size * 0.35; // the bright core of the puff
+    const pts = this.wakeFoam.live();
+    const shown = (o: THREE.Object3D | null): boolean => !o || (o.visible && shown(o.parent));
+    let over = 0;
+    for (const p of pts) {
+      const d = p.distanceTo(cam);
+      const hit = [p, p.clone().addScaledVector(right, r), p.clone().addScaledVector(right, -r), p.clone().addScaledVector(up, r), p.clone().addScaledVector(up, -r)].some((q) => {
+        ray.set(cam, q.clone().sub(cam).normalize());
+        ray.far = d * 3;
+        const h = ray.intersectObjects(targets, true).find((x) => shown(x.object)); // raycasts also hit hidden meshes
+        // a hit under the water surface shows water, not hull (the ocean isn't in the raycast)
+        return !!h && h.distance > d && h.point.y > this.ocean.sample(h.point.x, h.point.z, this.t).y;
+      });
+      if (hit) over++;
+    }
+    return { live: pts.length, over };
   }
 
   /** Storms batter the hull; a Mechanic patches it at sea. */
@@ -1398,6 +1450,7 @@ export class Game implements GameAPI {
     const fp = this.mode === 'sail' ? new THREE.Vector3(this.boat.x, 0, this.boat.z) : new THREE.Vector3(this.foot.x, 0, this.foot.z);
     this.sunLight.position.copy(fp).addScaledVector(this.atmo.sunDir, 100);
     this.sunLight.target.position.copy(fp);
+    this.updateShipFill();
     if (this.started) {
       this.updateIslands(dt);
       this.updateQuest();
@@ -1586,13 +1639,13 @@ export class Game implements GameAPI {
     const clear = WAKE_PUFF * 0.6;
     const vel = new THREE.Vector3(fx * b.speed, 0, fz * b.speed);
     if (motoring && Math.random() < 0.5) {
-      const ex = this.ship.wake.clone().add(new THREE.Vector3(0, 0.4, -0.3 - clear));
+      const ex = this.ship.wake.clone().add(new THREE.Vector3(0, 0.4, -0.35 - clear));
       this.shipRoot.localToWorld(ex);
       this.wakeFoam.emitVel(ex, 1, '#ffffff', new THREE.Vector3(-fx * 0.8, 0.9, -fz * 0.8), 0.4, 0.45, 2, 0.2);
     }
     // wake foam
     if (b.speed > 1) {
-      const stern = this.ship.wake.clone().add(new THREE.Vector3(0, 0, -clear));
+      const stern = this.ship.wake.clone().add(new THREE.Vector3(0, 0, -clear - 0.35)); // past the rudder blade too
       this.shipRoot.localToWorld(stern);
       if (Math.random() < b.speed * 0.25)
         this.wakeFoam.emitVel(new THREE.Vector3(stern.x, w.y + 0.1, stern.z), 1, '#ffffff', new THREE.Vector3(-fx * 0.6, 0.6, -fz * 0.6), 0.35, 1.0, 1, 0.4);
