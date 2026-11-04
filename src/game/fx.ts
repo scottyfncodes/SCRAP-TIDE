@@ -83,6 +83,28 @@ export class Particles {
     }
   }
 
+  /** Emit `n` particles with a set velocity `v` (plus up to `jitter` m/s of random spread on each axis), e.g. spray
+   *  thrown off a moving hull that has to carry the boat's own speed so the hull doesn't sail through it. */
+  emitVel(p: THREE.Vector3, n: number, color: THREE.ColorRepresentation, v: THREE.Vector3, jitter = 0.3, life = 1, gravity = 9, spread = 0.2) {
+    const c = new THREE.Color(color);
+    for (let k = 0; k < n; k++) {
+      const i = this.cursor;
+      this.cursor = (this.cursor + 1) % this.max;
+      this.pos[i * 3] = p.x + (Math.random() - 0.5) * spread;
+      this.pos[i * 3 + 1] = p.y + (Math.random() - 0.5) * spread * 0.5;
+      this.pos[i * 3 + 2] = p.z + (Math.random() - 0.5) * spread;
+      this.vel[i * 3] = v.x + (Math.random() - 0.5) * 2 * jitter;
+      this.vel[i * 3 + 1] = v.y * (0.6 + Math.random() * 0.6);
+      this.vel[i * 3 + 2] = v.z + (Math.random() - 0.5) * 2 * jitter;
+      this.life[i] = this.maxLife[i] = life * (0.7 + Math.random() * 0.6);
+      this.grav[i] = gravity;
+      const j = 0.85 + Math.random() * 0.3;
+      this.base[i * 3] = c.r * j;
+      this.base[i * 3 + 1] = c.g * j;
+      this.base[i * 3 + 2] = c.b * j;
+    }
+  }
+
   update(dt: number) {
     for (let i = 0; i < this.max; i++) {
       if (this.life[i] <= 0) continue;
