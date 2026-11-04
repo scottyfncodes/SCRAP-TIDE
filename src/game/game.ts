@@ -1579,19 +1579,33 @@ export class Game implements GameAPI {
       this.shipRoot.localToWorld(stern);
       this.ocean.addWake(stern.x, stern.z, Math.min(1, b.speed / 9), dt);
     }
+    // Spray and wake puffs are camera-facing sprites drawn at their centre's depth, so a puff that starts on the hull
+    // (or that the hull sails into) paints over it. Every puff starts clear of the hull by more than half a sprite and
+    // moves away from it: stern foam spawns behind the transom and drifts aft, bow spray leaves each side of the bow
+    // carrying the boat's speed so the hull doesn't overtake it.
+    const clear = WAKE_PUFF * 0.6;
+    const vel = new THREE.Vector3(fx * b.speed, 0, fz * b.speed);
     if (motoring && Math.random() < 0.5) {
-      const ex = this.ship.wake.clone().add(new THREE.Vector3(0, 0.4, -0.3));
+      const ex = this.ship.wake.clone().add(new THREE.Vector3(0, 0.4, -0.3 - clear));
       this.shipRoot.localToWorld(ex);
-      this.wakeFoam.emit(ex, 1, '#ffffff', 0.8, 1.2, 0.45, 2, 0.3);
+      this.wakeFoam.emitVel(ex, 1, '#ffffff', new THREE.Vector3(-fx * 0.8, 0.9, -fz * 0.8), 0.4, 0.45, 2, 0.2);
     }
     // wake foam
     if (b.speed > 1) {
-      const stern = this.ship.wake.clone();
+      const stern = this.ship.wake.clone().add(new THREE.Vector3(0, 0, -clear));
       this.shipRoot.localToWorld(stern);
-      if (Math.random() < b.speed * 0.25) this.wakeFoam.emit(new THREE.Vector3(stern.x, w.y + 0.1, stern.z), 1, '#ffffff', 0.6, 0.6, 1.0, 1, 0.8);
-      const bow = new THREE.Vector3(0, 0, L * 0.5);
-      this.shipRoot.localToWorld(bow);
-      if (Math.random() < b.speed * 0.15) this.wakeFoam.emit(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, '#ffffff', 1.2, 1, 0.6, 4, 0.6);
+      if (Math.random() < b.speed * 0.25)
+        this.wakeFoam.emitVel(new THREE.Vector3(stern.x, w.y + 0.1, stern.z), 1, '#ffffff', new THREE.Vector3(-fx * 0.6, 0.6, -fz * 0.6), 0.35, 1.0, 1, 0.4);
+      if (Math.random() < b.speed * 0.15) {
+        // one side of the bow at a time, thrown outward; on the Ironwake, the outer side of a hull
+        const side = Math.random() < 0.5 ? -1 : 1;
+        const halfW = this.store.data.vessel === 'ironwake' ? 1.15 : this.ship.beam;
+        const x = (this.ship.beam - halfW + halfW * 0.45 + clear) * side;
+        const bow = new THREE.Vector3(x, 0, L * 0.4);
+        this.shipRoot.localToWorld(bow);
+        const out = new THREE.Vector3(side, 0, 0).applyQuaternion(this.shipRoot.quaternion).setY(0).normalize(); // outward, world
+        this.wakeFoam.emitVel(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, '#ffffff', vel.clone().multiplyScalar(0.9).addScaledVector(out, 1.4).setY(1), 0.25, 0.6, 4, 0.2);
+      }
     }
 
     this.proxTimer -= dt;
