@@ -65,7 +65,11 @@ for (const ship of SHIPS) {
   });
   for (const [view, yaw] of Object.entries(VIEWS)) {
     await page.evaluate((y) => Object.assign(window.__vc, { view: y, tod: 0.5 }), yaw);
-    await page.waitForTimeout(4000); // up to speed, wake established
+    // up to speed, wake established. Wait on *game* time: headless software GL runs a few fps and the game caps each
+    // step at 0.05 s, so 4 s of wall time was only ~0.3-0.8 s of sailing and the boat was still pulling away from a
+    // standstill (its stern wake tight against the hull), which made the result depend on how fast the runner was.
+    const gt0 = await page.evaluate(() => window.__game.renderT);
+    await page.waitForFunction((t) => window.__game.renderT >= t, gt0 + 3, { timeout: 120000, polling: 100 });
     let live = 0, over = 0;
     for (let k = 0; k < 40; k++) {
       const r = await page.evaluate(() => window.__game.wakeOverlap());
