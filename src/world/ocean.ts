@@ -167,8 +167,11 @@ void main() {
   vec2 c1 = texture2D(uChop, p / 24.0 - wdir * t * 0.022).xy * 2.0 - 1.0;
   vec2 q = mat2(0.8, -0.6, 0.6, 0.8) * p / 8.5;
   vec2 c2 = texture2D(uChop, q + vec2(-0.031, 0.024) * t).xy * 2.0 - 1.0;
-  vec2 slope = (c1 * (1.0 + 0.6 * midK) + c2 * 0.9 * nearK) * rip * 2.2 * uChopK;
+  vec2 slope = (c1 * (1.0 + 0.4 * midK) + c2 * 1.1 * nearK) * rip * 1.5 * uChopK;
   vec3 N = normalize(vN + vec3(slope.x, 0.0, slope.y));
+  // the sky reflection follows a gentler normal: at sunset a low, bright horizon reflected through every chop tilt
+  // turned the sea into pale camouflage blotches; the full chop still drives the sun glitter below
+  vec3 Nsky = normalize(vN + vec3(slope.x, 0.0, slope.y) * 0.35);
   vec3 Nflat = normalize(vN);
 
   // depth colour: silted shore → dirty teal shelf → grey-green open water → deep → oil-black abyss
@@ -205,8 +208,8 @@ void main() {
   col = mix(col, col * 0.3 + mix(vec3(0.05, 0.04, 0.035), sheen * vec3(0.07, 0.06, 0.075), 0.55) * (1.0 - uNight * 0.7) * uAmbient, oil * 0.85);
 
   // reflections
-  float fres = 0.04 + 0.96 * pow(1.0 - max(dot(N, V), 0.0), 5.0);
-  vec3 R = reflect(-V, N);
+  float fres = 0.04 + 0.96 * pow(1.0 - max(dot(Nsky, V), 0.0), 5.0);
+  vec3 R = reflect(-V, Nsky);
   vec3 sky = mix(uSkyColor, uSkyTop, smoothstep(0.0, 0.6, R.y));
   col = mix(col, sky * vec3(0.82, 0.86, 0.84), clamp(fres * 0.62, 0.0, 0.7));
   vec3 H = normalize(uSunDir + V);

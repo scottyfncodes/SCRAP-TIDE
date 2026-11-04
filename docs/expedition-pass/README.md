@@ -124,6 +124,18 @@ at dusk and night, and the wake visual check still passes for all three vessels.
 ![ocean dusk night noon](screens/ocean_dusk_night_noon.jpg)
 *Dusk, night and noon from the wake visual check.*
 
+**Follow-up after the first iPhone test (sunset):** on a real iPhone at sunset the chop turned the sea into large
+pale-tan blotches. The coarse chop layer was strong enough that every tilt reflected the bright, low sunset horizon,
+so whole patches of water took the sky's colour. The sky reflection (Fresnel and reflected sky colour) now uses a gentler normal (35% of the
+chop), the coarse layer is weaker, and the fine layer near the boat a little stronger; the full chop still drives the
+sun glitter. Sunset is clean again and noon is crisper than before.
+
+![ocean sunset fix](screens/ocean_sunset_fix.jpg)
+*Sunset, same spot: before #21 · #21 as merged (blotches) · the fix.*
+
+![ocean noon fix](screens/ocean_noon_fix.jpg)
+*Noon as merged · noon with the fix · late sunset with the fix.*
+
 ## GITCRAFT tools used
 - **StudioCraft WorldCraft `ocean`**: the FFT chop tile (and its loop/tile/spectrum/engine checks).
 - **StudioCraft TestCraft `smoke`**: the production build on phone and phone-landscape: no page errors, no missing
