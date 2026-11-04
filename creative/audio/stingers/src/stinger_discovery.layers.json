@@ -1,0 +1,35 @@
+{
+ "title": "stinger_discovery",
+ "tempo": 84,
+ "bars": 1,
+ "key": "D",
+ "scale": "dorian",
+ "chords_degrees": [
+  0
+ ],
+ "sample_rate": 44100,
+ "loop": {
+  "start": 0,
+  "end": 126000,
+  "seconds": 2.8571
+ },
+ "stems": {
+  "pad": "stems/stinger_discovery_pad.wav",
+  "lead": "stems/stinger_discovery_lead.wav"
+ },
+ "intensity_levels": {
+  "low": [
+   "pad"
+  ],
+  "mid": [
+   "pad"
+  ],
+  "high": [
+   "pad",
+   "lead"
+  ]
+ },
+ "mix": "stinger_discovery.wav",
+ "midi": "stinger_discovery.mid",
+ "usage": "Start every stem together on one AudioContext clock (loop=true, loopEnd=loop.seconds); fade stem gains to the level's set."
+}

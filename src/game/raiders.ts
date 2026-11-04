@@ -7,6 +7,7 @@ import { item } from '../data/items';
 import { model, characterModel, type Character } from '../world/assets';
 import { angleDiff, clamp } from '../core/noise';
 import { audio } from '../audio/audio';
+import { pack } from '../audio/pack';
 
 interface Raider {
   obj: THREE.Object3D;
@@ -39,6 +40,14 @@ export class Raiders {
 
   positions() {
     return this.list.map((r) => ({ x: r.x, z: r.z }));
+  }
+
+  /** 0..1: how close the nearest raider that is chasing you is (drives the combat layer of the theme). */
+  get danger() {
+    const b = this.g.boat;
+    let d = 0;
+    for (const r of this.list) if (r.state === 'chase') d = Math.max(d, 1 - Math.min(1, Math.max(0, (Math.hypot(r.x - b.x, r.z - b.z) - 30) / 150)));
+    return d;
   }
 
   private spawn(z: RaiderZone) {
@@ -122,8 +131,12 @@ export class Raiders {
         if (!g.store.data.flags.includes('met_raiders')) {
           g.store.data.flags.push('met_raiders');
           g.ui.revealInfo('Rustfang Raiders', 'Scrap skiffs, closing fast', 'They ram boats and steal cargo. Outrun them with an engine, or fit a <b>Harpoon Turret</b> at Rig Helios to drive them off.', 'Hold on');
-        } else if (g.store.hasRole('lookout')) g.ui.toast('Kai: “Rustfang skiffs! Coming in hard!”', { color: '#c8352a' });
+        } else if (g.store.hasRole('lookout')) {
+          g.ui.toast('Kai: “Rustfang skiffs! Coming in hard!”', { color: '#c8352a' });
+          pack.say('kai_raiders', 30);
+        }
         audio.raiderHorn();
+        setTimeout(() => (g.store.hasRole('defender') ? pack.say('ines_raiders', 45) : pack.say('raider_threat', 45)), 2600);
       }
       if (r.state === 'chase' && (!exposed || zoneD > chaseR + 140)) r.state = 'patrol';
       // steering target
@@ -171,6 +184,7 @@ export class Raiders {
         r.timer = 25;
         g.damage(14, 'Rammed by Rustfang!');
         audio.clunk();
+        setTimeout(() => pack.say('raider_taunt', 40), 700);
         g.haptic(80);
         const cargo = g.store.data.cargo.filter((c) => item(c.id).rarity !== 'legendary');
         if (cargo.length) {
@@ -192,7 +206,12 @@ export class Raiders {
     this.boltLife = 0.35;
     if (g.ship.harpoon) g.ship.harpoon.rotation.y = Math.atan2(to.x - from.x, to.z - from.z) - g.boat.heading;
     g.foam.emit(to, 30, '#ffffff', 3, 4, 1, 8, 1);
+    g.flip.burst('sparks', to, 2.6);
+    g.flip.burst('splash', to.clone().setY(r.obj.position.y + 0.6), 3.4);
     audio.harpoon();
+    pack.layer('harpoonFire', 0.6);
+    setTimeout(() => pack.layer('harpoonHit', 0.7), 220);
+    setTimeout(() => (g.store.hasRole('defender') ? pack.say('ines_hit', 40) : pack.say('raider_flee', 40)), 900);
     r.state = 'flee';
     r.timer = 30;
     g.store.data.raidersRepelled++;

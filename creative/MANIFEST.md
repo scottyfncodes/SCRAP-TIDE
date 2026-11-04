@@ -504,3 +504,19 @@ Written by GITCRAFT MeshCraft's `update_manifest` (fields include `sha256`). Sta
 | `3d/sail_sunset/previews/tb_sail_sunset_three_quarter_fill-end.png` | 191 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
 | `3d/sail_sunset/previews/tb_sail_sunset_top.png` | 102 KB | MeshCraft (Blender) | preview | MeshCraft preview render |
 | `3d/sail_sunset/source/tb_sail_sunset.blend` | 110 KB | MeshCraft (Blender) | source | Editable Blender source |
+
+## GITCRAFT Studio pass (2026-11-04)
+
+Generated with the GITCRAFT Studio departments; each output folder holds the `.studio.json` provenance records. See `docs/gitcraft-pass/REPORT.md`.
+
+| Path | Contents | Tools | Status |
+|---|---|---|---|
+| `audio/voice/` | 22 voice lines (FLAC), dialogue manifest, waveforms | AudioCraft voice (Kokoro-82M) | source → `public/audio/vo/` game-ready |
+| `audio/music/` | Theme mixdown + 5 stems (FLAC), MIDI, adaptive-layer manifest | AudioCraft music | source → `public/audio/music/` game-ready |
+| `audio/stingers/src/` | 4 stingers + stems, MIDI | AudioCraft music | source → `public/audio/stingers/` game-ready |
+| `audio/sfx/src/` | Hull thuds ×3, harpoon whoosh, harpoon hits ×2 | AudioCraft sfx | source → `public/audio/sfx/` game-ready |
+| `effects/flipbooks/` | Splash, engine smoke, harpoon sparks, rain, lightning: atlas PNG + JSON, GIF/MP4 previews | FXCraft flipbook | source → `public/fx/` game-ready |
+| `3d-characters/anim-pass/` | Six crew with the added clip (GLB + .blend), clip sheets, verify reports | AnimCraft animate / verify (Blender) | source → `public/models/tb_crew_*.glb` game-ready |
+| `3d-characters/scripts/optimize_char_cheer.mjs` | Delivery pass for those (rename `wave`→`Cheer`, re-root skinned mesh, quantize) | gltf-transform 4.1 | source |
+| `marketing/teaser_tidebreakers_1080p_v2.mp4` | 28.5 s teaser, 1080p, theme soundtrack | CinematicCraft title_card + assemble, frame-stepped capture | finished (not shipped) |
+| `marketing/source/trailer_v2/` | Shots, title cards, poster, capture script | CinematicCraft, Playwright | source |

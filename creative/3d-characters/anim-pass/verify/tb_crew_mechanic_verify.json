@@ -1,0 +1,56 @@
+{
+ "clips": [
+  "Attack",
+  "Idle",
+  "Interact",
+  "Walk",
+  "Cheer"
+ ],
+ "checks": [
+  {
+   "name": "Khronos glTF-Validator, 0 errors",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "clip 'Attack' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.181,
+    "seconds": 1
+   }
+  },
+  {
+   "name": "clip 'Idle' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.0206,
+    "seconds": 3
+   }
+  },
+  {
+   "name": "clip 'Interact' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.0479,
+    "seconds": 1.583
+   }
+  },
+  {
+   "name": "clip 'Walk' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.1069,
+    "seconds": 1.042
+   }
+  },
+  {
+   "name": "clip 'Cheer' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.0048,
+    "seconds": 1.542
+   }
+  }
+ ]
+}

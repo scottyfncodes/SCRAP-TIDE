@@ -1,0 +1,12 @@
+{
+ "image": "fx_harpoon_sparks_flipbook.png",
+ "frames": 16,
+ "cols": 4,
+ "rows": 4,
+ "frame_width": 64,
+ "frame_height": 64,
+ "fps": 24,
+ "loop": false,
+ "blending": "additive",
+ "alpha": "straight (not premultiplied)"
+}

@@ -1,0 +1,38 @@
+{
+ "title": "stinger_upgrade",
+ "tempo": 100,
+ "bars": 1,
+ "key": "D",
+ "scale": "major",
+ "chords_degrees": [
+  0
+ ],
+ "sample_rate": 44100,
+ "loop": {
+  "start": 0,
+  "end": 105840,
+  "seconds": 2.4
+ },
+ "stems": {
+  "bass": "stems/stinger_upgrade_bass.wav",
+  "lead": "stems/stinger_upgrade_lead.wav",
+  "drums": "stems/stinger_upgrade_drums.wav"
+ },
+ "intensity_levels": {
+  "low": [
+   "bass"
+  ],
+  "mid": [
+   "bass",
+   "drums"
+  ],
+  "high": [
+   "bass",
+   "lead",
+   "drums"
+  ]
+ },
+ "mix": "stinger_upgrade.wav",
+ "midi": "stinger_upgrade.mid",
+ "usage": "Start every stem together on one AudioContext clock (loop=true, loopEnd=loop.seconds); fade stem gains to the level's set."
+}

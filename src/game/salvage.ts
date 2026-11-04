@@ -5,6 +5,7 @@ import type { Game } from './game';
 import { SALVAGE_SITES, CACHE_POOL, type SalvageSiteDef, type LootRoll, type RegionId } from '../data/world';
 import { item } from '../data/items';
 import { audio } from '../audio/audio';
+import { pack } from '../audio/pack';
 
 function roll(rng: () => number, list: LootRoll[]) {
   const total = list.reduce((a, b) => a + b.w, 0);
@@ -142,8 +143,12 @@ export class Salvage {
     // feedback: the haul breaks the surface
     const p = new THREE.Vector3(g.boat.x, 0.5, g.boat.z);
     g.foam.emit(p, 40, '#ffffff', 3, 5, 1.2, 8, 1);
+    g.flip.burst('splash', p.clone().setY(1.2), 4.5);
     g.sparkle.emit(p.clone().setY(1.5), 40, '#ffd25e', 3, 4, 1.2, 5, 0.6);
     audio.chestOpen();
+    pack.sting('salvage', 0.7);
+    if (hits >= 2) g.crewCheer(1200);
+    if (s.hasRole('salvager')) setTimeout(() => pack.say(first && site.first ? 'bram_story' : 'bram_salvage', first && site.first ? 1e9 : 120), 1800);
     this.hookAnim = 1;
     const grade = hits === 3 ? 'PERFECT HAUL!' : hits === 2 ? 'Good haul' : hits === 1 ? 'Scraped something up' : 'The line slipped…';
     if (loot.length) g.ui.revealChest(site.name, loot, `${grade}${overflow ? ` · ${overflow} items didn’t fit in the hold` : ''}`);

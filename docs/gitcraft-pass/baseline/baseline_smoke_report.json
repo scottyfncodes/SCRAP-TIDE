@@ -1,0 +1,94 @@
+{
+ "results": [
+  {
+   "viewport": "phone",
+   "size": {
+    "width": 390,
+    "height": 664
+   },
+   "console_errors": [
+    "Failed to load resource: net::ERR_FAILED"
+   ],
+   "page_errors": [],
+   "blocked": [
+    "https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Share+Tech+Mono&display=swap"
+   ],
+   "missing": [],
+   "requests": 38,
+   "screenshots": [
+    "/home/user/TIDEBREAKERS/docs/gitcraft-pass/baseline/phone_loaded.png",
+    "/home/user/TIDEBREAKERS/docs/gitcraft-pass/baseline/phone_final.png"
+   ],
+   "steps": [],
+   "asserts": [],
+   "values": {},
+   "load_ms": 839,
+   "layout": {
+    "scroll_width": 390,
+    "inner_width": 390,
+    "scroll_height": 664,
+    "inner_height": 664,
+    "canvases": [
+     [
+      780,
+      1328
+     ],
+     [
+      208,
+      208
+     ]
+    ],
+    "title": "TIDEBREAKERS"
+   }
+  }
+ ],
+ "checks": [
+  {
+   "name": "phone: no page errors",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "phone: no console errors",
+   "ok": false,
+   "detail": [
+    "Failed to load resource: net::ERR_FAILED"
+   ]
+  },
+  {
+   "name": "phone: no missing files",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "phone: renders something (not a blank screen)",
+   "ok": true,
+   "detail": {
+    "std": 0.2033,
+    "distinct_colours": 1083
+   }
+  },
+  {
+   "name": "phone: no horizontal overflow",
+   "ok": true,
+   "detail": [
+    390,
+    390
+   ]
+  },
+  {
+   "name": "phone: has a sized canvas",
+   "ok": true,
+   "detail": [
+    [
+     780,
+     1328
+    ],
+    [
+     208,
+     208
+    ]
+   ]
+  }
+ ]
+}

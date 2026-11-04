@@ -1,0 +1,999 @@
+{
+ "department": "audiocraft",
+ "action": "voice",
+ "studio": "1.0.0",
+ "status": "ok",
+ "out_dir": "/home/user/TIDEBREAKERS/creative/audio/voice",
+ "request": {
+  "name": "tb_vo",
+  "out_dir": "/home/user/TIDEBREAKERS/creative/audio/voice",
+  "formats": [
+   "wav"
+  ],
+  "seed": 61,
+  "tags": [
+   "tidebreakers",
+   "voice"
+  ],
+  "cast": {
+   "dockhand": "bm_george",
+   "kai": "am_puck",
+   "tomas": "am_onyx",
+   "ines": "bf_isabella",
+   "bram": "am_fenrir",
+   "juno": "af_sarah",
+   "raider": "bm_lewis"
+  },
+  "lines": [
+   {
+    "id": "dockhand_hail",
+    "character": "dockhand",
+    "text": "Driftholm. Tie off, and keep your hands where I can see them.",
+    "speed": 0.92
+   },
+   {
+    "id": "dockhand_return",
+    "character": "dockhand",
+    "text": "Still floating, then. Unload before it rots.",
+    "speed": 0.92
+   },
+   {
+    "id": "dockhand_reach",
+    "character": "dockhand",
+    "text": "Past the swell there's a whole city under you. Mind the raiders. They mind nobody.",
+    "speed": 0.92
+   },
+   {
+    "id": "dockhand_stormwall",
+    "character": "dockhand",
+    "text": "Nobody comes back from the Stormwall, Captain. Not in a boat like that.",
+    "speed": 0.9
+   },
+   {
+    "id": "kai_joined",
+    "character": "kai",
+    "text": "Eleven days on that raft. I saw you coming from six miles out.",
+    "speed": 1
+   },
+   {
+    "id": "kai_storm",
+    "character": "kai",
+    "text": "Storm ahead, Captain. Go round, or brace.",
+    "speed": 1.05
+   },
+   {
+    "id": "kai_raiders",
+    "character": "kai",
+    "text": "Rustfang skiffs! Coming in hard!",
+    "speed": 1.1
+   },
+   {
+    "id": "kai_green",
+    "character": "kai",
+    "text": "Is that... green? Captain, that thing is alive.",
+    "speed": 0.95
+   },
+   {
+    "id": "tomas_joined",
+    "character": "tomas",
+    "text": "Forty years on that roof. Take me where the fish haven't heard of me.",
+    "speed": 0.88
+   },
+   {
+    "id": "tomas_catch",
+    "character": "tomas",
+    "text": "Silverfin on the line. We eat tonight.",
+    "speed": 0.9
+   },
+   {
+    "id": "ines_joined",
+    "character": "ines",
+    "text": "Show me a harpoon, and I'll show you a quiet voyage.",
+    "speed": 0.95
+   },
+   {
+    "id": "ines_raiders",
+    "character": "ines",
+    "text": "Hold the wheel steady. I've got the ugly one.",
+    "speed": 1
+   },
+   {
+    "id": "ines_hit",
+    "character": "ines",
+    "text": "Hooked. Let them swim home and tell the others.",
+    "speed": 0.95
+   },
+   {
+    "id": "bram_joined",
+    "character": "bram",
+    "text": "Rustfang took my boat. I know where they keep the good stuff.",
+    "speed": 0.92
+   },
+   {
+    "id": "bram_salvage",
+    "character": "bram",
+    "text": "Easy... easy. There. The sea gave something back.",
+    "speed": 0.9
+   },
+   {
+    "id": "bram_story",
+    "character": "bram",
+    "text": "Somebody lived down there once. Kept this safe, right till the water came.",
+    "speed": 0.9
+   },
+   {
+    "id": "juno_joined",
+    "character": "juno",
+    "text": "You can't keep an outboard alive? Lucky for you, I can.",
+    "speed": 1
+   },
+   {
+    "id": "juno_upgrade",
+    "character": "juno",
+    "text": "Bolted, patched and prayed over. She'll hold.",
+    "speed": 1
+   },
+   {
+    "id": "juno_hull",
+    "character": "juno",
+    "text": "She's taking water! Give me two minutes and a hammer!",
+    "speed": 1.1
+   },
+   {
+    "id": "raider_threat",
+    "character": "raider",
+    "text": "Cut your engine, and hand over the hold!",
+    "speed": 1.05
+   },
+   {
+    "id": "raider_taunt",
+    "character": "raider",
+    "text": "Nice boat. It's ours now.",
+    "speed": 0.95
+   },
+   {
+    "id": "raider_flee",
+    "character": "raider",
+    "text": "Fall back! They've got a harpoon!",
+    "speed": 1.1
+   }
+  ],
+  "voice": "am_adam",
+  "speed": 1.0,
+  "lang": "en-us"
+ },
+ "created": "2026-11-04T17:33:46+00:00",
+ "seconds": 37.01,
+ "outputs": [
+  {
+   "path": "dockhand_hail.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.9813,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "4ed0a0b2a4e9ce421a09b3f4b42529d60f3236c9beda2436d8d78516954c0687",
+   "bytes": 351196
+  },
+  {
+   "path": "dockhand_hail_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "81020b1b1d6978fd8f32f17777afcbd3f514f610b86d412822d255753059f85b",
+   "bytes": 3740
+  },
+  {
+   "path": "dockhand_return.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.3373,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "b227a9c12d1df9111bf9b8b857209a6387000d4500ef28e0cf7c706174bf4f6e",
+   "bytes": 294396
+  },
+  {
+   "path": "dockhand_return_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "7817204890af0d5615e1d19f2bc7f15a9c8907066db54e38fa5d136d000752ba",
+   "bytes": 3746
+  },
+  {
+   "path": "dockhand_reach.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 5.7261,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "5c7407b7f5ea8d710f5b9b13bbb73a06cf0e36cacfde9892a9361bc2f13347e9",
+   "bytes": 505082
+  },
+  {
+   "path": "dockhand_reach_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "fa7f03b24fd72304df068e2964f5217a88fd1d707eee63387e0caca5b4c2646c",
+   "bytes": 3668
+  },
+  {
+   "path": "dockhand_stormwall.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.9918,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "5ca223c65a2653c1442ca2da4c351c60707d2f2dab2c500f0104a0987e5b064e",
+   "bytes": 440318
+  },
+  {
+   "path": "dockhand_stormwall_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "55e4011443cd3033382fa3841e204fa8ea2c1b5f66c62e6f3f1199cdfdda87d9",
+   "bytes": 3794
+  },
+  {
+   "path": "kai_joined.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.6061,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "a9e9afb984b191464375dfe99cdb79811ca571a45a22532953db41165029d23c",
+   "bytes": 318104
+  },
+  {
+   "path": "kai_joined_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "a2707213932a8267f841748f9414894e7ddb6d24b708e5a533ffdf8422c6af3c",
+   "bytes": 3843
+  },
+  {
+   "path": "kai_storm.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.0928,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "cf132bccdf77e5078a4dd418fdacd027d5a6508659c7bc03e72214dc0e381bf1",
+   "bytes": 184630
+  },
+  {
+   "path": "kai_storm_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "cb672cf2320a054fd2dbda97e8964f28927e79068c858d498cf434dbb5c4ebc0",
+   "bytes": 3685
+  },
+  {
+   "path": "kai_raiders.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 1.5778,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "f8234b9f7edd769992c6470dd18bcdfa446e8c45b8670893caf8b7a78f8018bb",
+   "bytes": 139210
+  },
+  {
+   "path": "kai_raiders_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "686eed90a130fb58b0e2b0f73827e16911fe4d0d44c096d8d8bb388743345942",
+   "bytes": 3573
+  },
+  {
+   "path": "kai_green.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.2956,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "8cf9acf73fcaab0fa4c0fe53addac58107afc0284a94dd2dfa81f3ef5d21aeda",
+   "bytes": 202520
+  },
+  {
+   "path": "kai_green_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "a965e8e40e89ed371881fe58589c3087b5821f5bfeede710dadbfd885a4d299a",
+   "bytes": 3493
+  },
+  {
+   "path": "tomas_joined.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.7517,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "005f822eadf66a7d5e5d64d8f7320f395e250a45c6cfe8b08fec4db548ac7db8",
+   "bytes": 330940
+  },
+  {
+   "path": "tomas_joined_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "ef6b867885ae81390cedf04fc2f36eb0842f0f8fca5cc65890b08f380bbedaa9",
+   "bytes": 3452
+  },
+  {
+   "path": "tomas_catch.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.4678,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "72622f1f748643437c295ad53bbce4c743eb78b8cc732e2b96f7c6e89b6a4717",
+   "bytes": 217706
+  },
+  {
+   "path": "tomas_catch_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "cce398713b89334f056296ed90a733fe8c90941dccf2971d4fb292b136602a9e",
+   "bytes": 3428
+  },
+  {
+   "path": "ines_joined.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.8189,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "d70e7f61ab75a48bb5e4daf6c04d1c7deb255d75c32c890725b8bf6a0d87ddf3",
+   "bytes": 248672
+  },
+  {
+   "path": "ines_joined_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "f85b2eaf862ec04aea2d0a2fc5c93ca05e4a6f4bf4bf0a22b138887785d8afae",
+   "bytes": 3658
+  },
+  {
+   "path": "ines_raiders.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.6227,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "596f94804fc1423c60a8fa106ce14ee64672f78228005d2b34c6673734222f6e",
+   "bytes": 231368
+  },
+  {
+   "path": "ines_raiders_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "712e624408e0a63c06e7bab7568b053ef5b867eaa3b9ee2e02778a382362c6bc",
+   "bytes": 3392
+  },
+  {
+   "path": "ines_hit.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.5029,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "42cc84c187f5ceb8ab9d20428cdc86b9b6a66f305fd932d0f668a120e46e074a",
+   "bytes": 220798
+  },
+  {
+   "path": "ines_hit_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "37c1cffcdfa42974f9706ba0019edebdbf3975efbba2b9c27b506b864258bd7f",
+   "bytes": 3674
+  },
+  {
+   "path": "bram_joined.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.3251,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "c68457f8c8d85949714d988db24e02b4b3298984e2db8498be9337b0b0713e8d",
+   "bytes": 293320
+  },
+  {
+   "path": "bram_joined_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "a9a886aa51ea2a74a54dd7e7e1262470daa218a3325518ba9e66874f1e742f04",
+   "bytes": 3622
+  },
+  {
+   "path": "bram_salvage.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.6075,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "6fab47faa38c716e90caedd08dbfa7183f6b2d8d4a2d01811a43d92622db17b2",
+   "bytes": 230024
+  },
+  {
+   "path": "bram_salvage_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "e8a9e0df1bf42ba4db6ff45b681d3ab12d00ca41e146142c80f369f3d52d51c4",
+   "bytes": 3465
+  },
+  {
+   "path": "bram_story.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.3733,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "b84e7e51f075192532c2d8f65e049a1fcc8012bbe27591727eca0d2fa297b9af",
+   "bytes": 385772
+  },
+  {
+   "path": "bram_story_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "da5f5358ae2bbecc193dd4cfd97cc9311fd76193df0836698363db209a71c57d",
+   "bytes": 3752
+  },
+  {
+   "path": "juno_joined.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.9973,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "b158b2482825be71ece06f4ec124f79aa0633c9e0db59c636d6ee721df6a1caf",
+   "bytes": 264408
+  },
+  {
+   "path": "juno_joined_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "7a05c91ba6736bc1bb210bd381478f3885f0ab12d01a524c3b53e730a74a1592",
+   "bytes": 3391
+  },
+  {
+   "path": "juno_upgrade.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.4706,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "13471a7f95db3b5a9c721f1ea259aec9501b6a361a9d1a4abf491a92ae185ace",
+   "bytes": 217954
+  },
+  {
+   "path": "juno_upgrade_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "061866817a9bcbac53d162d97ea944764cc93d6573b839138839eb58a894f3ce",
+   "bytes": 3532
+  },
+  {
+   "path": "juno_hull.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.563,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "291cf9d3789ac607600330aa52257cf81c0e30862fe1751d4829eff051df8224",
+   "bytes": 226104
+  },
+  {
+   "path": "juno_hull_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "9b7712511755dfdd66a5a060a5ed2d344d753e807fbffb57014b4dbb823f7264",
+   "bytes": 3618
+  },
+  {
+   "path": "raider_threat.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.496,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "e1d9abaaa81f09b8db84d08f74ba23983a585af319751d2863b77d755acc8ef1",
+   "bytes": 220192
+  },
+  {
+   "path": "raider_threat_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "f4316c92a60704328a8e123e0b8285f3f58ec6bc02016cf4bb6d2a6c1114b32b",
+   "bytes": 3198
+  },
+  {
+   "path": "raider_taunt.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 2.0821,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "bf445ad671e5ac517465059f60fb37eaabbaa7c25bab786699343408b201b0bf",
+   "bytes": 183684
+  },
+  {
+   "path": "raider_taunt_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "43431a523c79b9c3f9c6e123bca7868281afaeb1cf19d0a8eaa20e5a90e5cca6",
+   "bytes": 3150
+  },
+  {
+   "path": "raider_flee.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 1.8618,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "ad3a23b1972d1a785f6a9b288e91250cb5304fc43df9c503597092d9675d9b6b",
+   "bytes": 164252
+  },
+  {
+   "path": "raider_flee_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "6f77d64e71e57153eb74606e5b4cf7baa43494907981402610e00bfc65255ca3",
+   "bytes": 3155
+  },
+  {
+   "path": "tb_vo.dialogue.json",
+   "role": "manifest",
+   "format": "json",
+   "ok": true,
+   "keys": [
+    "engine",
+    "lines"
+   ],
+   "sha256": "eebe0a03c17fc1957c67e3924f5ed7bca805c08db2bfca06640cb4e519b3ea30",
+   "bytes": 4459
+  }
+ ],
+ "checks": [
+  {
+   "name": "dockhand_hail: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.98 s, 15.3 chars/s"
+  },
+  {
+   "name": "dockhand_return: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.34 s, 13.2 chars/s"
+  },
+  {
+   "name": "dockhand_reach: speech present and plausibly paced",
+   "ok": true,
+   "detail": "5.73 s, 14.3 chars/s"
+  },
+  {
+   "name": "dockhand_stormwall: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.99 s, 14.2 chars/s"
+  },
+  {
+   "name": "kai_joined: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.61 s, 17.2 chars/s"
+  },
+  {
+   "name": "kai_storm: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.09 s, 19.6 chars/s"
+  },
+  {
+   "name": "kai_raiders: speech present and plausibly paced",
+   "ok": true,
+   "detail": "1.58 s, 20.3 chars/s"
+  },
+  {
+   "name": "kai_green: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.30 s, 20.5 chars/s"
+  },
+  {
+   "name": "tomas_joined: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.75 s, 18.4 chars/s"
+  },
+  {
+   "name": "tomas_catch: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.47 s, 15.4 chars/s"
+  },
+  {
+   "name": "ines_joined: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.82 s, 18.4 chars/s"
+  },
+  {
+   "name": "ines_raiders: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.62 s, 17.2 chars/s"
+  },
+  {
+   "name": "ines_hit: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.50 s, 18.8 chars/s"
+  },
+  {
+   "name": "bram_joined: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.33 s, 18.3 chars/s"
+  },
+  {
+   "name": "bram_salvage: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.61 s, 18.8 chars/s"
+  },
+  {
+   "name": "bram_story: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.37 s, 16.9 chars/s"
+  },
+  {
+   "name": "juno_joined: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.00 s, 18.3 chars/s"
+  },
+  {
+   "name": "juno_upgrade: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.47 s, 18.2 chars/s"
+  },
+  {
+   "name": "juno_hull: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.56 s, 20.7 chars/s"
+  },
+  {
+   "name": "raider_threat: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.50 s, 16.0 chars/s"
+  },
+  {
+   "name": "raider_taunt: speech present and plausibly paced",
+   "ok": true,
+   "detail": "2.08 s, 12.0 chars/s"
+  },
+  {
+   "name": "raider_flee: speech present and plausibly paced",
+   "ok": true,
+   "detail": "1.86 s, 17.7 chars/s"
+  }
+ ],
+ "tools": {
+  "kokoro": {
+   "name": "Kokoro-82M v1.0 via kokoro-onnx 0.6.1 + onnxruntime",
+   "license": "Apache-2.0 (weights), MIT (kokoro-onnx, onnxruntime); phonemizer + espeak-ng are GPL-3.0",
+   "version": "kokoro-v1.0.int8"
+  },
+  "ffmpeg": {
+   "name": "FFmpeg",
+   "license": "LGPL-2.1+ (this Ubuntu build is configured --enable-gpl: GPL-2.0+)",
+   "version": "system"
+  }
+ },
+ "output_license": "Generated by GITCRAFT from no third-party samples; owned by the requesting project (Kokoro voice output: Apache-2.0 model, no restriction on generated audio)",
+ "attribution": null,
+ "stages": [
+  {
+   "stage": "synthesised",
+   "seconds": 34.92,
+   "lines": 22
+  }
+ ],
+ "notes": [],
+ "script": [
+  {
+   "id": "dockhand_hail",
+   "character": "dockhand",
+   "voice": "bm_george",
+   "text": "Driftholm. Tie off, and keep your hands where I can see them.",
+   "file": "dockhand_hail.wav",
+   "seconds": 3.981
+  },
+  {
+   "id": "dockhand_return",
+   "character": "dockhand",
+   "voice": "bm_george",
+   "text": "Still floating, then. Unload before it rots.",
+   "file": "dockhand_return.wav",
+   "seconds": 3.337
+  },
+  {
+   "id": "dockhand_reach",
+   "character": "dockhand",
+   "voice": "bm_george",
+   "text": "Past the swell there's a whole city under you. Mind the raiders. They mind nobody.",
+   "file": "dockhand_reach.wav",
+   "seconds": 5.726
+  },
+  {
+   "id": "dockhand_stormwall",
+   "character": "dockhand",
+   "voice": "bm_george",
+   "text": "Nobody comes back from the Stormwall, Captain. Not in a boat like that.",
+   "file": "dockhand_stormwall.wav",
+   "seconds": 4.992
+  },
+  {
+   "id": "kai_joined",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Eleven days on that raft. I saw you coming from six miles out.",
+   "file": "kai_joined.wav",
+   "seconds": 3.606
+  },
+  {
+   "id": "kai_storm",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Storm ahead, Captain. Go round, or brace.",
+   "file": "kai_storm.wav",
+   "seconds": 2.093
+  },
+  {
+   "id": "kai_raiders",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Rustfang skiffs! Coming in hard!",
+   "file": "kai_raiders.wav",
+   "seconds": 1.578
+  },
+  {
+   "id": "kai_green",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Is that... green? Captain, that thing is alive.",
+   "file": "kai_green.wav",
+   "seconds": 2.296
+  },
+  {
+   "id": "tomas_joined",
+   "character": "tomas",
+   "voice": "am_onyx",
+   "text": "Forty years on that roof. Take me where the fish haven't heard of me.",
+   "file": "tomas_joined.wav",
+   "seconds": 3.752
+  },
+  {
+   "id": "tomas_catch",
+   "character": "tomas",
+   "voice": "am_onyx",
+   "text": "Silverfin on the line. We eat tonight.",
+   "file": "tomas_catch.wav",
+   "seconds": 2.468
+  },
+  {
+   "id": "ines_joined",
+   "character": "ines",
+   "voice": "bf_isabella",
+   "text": "Show me a harpoon, and I'll show you a quiet voyage.",
+   "file": "ines_joined.wav",
+   "seconds": 2.819
+  },
+  {
+   "id": "ines_raiders",
+   "character": "ines",
+   "voice": "bf_isabella",
+   "text": "Hold the wheel steady. I've got the ugly one.",
+   "file": "ines_raiders.wav",
+   "seconds": 2.623
+  },
+  {
+   "id": "ines_hit",
+   "character": "ines",
+   "voice": "bf_isabella",
+   "text": "Hooked. Let them swim home and tell the others.",
+   "file": "ines_hit.wav",
+   "seconds": 2.503
+  },
+  {
+   "id": "bram_joined",
+   "character": "bram",
+   "voice": "am_fenrir",
+   "text": "Rustfang took my boat. I know where they keep the good stuff.",
+   "file": "bram_joined.wav",
+   "seconds": 3.325
+  },
+  {
+   "id": "bram_salvage",
+   "character": "bram",
+   "voice": "am_fenrir",
+   "text": "Easy... easy. There. The sea gave something back.",
+   "file": "bram_salvage.wav",
+   "seconds": 2.607
+  },
+  {
+   "id": "bram_story",
+   "character": "bram",
+   "voice": "am_fenrir",
+   "text": "Somebody lived down there once. Kept this safe, right till the water came.",
+   "file": "bram_story.wav",
+   "seconds": 4.373
+  },
+  {
+   "id": "juno_joined",
+   "character": "juno",
+   "voice": "af_sarah",
+   "text": "You can't keep an outboard alive? Lucky for you, I can.",
+   "file": "juno_joined.wav",
+   "seconds": 2.997
+  },
+  {
+   "id": "juno_upgrade",
+   "character": "juno",
+   "voice": "af_sarah",
+   "text": "Bolted, patched and prayed over. She'll hold.",
+   "file": "juno_upgrade.wav",
+   "seconds": 2.471
+  },
+  {
+   "id": "juno_hull",
+   "character": "juno",
+   "voice": "af_sarah",
+   "text": "She's taking water! Give me two minutes and a hammer!",
+   "file": "juno_hull.wav",
+   "seconds": 2.563
+  },
+  {
+   "id": "raider_threat",
+   "character": "raider",
+   "voice": "bm_lewis",
+   "text": "Cut your engine, and hand over the hold!",
+   "file": "raider_threat.wav",
+   "seconds": 2.496
+  },
+  {
+   "id": "raider_taunt",
+   "character": "raider",
+   "voice": "bm_lewis",
+   "text": "Nice boat. It's ours now.",
+   "file": "raider_taunt.wav",
+   "seconds": 2.082
+  },
+  {
+   "id": "raider_flee",
+   "character": "raider",
+   "voice": "bm_lewis",
+   "text": "Fall back! They've got a harpoon!",
+   "file": "raider_flee.wav",
+   "seconds": 1.862
+  }
+ ]
+}

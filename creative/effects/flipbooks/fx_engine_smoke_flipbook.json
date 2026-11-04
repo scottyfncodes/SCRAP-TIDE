@@ -1,0 +1,12 @@
+{
+ "image": "fx_engine_smoke_flipbook.png",
+ "frames": 16,
+ "cols": 4,
+ "rows": 4,
+ "frame_width": 64,
+ "frame_height": 64,
+ "fps": 24,
+ "loop": true,
+ "blending": "normal",
+ "alpha": "straight (not premultiplied)"
+}

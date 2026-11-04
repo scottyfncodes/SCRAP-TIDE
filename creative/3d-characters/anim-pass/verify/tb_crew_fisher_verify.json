@@ -1,0 +1,58 @@
+{
+ "clips": [
+  "Attack",
+  "Idle",
+  "Interact",
+  "Walk",
+  "Cheer"
+ ],
+ "checks": [
+  {
+   "name": "Khronos glTF-Validator, 0 errors",
+   "ok": true,
+   "detail": [
+    "WARNING NODE_SKINNED_MESH_NON_ROOT: Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh. @ /nodes/22"
+   ]
+  },
+  {
+   "name": "clip 'Attack' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.2008,
+    "seconds": 1
+   }
+  },
+  {
+   "name": "clip 'Idle' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.0251,
+    "seconds": 3
+   }
+  },
+  {
+   "name": "clip 'Interact' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.0634,
+    "seconds": 1.583
+   }
+  },
+  {
+   "name": "clip 'Walk' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.1234,
+    "seconds": 1.042
+   }
+  },
+  {
+   "name": "clip 'Cheer' plays in three.js r170 (model moves)",
+   "ok": true,
+   "detail": {
+    "changed_pixels": 0.0066,
+    "seconds": 1.542
+   }
+  }
+ ]
+}
