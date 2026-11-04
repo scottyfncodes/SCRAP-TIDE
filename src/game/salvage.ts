@@ -49,6 +49,15 @@ export class Salvage {
     return Math.max(0, Math.ceil((s.respawn * 1000 - (Date.now() - last)) / 1000));
   }
 
+  /** Ready now, and this boat can work it (region reachable; heavy sites need the crane). */
+  usable(s: SalvageSiteDef) {
+    const st = this.g.store.stats;
+    if (!this.ready(s)) return false;
+    if (s.region === 'emerald' && !st.crossSwell) return false;
+    if (s.region === 'stormwall' && !st.crossStorm) return false;
+    return !(s.heavy && !st.salvage);
+  }
+
   nearestReady(x: number, z: number) {
     let best: SalvageSiteDef | null = null;
     let bd = Infinity;
@@ -76,6 +85,12 @@ export class Salvage {
       return g.ui.toast('Too heavy to lift by hand. Fit a Salvage Crane & Winch.', { color: '#ff6b4a', life: 3 });
     }
     if (g.boat.speed > 3) return g.ui.toast('Slow down to drop the hook.');
+    // a full hold would throw the whole haul overboard and still put the site on cooldown
+    const firstHaul = !!site.first && !g.store.data.firstHauls.includes(site.id); // its guaranteed finds always come aboard
+    if (!firstHaul && !site.loot.some((l) => g.store.room(l.id) > 0)) {
+      audio.deny();
+      return g.ui.toast('Hold full: nothing from here would fit. Toss something in CARGO or dock to unload, then come back.', { color: '#ff6b4a', life: 4 });
+    }
     g.boat.busy = true;
     g.engineOn = false;
     audio.winch(true);

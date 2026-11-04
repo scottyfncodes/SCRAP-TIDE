@@ -78,7 +78,7 @@ export interface GoalDef {
 export const GOALS: GoalDef[] = [
   { id: 'g_salvage', text: 'Salvage the Sunken Tower', hint: 'The office block north-east of Driftholm. Slow down beside it and tap SALVAGE.', reward: 30, target: { x: 92, z: 150 } },
   { id: 'g_engine', text: 'Install a Salvaged Outboard', hint: 'Marlo can fit one: scrap metal and wire from salvage sites.', reward: 40 },
-  { id: 'g_crew', text: 'Recruit your first crew member', hint: 'Juno at Driftholm, Tomas at Rooftop Hollow, or a castaway adrift to the north.', reward: 40 },
+  { id: 'g_crew', text: 'Recruit your first crew member', hint: 'Kai is adrift on a raft north of Driftholm (follow the marker): slow down beside it and tap RESCUE. Or hire Juno at Driftholm or Tomas at Rooftop Hollow.', reward: 40 },
   { id: 'g_trimaran', text: 'Commission the Scrap Trimaran', hint: 'The only way across the open swell. Marlo needs gold, driftwood, scrap and canvas.', reward: 80 },
   { id: 'g_helios', text: 'Reach Rig Helios', hint: 'An oil platform far to the west, past the swell. Engines, radar and harpoons for sale.', reward: 60, target: { x: -540, z: 170 } },
   { id: 'g_meridian', text: 'Salvage Old Meridian', hint: 'The drowned city to the north-east. Its rooftops hold the best old-world finds.', reward: 80, target: { x: 500, z: -440 } },

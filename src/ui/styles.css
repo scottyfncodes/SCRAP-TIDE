@@ -105,6 +105,7 @@ button { font-family: var(--label); cursor: pointer; border: none; color: inheri
 }
 .quest::before { content: ''; position: absolute; left: 50%; top: -6px; width: 44px; height: 12px; margin-left: -22px; background: rgba(200,190,160,.55); transform: rotate(-3deg); box-shadow: 0 1px 2px rgba(0,0,0,.2); }
 .quest .q-label { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.2px; color: var(--rust); text-transform: uppercase; }
+.quest .q-need { font-family: var(--mono); font-size: 10.5px; letter-spacing: .3px; color: var(--rust); margin-top: 3px; line-height: 1.35; }
 .quest .q-hint { font-family: var(--body); font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-top: 3px; display: none; }
 .quest.open .q-hint { display: block; }
 .quest.pulse { animation: qpulse 1.2s ease 2; }

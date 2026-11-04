@@ -1,4 +1,5 @@
 // DOM UI: HUD, touch controls, panels (harbor, catalog, maps, ship, cargo, settings), reveals.
+import { goalProgressText } from '../game/goalHelp';
 import { ITEMS, CATALOG_ITEMS, ITEM_MAP, RARITY_COLOR, RARITY_LABEL, RARITY_ORDER, CATEGORY_LABEL, LIVING_GREEN, isLiving, item, type Category } from '../data/items';
 import { UPGRADES, VESSELS, COSMETICS, COSMETIC_MAP, SLOT_LABEL, SLOT_ORDER, UPGRADE_MAP, type Cost } from '../data/ship';
 import { RECIPES } from '../data/crafting';
@@ -150,7 +151,7 @@ export class UI {
     const top = el(`<div class="hud-top">
       <div class="stats"><div class="pill gold-pill"><span class="coin"></span><span class="gold">0</span></div><div class="pill cargo-pill">⛵ <span class="cargo">0/6</span></div>
         <div class="status"><div class="gauge fuel"><i></i><span>FUEL</span></div><div class="gauge hull"><i></i><span>HULL</span></div><div class="clock"></div></div></div>
-      <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-hint"></div></div>
+      <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div></div>
       <div class="menu-btns">
         <button class="icon-btn" data-p="catalog">${ICON.catalog}<span>CATALOG</span></button>
         <button class="icon-btn" data-p="maps">${ICON.maps}<span>MAPS</span></button>
@@ -286,6 +287,12 @@ export class UI {
       this.questEl.classList.add('pulse');
     }
     this.questEl.querySelector('.q-hint')!.textContent = q.hint;
+    // build goals: what's still needed, always visible (the hint only shows when the card is tapped open)
+    const raw = s.data.quest === 'free' ? goalProgressText(s, GOALS[s.data.goal]?.id ?? '') : null;
+    const need = raw && raw.includes(' · ') ? raw.split(' · ').map((p) => p.replace(/ /g, '\u00a0')).join(' · ') : raw; // never split an item across lines
+    const qn = this.questEl.querySelector('.q-need') as HTMLElement;
+    if (qn.textContent !== (need ?? '')) qn.textContent = need ?? '';
+    qn.style.display = need ? '' : 'none';
     this.questEl.querySelector('.q-label')!.textContent = s.data.quest === 'free' ? `Captain’s Log · ${s.data.goal + 1}/${GOALS.length}` : `First Voyage · ${s.questIndex() + 1}/${FIRST_VOYAGE.length - 1}`;
   }
 
