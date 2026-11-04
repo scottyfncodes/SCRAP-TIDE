@@ -1,0 +1,76 @@
+{
+ "results": [
+  {
+   "viewport": "phone",
+   "size": {
+    "width": 390,
+    "height": 664
+   },
+   "console_errors": [
+    "Failed to load resource: net::ERR_FAILED"
+   ],
+   "page_errors": [],
+   "blocked": [
+    "https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Share+Tech+Mono&display=swap"
+   ],
+   "missing": [],
+   "requests": 38,
+   "screenshots": [
+    "/home/user/TIDEBREAKERS/docs/gitcraft-pass/baseline/phone_loaded.png",
+    "/home/user/TIDEBREAKERS/docs/gitcraft-pass/baseline/phone_final.png"
+   ],
+   "steps": [],
+   "asserts": [],
+   "values": {},
+   "load_ms": 453,
+   "layout": {
+    "scroll_width": 390,
+    "inner_width": 390,
+    "scroll_height": 664,
+    "inner_height": 664,
+    "canvases": [
+     [
+      780,
+      1328
+     ],
+     [
+      208,
+      208
+     ]
+    ],
+    "title": "TIDEBREAKERS"
+   },
+   "perf": {
+    "frames": 9,
+    "fps": 1,
+    "frame_ms_p50": 850,
+    "frame_ms_p95": 1783.2000000000007,
+    "frame_ms_p99": 1783.2000000000007,
+    "frame_ms_max": 1783.2000000000007,
+    "long_frames_over_50ms": 9,
+    "heap": {
+     "used_mb": 64.7,
+     "total_mb": 88.3
+    },
+    "dom_nodes": 149
+   }
+  }
+ ],
+ "checks": [
+  {
+   "name": "phone: average FPS \u2265 30",
+   "ok": false,
+   "detail": 1
+  },
+  {
+   "name": "phone: p95 frame time \u2264 50 ms",
+   "ok": false,
+   "detail": 1783.2000000000007
+  },
+  {
+   "name": "phone: no page errors",
+   "ok": true,
+   "detail": []
+  }
+ ]
+}

@@ -41,7 +41,7 @@ atoll with its salvaged propeller and freshwater tower, the raiders' Rustfang Ho
 
 **People:** the captain, crew, townsfolk and Rustfang raiders are rigged apocalyptic-pirate survivors (patched dusters,
 tricorns and goggles, road-sign armour, salvaged blades), with idle, walk, dig, sit, cheer and attack animation
-(`creative/3d-characters`, `docs/characters-pass/`).
+(`creative/3d-characters`, `docs/characters-pass/`); the crew on deck cheer after a good haul, an upgrade or a new hand (`docs/gitcraft-pass/`).
 
 **Crew:** six survivors, six roles with real perks: Mechanic, Navigator, Salvager, Fisher, Lookout, Defender.
 **Captain's Log:** a 10-step goal chain after the first voyage that always points at the next big unlock.
@@ -69,6 +69,8 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | Game loop | `src/game/game.ts` |
 | UI: HUD, radar, winch, settlements, workbench, crew | `src/ui/ui.ts` |
 | Procedural WebAudio (howling wind, groaning steel, bell buoys, hull strikes, engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
+| Voice lines, adaptive drowned-world theme, stingers, impact layers (GITCRAFT AudioCraft; lazy-loaded OGG / AAC, 0.9–1.2 MB) | `src/audio/pack.ts`, `public/audio/`, `creative/audio/` |
+| Flipbook effects: salvage/harpoon splashes, sparks, lightning, engine smoke, bow-slam spray, storm rain sheets (GITCRAFT FXCraft; `?fx=low` / `?fx=high`) | `src/game/flipfx.ts`, `public/fx/` |
 
 3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`, and the Waterworld atoll,
 outpost and flora kits in `creative/3d-waterworld`, the rigged cast in `creative/3d-characters`, and the Scrap Trimaran's Coastal Sloop body from GITCRAFT's TIDEBREAKERS 3D

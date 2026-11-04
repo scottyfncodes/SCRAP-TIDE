@@ -1,15 +1,18 @@
 // Procedural WebAudio soundscape: waves against the hull, a low gusting howl, wind in the rigging, engines,
 // rain and thunder, distant groaning steel, tolling bell buoys, hull strikes, winches and harpoons, creaks,
 // a few lonely gulls, discovery stingers and sparse drowned-world music.
-// Everything is synthesized so the game ships with zero audio assets.
+// Everything here is synthesized. Voice lines, the adaptive theme, stingers and a few impact layers are small files
+// that src/audio/pack.ts lazy-loads on top of this soundscape (and it falls back to these synths when they can't load).
 
 type Ctx = AudioContext;
 
 export class Audio {
   ctx: Ctx | null = null;
   private master!: GainNode;
-  private sfxBus!: GainNode;
-  private musicBus!: GainNode;
+  sfxBus!: GainNode;
+  musicBus!: GainNode;
+  /** Set by the audio pack while the file-based theme is playing: the sparse synth phrases step aside. */
+  themeOn = false;
   private waves!: GainNode;
   private wavesFilter!: BiquadFilterNode;
   private wind!: GainNode;
@@ -534,7 +537,7 @@ export class Audio {
   }
   /** Short, sparse melodic phrase flavored by region. */
   phrase(region: string) {
-    if (!this.ctx || this.musicVol <= 0) return;
+    if (!this.ctx || this.musicVol <= 0 || this.themeOn) return;
     const t = this.ctx.currentTime;
     const sets: Record<string, number[]> = {
       shallows: [293.66, 329.63, 392, 440, 493.88, 587.33], // open, hopeful D pentatonic

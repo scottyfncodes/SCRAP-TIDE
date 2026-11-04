@@ -1,0 +1,39 @@
+{
+ "title": "stinger_crew",
+ "tempo": 88,
+ "bars": 1,
+ "key": "D",
+ "scale": "major",
+ "chords_degrees": [
+  0
+ ],
+ "sample_rate": 44100,
+ "loop": {
+  "start": 0,
+  "end": 120273,
+  "seconds": 2.7273
+ },
+ "stems": {
+  "pad": "stems/stinger_crew_pad.wav",
+  "lead": "stems/stinger_crew_lead.wav",
+  "bass": "stems/stinger_crew_bass.wav"
+ },
+ "intensity_levels": {
+  "low": [
+   "pad",
+   "bass"
+  ],
+  "mid": [
+   "pad",
+   "bass"
+  ],
+  "high": [
+   "pad",
+   "lead",
+   "bass"
+  ]
+ },
+ "mix": "stinger_crew.wav",
+ "midi": "stinger_crew.mid",
+ "usage": "Start every stem together on one AudioContext clock (loop=true, loopEnd=loop.seconds); fade stem gains to the level's set."
+}

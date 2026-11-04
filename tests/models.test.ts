@@ -97,7 +97,7 @@ describe('GITCRAFT models in public/models', () => {
       expect(p.attributes.JOINTS_0 !== undefined && p.attributes.WEIGHTS_0 !== undefined, f).toBe(true);
       expect(j.accessors[p.indices].count / 3, `${f} triangles`).toBeGreaterThan(4000);
       const clips = (j.animations ?? []).map((a: { name: string }) => a.name);
-      for (const c of NEED[f] ?? ['Idle', 'Walk', 'Interact', 'Attack']) expect(clips, `${f} clip ${c}`).toContain(c);
+      for (const c of NEED[f] ?? ['Idle', 'Walk', 'Interact', 'Attack', 'Cheer']) expect(clips, `${f} clip ${c}`).toContain(c);
       // skinned mesh at the scene root (glTF ignores a skinned mesh's parent transform)
       const meshNode = j.nodes.findIndex((n: { mesh?: number }) => n.mesh !== undefined);
       expect(j.nodes.some((n: { children?: number[] }) => (n.children ?? []).includes(meshNode)), `${f} mesh is a root node`).toBe(false);

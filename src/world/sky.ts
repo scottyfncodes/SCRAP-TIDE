@@ -252,7 +252,11 @@ export class Sky {
     scene.add(this.group);
   }
 
+  /** Called on every lightning strike with the point it hits (the flipbook flash in game/flipfx.ts). */
+  onStrike: ((p: THREE.Vector3) => void) | null = null;
+
   strike(origin: THREE.Vector3) {
+    this.onStrike?.(origin);
     const pts: number[] = [];
     let x = origin.x, y = 260, z = origin.z;
     const segs = 9;

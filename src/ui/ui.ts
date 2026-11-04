@@ -12,6 +12,7 @@ import { iconSVG } from './icons';
 import { drawTreasureMap, drawWorldChart } from './mapArt';
 import type { Store } from '../state/store';
 import { audio } from '../audio/audio';
+import { pack } from '../audio/pack';
 
 export interface GameAPI {
   store: Store;
@@ -580,6 +581,8 @@ export class UI {
     const rc = RARITY_COLOR[d.rarity];
     const alive = isLiving(id);
     audio.discover(RARITY_ORDER.indexOf(d.rarity));
+    if (alive || RARITY_ORDER.indexOf(d.rarity) >= 2) pack.sting('discovery', 0.75);
+    if (alive && this.store.hasRole('lookout')) setTimeout(() => pack.say('kai_green', 600), 1500);
     this.queueReveal(() =>
       el(`<div class="reveal${alive ? ' living' : ''}"><div class="reveal-card" style="--rc:${alive ? LIVING_GREEN : rc}"><div class="rays"></div>
         ${alive ? '<div class="alive-stamp">ALIVE</div>' : ''}

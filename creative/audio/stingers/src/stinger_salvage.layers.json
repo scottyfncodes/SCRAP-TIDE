@@ -1,0 +1,40 @@
+{
+ "title": "stinger_salvage",
+ "tempo": 96,
+ "bars": 1,
+ "key": "D",
+ "scale": "dorian",
+ "chords_degrees": [
+  0
+ ],
+ "sample_rate": 44100,
+ "loop": {
+  "start": 0,
+  "end": 110250,
+  "seconds": 2.5
+ },
+ "stems": {
+  "pad": "stems/stinger_salvage_pad.wav",
+  "arp": "stems/stinger_salvage_arp.wav",
+  "bass": "stems/stinger_salvage_bass.wav"
+ },
+ "intensity_levels": {
+  "low": [
+   "pad",
+   "bass"
+  ],
+  "mid": [
+   "pad",
+   "bass",
+   "arp"
+  ],
+  "high": [
+   "pad",
+   "arp",
+   "bass"
+  ]
+ },
+ "mix": "stinger_salvage.wav",
+ "midi": "stinger_salvage.mid",
+ "usage": "Start every stem together on one AudioContext clock (loop=true, loopEnd=loop.seconds); fade stem gains to the level's set."
+}

@@ -18,6 +18,8 @@ import { pagePreviewShip, pagePreviewUpgrades } from '../state/preview';
 import { buildShip, animateShip, sloopUpgradeFiles, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
 import { audio } from '../audio/audio';
+import { pack, VOICE_LINES, type VoiceId } from '../audio/pack';
+import { FlipFX } from './flipfx';
 import { goalTarget } from './goalHelp';
 import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh, plantFindMesh } from './fx';
 import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
@@ -74,6 +76,9 @@ export class Game implements GameAPI {
   foam!: Particles;
   /** Wake puffs behind the boat: their own system so they can stay small and short-lived on narrow screens. */
   wakeFoam!: Particles;
+  flip!: FlipFX;
+  /** World position of the engine exhaust while motoring, for the smoke plume (null otherwise). */
+  private exhaust: THREE.Vector3 | null = null;
   sparkle!: Particles;
   dirt!: Particles;
 
@@ -172,6 +177,8 @@ export class Game implements GameAPI {
     this.foam = new Particles(this.scene, 500, 0.7);
     this.wakeFoam = new Particles(this.scene, 300, WAKE_PUFF);
     this.wakeFoam.fade = 1.6;
+    this.flip = new FlipFX(this.scene);
+    this.sky.onStrike = (p) => this.flip.burst('lightning', p.clone().setY(120), 70, 240, 0.9);
     this.resize();
     this.sparkle = new Particles(this.scene, 300, 0.6, true);
     this.dirt = new Particles(this.scene, 200, 0.35);
@@ -218,6 +225,7 @@ export class Game implements GameAPI {
     this.started = true;
     this.camYaw = this.boat.heading; // play starts with the camera behind the boat, as before
     audio.unlock();
+    setTimeout(() => pack.prefetch(), 4000);
     if (this.store.isNew) {
       this.ui.revealInfo('Driftholm · Year 61 After the Water', 'Wake up, Captain!', 'The sea took the cities, the roads and the mountains. It left you a patchwork skiff, fifteen gold and a head full of stories.<br><br>Out there: drowned towers full of the old world, castaways who need a berth, and a boat that could become a home.<br><br><b>Drag the wheel</b> (bottom-left) toward where you want to sail.', 'Let’s go');
       this.store.isNew = false;
@@ -397,6 +405,9 @@ export class Game implements GameAPI {
     s.data.upgrades.push(id);
     s.advanceQuest('upgrade');
     s.commit();
+    pack.sting('upgrade');
+    this.crewCheer(900);
+    if (s.hasRole('mechanic')) setTimeout(() => pack.say('juno_upgrade', 90), 1600);
     audio.hammer();
     this.haptic(30);
     this.rebuildShip();
@@ -422,6 +433,7 @@ export class Game implements GameAPI {
       s.data.hull = v.hull + (s.bestInSlot('hull')?.effects.hull ?? 0);
       audio.hammer();
       setTimeout(() => audio.discover(4), 500);
+      setTimeout(() => pack.sting('upgrade', 0.9), 700);
       this.ui.revealInfo('New vessel commissioned', v.name, `${v.desc}<br><br>Your upgrades, paint, trophies and crew came with you.${v.id === 'ironwake' ? ' The Stormwall is no longer a wall.' : ' The open swell is no longer a wall.'}`, 'Hoist the sails');
     }
     s.data.vessel = v.id;
@@ -750,6 +762,7 @@ export class Game implements GameAPI {
       if (!this.stormSaid) {
         this.stormSaid = true;
         this.ui.toast(this.store.hasRole('lookout') ? 'Kai: “Storm on us! Hold her steady, she’ll take a beating.”' : 'Storm! Waves are battering the hull.', { color: '#9aa9b4', life: 3.5 });
+        if (this.store.hasRole('lookout')) pack.say('kai_storm', 40);
         audio.discover(0);
       }
     } else if (storm < 0.2) this.stormSaid = false;
@@ -757,7 +770,10 @@ export class Game implements GameAPI {
     // Lookout: early warning of a storm cell ahead
     if (this.store.hasRole('lookout')) {
       const ax = b.x + Math.sin(b.heading) * 160, az = b.z + Math.cos(b.heading) * 160;
-      if (this.atmo.stormAt(ax, az) > 0.5 && storm < 0.2) this.say('lookout_storm', 'Kai: “Storm ahead, Captain. Go round, or brace.”', 25, { color: '#b26bff' });
+      if (this.atmo.stormAt(ax, az) > 0.5 && storm < 0.2) {
+        this.say('lookout_storm', 'Kai: “Storm ahead, Captain. Go round, or brace.”', 25, { color: '#b26bff' });
+        pack.say('kai_storm', 40);
+      }
     }
     // Fishing: rods and/or a Fisher bring in Silverfin while under way
     const rate = st.fishing + (this.store.hasRole('fisher') ? (st.fishing ? 2 : 1) : 0);
@@ -769,10 +785,55 @@ export class Game implements GameAPI {
         if (got) {
           this.ui.toast('+1 Silverfin', { icon: 'fish', color: '#9ec5e8', life: 1.6 });
           audio.splash();
+          if (this.store.hasRole('fisher')) pack.say('tomas_catch', 180);
           this.store.commit();
         }
       }
     }
+  }
+
+  /** The crew on deck throw an arm up once (animcraft 'Cheer' clip), then settle back into Idle. */
+  crewCheer(delay = 0) {
+    setTimeout(() => {
+      for (const c of this.ship.crew) {
+        const cheer = c.actions.Cheer, idle = c.actions.Idle;
+        if (!cheer || !idle) continue;
+        cheer.reset().setLoop(THREE.LoopRepeat, 2).play();
+        cheer.clampWhenFinished = false;
+        idle.crossFadeTo(cheer, 0.25, false);
+        const back = (e: { action: THREE.AnimationAction }) => {
+          if (e.action !== cheer) return;
+          c.mixer.removeEventListener('finished', back);
+          idle.reset().play();
+          cheer.crossFadeTo(idle, 0.4, false);
+        };
+        c.mixer.addEventListener('finished', back);
+      }
+    }, delay);
+  }
+
+  /** A new hand comes aboard: the crew stinger, then their own first words. */
+  private crewJoined(id: string) {
+    pack.sting('crew');
+    this.crewCheer(600);
+    const line = `${id}_joined`;
+    if (line in VOICE_LINES) setTimeout(() => pack.say(line as VoiceId, 1e9), 1400);
+  }
+
+  /** The Driftholm dockhand: a hail the first time home, after that a word about wherever you're headed next. */
+  private dockhandHail() {
+    const s = this.store.data;
+    const key = 'vo_dockhand_hail';
+    if (!s.flags.includes(key)) {
+      s.flags.push(key);
+      return setTimeout(() => pack.say('dockhand_hail', 1e9), 900);
+    }
+    const line: VoiceId = s.vesselsOwned.includes('ironwake') && !s.regionsSeen.includes('stormwall')
+      ? 'dockhand_stormwall'
+      : s.vesselsOwned.includes('sloop') && !s.regionsSeen.includes('emerald')
+        ? 'dockhand_reach'
+        : 'dockhand_return';
+    setTimeout(() => pack.say(line, 240), 900);
   }
 
   damage(n: number, msg: string | null) {
@@ -785,6 +846,8 @@ export class Game implements GameAPI {
       this.shake = Math.min(1, this.shake + 0.25 + dmg / 14);
       this.ui.hit();
       audio.hullHit(Math.min(1, dmg / 12));
+      pack.layer('hull', 0.35 + Math.min(0.5, dmg / 24));
+      if (this.store.hasRole('mechanic') && s.hull < this.store.stats.hullMax * 0.35) pack.say('juno_hull', 60);
       this.haptic(Math.min(80, 20 + dmg * 4));
     }
     if (s.hull < st.hullMax * 0.25 && this.t - this.lastHullWarn > 20) {
@@ -842,6 +905,7 @@ export class Game implements GameAPI {
     this.castawayObjs.delete(id);
     this.sparkle.emit(new THREE.Vector3(cw.x, 1, cw.z), 40, '#bff7e6', 2, 4, 1, 4, 0.6);
     audio.discover(2);
+    this.crewJoined(cw.crew);
     this.haptic(40);
     if (s.data.crew.length < s.stats.berths) {
       s.data.crew.push(def.id);
@@ -868,6 +932,7 @@ export class Game implements GameAPI {
     if (def.cost) s.data.gold -= def.cost;
     s.data.crew.push(id);
     audio.discover(2);
+    this.crewJoined(id);
     this.ui.toast(`${def.name} joined your crew! ${ROLE_INFO[def.role].icon}`, { color: '#4f9a95', life: 3 });
     s.commit();
     loadCrew().then(() => this.rebuildShip());
@@ -1129,6 +1194,7 @@ export class Game implements GameAPI {
       this.camYaw = 0.35; // look back at the town
       if (n) this.ui.toast(`Unloaded ${n} item${n > 1 ? 's' : ''} into your harbor vault`, { color: '#4f9a95', life: 3 });
       audio.phrase('harbor');
+      this.dockhandHail();
       setTimeout(() => this.ui.openPanel('harbor'), 300);
     });
   }
@@ -1408,6 +1474,7 @@ export class Game implements GameAPI {
     }
     this.updateCaches(dt);
     this.foam.update(dt);
+    this.flip.update(dt, this.camera, this.mode === 'sail' && !this.boat.docked ? this.exhaust : null, this.atmo.storm);
     this.wakeFoam.update(dt);
     this.sparkle.update(dt);
     this.dirt.update(dt);
@@ -1570,6 +1637,7 @@ export class Game implements GameAPI {
             audio.creak();
           } else if (why === 'wall') {
             this.say('wall', 'The Stormwall throws you back. Only the Ironwake Expedition Cat can survive inside it.', 6, { color: '#ff6b4a' });
+            if (this.store.hasRole('mechanic')) pack.say('juno_hull', 60);
             audio.splash(true);
           } else if (why === 'wreck') {
             if (b.speed > 3) {
@@ -1639,6 +1707,8 @@ export class Game implements GameAPI {
     // carrying the boat's speed so the hull doesn't overtake it.
     const clear = WAKE_PUFF * 0.6;
     const vel = new THREE.Vector3(fx * b.speed, 0, fz * b.speed);
+    if (motoring) this.exhaust = this.shipRoot.localToWorld(this.ship.wake.clone().add(new THREE.Vector3(0, 0.6, -0.5 - clear)));
+    else this.exhaust = null;
     if (motoring && Math.random() < 0.5) {
       const ex = this.ship.wake.clone().add(new THREE.Vector3(0, 0.4, -0.35 - clear));
       this.shipRoot.localToWorld(ex);
@@ -1660,6 +1730,13 @@ export class Game implements GameAPI {
         const out = new THREE.Vector3(side, 0, 0).applyQuaternion(this.shipRoot.quaternion).setY(0).normalize(); // outward, world
         this.wakeFoam.emitVel(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, '#ffffff', vel.clone().multiplyScalar(0.9).addScaledVector(out, 1.4).setY(1), 0.25, 0.6, 4, 0.2);
       }
+      // bow slamming into a swell at speed: a flipbook sheet of spray thrown off one side, well clear of the hull
+      const swell = Math.max(swellFactor(b.x, b.z), this.atmo.storm);
+      if (this.flip.quality === 'high' && b.speed > 5 && swell > 0.3 && Math.random() < dt * swell * 1.2) {
+        const side = Math.random() < 0.5 ? -1 : 1;
+        const p = this.shipRoot.localToWorld(new THREE.Vector3((this.ship.beam + 1.6) * side, 0, L * 0.38));
+        this.flip.burst('splash', p.setY(w.y + 0.9), 2.4, 2.4, 0.75);
+      }
     }
 
     this.proxTimer -= dt;
@@ -1671,6 +1748,7 @@ export class Game implements GameAPI {
       audio.proximity(bell, wreck);
     }
     audio.ambience(dt, b.speed, false, Math.max(swellFactor(b.x, b.z), this.atmo.storm), this.currentRegion, this.atmo.storm);
+    pack.music(this.currentRegion, this.raiders.danger);
     this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff, motoring);
     this.ui.setDigMeter(null);
 
@@ -1802,6 +1880,7 @@ export class Game implements GameAPI {
     } else this.ui.setDigMeter(null);
 
     audio.ambience(dt, 0, true, 0, this.currentRegion);
+    pack.music(this.currentRegion, 0);
     this.ui.setSpeed(null, 0, 1);
 
     const acts: Action[] = [];

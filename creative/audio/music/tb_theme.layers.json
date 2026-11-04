@@ -1,0 +1,52 @@
+{
+ "title": "tb_theme",
+ "tempo": 76,
+ "bars": 8,
+ "key": "D",
+ "scale": "dorian",
+ "chords_degrees": [
+  0,
+  6,
+  3,
+  0,
+  0,
+  6,
+  3,
+  0
+ ],
+ "sample_rate": 44100,
+ "loop": {
+  "start": 0,
+  "end": 1114105,
+  "seconds": 25.2632
+ },
+ "stems": {
+  "pad": "stems/tb_theme_pad.wav",
+  "bass": "stems/tb_theme_bass.wav",
+  "arp": "stems/tb_theme_arp.wav",
+  "lead": "stems/tb_theme_lead.wav",
+  "drums": "stems/tb_theme_drums.wav"
+ },
+ "intensity_levels": {
+  "low": [
+   "pad",
+   "bass"
+  ],
+  "mid": [
+   "pad",
+   "bass",
+   "drums",
+   "arp"
+  ],
+  "high": [
+   "pad",
+   "bass",
+   "arp",
+   "lead",
+   "drums"
+  ]
+ },
+ "mix": "tb_theme.wav",
+ "midi": "tb_theme.mid",
+ "usage": "Start every stem together on one AudioContext clock (loop=true, loopEnd=loop.seconds); fade stem gains to the level's set."
+}

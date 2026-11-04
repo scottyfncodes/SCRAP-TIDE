@@ -1,0 +1,181 @@
+{
+ "lines": [
+  {
+   "id": "dockhand_hail",
+   "character": "dockhand",
+   "voice": "bm_george",
+   "text": "Driftholm. Tie off, and keep your hands where I can see them.",
+   "file": "dockhand_hail.wav",
+   "seconds": 3.981
+  },
+  {
+   "id": "dockhand_return",
+   "character": "dockhand",
+   "voice": "bm_george",
+   "text": "Still floating, then. Unload before it rots.",
+   "file": "dockhand_return.wav",
+   "seconds": 3.337
+  },
+  {
+   "id": "dockhand_reach",
+   "character": "dockhand",
+   "voice": "bm_george",
+   "text": "Past the swell there's a whole city under you. Mind the raiders. They mind nobody.",
+   "file": "dockhand_reach.wav",
+   "seconds": 5.726
+  },
+  {
+   "id": "dockhand_stormwall",
+   "character": "dockhand",
+   "voice": "bm_george",
+   "text": "Nobody comes back from the Stormwall, Captain. Not in a boat like that.",
+   "file": "dockhand_stormwall.wav",
+   "seconds": 4.992
+  },
+  {
+   "id": "kai_joined",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Eleven days on that raft. I saw you coming from six miles out.",
+   "file": "kai_joined.wav",
+   "seconds": 3.606
+  },
+  {
+   "id": "kai_storm",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Storm ahead, Captain. Go round, or brace.",
+   "file": "kai_storm.wav",
+   "seconds": 2.093
+  },
+  {
+   "id": "kai_raiders",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Rustfang skiffs! Coming in hard!",
+   "file": "kai_raiders.wav",
+   "seconds": 1.578
+  },
+  {
+   "id": "kai_green",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Is that... green? Captain, that thing is alive.",
+   "file": "kai_green.wav",
+   "seconds": 2.296
+  },
+  {
+   "id": "tomas_joined",
+   "character": "tomas",
+   "voice": "am_onyx",
+   "text": "Forty years on that roof. Take me where the fish haven't heard of me.",
+   "file": "tomas_joined.wav",
+   "seconds": 3.752
+  },
+  {
+   "id": "tomas_catch",
+   "character": "tomas",
+   "voice": "am_onyx",
+   "text": "Silverfin on the line. We eat tonight.",
+   "file": "tomas_catch.wav",
+   "seconds": 2.468
+  },
+  {
+   "id": "ines_joined",
+   "character": "ines",
+   "voice": "bf_isabella",
+   "text": "Show me a harpoon, and I'll show you a quiet voyage.",
+   "file": "ines_joined.wav",
+   "seconds": 2.819
+  },
+  {
+   "id": "ines_raiders",
+   "character": "ines",
+   "voice": "bf_isabella",
+   "text": "Hold the wheel steady. I've got the ugly one.",
+   "file": "ines_raiders.wav",
+   "seconds": 2.623
+  },
+  {
+   "id": "ines_hit",
+   "character": "ines",
+   "voice": "bf_isabella",
+   "text": "Hooked. Let them swim home and tell the others.",
+   "file": "ines_hit.wav",
+   "seconds": 2.503
+  },
+  {
+   "id": "bram_joined",
+   "character": "bram",
+   "voice": "am_fenrir",
+   "text": "Rustfang took my boat. I know where they keep the good stuff.",
+   "file": "bram_joined.wav",
+   "seconds": 3.325
+  },
+  {
+   "id": "bram_salvage",
+   "character": "bram",
+   "voice": "am_fenrir",
+   "text": "Easy... easy. There. The sea gave something back.",
+   "file": "bram_salvage.wav",
+   "seconds": 2.607
+  },
+  {
+   "id": "bram_story",
+   "character": "bram",
+   "voice": "am_fenrir",
+   "text": "Somebody lived down there once. Kept this safe, right till the water came.",
+   "file": "bram_story.wav",
+   "seconds": 4.373
+  },
+  {
+   "id": "juno_joined",
+   "character": "juno",
+   "voice": "af_sarah",
+   "text": "You can't keep an outboard alive? Lucky for you, I can.",
+   "file": "juno_joined.wav",
+   "seconds": 2.997
+  },
+  {
+   "id": "juno_upgrade",
+   "character": "juno",
+   "voice": "af_sarah",
+   "text": "Bolted, patched and prayed over. She'll hold.",
+   "file": "juno_upgrade.wav",
+   "seconds": 2.471
+  },
+  {
+   "id": "juno_hull",
+   "character": "juno",
+   "voice": "af_sarah",
+   "text": "She's taking water! Give me two minutes and a hammer!",
+   "file": "juno_hull.wav",
+   "seconds": 2.563
+  },
+  {
+   "id": "raider_threat",
+   "character": "raider",
+   "voice": "bm_lewis",
+   "text": "Cut your engine, and hand over the hold!",
+   "file": "raider_threat.wav",
+   "seconds": 2.496
+  },
+  {
+   "id": "raider_taunt",
+   "character": "raider",
+   "voice": "bm_lewis",
+   "text": "Nice boat. It's ours now.",
+   "file": "raider_taunt.wav",
+   "seconds": 2.082
+  },
+  {
+   "id": "raider_flee",
+   "character": "raider",
+   "voice": "bm_lewis",
+   "text": "Fall back! They've got a harpoon!",
+   "file": "raider_flee.wav",
+   "seconds": 1.862
+  }
+ ],
+ "engine": "Kokoro-82M v1.0 (kokoro-onnx, int8)"
+}

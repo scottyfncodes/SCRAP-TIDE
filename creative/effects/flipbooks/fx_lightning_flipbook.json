@@ -1,0 +1,12 @@
+{
+ "image": "fx_lightning_flipbook.png",
+ "frames": 16,
+ "cols": 4,
+ "rows": 4,
+ "frame_width": 128,
+ "frame_height": 128,
+ "fps": 24,
+ "loop": false,
+ "blending": "additive",
+ "alpha": "straight (not premultiplied)"
+}
