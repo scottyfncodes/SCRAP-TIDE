@@ -47,6 +47,8 @@ function weighted<T extends { w: number }>(rng: () => number, list: T[]): T {
 
 /** World size of a wake puff on a wide screen (it was 0.7, shared with every other splash). */
 const WAKE_PUFF = 0.55;
+// on foot (world m/s, m/s²): a brisk run tops out where the procedural Run's stride and cadence put it
+const FOOT_MIN = 0.7, FOOT_MAX = 5.0, FOOT_ACCEL = 9, FOOT_DECEL = 14;
 
 export class Game implements GameAPI {
   store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades() });
@@ -87,7 +89,7 @@ export class Game implements GameAPI {
   boat = { x: 0, z: 0, heading: 0, speed: 0, anchored: false, docked: true, dockedAt: 'driftholm', anchorDepth: 0, busy: false };
   captain = new Captain();
   mode: Mode = 'sail';
-  foot = { x: 0, z: 0, heading: 0, landX: 0, landZ: 0, island: ISLANDS[0] as IslandDef, speed: 0 };
+  foot = { x: 0, z: 0, heading: 0, landX: 0, landZ: 0, island: ISLANDS[0] as IslandDef, speed: 0, vel: 0 };
 
   camYaw = Math.PI;
   camPitch = 0.42;
@@ -195,11 +197,14 @@ export class Game implements GameAPI {
     });
     this.renderer.compile(this.scene, this.camera);
     let last = performance.now();
+    let frame = 0;
     const loop = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       this.update(dt);
-      this.renderer.render(this.scene, this.camera);
+      // behind the Maps panel the scene is only a dimmed backdrop: draw it every other frame so the map's
+      // pinch and pan keep the GPU on a phone
+      if (!this.ui.mapOpen || (frame++ & 1) === 0) this.renderer.render(this.scene, this.camera);
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
@@ -216,7 +221,10 @@ export class Game implements GameAPI {
   /** The apocalyptic-pirate cast has streamed in: the captain, the townsfolk and the raider crews come alive. */
   private onCharacters() {
     const cap = characterModel('tb_captain');
-    if (cap) this.captain.useCharacter(cap);
+    if (cap) {
+      this.captain.useCharacter(cap);
+      this.captain.onStep = (side, run) => this.footfall(side, run);
+    }
     this.env.upgradeNpcs();
     this.raiders.onCharacters();
   }
@@ -1211,6 +1219,7 @@ export class Game implements GameAPI {
       this.foot.landZ = shore.z;
       this.foot.island = isl;
       this.foot.heading = Math.atan2(isl.x - shore.x, isl.z - shore.z);
+      this.foot.vel = this.foot.speed = 0;
       this.camYaw = this.foot.heading;
       this.digsThisVisit = 0;
       this.spawnPickups(isl);
@@ -1792,21 +1801,46 @@ export class Game implements GameAPI {
     this.ui.setActions(acts);
   }
 
+  /** A heel strike from the gait: the sound of the ground underfoot, and a splash when wading in the shallows. */
+  private footfall(side: 1 | -1, run: number) {
+    if (this.mode !== 'foot') return;
+    const f = this.foot;
+    // the striking foot, a little ahead of the body and to its side
+    const fx = f.x + Math.sin(f.heading) * 0.25 + Math.cos(f.heading) * 0.09 * side;
+    const fz = f.z + Math.cos(f.heading) * 0.25 - Math.sin(f.heading) * 0.09 * side;
+    const h = heightAt(fx, fz);
+    const wet = h < 0.12;
+    audio.footstep(wet ? 'wet' : 'sand', run);
+    if (wet) this.foam.emit(new THREE.Vector3(fx, Math.max(h, 0) + 0.05, fz), 3 + Math.round(run * 5), '#e8efe9', 1 + run * 1.5, 1.6 + run, 0.5, 7, 0.25);
+  }
+
   private updateFoot(dt: number) {
     const f = this.foot;
     const j = this.ui.joy;
     const mag = Math.min(1, Math.hypot(j.x, j.y));
-    let moving = false;
+    // Momentum: the stick sets a target speed and direction; the captain accelerates, decelerates and turns at
+    // human rates and always moves the way they face (no sideways gliding while the body catches up).
+    let target = 0;
     if (mag > 0.15 && this.digBusy <= 0 && !this.ui.panelOpen) {
       const F = { x: Math.sin(this.camYaw), z: Math.cos(this.camYaw) };
       const R = { x: -Math.cos(this.camYaw), z: Math.sin(this.camYaw) };
       const wx = F.x * j.y + R.x * j.x;
       const wz = F.z * j.y + R.z * j.x;
       const dir = Math.atan2(wx, wz);
-      f.heading += angleDiff(f.heading, dir) * Math.min(1, dt * 12);
-      const sp = 5.2 * mag;
-      let nx = f.x + Math.sin(dir) * sp * dt;
-      let nz = f.z + Math.cos(dir) * sp * dt;
+      const m = (mag - 0.15) / 0.85;
+      target = FOOT_MIN + (FOOT_MAX - FOOT_MIN) * Math.pow(m, 1.5);
+      const off = angleDiff(f.heading, dir);
+      // a hard reversal at speed: plant and pivot rather than spinning on the spot
+      if (Math.abs(off) > 2.2 && f.vel > 2) target *= 0.25;
+      const maxTurn = (15 - 7 * Math.min(1, f.vel / FOOT_MAX)) * dt;
+      f.heading += clamp(off, -maxTurn, maxTurn);
+    }
+    f.vel += clamp(target - f.vel, -FOOT_DECEL * dt, FOOT_ACCEL * dt);
+    if (f.vel < 0.02 && target === 0) f.vel = 0;
+    const ox = f.x, oz = f.z;
+    if (f.vel > 0) {
+      let nx = f.x + Math.sin(f.heading) * f.vel * dt;
+      let nz = f.z + Math.cos(f.heading) * f.vel * dt;
       // stay out of deep water
       if (heightAt(nx, nz) < -0.7) {
         if (heightAt(nx, f.z) >= -0.7) nz = f.z;
@@ -1814,10 +1848,10 @@ export class Game implements GameAPI {
         else {
           nx = f.x;
           nz = f.z;
-          this.say('water', 'Too deep to wade. Head back to your boat to sail.', 4);
+          if (target > 0) this.say('water', 'Too deep to wade. Head back to your boat to sail.', 4);
         }
       }
-      // steep terrain slows
+      // rocks, walls and huts push back
       for (const c of this.env.colliders) {
         const dx = nx - c.x, dz = nz - c.z;
         const d = Math.hypot(dx, dz);
@@ -1829,9 +1863,12 @@ export class Game implements GameAPI {
       }
       f.x = nx;
       f.z = nz;
-      f.speed = sp;
-      moving = true;
-    } else f.speed = 0;
+    }
+    // the legs animate at the speed actually covered, so pushing against a rock doesn't run on the spot
+    const covered = dt > 0 ? Math.hypot(f.x - ox, f.z - oz) / dt : 0;
+    f.vel = Math.min(f.vel, covered + FOOT_ACCEL * dt * 2);
+    f.speed += (covered - f.speed) * (1 - Math.exp(-dt * 20));
+    const moving = f.speed > 0.15;
     this.digBusy -= dt;
     const h = heightAt(f.x, f.z);
     this.captain.root.position.set(f.x, Math.max(h, -0.75) - 0.02, f.z);
@@ -1839,7 +1876,6 @@ export class Game implements GameAPI {
     if (this.captain.pose !== 'dig' && this.captain.pose !== 'cheer') this.captain.pose = moving ? 'walk' : 'idle';
     if (moving && this.captain.pose === 'cheer') this.captain.pose = 'walk';
     this.captain.update(dt, f.speed);
-    if (moving && h < 0.1 && Math.random() < 0.3) this.foam.emit(new THREE.Vector3(f.x, 0.1, f.z), 1, '#ffffff', 1, 1.5, 0.5, 6, 0.3);
 
     // boat keeps bobbing at anchor
     const b = this.boat;
@@ -1933,6 +1969,16 @@ export class Game implements GameAPI {
     const cz = target.z - Math.cos(this.camYaw) * Math.cos(pitch) * dist;
     let cy = target.y + Math.sin(pitch) * dist;
     cy = Math.max(cy, heightAt(cx, cz) + 1.5, 1.2);
+    if (this.started && !this.showcase && this.mode === 'foot') {
+      // keep the captain in sight: if a dune or hillside rises into the line from the camera to the captain,
+      // lift the camera just enough to see over it
+      for (let i = 1; i <= 6; i++) {
+        const k = i / 7;
+        const ground = heightAt(cx + (target.x - cx) * k, cz + (target.z - cz) * k) + 0.6;
+        const lineY = cy + (target.y - cy) * k;
+        if (ground > lineY) cy += (ground - lineY) / (1 - k);
+      }
+    }
     const desired = new THREE.Vector3(cx, cy, cz);
     this.camera.position.lerp(desired, 1 - Math.exp(-dt * 6));
     if (this.shake > 0.001) {

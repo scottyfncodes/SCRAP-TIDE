@@ -1,10 +1,18 @@
 // The player's captain. Starts as a lightweight procedural stand-in and switches to the rigged GITCRAFT survivor
-// (creative/3d-characters/captain: Idle / Walk / Sit / Dig / Cheer clips) as soon as it has streamed in.
+// (creative/3d-characters/captain: Idle / Sit / Dig / Cheer clips) as soon as it has streamed in.
+// Locomotion is the procedural Walk/Run from gait.ts, phase-locked to ground speed (see docs/expedition-pass).
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat } from '../world/materials';
 import type { Character } from '../world/assets';
+import { WALK, RUN, captureRest, buildGaitClip, strideAt } from './gait';
 
-const CLIP_FOR: Record<string, string> = { idle: 'Idle', walk: 'Walk', sit: 'Sit', dig: 'Dig', cheer: 'Cheer' };
+const CLIP_FOR: Record<string, string> = { idle: 'Idle', sit: 'Sit', dig: 'Dig', cheer: 'Cheer' };
+
+interface Loco {
+  walk: THREE.AnimationAction;
+  run: THREE.AnimationAction;
+  phase: number;
+}
 
 export class Captain {
   root = new THREE.Group();
@@ -20,8 +28,18 @@ export class Captain {
   private digT = 0;
   /** the rigged survivor, once loaded */
   char: Character | null = null;
-  private current: THREE.AnimationAction | null = null;
   private tool: THREE.Object3D | null = null;
+  private loco: Loco | null = null;
+  /** blend weight per action, eased toward the pose's targets and always normalised to 1 (no bind-pose leak) */
+  private weights = new Map<THREE.AnimationAction, number>();
+  private targets = new Map<THREE.AnimationAction, number>(); // reused every frame (no per-frame allocation)
+  private lastYaw = 0;
+  private lastSpeed = 0;
+  private lean = new THREE.Vector2();
+  /** current walk↔run mix (0..1), for footstep weight */
+  runMix = 0;
+  /** heel strike: side +1 left / -1 right, run mix 0..1 */
+  onStep: ((side: 1 | -1, run: number) => void) | null = null;
 
   /** Swap the stand-in for the rigged character. */
   useCharacter(c: Character) {
@@ -46,17 +64,92 @@ export class Captain {
       hand.add(sh);
       this.tool = sh;
     }
-    this.play('idle', 0);
+    // procedural Walk + Run baked onto this skeleton (captured in its rest pose, before any clip plays)
+    const rest = captureRest(c.root);
+    if (rest) {
+      const walk = c.mixer.clipAction(buildGaitClip(rest, WALK));
+      const run = c.mixer.clipAction(buildGaitClip(rest, RUN));
+      for (const a of [walk, run]) a.timeScale = 0; // time is driven from the ground-speed phase
+      c.actions.GaitWalk = walk;
+      c.actions.GaitRun = run;
+      this.loco = { walk, run, phase: 0 };
+    }
+    for (const a of Object.values(c.actions)) {
+      a.play();
+      a.setEffectiveWeight(0);
+      this.weights.set(a, 0);
+    }
+    const idle = c.actions.Idle;
+    if (idle) {
+      idle.setEffectiveWeight(1);
+      this.weights.set(idle, 1);
+    }
   }
 
-  private play(pose: string, fade = 0.25) {
-    const c = this.char;
-    if (!c) return;
-    const a = c.actions[CLIP_FOR[pose]] ?? c.actions.Idle;
-    if (!a || a === this.current) return;
-    a.reset().play();
-    if (this.current) this.current.crossFadeTo(a, fade, false);
-    this.current = a;
+  /** world-units per rig-unit (the captain group's scale × the character's) */
+  private get rigScale() {
+    return this.root.scale.x * (this.char?.root.scale.x ?? 1);
+  }
+
+  private animate(dt: number, speed: number) {
+    const c = this.char!;
+    const loco = this.loco;
+    const moving = this.pose === 'walk' && speed > 0.05;
+    const v = speed / this.rigScale;
+    const target = this.targets;
+    target.clear();
+    let rate = 9;
+    if (moving && loco) {
+      const s = strideAt(WALK, RUN, v);
+      this.runMix = s.run;
+      target.set(loco.walk, 1 - s.run);
+      target.set(loco.run, s.run);
+      const prev = loco.phase;
+      loco.phase = (loco.phase + dt / s.cycle) % 1;
+      // heel strikes: left at phase 0, right at 0.5
+      if (this.onStep && (this.weights.get(loco.walk)! + this.weights.get(loco.run)!) > 0.5) {
+        if (loco.phase < prev) this.onStep(1, s.run);
+        else if (prev < 0.5 && loco.phase >= 0.5) this.onStep(-1, s.run);
+      }
+      rate = 12;
+    } else {
+      const a = c.actions[CLIP_FOR[this.pose === 'walk' ? 'idle' : this.pose]] ?? c.actions.Idle;
+      if (a) {
+        // restart one-shot style clips when they come in from nothing
+        if ((this.weights.get(a) ?? 0) < 0.02 && this.pose !== 'idle') a.reset().play();
+        target.set(a, 1);
+      }
+      if (this.pose === 'idle' || this.pose === 'walk') rate = 7;
+    }
+    let sum = 0;
+    const k = 1 - Math.exp(-dt * rate);
+    for (const [a, w] of this.weights) {
+      const t = target.get(a) ?? 0;
+      const nw = w + (t - w) * k;
+      this.weights.set(a, nw);
+      sum += nw;
+    }
+    for (const [a, w] of this.weights) a.setEffectiveWeight(sum > 1e-4 ? w / sum : 0);
+    if (loco) {
+      loco.walk.time = loco.phase * loco.walk.getClip().duration;
+      loco.run.time = loco.phase * loco.run.getClip().duration;
+    }
+    // lean into turns (centripetal) and into acceleration, around the feet
+    const yaw = this.root.rotation.y;
+    let dyaw = yaw - this.lastYaw;
+    dyaw = Math.atan2(Math.sin(dyaw), Math.cos(dyaw));
+    this.lastYaw = yaw;
+    const omega = dt > 0 ? dyaw / dt : 0;
+    const accel = dt > 0 ? (speed - this.lastSpeed) / dt : 0;
+    this.lastSpeed = speed;
+    const grounded = this.pose === 'walk' || this.pose === 'idle';
+    const turnLean = grounded ? THREE.MathUtils.clamp(-Math.atan((speed * omega) / 9.8) * 0.75, -0.28, 0.28) : 0;
+    const accLean = grounded ? THREE.MathUtils.clamp(accel * 0.018, -0.12, 0.14) : 0;
+    const lk = 1 - Math.exp(-dt * 8);
+    this.lean.x += (accLean - this.lean.x) * lk;
+    this.lean.y += (turnLean - this.lean.y) * lk;
+    c.root.rotation.set(this.lean.x, 0, this.lean.y);
+    c.mixer.update(dt);
   }
 
   constructor() {
@@ -141,11 +234,8 @@ export class Captain {
         this.digT -= dt;
         if (this.digT <= 0) this.pose = 'idle';
       }
-      this.play(this.pose);
-      if (this.current && this.pose === 'walk') this.current.timeScale = 0.75 + speed * 0.28;
-      else if (this.current) this.current.timeScale = 1;
       if (this.tool) this.tool.visible = this.pose === 'dig';
-      this.char.mixer.update(dt);
+      this.animate(dt, speed);
       return;
     }
     this.phase += dt * (4 + speed * 2.2);

@@ -129,6 +129,8 @@ uniform vec3 uSkyTop;
 uniform vec3 uAmbient;
 uniform vec4 uWake[${WAKE_N}];
 uniform vec2 uWakeShape; // x: size scale, y: lifetime (s)
+uniform sampler2D uChop; // GITCRAFT WorldCraft FFT chop normal tile (24 m, 9 m/s wind at 20°)
+uniform float uChopK;    // 0 until the tile has loaded (the swell normal alone is used)
 varying vec3 vWorld;
 varying vec2 vDUv;
 varying float vWave;
@@ -155,18 +157,18 @@ void main() {
   vec2 p = vWorld.xz;
   float t = uTime;
 
-  // ripple detail on top of the swell normal
-  float e = 0.5;
-  vec2 o1 = vec2(t*0.35, t*0.2), o2 = vec2(t*0.25, -t*0.4);
-  float n0 = noise(p*0.3 + o1) + noise(p*0.75 - o2)*0.5;
-  float nx = noise((p+vec2(e,0.0))*0.3 + o1) + noise((p+vec2(e,0.0))*0.75 - o2)*0.5;
-  float nz = noise((p+vec2(0.0,e))*0.3 + o1) + noise((p+vec2(0.0,e))*0.75 - o2)*0.5;
+  // wind chop on top of the swell normal: the GITCRAFT FFT tile at two scales, drifting across each other
+  // downwind, so the surface never repeats visibly; the fine layer fades with distance (no shimmer at the horizon)
   float rip = 0.9 + uStorm * 1.2;
-  // a fine octave near the camera breaks big glints into glitter
-  vec2 o3 = vec2(-t*0.6, t*0.45);
-  float f0 = noise(p*2.1 + o3), fx = noise((p+vec2(0.25,0.0))*2.1 + o3), fz = noise((p+vec2(0.0,0.25))*2.1 + o3);
-  float nearK = 1.0 - smoothstep(20.0, 90.0, length(cameraPosition.xz - p));
-  vec3 N = normalize(vN + vec3((n0-nx)*rip + (f0-fx)*0.9*nearK, 0.0, (n0-nz)*rip + (f0-fz)*0.9*nearK));
+  float camD = length(cameraPosition.xz - p);
+  float nearK = 1.0 - smoothstep(20.0, 90.0, camD);
+  float midK = 1.0 - smoothstep(60.0, 420.0, camD);
+  vec2 wdir = vec2(0.94, 0.34);
+  vec2 c1 = texture2D(uChop, p / 24.0 - wdir * t * 0.022).xy * 2.0 - 1.0;
+  vec2 q = mat2(0.8, -0.6, 0.6, 0.8) * p / 8.5;
+  vec2 c2 = texture2D(uChop, q + vec2(-0.031, 0.024) * t).xy * 2.0 - 1.0;
+  vec2 slope = (c1 * (1.0 + 0.6 * midK) + c2 * 0.9 * nearK) * rip * 2.2 * uChopK;
+  vec3 N = normalize(vN + vec3(slope.x, 0.0, slope.y));
   vec3 Nflat = normalize(vN);
 
   // depth colour: silted shore → dirty teal shelf → grey-green open water → deep → oil-black abyss
@@ -284,7 +286,17 @@ export class Ocean {
       uAmbient: { value: new THREE.Color(1, 1, 1) },
       uWake: { value: this.wake },
       uWakeShape: { value: new THREE.Vector2(1, WAKE_LIFE) },
+      uChop: { value: null },
+      uChopK: { value: 0 },
     };
+    // wind chop: a tileable Tessendorf FFT normal map from GITCRAFT WorldCraft (creative/ocean), 69 KB
+    new THREE.TextureLoader().load(`${import.meta.env.BASE_URL}textures/tb_sea_chop_normal.png`, (t) => {
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      t.colorSpace = THREE.NoColorSpace;
+      t.anisotropy = 4;
+      this.uniforms.uChop.value = t;
+      this.uniforms.uChopK.value = 1;
+    });
     // denser near the centre (the camera), coarser at the horizon
     const size = 2200;
     const segs = 240;

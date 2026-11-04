@@ -61,7 +61,7 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | GITCRAFT model loader (GLB → toon vertex-colour meshes, skinned crew) | `src/world/assets.ts` |
 | Shared toon materials + world-space weathering shader (grime, rust streaks, tide line, salt) | `src/world/materials.ts` |
 | Time of day, storms, Stormwall | `src/world/atmosphere.ts` |
-| Gerstner ocean with wake, storm swell, reflections | `src/world/ocean.ts` |
+| Gerstner ocean with GITCRAFT WorldCraft FFT wind chop (`creative/ocean/`), wake, storm swell, reflections | `src/world/ocean.ts` |
 | Sky, clouds, storm decks, rain, lightning, skylines | `src/world/sky.ts` |
 | Drowned structures and raft-towns | `src/world/drowned.ts` |
 | Boat builder (procedural hulls + MeshCraft boat kit + crew) | `src/ship/shipModel.ts` |
@@ -70,6 +70,8 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | UI: HUD, radar, winch, settlements, workbench, crew | `src/ui/ui.ts` |
 | Procedural WebAudio (howling wind, groaning steel, bell buoys, hull strikes, engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
 | Voice lines, adaptive drowned-world theme, stingers, impact layers (GITCRAFT AudioCraft; lazy-loaded OGG / AAC, 0.9–1.2 MB) | `src/audio/pack.ts`, `public/audio/`, `creative/audio/` |
+| Captain's procedural Walk/Run: IK-planted feet, pendulum/flight pelvis, counter-rotation, phase-locked to ground speed; momentum, lean, footsteps (`docs/expedition-pass/`) | `src/player/gait.ts`, `src/player/captain.ts` |
+| Pinch-to-zoom world chart and treasure maps (real coastlines from the heightfield, collision-free labels, scale bar) | `src/ui/mapView.ts`, `src/ui/mapArt.ts` |
 | Flipbook effects: salvage/harpoon splashes, sparks, lightning, engine smoke, bow-slam spray, storm rain sheets (GITCRAFT FXCraft; `?fx=low` / `?fx=high`) | `src/game/flipfx.ts`, `public/fx/` |
 
 3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`, and the Waterworld atoll,
@@ -93,6 +95,9 @@ npx vite preview --port 4173 & node tests/e2e/play.cjs http://localhost:4173/
 ```
 
 Desktop controls: WASD/arrows to steer or walk, Space/E for the main action, drag to orbit the camera, mouse wheel to zoom. Q (or the ENGINE button) toggles the engine.
+Maps: pinch (or the mouse wheel) to zoom, drag to pan, double-tap to zoom in, ⌖ to find your boat.
+
+Animation lab (dev only): `npm run dev`, then open `/tools/gait-lab.html?mode=old|walk|run|blend&v=3&view=side|three|front`.
 
 ## Roadmap
 

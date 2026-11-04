@@ -9,7 +9,11 @@ import { SETTLEMENT_MAP, type SettlementDef } from '../data/world';
 import { MILESTONES, FIRST_VOYAGE } from '../data/progress';
 import { TREASURE_MAPS, FRAGMENT_MAP, ISLAND_MAP } from '../data/world';
 import { iconSVG } from './icons';
-import { drawTreasureMap, drawWorldChart } from './mapArt';
+import { drawTreasureMap, paintWorldChart, bakeChartLayers, CHART_BOUNDS } from './mapArt';
+import { ZoomableMap } from './mapView';
+
+/** the world chart's view, remembered between openings of the Maps panel this visit */
+let chartView: { cx: number; cz: number; zoom: number } | null = null;
 import type { Store } from '../state/store';
 import { audio } from '../audio/audio';
 import { pack } from '../audio/pack';
@@ -129,6 +133,8 @@ export class UI {
   private lastActionsKey = '';
   private seenCatalog = new Set<string>();
   panelOpen = false;
+  /** the Maps panel is up: the game draws the 3D scene behind it at half rate so pinch/pan get the GPU */
+  mapOpen = false;
 
   constructor(private game: GameAPI) {
     this.root = document.getElementById('ui')!;
@@ -687,6 +693,7 @@ export class UI {
     this.sheet.remove();
     this.sheet = null;
     this.panelOpen = false;
+    this.mapOpen = false;
     this.game.setShowcase(false);
   }
 
@@ -1200,6 +1207,7 @@ export class UI {
   mapsPanel(focus?: string) {
     const s = this.store;
     const { body, tabs } = this.openSheet('Maps & Charts', 'Treasure maps and the known world');
+    this.mapOpen = true;
     const owned = TREASURE_MAPS.filter((m) => m.fragments.some((f) => s.data.fragments.includes(f)));
     let tab = focus ?? s.data.activeMap ?? owned[0]?.id ?? 'world';
     if (tab !== 'world' && !owned.find((m) => m.id === tab)) tab = 'world';
@@ -1210,12 +1218,20 @@ export class UI {
       });
       body.innerHTML = '';
       if (tab === 'world') {
-        const c = document.createElement('canvas');
-        c.className = 'map-canvas';
         const am = s.data.activeMap ? TREASURE_MAPS.find((m) => m.id === s.data.activeMap) : null;
         const tgt = am && am.fragments.every((f) => s.data.fragments.includes(f)) && !s.data.mapsCompleted.includes(am.id) ? { x: ISLAND_MAP[am.island].x + am.x, z: ISLAND_MAP[am.island].z + am.z } : null;
-        drawWorldChart(c, s.data.islandsVisited, this.game.shipState(), tgt, this.game.chartExtras());
-        body.append(c);
+        const ship = this.game.shipState();
+        const extras = this.game.chartExtras();
+        const visited = s.data.islandsVisited;
+        const zm = new ZoomableMap({
+          bounds: CHART_BOUNDS, aspect: 1, maxZoom: 8, focus: { x: ship.x, z: ship.z }, start: chartView ?? undefined,
+          label: 'World chart. Pinch or use the buttons to zoom, drag to pan.',
+          paint: (ctx, w, h, view) => paintWorldChart(ctx, w, h, view, visited, ship, tgt, extras),
+        });
+        zm.onView = (v) => (chartView = v);
+        body.append(zm.el);
+        bakeChartLayers(() => zm.refresh());
+        body.append(el(`<div class="zmap-hint">Pinch or double-tap to zoom · drag to pan · \u2316 finds your boat</div>`));
         body.append(el(`<div class="note">The dashed ring is the open swell (Scrap Trimaran). The dark ring is the Stormwall (Ironwake). Gold diamonds are salvage sites; faded ones are picked clean for now.</div>`));
         if (!owned.length) body.append(el(`<div class="empty">No treasure maps yet. Bottles wash up on beaches…</div>`));
         return;
@@ -1223,10 +1239,19 @@ export class UI {
       const m = TREASURE_MAPS.find((m) => m.id === tab)!;
       const complete = m.fragments.every((f) => s.data.fragments.includes(f));
       const done = s.data.mapsCompleted.includes(m.id);
-      const c = document.createElement('canvas');
-      c.className = 'map-canvas';
-      drawTreasureMap(c, m, s.data.fragments);
-      body.append(c);
+      const art = document.createElement('canvas');
+      drawTreasureMap(art, m, s.data.fragments, 2);
+      const zm = new ZoomableMap({
+        bounds: { x0: 0, z0: 0, x1: 480, z1: 360 }, aspect: 4 / 3, maxZoom: 3, label: `${m.name}. Pinch or use the buttons to zoom, drag to pan.`,
+        paint: (ctx, w, h, view) => {
+          ctx.fillStyle = '#c9a46a';
+          ctx.fillRect(0, 0, w, h);
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(art, -view.x0 * view.s, -view.z0 * view.s, 480 * view.s, 360 * view.s);
+        },
+      });
+      body.append(zm.el);
       body.append(el(`<div class="clue">${complete ? `“${m.clue}”` : '“…the rest of the clue is on the missing half.”'}</div>`));
       body.append(el(`<div class="note">${m.fragments.map((f) => `${s.data.fragments.includes(f) ? '✔' : '✘'} ${FRAGMENT_MAP[f].name}`).join(' · ')}</div>`));
       if (done) body.append(el(`<div class="note"><b>Treasure recovered.</b> The X has been dug.</div>`));
