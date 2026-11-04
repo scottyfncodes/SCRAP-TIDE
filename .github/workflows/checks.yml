@@ -1,0 +1,55 @@
+name: Checks
+
+# Every pull request and every push to main: unit tests, the production build, the end-to-end gameplay run
+# (tests/e2e/play.cjs on the built game) and the wake visual check (npm run check:visual). Screenshots from both
+# browser runs, including the noon/dusk/night shots of each vessel, are uploaded as the "screenshots" artifact.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Playwright + Chromium (not a project dependency; CI only)
+        run: |
+          npm i --no-save playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: End-to-end gameplay (mobile Chromium, built game)
+        shell: bash
+        run: |
+          npx vite preview --port 4173 --strictPort &
+          npx --yes wait-on@8 -t 60000 http://localhost:4173/
+          node tests/e2e/play.cjs http://localhost:4173/ e2e-out
+      - name: Wake visual check (no spray over the hull) + screenshots
+        run: npm run check:visual
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: |
+            visual-check/
+            e2e-out/
+          if-no-files-found: ignore
+          retention-days: 14

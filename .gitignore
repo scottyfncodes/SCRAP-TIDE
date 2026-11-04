@@ -4,3 +4,4 @@ dist
 .vercel
 *.blend1
 visual-check
+e2e-out
