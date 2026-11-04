@@ -18,6 +18,7 @@ import { pagePreviewShip, pagePreviewUpgrades } from '../state/preview';
 import { buildShip, animateShip, sloopUpgradeFiles, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
 import { audio } from '../audio/audio';
+import { goalTarget } from './goalHelp';
 import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh, plantFindMesh } from './fx';
 import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
 import { item, RARITY_ORDER, LIVING_GREEN, isLiving } from '../data/items';
@@ -1981,7 +1982,13 @@ export class Game implements GameAPI {
     }
     if (q === 'free' && !target && this.mode === 'sail') {
       const g = GOALS[s.data.goal];
-      if (g?.target) target = { x: g.target.x, z: g.target.z, y: 12 };
+      // build goals: the nearest salvage site with a missing material, then home to Marlo
+      const build = g && goalTarget(s, g.id, this.boat, { x: this.env.pierTip.x, z: this.env.pierTip.z }, (site) => this.salvage.usable(site));
+      // first crew member: Kai's raft is free and close (the hint names him), so point there until he's aboard
+      const kai = g?.id === 'g_crew' ? CASTAWAYS.find((c) => c.crew === 'kai' && !s.data.castaways.includes(c.id)) : undefined;
+      if (build) target = { x: build.x, z: build.z, y: build.site ? 8 : 3 };
+      else if (kai) target = { x: kai.x, z: kai.z, y: 4 };
+      else if (g?.target) target = { x: g.target.x, z: g.target.z, y: 12 };
       else if (this.store.hasRole('navigator')) {
         const near = this.salvage.nearestReady(this.boat.x, this.boat.z);
         if (near) target = { x: near.x, z: near.z, y: 8 };
