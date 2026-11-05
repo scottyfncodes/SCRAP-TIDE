@@ -582,6 +582,12 @@ export class Game implements GameAPI {
           root.position.set(x, y - 0.05, z);
           root.rotation.y = Math.atan2(isl.x - x, isl.z - z) + Math.PI;
           if (opened) lid.rotation.x = -1.9;
+          if (f.requiresUpgrade) {
+            // a cave find sits in the dark of the mouth, facing out, and only shows once a spotlight can reach it
+            root.rotation.y = Math.atan2(x - isl.x, z - isl.z) + Math.PI;
+            root.userData.needs = f.requiresUpgrade;
+            root.visible = opened || this.store.has(f.requiresUpgrade);
+          }
           this.scene.add(root);
           this.finds.push({ def: f, isl, obj: root, lid, x, z });
         }
@@ -1441,6 +1447,11 @@ export class Game implements GameAPI {
     const f = this.nearestFind();
     if (!f) return;
     const s = this.store;
+    if (f.def.requiresUpgrade && !s.has(f.def.requiresUpgrade)) {
+      audio.clunk();
+      this.ui.revealInfo('Too dark', f.isl.name, f.def.requiresText ?? 'You can’t see a thing.', 'Come back with a light');
+      return;
+    }
     if (f.def.requiresItem && s.countOwned(f.def.requiresItem) === 0) {
       audio.clunk();
       this.ui.revealInfo('Locked', f.def.label.replace(/^\w+ the /, ''), f.def.requiresText ?? 'It won’t budge.', 'Hmm…');
@@ -1692,6 +1703,7 @@ export class Game implements GameAPI {
       p.obj.rotation.y += dt * 0.5;
     }
     for (const f of this.finds) {
+      if (f.obj.userData.needs && !f.obj.visible && this.store.has(f.obj.userData.needs)) f.obj.visible = true;
       const sp = f.obj.children.find((c) => c.userData.sparkle);
       if (sp) sp.scale.setScalar(1 + Math.abs(Math.sin(this.t * 2.5)) * 1.2);
       if (f.obj.userData.living) {
@@ -2124,7 +2136,7 @@ export class Game implements GameAPI {
     const acts: Action[] = [];
     const find = this.nearestFind();
     const q = this.store.data.quest;
-    if (find) acts.push({ id: 'search', label: find.def.kind === 'plant' ? '\u{1F331} TAKE IT ABOARD' : `\u{1F50D} ${find.def.kind === 'bottle' ? 'OPEN BOTTLE' : 'SEARCH'}`, glow: true });
+    if (find) acts.push({ id: 'search', label: find.def.kind === 'plant' ? '\u{1F331} TAKE IT ABOARD' : find.def.requiresUpgrade ? (this.store.has(find.def.requiresUpgrade) ? '\u{1F526} LIGHT IT UP' : '\u{1F526} LOOK INSIDE') : `\u{1F50D} ${find.def.kind === 'bottle' ? 'OPEN BOTTLE' : 'SEARCH'}`, glow: true });
     acts.push({ id: 'dig', label: '⛏ DIG', glow: q === 'dig_x' && best < 2.6 });
     const boatD = Math.hypot(f.landX - f.x, f.landZ - f.z);
     if (boatD < 7) acts.push({ id: 'board', label: '⛵ BOARD', glow: q === 'return_harbor' });

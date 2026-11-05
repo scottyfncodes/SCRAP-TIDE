@@ -12,7 +12,8 @@ export type LandmarkType =
   | 'waterfall'
   | 'hut'
   | 'big_palm'
-  | 'boulder';
+  | 'boulder'
+  | 'cave'; // a sea-cave mouth: dark until a boat spotlight reaches in (design bible PR 1.5)
 
 export interface Landmark {
   type: LandmarkType;
@@ -41,6 +42,7 @@ export interface ScriptedFind {
   fragment?: string; // map fragment id
   requiresItem?: string; // key etc.
   requiresText?: string;
+  requiresUpgrade?: string; // e.g. a cave find that stays dark until String Lights & Spotlight are fitted
 }
 
 export interface IslandDef {
@@ -102,6 +104,7 @@ export const ISLANDS: IslandDef[] = [
       { type: 'skull_rock', x: 14, z: -12 },
       { type: 'twin_palms', x: -12, z: -6 },
       { type: 'big_palm', x: 2, z: 18 },
+      { type: 'cave', x: -22, z: -20 },
     ],
     caches: [
       { id: 'turtle_c1', x: 22, z: 16, loot: [{ id: 'old_key', n: 1 }] },
@@ -110,6 +113,8 @@ export const ISLANDS: IslandDef[] = [
     ],
     finds: [
       { id: 'turtle_bottle', kind: 'bottle', x: 6, z: 33, label: 'Search the bottle', loot: [], fragment: 'turtle_scrap' },
+      { id: 'turtle_cave', kind: 'crate', x: -20.5, z: -18.5, label: 'Shine a light into the Belly', loot: [{ id: 'sea_glass', n: 3 }, { id: 'pearl', n: 1 }],
+        fragment: 'keeper_light', requiresUpgrade: 'deck_lights', requiresText: 'Pitch black in there. You can hear water dripping and something metal knocking. A boat spotlight would reach in: Marlo fits String Lights & Spotlight.' },
       { id: 'turtle_seedling', kind: 'plant', plant: 'flora_seedling', x: -16, z: 6, label: 'Lift the seedling tin', loot: [{ id: 'seedling_tin', n: 1 }] },
     ],
     blurb: 'A ring of dead coral around the top of a drowned hill. Shaped like a turtle, if you squint. Something green was seen here.',
@@ -120,6 +125,7 @@ export const ISLANDS: IslandDef[] = [
     landmarks: [
       { type: 'lighthouse', x: 6, z: -6 },
       { type: 'hut', x: -10, z: 8, rot: 0.6 },
+      { type: 'cave', x: 22, z: -8 },
     ],
     caches: [
       { id: 'lantern_c1', x: -18, z: -14, loot: [{ id: 'sea_glass', n: 3 }, { id: 'pearl', n: 1 }] },
@@ -128,6 +134,8 @@ export const ISLANDS: IslandDef[] = [
     finds: [
       { id: 'lantern_drawer', kind: 'drawer', x: -6, z: 13, label: 'Open the keeper’s sea-chest', loot: [{ id: 'gold_bar', n: 1 }, { id: 'journal_redfinch', n: 1 }],
         fragment: 'redfinch_b', requiresItem: 'old_key', requiresText: 'The sea-chest is locked tight. A barnacled lock… someone buried the key nearby, maybe on another island.' },
+      { id: 'lantern_cave', kind: 'crate', x: 20.5, z: -7.4, label: 'Light up the smugglers’ undercut', loot: [{ id: 'electronics', n: 2 }, { id: 'fuel_can', n: 2 }],
+        requiresUpgrade: 'deck_lights', requiresText: 'Pitch black in there. You can hear water dripping and something metal knocking. A boat spotlight would reach in: Marlo fits String Lights & Spotlight.' },
       { id: 'lantern_moss', kind: 'plant', plant: 'flora_moss', x: 2, z: -14, label: 'Peel up the moss', loot: [{ id: 'live_moss', n: 1 }] },
     ],
     blurb: 'The old coast light. The coast is gone. The light still watches.',
@@ -152,12 +160,15 @@ export const ISLANDS: IslandDef[] = [
       { type: 'arch', x: -8, z: 10, rot: 0.3 },
       { type: 'pillars', x: 18, z: -6 },
       { type: 'waterfall', x: -4, z: -22 },
+      { type: 'cave', x: -10, z: -30 },
     ],
     caches: [
       { id: 'moss_c1', x: 30, z: 20, loot: [{ id: 'sea_emerald', n: 1 }] },
       { id: 'moss_c2', x: -30, z: 0, loot: [{ id: 'clay_whistle', n: 1 }, { id: 'doubloon', n: 3 }] },
     ],
     finds: [
+      { id: 'canopy_cave', kind: 'crate', x: -9.4, z: -28.4, label: 'Light up the cave behind the falls', loot: [{ id: 'jar_of_soil', n: 1 }, { id: 'silver_piece', n: 5 }],
+        requiresUpgrade: 'deck_lights', requiresText: 'Pitch black in there. You can hear water dripping and something metal knocking. A boat spotlight would reach in: Marlo fits String Lights & Spotlight.' },
       { id: 'canopy_flowers', kind: 'plant', plant: 'flora_flowering', x: -25.5, z: -6, label: 'Take the flowers under glass', loot: [{ id: 'flowering_jar', n: 1 }] },
       { id: 'canopy_potted', kind: 'plant', plant: 'flora_potted', x: 20, z: 10, label: 'Take the potted green', loot: [{ id: 'potted_green', n: 1 }, { id: 'jar_of_soil', n: 1 }] },
       { id: 'canopy_vine', kind: 'plant', plant: 'flora_fruit', x: 27, z: 19, label: 'Haul the tomato vine', loot: [{ id: 'fruit_vine', n: 1 }] },
@@ -192,6 +203,7 @@ export const MAP_FRAGMENTS: MapFragmentDef[] = [
   { id: 'turtle_scrap', mapId: 'turtle_map', name: 'Soggy Map Scrap', where: 'In a bottle on Turtle Cay' },
   { id: 'redfinch_a', mapId: 'redfinch_map', name: 'Redfinch’s Chart (left half)', where: 'Wreck of the Wren' },
   { id: 'redfinch_b', mapId: 'redfinch_map', name: 'Redfinch’s Chart (right half)', where: 'Lantern Rock' },
+  { id: 'keeper_light', mapId: 'keeper_map', name: 'The Keeper’s Count', where: 'In the Belly of Turtle Atoll' },
 ];
 
 export const TREASURE_MAPS: TreasureMapDef[] = [
@@ -210,6 +222,15 @@ export const TREASURE_MAPS: TreasureMapDef[] = [
     landmarks: ['arch', 'pillars', 'waterfall'],
     loot: [{ id: 'sun_mask', n: 1 }, { id: 'gold_bar', n: 2 }, { id: 'sea_emerald', n: 2 }, { id: 'doubloon', n: 15 }],
     chestTier: 'grand',
+  },
+  {
+    // the Redfinch Line, map 3 (design bible PR 1.5): found in the dark of Turtle's Belly, dug beside Lantern Rock's lamp
+    id: 'keeper_map', name: 'The Keeper’s Light', island: 'lantern', fragments: ['keeper_light'],
+    x: 11, z: -7,
+    clue: 'Stand at the dark mouth in the rock. Walk toward the dead lamp. Dig before you reach its door.',
+    landmarks: ['cave', 'lighthouse', 'hut'],
+    loot: [{ id: 'journal_redfinch', n: 1 }, { id: 'strange_coin', n: 1 }, { id: 'silver_piece', n: 6 }, { id: 'pearl', n: 2 }],
+    chestTier: 'small',
   },
 ];
 

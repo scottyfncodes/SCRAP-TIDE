@@ -25,6 +25,8 @@ export const RUMOURS: RumourDef[] = [
     text: 'There’s a bell buoy out west of the Hollow that stopped ringing. Bells don’t stop on their own.' },
   { id: 'r_billboard', label: 'The Smiling Family', x: mark('mark_billboard').x, z: mark('mark_billboard').z, region: 'shallows', done: { flag: 'found_mark_billboard' },
     text: 'A painted family smiles out of the swell north of Tin Can Rest. Nobody smiles like that any more. Go and see what they’re selling.' },
+  { id: 'r_belly', label: 'The Turtle’s Belly', x: at('turtle').x - 22, z: at('turtle').z - 20, region: 'shallows', done: { find: 'turtle_cave' },
+    text: 'Turtle Atoll has a mouth on its north side. Dark as a debt in there. The old keeper hid things in the dark. Bring a light.' },
   { id: 'r_reach', label: 'Rig Helios, past the swell', x: SETTLEMENT_MAP.helios.x, z: SETTLEMENT_MAP.helios.z, region: 'emerald', done: { settlement: 'helios' },
     text: 'Beyond the swell lies the Sunken Reach: Old Meridian, Rig Helios, and the Rustfang. Skiffs need not apply.' },
   { id: 'r_shrine', label: 'The Lashed Shrine', x: mark('mark_shrine').x, z: mark('mark_shrine').z, region: 'emerald', done: { flag: 'found_mark_shrine' },

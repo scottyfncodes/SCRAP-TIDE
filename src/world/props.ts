@@ -225,6 +225,24 @@ export function brokenWreck(rng: RNG): THREE.BufferGeometry {
   return xf(out, 0, 0, 0, 0, 0, 0.18);
 }
 
+/** A sea-cave mouth: a hood of rock around a black opening, facing +z (design bible PR 1.5). */
+export function caveMouth(rng: RNG): THREE.BufferGeometry {
+  // the rocks frame the opening without covering it: flanks clear of its edge, the lintel above it, the mass behind it
+  const parts: THREE.BufferGeometry[] = [
+    xf(rock(rng, 4.4, 1.0, '#4a4b44'), 0, 2.2, -5.4), // the mass of the rock behind
+    xf(rock(rng, 2.3, 1.35, '#55574e'), -3.9, 1.5, -0.9),
+    xf(rock(rng, 2.2, 1.3, '#55574e'), 3.9, 1.4, -1.0),
+    xf(rock(rng, 3.2, 0.5, '#5c5e55'), 0, 4.1, -1.2), // the lintel
+    xf(rock(rng, 1.0, 0.6, '#4a4b44'), -2.9, 0.2, 1.0),
+    xf(rock(rng, 0.9, 0.6, '#4a4b44'), 3.0, 0.2, 0.9),
+  ];
+  // the dark: a black half-disc framed by the rocks, with a half-dome of shadow behind it so the mouth has depth
+  parts.push(paint(xf(new THREE.CircleGeometry(2.6, 20, 0, Math.PI), 0, 0, 0.1), '#060708'));
+  // (the +z half of a dome, mirrored to -z: mirroring flips its winding, so its inside faces the opening)
+  parts.push(paint(xf(new THREE.SphereGeometry(2.55, 14, 8, 0, Math.PI, 0, Math.PI / 2), 0, 0, -0.1, 0, 0, 0, [1, 1, -1.4]), '#0b0c0d'));
+  return merge(parts);
+}
+
 export function waterfallRocks(rng: RNG): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 7; i++) {
