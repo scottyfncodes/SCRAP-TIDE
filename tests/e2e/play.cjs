@@ -328,7 +328,7 @@ const check = (name, ok, detail = '') => {
   await page.reload();
   await page.waitForSelector('.title-screen .act', { timeout: 180000 });
   const after = await g(() => ({ crew: window.__game.store.data.crew, hauls: window.__game.store.data.hauls, v: window.__game.store.data.version, ups: window.__game.store.data.upgrades.length }));
-  check('progress survives a reload (save v3)', after.v === 3 && after.crew.includes('kai') && after.hauls === 1 && after.ups >= 2, JSON.stringify(after));
+  check('progress survives a reload (save v4)', after.v === 4 && after.crew.includes('kai') && after.hauls === 1 && after.ups >= 2, JSON.stringify(after));
 
   check('no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   const fails = results.filter((r) => !r.ok).length;

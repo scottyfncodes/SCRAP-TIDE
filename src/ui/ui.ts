@@ -3,6 +3,7 @@ import { goalProgressText } from '../game/goalHelp';
 import { pickLine, CHARACTER_MAP } from '../data/characters';
 import { openRumours, canReach } from '../game/leads';
 import { SHIP_NAMES, REFIT_STAGES, RENOWN, refitStage, renownTitle } from '../data/renown';
+import { CONTRACT_MAP, boardFor, contractReady, contractProgress, standingRank, gardenStage, freshFood, GARDENS, GARDEN_POINTS, MAX_ACTIVE, type PortId } from '../data/contracts';
 import { ITEMS, CATALOG_ITEMS, ITEM_MAP, RARITY_COLOR, RARITY_LABEL, RARITY_ORDER, CATEGORY_LABEL, LIVING_GREEN, isLiving, item, type Category } from '../data/items';
 import { UPGRADES, VESSELS, COSMETICS, COSMETIC_MAP, SLOT_LABEL, SLOT_ORDER, UPGRADE_MAP, type Cost } from '../data/ship';
 import { RECIPES } from '../data/crafting';
@@ -51,6 +52,9 @@ export interface GameAPI {
   toggleFollowSide(): void;
   pinRumour(id: string): void;
   nameShip(): void;
+  acceptContract(id: string): void;
+  completeContract(id: string): void;
+  plantGreen(id: string): void;
 }
 
 export interface StatusInfo {
@@ -867,9 +871,41 @@ export class UI {
     if (sett.services.includes('cartographer')) html += this.npcCard('wren', 'cartographer', greet('wren'));
     if (sett.services.includes('curios')) html += this.npcCard('odessa', 'curios', greet('odessa'));
     const recruitable = CREW.filter((c) => (c.home === sett.id || (home && c.home === 'castaway' && s.data.castaways.some((cw) => cw.endsWith(c.id)))) && !s.data.crew.includes(c.id));
+    // the work board (PR 2.2): jobs here, jobs done here, and what this port thinks of you
+    const port = sett.id as PortId;
+    const standing = s.data.standing[port] ?? 0;
+    const rank = standingRank(standing);
+    const disc = s.portDiscount(port);
+    const mine = s.data.contracts.active.map((a) => ({ a, c: CONTRACT_MAP[a.id] })).filter((x) => x.c);
+    const here = mine.filter((x) => x.c.port === port);
+    const board = boardFor(port, s.data).slice(0, 3);
+    html += `<div class="section-title">Work board · ${rank.name}${disc < 1 ? ` · ${Math.round((1 - disc) * 100)}% off here` : ''}</div>`;
+    for (const { a, c } of here) {
+      const ready = contractReady(c, a, s.data, s);
+      html += `<div class="row job ${ready ? 'ready' : ''}"><div class="r-main"><div class="r-title">${c.title}</div><div class="r-sub">${contractProgress(c, a, s.data, s)}</div></div>${ready ? `<button class="btn job-done" data-id="${c.id}">Get paid</button>` : '<span class="rar">Taken</span>'}</div>`;
+    }
+    for (const c of board) {
+      const who = CHARACTER_MAP[c.giver]?.name.split(' ').slice(-1)[0] ?? '';
+      html += `<div class="row job"><div class="r-main"><div class="r-title">${c.title} <span class="who">· ${CHARACTER_MAP[c.giver]?.name ?? who}</span></div><div class="r-sub">“${c.text}”</div><div class="r-sub"><b>${[c.reward.gold ? `${c.reward.gold}g` : '', ...(c.reward.mats ?? []).map((m) => `${m.n} ${item(m.id).name}`), c.reward.cosmetic ? 'a new flag' : '', `+${c.reward.standing} standing`].filter(Boolean).join(' · ')}</b></div></div>
+        <button class="btn ghost job-take" data-id="${c.id}" ${mine.length >= MAX_ACTIVE ? 'disabled' : ''}>Take it</button></div>`;
+    }
+    if (!here.length && !board.length) html += `<div class="note">Nothing posted here right now. Come back after the next job elsewhere.</div>`;
+    else if (mine.length - here.length > 0) html += `<div class="note">${mine.length - here.length} job${mine.length - here.length > 1 ? 's' : ''} from other ports in hand · ${mine.length}/${MAX_ACTIVE}</div>`;
+    // the Green Choice: sell it, or plant it where people can eat (Driftholm and the Hollow have room)
+    const garden = GARDENS.find((g) => g.port === port);
+    const living = [...new Set([...s.data.vault, ...s.data.cargo].filter((v) => isLiving(v.id)).map((v) => v.id))];
+    if (garden && living.length) {
+      const stg = gardenStage(s.data.garden[port] ?? 0);
+      html += `<div class="section-title green">The Green Choice · ${garden.name} ${stg}/3</div>
+        <div class="note">Sell it to the trader for gold, or plant it in ${garden.where}. A garden feeds your crew: <b>+25% fishing and at-sea repairs</b> per stage (now ${Math.round((freshFood(s.data) - 1) * 100)}%).</div>`;
+      for (const id of living) {
+        const d = item(id);
+        html += `<div class="row living"><div class="r-main"><div class="r-title">${d.name} ×${s.countOwned(id)}</div><div class="r-sub">Sells for ${d.value}g · plants as +${GARDEN_POINTS[d.rarity]} garden</div></div><button class="btn plant" data-id="${id}">🌱 Plant it</button></div>`;
+      }
+    }
     html += `<div class="section-title">Services</div><div class="svc">
-      ${sett.services.includes('fuel') ? `<button class="btn fuelb" ${st.engine ? '' : 'disabled'}>⛽ Fill tank · ${sett.fuelPrice}g/unit</button>` : ''}
-      ${sett.services.includes('repair') ? `<button class="btn ghost repb" ${s.data.hull >= st.hullMax - 0.5 ? 'disabled' : ''}>🔧 Repair hull · ${Math.ceil((st.hullMax - s.data.hull) * 0.6)}g</button>` : ''}
+      ${sett.services.includes('fuel') ? `<button class="btn fuelb" ${st.engine ? '' : 'disabled'}>⛽ Fill tank · ${+(sett.fuelPrice * disc).toFixed(1)}g/unit</button>` : ''}
+      ${sett.services.includes('repair') ? `<button class="btn ghost repb" ${s.data.hull >= st.hullMax - 0.5 ? 'disabled' : ''}>🔧 Repair hull · ${Math.ceil((st.hullMax - s.data.hull) * 0.6 * disc)}g</button>` : ''}
       ${sett.services.includes('workbench') ? '<button class="btn ghost wbb">🛠 Workbench</button>' : ''}
       ${sett.services.includes('recruit') ? `<button class="btn ghost crb">👥 Crew board${recruitable.length ? ` (${recruitable.length})` : ''}</button>` : ''}
     </div>`;
@@ -889,6 +925,18 @@ export class UI {
       this.harborPanel();
     });
     body.querySelector('.wbb')?.addEventListener('click', () => this.workbenchPanel());
+    body.querySelectorAll<HTMLElement>('.job-take').forEach((b) => b.addEventListener('click', () => {
+      this.game.acceptContract(b.dataset.id!);
+      this.harborPanel();
+    }));
+    body.querySelectorAll<HTMLElement>('.job-done').forEach((b) => b.addEventListener('click', () => {
+      this.game.completeContract(b.dataset.id!);
+      this.harborPanel();
+    }));
+    body.querySelectorAll<HTMLElement>('.plant').forEach((b) => b.addEventListener('click', () => {
+      this.game.plantGreen(b.dataset.id!);
+      this.harborPanel();
+    }));
     body.querySelector('.crb')?.addEventListener('click', () => this.crewBoardPanel());
     body.querySelector('.setsail')!.addEventListener('click', () => {
       this.closePanel();
@@ -1007,9 +1055,9 @@ export class UI {
           const owned = s.has(u.id);
           const locked = !!u.requires && !s.has(u.requires);
           const sold = (u.where ?? ['driftholm']).includes(sett.id);
-          const cost = s.upgradeCost(u.id);
+          const cost = s.upgradeCost(u.id, sett.id);
           const afford = s.canAfford(cost);
-          const welcome = cost.gold < u.cost.gold;
+          const welcome = s.data.flags.includes(`welcome_${u.id}`);
           const where = (u.where ?? ['driftholm']).map((w) => SETTLEMENT_MAP[w]?.name).join(' or ');
           const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked || !sold ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : !sold ? `<div class="r-sub"><b>Fitted at ${where}</b></div>` : `${welcome ? '<div class="r-sub"><b>Marlo’s welcome price: half the gold</b></div>' : ''}${costHTML(s, cost)}`}</div>
             ${owned ? '<span class="rar" style="background:#4f9a95">Installed</span>' : `<button class="btn" ${!afford || locked || !sold ? 'disabled' : ''}>Install</button>`}</div>`);
