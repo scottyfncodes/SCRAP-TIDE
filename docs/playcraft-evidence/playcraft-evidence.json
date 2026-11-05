@@ -1,0 +1,159 @@
+{
+  "generated_at": "2026-11-05T13:14:44.687Z",
+  "commit": "f55a35177d8db72fe94c4cd7cc8e6702b74b2ef8",
+  "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
+  "items": [
+    {
+      "id": "tb.core_gameplay.0",
+      "category": "core_gameplay",
+      "status": "pass",
+      "title": "Playtest bot: the core loop runs end to end on the production build (runtime-observed)",
+      "detail": "2 run(s), seed 1105: dock → wheel → beacon → winch (3/3) → haul → dock → sell → install sail_canvas by game 58.03s; 15/15 checks passed",
+      "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
+    },
+    {
+      "id": "tb.controls.1",
+      "category": "controls",
+      "status": "pass",
+      "title": "Playtest bot: steering by dragging the wheel and the winch timing reach their targets (runtime-observed)",
+      "detail": "steered from the dock to the Sunken Tower beacon with the wheel: game 32.83s, at (64.9, 135.5); SALVAGE opens the winch: ; the winch was played to the end and the haul came aboard: 3/3 pulls in the green; cargo transistor_radio×1, scrap_metal×7, rubber_duck×1, fuel_can×1; sailed back to the Driftholm pier: game 57.73s",
+      "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
+    },
+    {
+      "id": "tb.technical.2",
+      "category": "technical",
+      "status": "pass",
+      "title": "Playtest bot: save → reload → load keeps the upgrade; no page errors (runtime-observed)",
+      "detail": "the save in localStorage has the upgrade: saved upgrades: sail_canvas; after a reload the save loads with the upgrade installed: title button \"Continue Voyage\"; upgrades sail_canvas; gold 41; after a reload the boat is still rebuilt with it: sail 3.1 m after reload (3.11 m after install, 2.4 m stock); no page errors: ",
+      "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
+    },
+    {
+      "id": "tb.technical.3",
+      "category": "technical",
+      "status": "pass",
+      "title": "Playtest bot: deterministic and reproducible (same seed → identical run fingerprint)",
+      "detail": "2 runs, fingerprints 9920317a, 9920317a",
+      "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
+    },
+    {
+      "id": "tb.presentation.4",
+      "category": "presentation",
+      "status": "pass",
+      "title": "Playtest bot: the installed upgrade is visible on the boat and survives a reload (runtime-observed)",
+      "detail": "sail 2.4 m → 3.11 m tall (top 2.97 → 3.79); parts none; sail 3.1 m after reload (3.11 m after install, 2.4 m stock)",
+      "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
+    },
+    {
+      "id": "tb.progression.5",
+      "category": "progression",
+      "status": "pass",
+      "title": "Simulation: every upgrade and vessel is reachable; the campaign completes (simulation-measured)",
+      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 259 sourcing actions (57 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
+      "source": "docs/playcraft-evidence/simulations/campaign.json"
+    },
+    {
+      "id": "tb.progression.6",
+      "category": "progression",
+      "status": "pass",
+      "title": "Simulation: upgrades measurably change play (sail speed, turning, range)",
+      "detail": "sail speed by tier on the Skiff: stock 6.5 → Canvas Mainsail 9.1 → Cutter Rig 11.1 m/s (beam reach); 180° turn stock rudder 2.7s vs Ash-Wood Rudder 1.9s",
+      "source": "docs/playcraft-evidence/simulations/sailing_fuel.json"
+    },
+    {
+      "id": "tb.difficulty.7",
+      "category": "difficulty",
+      "status": "pass",
+      "title": "Balance is measured: headless simulations of economy, fuel, storms and voyages on the real game systems",
+      "detail": "tests/sim (npm run sim): salvage yield, hauls-to-afford for every upgrade, campaign, fuel range, storm damage, voyages, exploit checks",
+      "source": "docs/playcraft-evidence/simulations/affordability.json"
+    },
+    {
+      "id": "tb.difficulty.8",
+      "category": "difficulty",
+      "status": "partial",
+      "title": "Simulation: pacing between purchases (difficulty spikes)",
+      "detail": "commission Scrap Trimaran: 34 actions vs ≤11 before",
+      "source": "docs/playcraft-evidence/simulations/campaign.json"
+    },
+    {
+      "id": "tb.difficulty.9",
+      "category": "difficulty",
+      "status": "partial",
+      "title": "Simulation: the Stormwall as the final barrier",
+      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
+      "source": "docs/playcraft-evidence/simulations/voyages.json"
+    },
+    {
+      "id": "tb.difficulty.10",
+      "category": "difficulty",
+      "status": "pass",
+      "title": "Simulation: no economy exploits through crafting, fuel or repair",
+      "detail": "craft Refine Fuel then sell: ok; craft Hull Patch Kit then sell: ok; craft Alloy Plate then sell: ok; craft Engine Parts then sell: ok; craft Stitch Sailcloth then sell: ok; craft Strip Wire then sell: ok; buy fuel at driftholm: ok; buy fuel at hollow: ok; buy fuel at helios: ok; repair 35 hull at a dock vs a patch kit: ok; salvage respawn follows the device clock: EXPLOIT",
+      "source": "docs/playcraft-evidence/simulations/exploits.json"
+    },
+    {
+      "id": "tb.player_experience.11",
+      "category": "player_experience",
+      "status": "pass",
+      "title": "Playtest bot: time from casting off to the first upgrade (game time)",
+      "detail": "first salvage beacon at game 32.83s, docked again at 58.03s, first upgrade at 58.03s (bot drives straight; humans will be slower)",
+      "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "medium",
+      "title": "Difficulty/pacing spike: commission Scrap Trimaran",
+      "detail": "34 sourcing actions for this step vs at most 11 for any earlier step (campaign, winch 2/3).",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "medium",
+      "title": "The Stormwall barely scratches the Ironwake",
+      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "medium",
+      "title": "An extra winch hit sometimes pays nothing",
+      "detail": "The Sunken Tower: 1/3 → 15.6g vs 2/3 → 15.4g; The Box Yard: 1/3 → 23.7g vs 2/3 → 24.8g; Hollow Underfloors: 1/3 → 27.7g vs 2/3 → 25.8g. Loot rolls round to the same number for these hit counts, so landing the extra pull in the green earns no more on average.",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "low",
+      "title": "Exploit: salvage respawn follows the device clock",
+      "detail": "Salvage.ready compares Date.now() with the saved haul time, so changing the phone’s clock skips respawn timers. Severity is a design call (single-player).",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "info",
+      "title": "No progression dead ends found",
+      "detail": "Every one of the 21 upgrades and vessels became affordable and was bought through the game in every seed at every winch skill (hits_1, hits_2, hits_3).",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "info",
+      "title": "Captain's Log in the campaign stops at g_raiders",
+      "detail": "Completed: g_salvage → g_engine → g_crew → g_trimaran → g_helios → g_meridian. The raider goal needs real-time combat, which the simulation does not play; nothing after it can complete here (purchases are not gated by goals).",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "info",
+      "title": "Storm damage",
+      "detail": "A full storm (storm 1.0) costs the stock Skiff 57.6 hull/min (swamped from full in 1.0 min); the Trimaran 57.6 hull/min (1.7 min). Riveted Armour cuts it by 45.0%. Below storm 0.4 there is no damage.",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "info",
+      "title": "Crafting margins are small",
+      "detail": "Hull Patch Kit: +2g (20%); Alloy Plate: +2g (11%); Engine Parts: +3g (14%); Strip Wire: +1g (11%). Not worth farming.",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "info",
+      "title": "Sailing never needs tacking",
+      "detail": "Stock Skiff: 6.5 m/s on a beam reach, 5.8 downwind, 2.9 dead into the wind (45%). Every boat can sail straight upwind at under half speed; wind shapes speed, not routes.",
+      "evidence_class": "simulation-measured"
+    }
+  ]
+}
