@@ -282,6 +282,7 @@ export interface ChartExtras {
   structures: { x: number; z: number; kind: string }[];
   raiders: { x: number; z: number; r: number; name: string }[];
   pois: { id: string; x: number; z: number; name: string }[];
+  pins?: { x: number; z: number; name: string }[]; // rumours pinned from Old Wren's board
 }
 
 // ───────── World chart (zoomable) ─────────
@@ -611,6 +612,22 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
       ctx.lineWidth = 2;
       ctx.stroke();
       labels.push({ text: st.name, x: px, y: py + r + 10, font: 'bold 12px Georgia', color: '#173c37', pri: 3, ax: px, ay: py, r });
+    }
+    for (const pin of ex.pins ?? []) {
+      const [px, py] = P(pin.x, pin.z);
+      const r = 5 * zk;
+      ctx.fillStyle = '#d6a62a';
+      ctx.strokeStyle = '#3a2a0a';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(px, py - r * 2.2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(px, py - r * 2.2, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      labels.push({ text: `📌 ${pin.name}`, x: px, y: py - r * 3.6 - 4, font: 'bold 11px Georgia', color: '#6e5210', pri: 2 });
     }
     for (const c of ex.castaways) {
       const [px, py] = P(c.x, c.z);

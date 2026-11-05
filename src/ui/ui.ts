@@ -1,6 +1,7 @@
 // DOM UI: HUD, touch controls, panels (harbor, catalog, maps, ship, cargo, settings), reveals.
 import { goalProgressText } from '../game/goalHelp';
 import { pickLine, CHARACTER_MAP } from '../data/characters';
+import { openRumours, canReach } from '../game/leads';
 import { ITEMS, CATALOG_ITEMS, ITEM_MAP, RARITY_COLOR, RARITY_LABEL, RARITY_ORDER, CATEGORY_LABEL, LIVING_GREEN, isLiving, item, type Category } from '../data/items';
 import { UPGRADES, VESSELS, COSMETICS, COSMETIC_MAP, SLOT_LABEL, SLOT_ORDER, UPGRADE_MAP, type Cost } from '../data/ship';
 import { RECIPES } from '../data/crafting';
@@ -45,6 +46,9 @@ export interface GameAPI {
   recruit(id: string): void;
   dismiss(id: string): void;
   chartExtras(): import('./mapArt').ChartExtras;
+  sideLead(): import('../game/leads').Lead | null;
+  toggleFollowSide(): void;
+  pinRumour(id: string): void;
 }
 
 export interface StatusInfo {
@@ -161,7 +165,7 @@ export class UI {
     const top = el(`<div class="hud-top">
       <div class="stats"><div class="pill gold-pill"><span class="coin"></span><span class="gold">0</span></div><div class="pill cargo-pill">⛵ <span class="cargo">0/6</span></div>
         <div class="status"><div class="gauge fuel"><i></i><span>FUEL</span></div><div class="gauge hull"><i></i><span>HULL</span></div><div class="clock"></div></div></div>
-      <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div></div>
+      <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div><button class="q-side"></button></div>
       <div class="menu-btns">
         <button class="icon-btn" data-p="catalog">${ICON.catalog}<span>CATALOG</span></button>
         <button class="icon-btn" data-p="maps">${ICON.maps}<span>MAPS</span></button>
@@ -174,6 +178,12 @@ export class UI {
     this.cargoEl = top.querySelector('.cargo')!;
     this.questEl = top.querySelector('.quest')!;
     this.questEl.addEventListener('click', () => this.questEl.classList.toggle('open'));
+    this.questEl.querySelector('.q-side')!.addEventListener('click', (e) => {
+      e.stopPropagation();
+      audio.ui();
+      this.game.toggleFollowSide();
+      this.refreshHUD();
+    });
     top.querySelectorAll<HTMLElement>('.icon-btn').forEach((b) =>
       b.addEventListener('click', () => {
         audio.ui();
@@ -310,6 +320,13 @@ export class UI {
     const qn = this.questEl.querySelector('.q-need') as HTMLElement;
     if (qn.textContent !== (need ?? '')) qn.textContent = need ?? '';
     qn.style.display = need ? '' : 'none';
+    // the second road: one optional lead beside the main goal, tap to follow it instead
+    const side = s.data.quest === 'free' ? this.game.sideLead() : null;
+    const qs = this.questEl.querySelector('.q-side') as HTMLElement;
+    const sideText = side ? `${s.data.followSide ? '▶' : 'Side:'} ${side.label}` : '';
+    if (qs.textContent !== sideText) qs.textContent = sideText;
+    qs.style.display = side ? '' : 'none';
+    qs.classList.toggle('on', !!side && s.data.followSide);
     this.questEl.querySelector('.q-label')!.textContent = s.data.quest === 'free' ? `Captain’s Log · ${s.data.goal + 1}/${GOALS.length}` : `First Voyage · ${s.questIndex() + 1}/${FIRST_VOYAGE.length - 1}`;
   }
 
@@ -991,17 +1008,30 @@ export class UI {
         hints.push(`“That’s half of <b>${m.name}</b>. The other half? I’d wager on: <i>${missing.join(', ')}</i>.”`);
       } else hints.push(`“<b>${m.name}</b> is whole! That coastline is <b>${ISLAND_MAP[m.island].name}</b>. Read the clue, captain.”`);
     }
-    const rumours = [
-      '“The trawler Wren went down inside the reef ring north of here. Copper on your hull and you’d slide right over.”',
-      '“The Lantern Rock keeper kept his sea-chest locked. Kept the key somewhere silly, too. Keepers are like that.”',
-      '“Beyond the swell lies the Sunken Reach: Old Meridian, Rig Helios, and the Rustfang. Skiffs need not apply.”',
-      '“They say there’s a mountain past the Stormwall that never went under. Fools say that. I say it too.”',
-    ];
-    body.innerHTML = `<div class="speech"><b>Old Wren:</b> ${hints[0] ?? rumours[Math.floor(Math.random() * rumours.length)]}</div>${hints.slice(1).map((h) => `<div class="speech">${h}</div>`).join('')}
-      <div class="speech" style="background:#fffaf0">${rumours.filter((r) => !hints.includes(r)).slice(0, 2).join('<br><br>')}</div>
-      <button class="btn">Open my maps</button>`;
-    body.querySelector('.btn')!.addEventListener('click', () => this.openPanel('maps'));
-    this.backBtn(body);
+    const render = () => {
+      const open = openRumours(s.data);
+      const reach = { crossSwell: s.stats.crossSwell, crossStorm: s.stats.crossStorm, heavy: !!s.stats.salvage };
+      body.innerHTML = `<div class="speech"><b>Old Wren:</b> ${hints[0] ?? '“Every chart is a promise someone forgot to keep. Here are a few I haven’t kept.”'}</div>${hints.slice(1).map((h) => `<div class="speech">${h}</div>`).join('')}
+        <div class="section-title">Rumours</div>
+        <div class="note">Pin a rumour and it becomes your Captain’s Log side lead. Tap the side lead on the Log to follow it.</div>`;
+      for (const r of open) {
+        const pinned = s.data.pinned.includes(r.id);
+        const far = !canReach(r.region, reach);
+        const row = el(`<div class="row rumour${pinned ? ' pinned' : ''}"><div class="r-main"><div class="r-title">${pinned ? '📌 ' : ''}${r.label}</div><div class="r-sub">“${r.text}”</div>${far ? `<div class="r-sub"><b>${r.region === 'stormwall' ? 'Needs a hull that survives the Stormwall' : 'Needs a boat that can cross the open swell'}</b></div>` : ''}</div>
+          <button class="btn ${pinned ? 'ghost' : ''}">${pinned ? 'Unpin' : 'Pin it'}</button></div>`);
+        row.querySelector('button')!.addEventListener('click', () => {
+          this.game.pinRumour(r.id);
+          render();
+        });
+        body.append(row);
+      }
+      if (!open.length) body.append(el(`<div class="empty">“That’s every rumour I’ve got. Go and make some new ones.”</div>`));
+      const mapsBtn = el(`<button class="btn">Open my maps</button>`);
+      mapsBtn.addEventListener('click', () => this.openPanel('maps'));
+      body.append(mapsBtn);
+      this.backBtn(body);
+    };
+    render();
   }
 
   curiosPanel() {

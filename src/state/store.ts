@@ -9,7 +9,7 @@ import { seaAdvance } from './seaClock';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 
 export interface Stack {
   id: string;
@@ -65,6 +65,9 @@ export interface SaveData {
   timeOfDay: number; // 0..1 (0.25 = sunrise, 0.5 = noon, 0.75 = sunset)
   raidersRepelled: number;
   settlementsVisited: string[];
+  // v3: the living world (design bible Phase 1)
+  pinned: string[]; // rumour ids pinned from Old Wren's board, in pin order
+  followSide: boolean; // the waypoint follows the Captain's Log side lead instead of the main goal
 }
 
 export function freshSave(): SaveData {
@@ -111,6 +114,8 @@ export function freshSave(): SaveData {
     timeOfDay: 0.33,
     raidersRepelled: 0,
     settlementsVisited: ['driftholm'],
+    pinned: [],
+    followSide: false,
   };
 }
 
@@ -132,6 +137,8 @@ function migrate(raw: any): SaveData {
   merged.vesselsOwned = (merged.vesselsOwned || ['dinghy']).filter((v) => VESSELS[v]);
   merged.upgrades = (merged.upgrades || []).filter((u) => UPGRADE_MAP[u]);
   if (raw.hull === undefined) merged.hull = VESSELS[merged.vessel].hull;
+  merged.pinned = Array.isArray(raw.pinned) ? raw.pinned.filter((x: unknown) => typeof x === 'string') : [];
+  merged.followSide = raw.followSide === true;
   merged.quest = liveStep(merged.quest); // the First Voyage was shortened: retired steps continue from their successor
   merged.goal = Math.max(0, Math.min(GOALS.length - 1, merged.goal | 0));
   if (!Number.isFinite(merged.seaClock)) merged.seaClock = base.seaClock;
