@@ -18,15 +18,23 @@ const pw = loadPlaywright();
 const srv = await devServer();
 const browser = await pw.chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 const SEED = 20261105;
-const { page, errors, bootMs } = await boot(browser, pw, srv.url, { seed: SEED, query: '?ship=skiff' });
-await page.evaluate(async () => {
-  window.__sims = await import('/tests/sim/sims.page.js');
-});
-
+const errors = [];
+const storageKeys = new Set();
+let bootMs = 0;
+// Every simulation gets a freshly booted page: results don't depend on what ran before, and one long run can't
+// exhaust the page for the next (software WebGL pages crash after enough frames).
 const run = async (name, fn, args) => {
+  const b = await boot(browser, pw, srv.url, { seed: SEED, query: '?ship=skiff' });
+  bootMs = Math.max(bootMs, b.bootMs);
+  await b.page.evaluate(async () => {
+    window.__sims = await import('/tests/sim/sims.page.js');
+  });
   const t0 = Date.now();
-  const result = await page.evaluate(([fn, args]) => window.__sims[fn](args), [fn, args]);
+  const result = await b.page.evaluate(([fn, args]) => window.__sims[fn](args), [fn, args]);
   const ms = Date.now() - t0;
+  for (const k of await b.page.evaluate(() => Object.keys(localStorage))) storageKeys.add(k);
+  errors.push(...b.errors);
+  await b.ctx.close();
   console.log(`  ${name}: ${ms} ms`);
   return { result, ms };
 };
@@ -42,7 +50,8 @@ console.log('PLAYCRAFT simulations');
 const yieldMin = await run('salvage yield (boat that reaches the site)', 'salvageYield', { n: quick ? 30 : 200, hold: 'minimal' });
 const yieldLarge = await run('salvage yield (30-slot hold)', 'salvageYield', { n: quick ? 30 : 200, hold: 'large' });
 const winch = await run('winch windows', 'winchWindows', {});
-const goldRank = await page.evaluate((rows) => window.__sims.goldRankFrom(rows), yieldMin.result);
+const goldRank = {};
+for (const r of yieldMin.result) if (r.hits === 2 && !r.salvager) goldRank[r.site] = r.gold_per_haul.mean;
 write('salvage_yield.json', {
   simulation: 'salvage_yield',
   evidence_class: 'simulation-measured',
@@ -73,7 +82,8 @@ write('campaign.json', {
 const ex = await run('exploit checks', 'exploits', {});
 write('exploits.json', { simulation: 'exploits', evidence_class: 'simulation-measured', method: 'Round trips through Game.craft + Game.sell, Game.buyFuel, Game.repair, Salvage.ready on the live game.', results: ex.result });
 
-const fuel = await run('fuel & range', 'fuelRange', {});
+const fuel = { result: [] };
+for (const v of ['dinghy', 'sloop', 'ironwake']) fuel.result.push(...(await run(`fuel & range (${v})`, 'fuelRange', { vessels: [v] })).result);
 const power = await run('solar / turbine regen', 'powerRegen', {});
 const sailing = await run('sail speed & turning', 'sailingImpact', {});
 write('sailing_fuel.json', {
@@ -97,9 +107,9 @@ for (const seed of quick ? [1] : [1, 2, 3]) {
 }
 write('voyages.json', { simulation: 'voyages', evidence_class: 'simulation-measured', method: 'The real frame loop with the wheel held toward each waypoint in turn (the boat sheers off for 4 s when it stalls against something, as a player would). Real wind, swell, Stormwall, storm cells, collisions and hull damage. Arrival flags come from the game’s own updateIslands.', results: voyages });
 
-// isolation check: nothing was written to this context's storage
-const storage = await page.evaluate(() => Object.keys(localStorage));
-write('run.json', { simulation: 'run', evidence_class: 'harness', results: { page_errors: errors, localStorage_keys_after_run: storage, timings_ms: { boot: bootMs } } });
+// isolation check: nothing was written to any context's storage
+const storage = [...storageKeys];
+write('run.json', { simulation: 'run', evidence_class: 'harness', results: { page_errors: errors, localStorage_keys_after_run: storage, timings_ms: { boot_max: bootMs } } });
 console.log(storage.length ? `WARNING: storage keys written: ${storage}` : 'storage untouched (preview store)');
 if (errors.length) console.log('page errors:', errors.slice(0, 5));
 await browser.close();

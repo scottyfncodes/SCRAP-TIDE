@@ -567,10 +567,10 @@ function sailRun({ seconds, heading, throttle = 1, engine = false, storm = 0, ti
   return { seconds: r2(t), distance_m: r2(dist), mean_speed: r2(mean(speeds)), max_speed: r2(Math.max(...speeds)), fuel_empty_at_s: fuelUsedAt === null ? null : r2(fuelUsedAt), collisions: hits, hull_lost: r2(hull0 - S.data.hull) };
 }
 
-export function fuelRange() {
+export function fuelRange({ vessels = ['dinghy', 'sloop', 'ironwake'] } = {}) {
   const rows = [];
   const configs = [];
-  for (const vessel of ['dinghy', 'sloop', 'ironwake'])
+  for (const vessel of vessels)
     for (const engine of ['engine_outboard', 'engine_twin'])
       for (const tank of [false, true])
         for (const mechanic of [false, true]) configs.push({ vessel, engine, tank, mechanic });
