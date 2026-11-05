@@ -396,7 +396,7 @@ def p_world2(b, sp):
     y = 300
     b.text(sp, (M, 232, 400, 250), [('H3', 'THE LEGEND THAT THREADS THE WORLD')])
     cw = (W - 2 * M - 3 * 10) / 4
-    imgs = ['lantern_night', 'wren_wreck', 'stormwall_spire', 'rustfang_hold']
+    imgs = ['lantern_night', 'wren_wreck', 'ironwake_full', 'rustfang_hold']
     for i, (k, v) in enumerate(C.WORLD_LOOP['legend']):
         x = M + i * (cw + 10)
         b.card(sp, (x, 352, x + cw, 576), 'Steel')
@@ -714,7 +714,7 @@ def p_brief(b, sp):
 
 def p_back(b, sp):
     b.bg(sp, True)
-    img = shot('stormwall_spire')
+    img = shot('old_meridian')
     if img:
         b.image(sp, (0, 0, W, H), img)
         b.rect(sp, (0, 0, W, H), 'Oil', opacity=0.55)

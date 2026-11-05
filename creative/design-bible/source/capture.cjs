@@ -13,7 +13,6 @@ const SHOTS = [
   { name: 'rooftop_hollow', ship: 'skiff', up: 'sail_canvas', x: -200, z: -10, h: 3.6, yaw: 3.6, pitch: 0.2, zoom: 1.6, t: 0.36 },
   { name: 'rustfang_hold', ship: 'ironwake', up: 'harpoon_turret,hull_armor,hull_copper', x: 300, z: 560, h: 0.8, yaw: 0.9, pitch: 0.2, zoom: 1.5, t: 0.78 },
   { name: 'old_meridian', ship: 'trimaran', up: 'sail_cutter', x: 405, z: -345, h: 2.36, yaw: 2.36, pitch: 0.18, zoom: 1.4, t: 0.3 },
-  { name: 'stormwall_spire', ship: 'ironwake', up: 'all', x: -200, z: -960, h: 3.14, yaw: 3.14, pitch: 0.16, zoom: 1.5, t: 0.5 },
   { name: 'turtle_atoll', ship: 'skiff', up: 'sail_canvas', x: -150, z: 140, h: 3.14, yaw: 3.14, pitch: 0.22, zoom: 1.5, t: 0.3 },
   { name: 'lantern_night', ship: 'skiff', up: 'sail_canvas,deck_lights', x: 175, z: 70, h: 3.14, yaw: 3.14, pitch: 0.2, zoom: 1.4, t: 0.9 },
 ];
