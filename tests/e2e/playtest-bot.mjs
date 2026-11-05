@@ -16,7 +16,7 @@
 //   node tests/e2e/playtest-bot.mjs --runs 1 --seed 7
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { ROOT, loadPlaywright, previewServer, boot, dismissCards, provenance, hashJSON } from '../sim/harness.mjs';
+import { ROOT, loadPlaywright, previewServer, boot, dismissCards, pause, provenance, hashJSON } from '../sim/harness.mjs';
 
 const arg = (k, d) => {
   const i = process.argv.indexOf(k);
@@ -53,6 +53,21 @@ async function playOnce(runNo) {
     timeline.push({ event: what, game_t: s.t, wall_ms: Date.now() - t0, x: s.x, z: s.z, speed: s.speed, gold: s.gold, docked: s.docked, ...extra });
     return s;
   };
+  // A tap = reseed + the DOM event, in ONE page task: nothing (not even a stray real-time timer) can draw a random
+  // number between them, so what the game rolls on the tap (the winch's needle and zone, the loot) is the same every run.
+  let taps = 0;
+  const tap = async (target, type = 'click') => {
+    const ok = await page.evaluate(([sel, type, n]) => {
+      const el = typeof sel === 'string' ? [...document.querySelectorAll(sel.split('::text=')[0])].find((e) => !sel.includes('::text=') || e.textContent.includes(sel.split('::text=')[1])) : sel;
+      if (!el) return false;
+      if (window.__sim.manual) window.__sim.checkpoint(1000 + n);
+      if (type === 'pointerdown') el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      else el.click();
+      return true;
+    }, [target, type, taps++]);
+    await page.waitForTimeout(0);
+    return ok;
+  };
   const step = (sec) => page.evaluate(([n, dt]) => { window.__sim.render = false; window.__sim.step(n, dt); }, [Math.max(1, Math.round(sec / DT)), DT]);
   const shot = async (name) => {
     await page.evaluate((dt) => { window.__sim.render = true; window.__sim.step(1, dt); window.__sim.render = false; }, DT);
@@ -75,6 +90,7 @@ async function playOnce(runNo) {
     return { sails: g.ship.sails.length, sail_top: +box.maxY.toFixed(2), sail_height: +(box.maxY - box.minY).toFixed(2), parts: named };
   });
 
+  if (process.env.SIM_TRACE) await page.evaluate(() => (window.__sim.trace = true));
   // ── 1. voyage started
   let s = await event('title → SET SAIL → welcome dismissed; harness takes the clock', { boot_ms: bootMs });
   check('voyage starts docked at Driftholm on the first-voyage quest', s.docked && s.quest === 'steer', `quest=${s.quest}, gold=${s.gold}`);
@@ -92,9 +108,20 @@ async function playOnce(runNo) {
   });
   const pier = await page.evaluate(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
   const speeds = [];
+  // Real mouse input reaches the page asynchronously (Chromium aligns pointer moves to its own frames). Before the
+  // next game step, wait until the game has registered it, so a wheel move always lands on the same frame.
+  const settleWheel = async (want) => {
+    for (let k = 0; k < 200; k++) {
+      const j = await page.evaluate(() => ({ ...window.__game.ui.joy }));
+      if (want === 'up' ? !j.active : j.active && (want === 'down' || (Math.abs(j.x - want.x) < 0.02 && Math.abs(j.y - want.y) < 0.02))) return true;
+      await page.waitForTimeout(5);
+    }
+    throw new Error(`wheel input not registered (${JSON.stringify(want)})`);
+  };
   async function sailTo(points, { until, maxS = 240, label }) {
     await page.mouse.move(cx, cy);
     await page.mouse.down();
+    await settleWheel('down');
     let wp = 0, t = 0, stuck = 0, detour = 0, dir = 1, cast = false;
     while (t < maxS) {
       s = await st();
@@ -117,6 +144,7 @@ async function playOnce(runNo) {
       const mag = wp === points.length - 1 && dist < 45 ? 0.45 : 1;
       const jx = -Math.sin(h - s.camYaw) * mag, jy = Math.cos(h - s.camYaw) * mag;
       await page.mouse.move(cx + jx * R, cy - jy * R);
+      await settleWheel({ x: jx, y: jy });
       await step(0.25);
       t += 0.25;
       speeds.push(s.speed);
@@ -130,6 +158,7 @@ async function playOnce(runNo) {
       }
     }
     await page.mouse.up();
+    await settleWheel('up');
     return t < maxS;
   }
   const reachedSite = await sailTo([{ x: 6, z: 130 }, { x: 50, z: 128 }, { x: site.x - 18, z: site.z - 14, r: 6 }], {
@@ -144,7 +173,7 @@ async function playOnce(runNo) {
   await shot('2_beacon');
 
   // ── 3. salvage: the winch mini-game
-  await page.click('.actions .act:has-text("SALVAGE")', { force: true });
+  await tap('.actions .act::text=SALVAGE');
   await page.waitForSelector('.winch-wrap', { timeout: 10000 }).catch(() => {});
   const winchOpen = !!(await page.$('.winch-wrap'));
   check('SALVAGE opens the winch', winchOpen);
@@ -156,18 +185,17 @@ async function playOnce(runNo) {
       return z && n ? { zl: parseFloat(z.style.left), zw: parseFloat(z.style.width), nl: parseFloat(n.style.left) } : null;
     });
     if (w && w.nl >= w.zl + w.zw * 0.2 && w.nl <= w.zl + w.zw * 0.8) {
-      await page.dispatchEvent('.w-reel', 'pointerdown');
+      await tap('.w-reel', 'pointerdown');
       pulls++;
-      // the next zone (and, after the last pull, the loot) is rolled on a 550 ms real-time timer: fix its seed now
-      await page.evaluate((n) => window.__sim.checkpoint(n), pulls);
       winchHits = await page.evaluate(() => document.querySelectorAll('.w-pips i.hit').length);
-      await page.waitForTimeout(650); // the reel locks for 550 ms between pulls
+      await pause(page, 650); // the reel locks for 550 ms between pulls (virtual time: the needle keeps moving, as in the game)
     } else await page.evaluate((dt) => window.__sim.step(1, dt), DT);
   }
   s = await st();
   const haul = s.cargo;
   const reeled = await page.evaluate(() => window.__game.store.data.hauls);
   await event('winch done; haul in the hold', { cargo: haul, pulls, winch_hits: winchHits, hauls: reeled });
+  if (process.env.SIM_TRACE) writeFileSync(path.join(OUT, `trace_run${runNo}.json`), JSON.stringify({ frames: await page.evaluate(() => window.__sim.frames), calls: await page.evaluate(() => window.__sim.traceDump()) }, null, 1));
   check('the winch was played to the end and the haul came aboard', s.hauls === 1 && haul.length > 0, `${winchHits}/${pulls} pulls in the green; cargo ${haul.join(', ')}`);
   await dismissCards(page, 3);
 
@@ -178,55 +206,58 @@ async function playOnce(runNo) {
   for (let i = 0; i < 20 && (await st()).speed > 2; i++) await step(0.25);
   s = await event('DOCK offered at the Driftholm pier');
   check('sailed back to the Driftholm pier', reachedPier, `game ${s.t}s`);
-  await page.click('.actions .act:has-text("DOCK")', { force: true });
+  await tap('.actions .act::text=DOCK');
   for (let i = 0; i < 30 && !(await st()).docked; i++) {
-    await page.waitForTimeout(150);
+    await pause(page, 150);
     await step(0.1);
   }
-  await page.waitForTimeout(800);
+  await pause(page, 800);
   s = await event('docked; hold unloaded to the vault', { vault: s.vault });
   check('docking unloads the hold into the vault', s.docked && s.cargo.length === 0 && (await st()).vault.length > 0, `vault ${(await st()).vault.join(', ')}`);
   await dismissCards(page, 2);
 
   // ── 5. sell the haul to Pip
-  if (!(await page.$('.npc[data-go="appraiser"]'))) await page.click('.actions .act:has-text("HARBOR")', { force: true }).catch(() => {});
+  if (!(await page.$('.npc[data-go="appraiser"]'))) await tap('.actions .act::text=HARBOR');
   await page.waitForSelector('.npc[data-go="appraiser"]', { timeout: 5000 }).catch(() => {});
-  await page.click('.npc[data-go="appraiser"]', { force: true });
-  await page.waitForTimeout(300);
+  await tap('.npc[data-go="appraiser"]');
+  await pause(page, 300);
   const gold0 = (await st()).gold;
   for (let i = 0; i < 30; i++) {
     const b = (await page.$('.row .sa')) ?? (await page.$('.row .s1'));
     if (!b) break;
-    await b.click({ force: true });
-    await page.waitForTimeout(120);
+    await tap(b);
+    await pause(page, 120);
   }
   s = await event('sold the haul to Pip');
   check('selling turns the haul into gold', s.gold > gold0 && s.vault.length === 0, `${gold0}g → ${s.gold}g`);
 
   // ── 6. install an upgrade from Marlo
-  await page.click('button.btn.ghost:has-text("Back to")', { force: true }).catch(() => {});
-  await page.waitForTimeout(250);
-  await page.click('.npc[data-go="shipwright"]', { force: true });
-  await page.waitForTimeout(300);
+  await tap('button.btn.ghost::text=Back to');
+  await pause(page, 250);
+  await tap('.npc[data-go="shipwright"]');
+  await pause(page, 300);
   const offer = await page.evaluate(() => [...document.querySelectorAll('.row')].filter((r) => r.querySelector('button.btn:not([disabled])') && /Install/.test(r.textContent)).map((r) => r.querySelector('.r-title').textContent.trim()));
   const want = offer.find((t) => /Canvas Mainsail/.test(t)) ?? offer[0];
   check('the shipwright offers an affordable upgrade', !!want, `affordable: ${offer.join(', ') || 'none'}`);
-  if (want) await page.click(`.row:has(.r-title:text-is("${want}")) button.btn`, { force: true });
-  await page.waitForTimeout(400);
+  if (want) {
+    const btn = await page.evaluateHandle((w) => [...document.querySelectorAll('.row')].find((r) => r.querySelector('.r-title')?.textContent.trim() === w)?.querySelector('button.btn'), want);
+    await tap(btn);
+  }
+  await pause(page, 400);
   s = await st();
   const bought = s.upgrades[0];
   await event('upgrade installed', { upgrade: bought });
   check('the upgrade is installed through the shipwright', !!bought, `${want} → ${bought}; gold ${s.gold}`);
   await dismissCards(page, 3);
   await page.keyboard.press('Escape');
-  await page.waitForTimeout(300);
+  await pause(page, 300);
   const after = await sailBox();
   await shot('3_upgraded');
   check('the upgrade is visible on the boat', JSON.stringify(after) !== JSON.stringify(before),
     `sail ${before.sail_height} m → ${after.sail_height} m tall (top ${before.sail_top} → ${after.sail_top}); parts ${after.parts.join(', ') || 'none'}`);
 
   // ── 7. persistence: wait for the debounced save, reload, load the same save
-  await page.waitForTimeout(1200);
+  await pause(page, 1200);
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('tidebreakers.save.v1') || 'null'));
   check('the save in localStorage has the upgrade', !!saved && saved.upgrades.includes(bought), `saved upgrades: ${saved?.upgrades}`);
   await page.reload();
