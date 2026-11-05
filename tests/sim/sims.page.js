@@ -488,14 +488,32 @@ export function exploits() {
   const repairGold = g0 - S.data.gold;
   const kitValue = value('driftwood') * 2 + value('plastic') * 2;
   out.push({ check: 'repair 35 hull at a dock vs a patch kit', dock_repair_gold: repairGold, patch_kit_material_value: kitValue, note: 'a kit also works at sea' });
-  // salvage respawn uses the device clock (Date.now): moving the clock forward refreshes every site
-  setState({});
-  S.data.salvaged.sv_stump = Date.now();
-  const before = G.salvage.ready(SALVAGE_MAP.sv_stump);
-  sim.advance(SALVAGE_MAP.sv_stump.respawn * 1000 + 1000);
-  const after = G.salvage.ready(SALVAGE_MAP.sv_stump);
-  out.push({ check: 'salvage respawn follows the device clock', ready_right_after_haul: before, ready_after_clock_jump: after, exploit: !before && after,
-    note: 'Salvage.ready compares Date.now() with the saved haul time, so changing the phone’s clock skips respawn timers. Severity is a design call (single-player).' });
+  // salvage respawn vs the device clock: a player changing the phone's clock (sim.jumpWall moves Date.now only)
+  {
+    const site = SALVAGE_MAP.sv_stump;
+    setState({});
+    S.data.salvaged[site.id] = S.seaNow ? S.seaNow() : Date.now();
+    const before = G.salvage.ready(site);
+    sim.jumpWall(24 * 3600 * 1000); // +1 day, no real time
+    const afterForward = G.salvage.ready(site);
+    out.push({ check: 'salvage respawn: clock set forward a day mid-session', ready_right_after_haul: before, ready_after_clock_jump: afterForward, exploit: !before && afterForward,
+      note: afterForward ? 'Salvage.ready follows the device clock, so changing the phone\u2019s clock skips respawn timers.' : 'respawn follows the sea clock (monotonic in a session): the clock change did nothing' });
+    sim.jumpWall(-48 * 3600 * 1000); // and back two days
+    sim.advance(site.respawn * 1000 + 1000); // then real time for one respawn
+    const afterBack = G.salvage.ready(site);
+    out.push({ check: 'salvage respawn: clock set back, then one respawn of real time', ready: afterBack, exploit: false, bug: !afterBack,
+      note: afterBack ? 'the site refilled after its respawn of real time' : 'setting the clock back locked the site (it waits for the device clock to catch up)' });
+    if (S.seaNow) {
+      // a relaunch: the first sync of a new page credits the device-clock gap, capped
+      S.data.salvaged[site.id] = S.seaNow();
+      S.saveNow?.();
+      sim.jumpWall(24 * 3600 * 1000);
+      S.perfAt = null;
+      const credited = S.seaNow() - S.data.salvaged[site.id];
+      out.push({ check: 'salvage respawn: relaunch after the clock was set forward a day', credited_minutes: Math.round(credited / 60000), exploit: credited > 2 * 3600 * 1000 + 1000,
+        note: 'between sessions the device clock is the only clock; the credit is capped at 2 h (with 4-15 min respawns that equals having been away that long)' });
+    }
+  }
   // full hold check: Salvage.begin refuses when nothing would fit
   return out;
 }

@@ -5,6 +5,7 @@ import { CREW_MAP, type CrewRole } from '../data/crew';
 import { GOALS } from '../data/progress';
 import { MILESTONES, FIRST_VOYAGE, type QuestStepId } from '../data/progress';
 import { WORLD } from '../data/world';
+import { seaAdvance } from './seaClock';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
@@ -55,7 +56,9 @@ export interface SaveData {
   hull: number;
   crew: string[];
   hauls: number;
-  salvaged: Record<string, number>; // site id -> Date.now() of the last haul
+  salvaged: Record<string, number>; // site id -> sea-clock time of the last haul (see seaClock.ts)
+  seaClock: number; // ms; respawn timers run on it (starts at the wall time, so older Date.now() hauls still compare)
+  seaWall: number; // device clock at the last sea-clock sync
   firstHauls: string[];
   castaways: string[];
   goal: number; // index into GOALS
@@ -100,6 +103,8 @@ export function freshSave(): SaveData {
     crew: [],
     hauls: 0,
     salvaged: {},
+    seaClock: now,
+    seaWall: now,
     firstHauls: [],
     castaways: [],
     goal: 0,
@@ -128,6 +133,8 @@ function migrate(raw: any): SaveData {
   merged.upgrades = (merged.upgrades || []).filter((u) => UPGRADE_MAP[u]);
   if (raw.hull === undefined) merged.hull = VESSELS[merged.vessel].hull;
   merged.goal = Math.max(0, Math.min(GOALS.length - 1, merged.goal | 0));
+  if (!Number.isFinite(merged.seaClock)) merged.seaClock = base.seaClock;
+  if (!Number.isFinite(merged.seaWall)) merged.seaWall = base.seaWall;
   merged.version = SAVE_VERSION;
   return merged;
 }
@@ -151,8 +158,12 @@ export class Store {
   /** Upgrades a `upgrades=` preview link fitted for this visit (null outside such a preview). */
   readonly previewUpgrades: string[] | null;
 
+  /** performance.now() at the last sea-clock sync in this session (null before the first). */
+  private perfAt: number | null = null;
+
   constructor(opts: { preview?: VesselId | null; upgrades?: string[] | null } = {}) {
     this.data = this.load();
+    this.seaNow(); // credit the time away since the last save (capped)
     this.previewUpgrades = opts.upgrades?.length ? opts.upgrades : null;
     // an upgrades-only link previews the save's own boat
     this.preview = opts.preview ?? (this.previewUpgrades ? this.data.vessel : null);
@@ -192,7 +203,19 @@ export class Store {
     }
   }
 
+  /** The sea clock now (ms): what salvage respawn timers run on. */
+  seaNow(): number {
+    const d = this.data;
+    const wall = Date.now();
+    const perf = typeof performance !== 'undefined' ? performance.now() : wall;
+    d.seaClock += seaAdvance(this.perfAt === null ? 0 : perf - this.perfAt, wall - d.seaWall, this.perfAt !== null);
+    d.seaWall = wall;
+    this.perfAt = perf;
+    return d.seaClock;
+  }
+
   saveNow() {
+    this.seaNow();
     this.data.updated = Date.now();
     if (this.preview) return; // preview visits are never saved
     try {
