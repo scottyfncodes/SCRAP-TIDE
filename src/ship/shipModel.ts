@@ -367,6 +367,26 @@ function flagTexture(id: string) {
       ctx.beginPath();
       ctx.arc(40, 40, 14, 0, Math.PI * 2);
       ctx.fill();
+    } else if (id === 'flag_tidebreaker') {
+      // hazard stripes, and a breaking wave across them
+      ctx.fillStyle = b;
+      for (let k = -4; k < 10; k++) {
+        ctx.beginPath();
+        ctx.moveTo(k * 18, 80);
+        ctx.lineTo(k * 18 + 9, 80);
+        ctx.lineTo(k * 18 + 49, 0);
+        ctx.lineTo(k * 18 + 40, 0);
+        ctx.fill();
+      }
+      ctx.fillStyle = a;
+      ctx.fillRect(0, 26, 128, 28);
+      ctx.strokeStyle = '#d9d2bf';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(8, 48);
+      ctx.bezierCurveTo(40, 20, 70, 20, 82, 36);
+      ctx.bezierCurveTo(74, 30, 62, 34, 66, 44);
+      ctx.stroke();
     } else if (id === 'flag_helios') {
       ctx.fillStyle = b;
       ctx.beginPath();

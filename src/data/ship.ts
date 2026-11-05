@@ -177,6 +177,8 @@ export const COSMETICS: CosmeticDef[] = [
   { id: 'flag_harbor', slot: 'flag', name: 'Driftholm Pennant', colors: ['#3a86ff', '#ffffff'], cost: 15, rarity: 'common' },
   { id: 'flag_wren', slot: 'flag', name: 'Colors of the Wren', colors: ['#1c1c22', '#efe6d2'], unlock: 'm_wreck', rarity: 'epic' },
   { id: 'flag_helios', slot: 'flag', name: 'Helios Sunburst', colors: ['#c8352a', '#f2b825'], unlock: 'm_helios', rarity: 'rare' },
+  // sewn by Odessa for captains who have been through the Stormwall (character arc, PR 2.3)
+  { id: 'flag_tidebreaker', slot: 'flag', name: 'Tidebreaker Colours', colors: ['#1a1a17', '#d6a62a'], rarity: 'legendary' },
 ];
 
 export const UPGRADE_MAP: Record<string, UpgradeDef> = Object.fromEntries(UPGRADES.map((u) => [u.id, u]));

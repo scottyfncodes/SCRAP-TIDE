@@ -74,6 +74,7 @@ export interface SaveData {
   contracts: { active: { id: string; at: number; base: number }[]; done: string[] };
   standing: Partial<Record<'driftholm' | 'hollow' | 'helios', number>>;
   garden: Partial<Record<'driftholm' | 'hollow' | 'helios', number>>;
+  beats: string[]; // character arc beats seen (data/arcs.ts, PR 2.3)
 }
 
 export function freshSave(): SaveData {
@@ -127,6 +128,7 @@ export function freshSave(): SaveData {
     contracts: { active: [], done: [] },
     standing: {},
     garden: {},
+    beats: [],
   };
 }
 
@@ -156,6 +158,7 @@ function migrate(raw: any): SaveData {
   };
   merged.standing = { ...(raw.standing ?? {}) };
   merged.garden = { ...(raw.garden ?? {}) };
+  merged.beats = Array.isArray(raw.beats) ? raw.beats.filter((x: unknown) => typeof x === 'string') : [];
   merged.shipName = typeof raw.shipName === 'string' ? raw.shipName.slice(0, 24) : '';
   merged.quest = liveStep(merged.quest); // the First Voyage was shortened: retired steps continue from their successor
   merged.goal = Math.max(0, Math.min(GOALS.length - 1, merged.goal | 0));
@@ -327,7 +330,7 @@ export class Store {
       crossStorm: v.crossStorm,
       trophySlots: v.trophySlots,
       engine: eng.engine ?? 0,
-      fuelUse: (eng.fuelUse ?? 0) * (this.hasRole('mechanic') ? 0.65 : 1),
+      fuelUse: (eng.fuelUse ?? 0) * (this.hasRole('mechanic') ? (this.data.flags.includes('juno_diesel') ? 0.55 : 0.65) : 1),
       fuelCap: BASE_FUEL + (tank.fuelCap ?? 0),
       hullMax: v.hull + (hull.hull ?? 0),
       armor: hull.armor ?? 0,
@@ -407,6 +410,7 @@ export class Store {
     const u = UPGRADE_MAP[id];
     if (!u) return { gold: Infinity };
     let gold = this.data.flags.includes(`welcome_${id}`) ? Math.ceil(u.cost.gold / 2) : u.cost.gold;
+    if (id === 'engine_twin' && this.data.flags.includes('twin_at_cost')) gold = Math.ceil(gold / 2); // Vik's confession: at cost
     if (port) gold = Math.round(gold * this.portDiscount(port)); // standing with the port that fits it
     return { ...u.cost, gold };
   }
