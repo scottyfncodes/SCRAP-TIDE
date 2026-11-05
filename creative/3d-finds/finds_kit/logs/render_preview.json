@@ -2,8 +2,8 @@
  {
   "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/previews/tb_finds_kit_three_quarter.png",
   "kind": "preview",
-  "bytes": 113993,
-  "sha256": "ce0dca3fdb0ee7184c58223ba4cdf1aad9769554958f4129581666760243cfed",
+  "bytes": 114065,
+  "sha256": "6c34349c54b6c1c12860ba7763e28897ab929aae8fc89b0a0e2c44f541781b1b",
   "view": "three_quarter",
   "clip": null,
   "pose": null,
@@ -12,8 +12,8 @@
  {
   "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/previews/tb_finds_kit_front.png",
   "kind": "preview",
-  "bytes": 107996,
-  "sha256": "4bb53376aa8870f4d3d4ab1cdea390d5ee10523c2e8336140b3c3c87ac08fcfd",
+  "bytes": 107992,
+  "sha256": "9f809cc3a9b1cac04f49b16bd3cd8b18ec8ca9cfeb7dfa77a1053ad2ee12c410",
   "view": "front",
   "clip": null,
   "pose": null,

@@ -35,6 +35,27 @@ ROLES = {
     "wood": "Bleached Timber", "wood_dk": "Timber", "net": "Net Dark", "tyre": "Tyre", "tarp": "Tarp Blue",
     "char": "Char", "navy": "Abyss Navy", "barnacle": "Barnacle",
 }
+# Weathered value overrides (asset-modernization polish). The Waterworld palette's pale roles (Bleached Timber,
+# Concrete, Barnacle, Fog Grey, Steel, Corrugated, Faded Paint, Sailcloth) are highlight colours. Used on large
+# surfaces they went near-white in the game: its toon ramp's top band and the world-space weathering pass's salt
+# crust (0.5-2.6 m above the sea) and sun-bleached tops lift them further, which read as a white, plastic sheen.
+# These are the drowned world's own mid-tones, matched to the terrain (sand #9a8f78, rock #5d5650) and the
+# code-built props the models replace (palm #a39a88/#8c8373, pier planks #a2927a/#7d6a52).
+WEATHERED = {
+    "wood": "#9A8466",         # aged, salt-worn timber (was Bleached Timber #C9A97A)
+    "fog": "#8C8373",          # bleached driftwood grey-brown (was Fog Grey #9AA9B4, a cold blue-white)
+    "concrete": "#7E786C",     # weathered concrete (was #A7A196)
+    "concrete_dk": "#5D5850",  # (was #6E6A62)
+    "barnacle": "#A49A86",     # salt and barnacle crust, muted (was #CFC6B0)
+    "steel": "#66707A",        # weathered steel, not chrome (was #7F8A94)
+    "corr": "#737670",         # corrugated sheet (was #8E918C)
+    "paint": "#94876A",        # faded paint (was #B9A882)
+    "cloth": "#C9BB9C",        # yellowed sailcloth and paper (was #EFE2C4)
+    "plaster": "#A39A86",      # the lighthouse's pale bands (the code-built tower's #a8a08c)
+    "sand": "#9A8F78",         # beach sand, as the terrain
+}
+ROLES.update({k: v for k, v in WEATHERED.items() if k in ROLES or k in ("plaster",)})
+
 kit.reset()  # noqa: F821
 M = kit.Materials(PAL, ROLES, prefix="TBI")  # noqa: F821
 M.add("lamp", "Window Lit", rough=0.3, emit=6.0)

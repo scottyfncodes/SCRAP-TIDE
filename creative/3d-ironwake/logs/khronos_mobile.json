@@ -2,7 +2,7 @@
  "uri": "/home/user/TIDEBREAKERS/creative/3d-ironwake/exports/tb_ironwake.mobile.glb",
  "mimeType": "model/gltf-binary",
  "validatorVersion": "2.0.0-dev.3.10",
- "validatedAt": "2026-11-05T04:29:31.302Z",
+ "validatedAt": "2026-11-05T06:52:01.659Z",
  "issues": {
   "numErrors": 0,
   "numWarnings": 0,
@@ -41,7 +41,7 @@
     "pointer": "/buffers/0",
     "mimeType": "application/gltf-buffer",
     "storage": "glb",
-    "byteLength": 116168
+    "byteLength": 115840
    },
    {
     "pointer": "/buffers/1",

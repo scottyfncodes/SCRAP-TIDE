@@ -1,5 +1,5 @@
 {
- "stdout": "Info: Saved as \"tb_landmark_kit.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/source/tb_landmark_kit.blend\", \"tris\": 8856, \"per_node\": {\"skull_rock\": 588, \"lighthouse\": 1416, \"hut\": 460, \"wreck\": 1376, \"sun_arch\": 1612, \"pillar_ring\": 1448, \"spring\": 1056, \"slipway\": 900}}\n",
+ "stdout": "Info: Saved as \"tb_landmark_kit.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/source/tb_landmark_kit.blend\", \"tris\": 8676, \"per_node\": {\"skull_rock\": 528, \"lighthouse\": 1396, \"hut\": 460, \"wreck\": 1376, \"sun_arch\": 1572, \"pillar_ring\": 1448, \"spring\": 996, \"slipway\": 900}}\n",
  "objects": [
   "hut",
   "landmark_kit",

@@ -1,5 +1,7 @@
 # GITCRAFT asset modernization
 
+> **Polish round:** choppy turning (a camera-ordering bug in the existing steering) and a white, glossy sheen on the new models (pale palette roles lifted by the weathering pass) are both fixed. Root causes, affected materials and before/after are in [`polish.md`](polish.md).
+
 This pass replaces the last code-built 3D visuals in TIDEBREAKERS with purpose-built GITCRAFT MeshCraft models. It covers the Ironwake Expedition Cat, every island scatter prop and landmark, Driftholm's pier, the finds and wildlife, and the remaining ship fittings. It is a visual change only. The physics, buoyancy, colliders, camera, wake, water, lighting, progression and saves are untouched.
 
 - **Branch:** `gitcraft-asset-modernization`
@@ -76,13 +78,13 @@ I reused existing GITCRAFT assets where they fit:
 - the flora kit, for living trophies and plant finds;
 - the chest contract (nodes, hinge, opening arc) from the `creative/3d` chest pilot.
 
-The pilot's chests themselves are bright cartoon art and clash with the drowned palette, so they were rebuilt rather than dropped in. MeshCraft's stock templates (`prop`, `crab`, `island`, `lighthouse`) are from the same pre-drowned toy style, so every model here is a purpose-built MeshCraft `run_script`. They use the project's Waterworld palette (`creative/3d-waterworld/tidebreakers-waterworld-palette.json`) and its living-green rule: plants and vines on unguarded ground use dull olive and kelp roles.
+The pilot's chests themselves are bright cartoon art and clash with the drowned palette, so they were rebuilt rather than dropped in. MeshCraft's stock templates (`prop`, `crab`, `island`, `lighthouse`) are from the same pre-drowned toy style, so every model here is a purpose-built MeshCraft `run_script`. They use the project's Waterworld palette (`creative/3d-waterworld/tidebreakers-waterworld-palette.json`), with its pale roles taken down to the world's weathered mid-tones (the `WEATHERED` table in each script; see `polish.md`), and its living-green rule: plants and vines on unguarded ground use dull olive and kelp roles.
 
 | Model | Script | Nodes | Triangles | Shipped |
 |---|---|---|---|---|
 | `tb_ironwake.glb` | `creative/3d-ironwake/scripts/ironwake.py` | 7 | 5,912 | 186 KB (Meshopt) |
-| `tb_coast_kit.glb` | `creative/3d-coast/scripts/coast_assets.py` (`coast_kit`) | 20 | 4,512 | 229 KB |
-| `tb_landmark_kit.glb` | same script (`landmark_kit`) | 8 | 8,856 | 369 KB |
+| `tb_coast_kit.glb` | `creative/3d-coast/scripts/coast_assets.py` (`coast_kit`) | 20 | 4,452 | 222 KB |
+| `tb_landmark_kit.glb` | same script (`landmark_kit`) | 8 | 8,676 | 355 KB |
 | `tb_finds_kit.glb` | `creative/3d-finds/scripts/finds_assets.py` (`finds_kit`) | 30 | 4,176 | 220 KB |
 | `tb_fittings_kit.glb` | same script (`fittings_kit`) | 22 | 1,420 | 80 KB |
 
@@ -139,7 +141,7 @@ Meshopt export quantizes positions (`KHR_mesh_quantization`) and puts the dequan
 
 | Check | Result |
 |---|---|
-| MeshCraft `validate_asset` on the shipped files | 0 failures on all 5. Warnings: triangle budget on `landmark_kit` (8,856 vs an 8,000 advisory, for 8 one-off landmarks), and footprint-centre on multi-node kits (expected, as on the earlier kits) |
+| MeshCraft `validate_asset` on the shipped files | 0 failures on all 5. Warnings: triangle budget on `landmark_kit` (8,676 vs an 8,000 advisory, for 8 one-off landmarks), and footprint-centre on multi-node kits (expected, as on the earlier kits) |
 | Khronos glTF-Validator | 0 errors, 0 warnings on all 5 |
 | MeshCraft `engine_check` (three@0.170, game toon material) | ok on all 5 |
 | `npm test` (unit, includes every node the code asks for, the Ironwake's tint materials and the no-quantization guard) | 298/298 pass |

@@ -2,8 +2,8 @@
  {
   "path": "/home/user/TIDEBREAKERS/creative/3d-finds/fittings_kit/exports/tb_fittings_kit.three-web-toon.glb",
   "kind": "export",
-  "bytes": 134224,
-  "sha256": "7702ee94a827ee1eab35eb2e527f29ec88c9a7020257137470f3e412e428ec71",
+  "bytes": 134216,
+  "sha256": "763c2b0361523ea163494735e7ae27c224e3dfac04d4f1db9c26e082e1d46d08",
   "profile": "three-web-toon",
   "format": "glb",
   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
@@ -12,15 +12,15 @@
     "path": "/home/user/TIDEBREAKERS/creative/3d-finds/fittings_kit/exports/tb_fittings_kit.three-web-toon.lod50.glb",
     "kind": "lod",
     "bytes": 104872,
-    "sha256": "9f6c9941e4b13591ac8c5dba6c93cdea6c477955393a3ff5a620fb3c2f13bf27",
+    "sha256": "781b59479224e09f5f92e93f9ba3c0042f4ec78912e787c0bda94f32f5fb58f2",
     "ratio": 0.5,
     "triangles": 700
    },
    {
     "path": "/home/user/TIDEBREAKERS/creative/3d-finds/fittings_kit/exports/tb_fittings_kit.three-web-toon.lod25.glb",
     "kind": "lod",
-    "bytes": 70028,
-    "sha256": "b350201f3ce02e77c705b5a58a14d5accbbe56a3881be9cf008b33d3593019c6",
+    "bytes": 70032,
+    "sha256": "c1fed02366c551e6876cda3e2dae317c2f631a1467035a8af269ca3a643fe913",
     "ratio": 0.25,
     "triangles": 335
    },
@@ -43,14 +43,14 @@
    {
     "path": "/home/user/TIDEBREAKERS/creative/3d-finds/fittings_kit/exports/tb_fittings_kit.three-web-toon.lod25.glb",
     "kind": "sidecar",
-    "bytes": 70028,
-    "sha256": "b350201f3ce02e77c705b5a58a14d5accbbe56a3881be9cf008b33d3593019c6"
+    "bytes": 70032,
+    "sha256": "c1fed02366c551e6876cda3e2dae317c2f631a1467035a8af269ca3a643fe913"
    },
    {
     "path": "/home/user/TIDEBREAKERS/creative/3d-finds/fittings_kit/exports/tb_fittings_kit.three-web-toon.lod50.glb",
     "kind": "sidecar",
     "bytes": 104872,
-    "sha256": "9f6c9941e4b13591ac8c5dba6c93cdea6c477955393a3ff5a620fb3c2f13bf27"
+    "sha256": "781b59479224e09f5f92e93f9ba3c0042f4ec78912e787c0bda94f32f5fb58f2"
    }
   ]
  }

@@ -8,8 +8,8 @@
   {
    "check": "triangle_budget",
    "level": "warn",
-   "detail": "8856 triangles (budget 8000)",
-   "tris": 8856
+   "detail": "8676 triangles (budget 8000)",
+   "tris": 8676
   },
   {
    "check": "degenerate_faces",
@@ -70,7 +70,7 @@
   {
    "check": "gltf_counts",
    "level": "info",
-   "detail": "9 nodes, 8 meshes, 89 primitives, 32 materials, 0 animations, 0 skins, 0 images",
+   "detail": "9 nodes, 8 meshes, 87 primitives, 33 materials, 0 animations, 0 skins, 0 images",
    "animations": []
   },
   {

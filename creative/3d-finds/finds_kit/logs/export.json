@@ -2,8 +2,8 @@
  {
   "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.glb",
   "kind": "export",
-  "bytes": 397448,
-  "sha256": "976de9d8cac729f5c585c896fa8c3fdd6a86339058bc045bcf1a0ed86f7cfb0f",
+  "bytes": 397420,
+  "sha256": "146217d77ec0c760d7c1b3dceac042a2577bab63a4c44caea38d797493f7c7f5",
   "profile": "three-web-toon",
   "format": "glb",
   "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
@@ -11,16 +11,16 @@
    {
     "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.lod50.glb",
     "kind": "lod",
-    "bytes": 266016,
-    "sha256": "a8d879ff90ebe9401c6499830837fe7ab554c5224a7420b181c769db5c0cb36c",
+    "bytes": 266020,
+    "sha256": "658a4a0170cca38e061ff61317d048e14b03836813aad1a62765451e371645cc",
     "ratio": 0.5,
     "triangles": 2070
    },
    {
     "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.lod25.glb",
     "kind": "lod",
-    "bytes": 161056,
-    "sha256": "9e4ba73fdc0c10843aba888f75ada192ac41c0f0c48d7ce0239570f689071eb2",
+    "bytes": 161060,
+    "sha256": "006ae8487559c3b043d5740eca9beeee201da5b22c66ca8986c5c37e481fc980",
     "ratio": 0.25,
     "triangles": 926
    },
@@ -43,14 +43,14 @@
    {
     "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.lod25.glb",
     "kind": "sidecar",
-    "bytes": 161056,
-    "sha256": "9e4ba73fdc0c10843aba888f75ada192ac41c0f0c48d7ce0239570f689071eb2"
+    "bytes": 161060,
+    "sha256": "006ae8487559c3b043d5740eca9beeee201da5b22c66ca8986c5c37e481fc980"
    },
    {
     "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.lod50.glb",
     "kind": "sidecar",
-    "bytes": 266016,
-    "sha256": "a8d879ff90ebe9401c6499830837fe7ab554c5224a7420b181c769db5c0cb36c"
+    "bytes": 266020,
+    "sha256": "658a4a0170cca38e061ff61317d048e14b03836813aad1a62765451e371645cc"
    }
   ]
  }

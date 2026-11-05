@@ -32,6 +32,27 @@ ROLES = {
     "tyre": "Tyre", "soil": "Soil", "algae": "Algae Olive", "fog": "Fog Grey", "pool": "Deep Ocean", "amber": "Sunset Amber",
 }
 
+# Weathered value overrides (asset-modernization polish). The Waterworld palette's pale roles (Bleached Timber,
+# Concrete, Barnacle, Fog Grey, Steel, Corrugated, Faded Paint, Sailcloth) are highlight colours. Used on large
+# surfaces they went near-white in the game: its toon ramp's top band and the world-space weathering pass's salt
+# crust (0.5-2.6 m above the sea) and sun-bleached tops lift them further, which read as a white, plastic sheen.
+# These are the drowned world's own mid-tones, matched to the terrain (sand #9a8f78, rock #5d5650) and the
+# code-built props the models replace (palm #a39a88/#8c8373, pier planks #a2927a/#7d6a52).
+WEATHERED = {
+    "wood": "#9A8466",         # aged, salt-worn timber (was Bleached Timber #C9A97A)
+    "fog": "#8C8373",          # bleached driftwood grey-brown (was Fog Grey #9AA9B4, a cold blue-white)
+    "concrete": "#7E786C",     # weathered concrete (was #A7A196)
+    "concrete_dk": "#5D5850",  # (was #6E6A62)
+    "barnacle": "#A49A86",     # salt and barnacle crust, muted (was #CFC6B0)
+    "steel": "#66707A",        # weathered steel, not chrome (was #7F8A94)
+    "corr": "#737670",         # corrugated sheet (was #8E918C)
+    "paint": "#94876A",        # faded paint (was #B9A882)
+    "cloth": "#C9BB9C",        # yellowed sailcloth and paper (was #EFE2C4)
+    "plaster": "#A39A86",      # the lighthouse's pale bands (the code-built tower's #a8a08c)
+    "sand": "#9A8F78",         # beach sand, as the terrain
+}
+ROLES.update({k: v for k, v in WEATHERED.items() if k in ROLES or k in ("plaster",)})
+
 kit.reset()  # noqa: F821
 M = kit.Materials(PAL, ROLES, prefix="TBC")  # noqa: F821
 M.add("lamp", "Window Lit", rough=0.3, emit=6.0)
@@ -104,14 +125,15 @@ def drum(x, y, z, role, lying=False, r=0.42, h=1.1):
 
 
 def stone(r, loc, seed, role="concrete_dk", squash=0.75, sub=2, wobble=0.22, band=True, algae=True):
-    """A weathered boulder: displaced icosphere, flat-ish base sunk into the ground, a pale salt/barnacle crust at
-    the foot (the tide line) and a drape of dull algae on the shaded side."""
+    """A weathered boulder: displaced icosphere, flat-ish base sunk into the ground, and a drape of dull algae on the
+    shaded side."""
     rng = random.Random(seed)
     sx, sy = rng.uniform(0.85, 1.15), rng.uniform(0.8, 1.1)
     q = [ball(r, (loc[0], loc[1], loc[2] + r * squash * 0.55), role, scale=(sx, sy, squash), seed=seed, wobble=wobble, sub=sub)]
     kit.deform(q[0], lambda v: Vector((v.x, v.y, max(v.z, loc[2] - r * 0.05))))  # noqa: F821  (sit it on its base)
-    if band:
-        q.append(ball(r * 1.02, (loc[0], loc[1], loc[2] + r * 0.08), "barnacle", scale=(sx, sy, 0.18), seed=seed + 1, wobble=0.12))
+    # (no modelled tide-line crust: a flattened band round the foot stood proud of the rock's narrower base as a pale
+    # shelf, a white puddle on the sand that z-fought the terrain. The game's weathering pass already paints the tide
+    # line, an algae stain below and salt above, in world space on every surface; `band` is kept for the call sites.)
     if algae:
         a = rng.uniform(0, math.tau)
         q.append(ball(r * 0.45, (loc[0] + math.cos(a) * r * 0.75 * sx, loc[1] + math.sin(a) * r * 0.7 * sy, loc[2] + r * 0.3), "algae",
@@ -276,7 +298,6 @@ def skull_rock():
     q.append(ball(0.8, (x + 2.4, 0.9, 1.0), "algae", scale=(1, 1, 0.4), seed=30, wobble=0.3))
     q += stone(1.6, (x + 2.8, 1.2, 0), 31, role="concrete")
     q += stone(1.0, (x - 2.9, 0.6, 0), 32, role="concrete_dk")
-    q.append(ball(3.4, (x, 0, 0.1), "barnacle", scale=(1, 1, 0.12), seed=33, wobble=0.1))  # tide crust
     return q
 
 
@@ -290,7 +311,7 @@ def lighthouse():
     for i in range(6):
         r0 = 2.6 - (i / 6) * 1.0
         r1 = 2.6 - ((i + 1) / 6) * 1.0
-        q.append(C(r0, H / 6, (x, 0, (i + 0.5) * H / 6), "red" if i % 2 else "concrete", verts=14, r2=r1))
+        q.append(C(r0, H / 6, (x, 0, (i + 0.5) * H / 6), "red" if i % 2 else "plaster", verts=14, r2=r1))
     # the plinth: rough stone and a concrete apron, sandbags by the door
     q += stone(3.0, (x, 0.3, -0.4), 41, role="concrete_dk", squash=0.35, band=True, algae=True)
     q.append(C(2.9, 0.4, (x, 0, 0.2), "concrete_dk", verts=14))

@@ -2,7 +2,7 @@
  "uri": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/exports/tb_coast_kit.mobile.glb",
  "mimeType": "model/gltf-binary",
  "validatorVersion": "2.0.0-dev.3.10",
- "validatedAt": "2026-11-05T04:54:24.956Z",
+ "validatedAt": "2026-11-05T07:16:57.395Z",
  "issues": {
   "numErrors": 0,
   "numWarnings": 0,
@@ -22,7 +22,7 @@
     "pointer": "/buffers/0",
     "mimeType": "application/gltf-buffer",
     "storage": "glb",
-    "byteLength": 154288
+    "byteLength": 149720
    }
   ],
   "animationCount": 0,
@@ -31,9 +31,9 @@
   "hasSkins": false,
   "hasTextures": false,
   "hasDefaultScene": true,
-  "drawCallCount": 104,
-  "totalVertexCount": 8040,
-  "totalTriangleCount": 4512,
+  "drawCallCount": 101,
+  "totalVertexCount": 7747,
+  "totalTriangleCount": 4452,
   "maxUVs": 0,
   "maxInfluences": 0,
   "maxAttributes": 2

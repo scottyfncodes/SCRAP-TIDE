@@ -4,11 +4,11 @@
   "KHR_materials_emissive_strength"
  ],
  "clips": [],
- "meshes": 104,
- "meshesWithVertexColor": 104,
+ "meshes": 101,
+ "meshesWithVertexColor": 101,
  "meshesWithBaseColorMap": 0,
  "material": "game-toon",
- "triangles": 4512,
+ "triangles": 4452,
  "nodes": [
   "Scene",
   "coast_kit",
@@ -109,12 +109,10 @@
   "rock_a",
   "rock_a_1",
   "rock_a_2",
-  "rock_a_3",
   "rock_b",
   "rock_b_1",
   "rock_b_2",
   "rock_b_3",
-  "rock_b_4",
   "rock_c",
   "rock_c_1",
   "rock_c_2",
@@ -124,7 +122,6 @@
   "rock_d_1",
   "rock_d_2",
   "rock_d_3",
-  "rock_d_4",
   "scrub_a",
   "scrub_a_1",
   "scrub_a_2",
@@ -165,7 +162,7 @@
   {
    "check": "engine_vertex_colors",
    "level": "pass",
-   "detail": "104/104 meshes carry COLOR_0 for the toon material"
+   "detail": "101/101 meshes carry COLOR_0 for the toon material"
   },
   {
    "check": "engine_base_on_ground",
