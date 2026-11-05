@@ -50,21 +50,36 @@ export interface QuestStep {
   hint: string;
 }
 
+/**
+ * The First Voyage, 8 steps (was 13; design bible PR 1.2). Same route and the same treasure dig, but every step is now
+ * something you do in the world: steering is learned by casting off, the anchor by going ashore, the map by digging,
+ * and the first salvage happens on the way home. Retired ids stay in QuestStepId so old saves load: see liveStep().
+ */
 export const FIRST_VOYAGE: QuestStep[] = [
-  { id: 'steer', text: 'Learn to steer', hint: 'Drag the wheel (bottom-left) toward where you want to go. Push further to raise more sail.' },
-  { id: 'leave_dock', text: 'Sail out of Driftholm', hint: 'Head north, away from the raft docks, into open water.' },
-  { id: 'reach_turtle', text: 'Sail to the atoll to the west', hint: 'Follow the gold marker. That’s Turtle Atoll, the top of a drowned hill.' },
-  { id: 'anchor', text: 'Drop anchor near the beach', hint: 'Slow down close to shore and tap ANCHOR.' },
-  { id: 'ashore', text: 'Go ashore', hint: 'Tap GO ASHORE to wade onto the beach.' },
+  { id: 'leave_dock', text: 'Cast off from Driftholm', hint: 'Drag the wheel (bottom-left) toward where you want to go. Push further for more sail. Head north, clear of the rafts.' },
+  { id: 'reach_turtle', text: 'Sail to Turtle Atoll', hint: 'Follow the gold marker west: a ring of dead coral on top of a drowned hill. Old Wren says something washed up there.' },
+  { id: 'ashore', text: 'Anchor and go ashore', hint: 'Ease off the wheel in the turquoise shallows, tap ANCHOR, then GO ASHORE.' },
   { id: 'find_bottle', text: 'Search the beach', hint: 'Something is glinting on the south beach.' },
-  { id: 'read_map', text: 'Study the map scrap', hint: 'Open MAPS and read the clue carefully.' },
-  { id: 'dig_x', text: 'Find the X and dig', hint: 'Use the landmarks on the map. Your shovel will tell you when the sand feels loose.' },
-  { id: 'return_harbor', text: 'Return to Driftholm', hint: 'Board your skiff, raise anchor and sail home. Dock at the raft pier.' },
-  { id: 'sell', text: 'Trade some finds with Pip', hint: 'Open the harbor and visit Pip the Trader.' },
-  { id: 'catalog', text: 'Look at your Discovery Catalog', hint: 'Tap CATALOG to see what you’ve found.' },
-  { id: 'upgrade', text: 'Buy your first upgrade from Marlo', hint: 'Visit the Shipwright. The Canvas Mainsail is a fine start.' },
-  { id: 'free', text: 'The world drowned. You didn’t.', hint: 'Follow the Captain’s Log: salvage, upgrade, explore further.' },
+  { id: 'dig_x', text: 'Read the scrap, find the X, dig', hint: 'Study the map: the landmarks are real. Stand where the clue says. Your shovel tells you when the sand is loose.' },
+  { id: 'return_harbor', text: 'Sail home. Salvage the Sunken Tower on the way', hint: 'The drowned office block east of the pier: slow down beside it and tap SALVAGE. Then dock at the raft pier.' },
+  { id: 'upgrade', text: 'Trade with Pip, refit with Marlo', hint: 'Sell what you dug up to Pip, then have Marlo fit your first part. The Canvas Mainsail is a good start.' },
+  { id: 'free', text: 'The world drowned. You didn’t.', hint: 'Follow the Captain’s Log: salvage, refit, push further out.' },
 ];
+
+/** Steps cut from the First Voyage, and the live step a save sitting on one of them continues from. */
+export const RETIRED_STEPS: Partial<Record<QuestStepId, QuestStepId>> = {
+  steer: 'leave_dock',
+  anchor: 'ashore',
+  read_map: 'dig_x',
+  sell: 'upgrade',
+  catalog: 'upgrade',
+};
+
+/** The step a saved quest id continues from: itself if it is live, its successor if it was retired. */
+export function liveStep(id: string | undefined): QuestStepId {
+  if (id && FIRST_VOYAGE.some((q) => q.id === id)) return id as QuestStepId;
+  return (id && RETIRED_STEPS[id as QuestStepId]) || FIRST_VOYAGE[0].id;
+}
 
 /** After the first voyage: the Captain's Log, a chain of goals that always points at the next big unlock. */
 export interface GoalDef {

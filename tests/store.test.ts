@@ -23,6 +23,18 @@ describe('Store', () => {
     expect(s.data.crew).toEqual([]);
   });
 
+  it('a save made mid-way through the old 13-step First Voyage continues from the matching live step', () => {
+    for (const [old, live] of [['steer', 'leave_dock'], ['anchor', 'ashore'], ['read_map', 'dig_x'], ['sell', 'upgrade'], ['catalog', 'upgrade'], ['find_bottle', 'find_bottle'], ['free', 'free']]) {
+      mem.clear();
+      const seed = new Store();
+      (seed.data as any).quest = old;
+      seed.saveNow();
+      expect(new Store().data.quest, old).toBe(live);
+    }
+    mem.clear();
+    expect(new Store().data.quest).toBe('leave_dock');
+  });
+
   it('calm effects default off without a reduced-motion preference, and old saves gain the setting', () => {
     expect(new Store().data.settings.calm).toBe(false);
     mem.clear();

@@ -23,11 +23,12 @@ import { pack, VOICE_LINES, type VoiceId } from '../audio/pack';
 import { FlipFX } from './flipfx';
 import { goalTarget } from './goalHelp';
 import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh, plantFindMesh } from './fx';
-import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, STORMWALL, stormwallLee, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
+import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, OUTPOSTS, STORMWALL, stormwallLee, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
 import { item, RARITY_ORDER, LIVING_GREEN, isLiving } from '../data/items';
 import { UPGRADE_MAP, VESSELS, COSMETIC_MAP, type VesselId } from '../data/ship';
 import { RECIPE_MAP } from '../data/crafting';
-import { CREW_MAP, ROLE_INFO } from '../data/crew';
+import { CREW_MAP, ROLE_INFO, type CrewRole } from '../data/crew';
+import { pickLine, type LineTrigger } from '../data/characters';
 import { GOALS } from '../data/progress';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
 
@@ -113,6 +114,10 @@ export class Game implements GameAPI {
   private crabs: { obj: THREE.Object3D; vx: number; vz: number; life: number }[] = [];
   private anims: ((dt: number) => boolean)[] = [];
   private msgCooldown: Record<string, number> = {};
+  private barkRecent: string[] = [];
+  private barkAt = -99;
+  private nightSaid = false;
+  private voyageTowerPassed = false;
   private steerTime = 0;
   private shoreCache: { x: number; z: number } | null = null;
   private shoreTimer = 0;
@@ -421,6 +426,7 @@ export class Game implements GameAPI {
     pack.sting('upgrade');
     this.crewCheer(900);
     if (s.hasRole('mechanic')) setTimeout(() => pack.say('juno_upgrade', 90), 1600);
+    setTimeout(() => this.crewBark('upgrade', { solar: u.slot === 'power' }, { prefer: 'mechanic', cool: 20 }), 2600);
     audio.hammer();
     this.haptic(30);
     this.rebuildShip();
@@ -507,6 +513,30 @@ export class Game implements GameAPI {
 
   haptic(ms: number) {
     if (this.store.data.settings.haptics && navigator.vibrate) navigator.vibrate(ms);
+  }
+
+  /**
+   * A crew member says something about what just happened (src/data/characters.ts). One remark at a time: a short
+   * gap between any two barks and a cooldown per trigger, so the crew comments without chattering. Returns whether
+   * anyone spoke.
+   */
+  crewBark(trigger: LineTrigger, ctx: Record<string, boolean> = {}, opts: { prefer?: CrewRole; cool?: number; specificOnly?: boolean; force?: boolean } = {}): boolean {
+    const s = this.store;
+    if (!s.data.crew.length) return false;
+    if (!opts.force && (this.t - this.barkAt < 7 || (this.msgCooldown[`bark_${trigger}`] ?? 0) > this.t)) return false;
+    const recent = new Set(this.barkRecent);
+    const aboard = s.data.crew.map((id) => CREW_MAP[id]).filter(Boolean);
+    const order = [...aboard].sort(() => Math.random() - 0.5).sort((a, b) => Number(b.role === opts.prefer) - Number(a.role === opts.prefer));
+    for (const c of order) {
+      const text = pickLine(c.id, trigger, ctx, { recent, specificOnly: opts.specificOnly });
+      if (!text) continue;
+      this.barkAt = this.t;
+      this.msgCooldown[`bark_${trigger}`] = this.t + (opts.cool ?? 30);
+      this.barkRecent = [...this.barkRecent, text].slice(-12);
+      this.ui.toast(`${c.name.split(' ')[0]}: “${text}”`, { color: ROLE_INFO[c.role].color, life: 3.8 });
+      return true;
+    }
+    return false;
   }
 
   private say(key: string, text: string, cool = 4, opts: { icon?: string; color?: string } = {}) {
@@ -609,6 +639,12 @@ export class Game implements GameAPI {
       if (isNew && mode === 'card') this.ui.revealItem(id, got, true);
       else if (isNew && mode === 'toast') {
         this.ui.toast(isLiving(id) ? `Something alive: ${d.name}!` : `New discovery: ${d.name}!`, { icon: id, color: isLiving(id) ? LIVING_GREEN : '#f0c445', life: 3.2 });
+        if (isLiving(id)) setTimeout(() => this.crewBark('green', {}, { cool: 60 }), 2200);
+        if (!s.data.flags.includes('catalog_hint')) {
+          // the First Voyage no longer has a "look at your Catalog" step: teach it here, once
+          s.data.flags.push('catalog_hint');
+          setTimeout(() => this.ui.toast('Logged in your CATALOG. Every find stays on record, even after you trade it away.', { icon: 'map', color: '#c9b48a', life: 4 }), 3600);
+        }
         audio.discover(RARITY_ORDER.indexOf(d.rarity));
       } else if (mode !== 'none') {
         this.ui.toast(`+${got} ${d.name}`, { icon: id, color: '#c9b48a', life: 1.8 });
@@ -778,21 +814,26 @@ export class Game implements GameAPI {
       this.damage((storm - 0.4) * 1.6 * wallMul * dt, null);
       if (!this.stormSaid) {
         this.stormSaid = true;
-        const msg = inWall && st.crossStorm && lee < 0.5
-          ? 'The Stormwall! A gale holds her back. Push through: the Spire’s lee is calmer.'
-          : this.store.hasRole('lookout') ? 'Kai: “Storm on us! Hold her steady, she’ll take a beating.”' : 'Storm! Waves are battering the hull.';
-        this.ui.toast(msg, { color: '#9aa9b4', life: 3.5 });
+        if (inWall && st.crossStorm && lee < 0.5) this.ui.toast('The Stormwall! A gale holds her back. Push through: the Spire’s lee is calmer.', { color: '#9aa9b4', life: 3.5 });
+        else if (!this.crewBark('storm', {}, { prefer: 'lookout', force: true, cool: 40 })) this.ui.toast('Storm! Waves are battering the hull.', { color: '#9aa9b4', life: 3.5 });
         if (this.store.hasRole('lookout')) pack.say('kai_storm', 40);
         audio.discover(0);
       }
     } else if (storm < 0.2) this.stormSaid = false;
+    // nightfall: someone on deck says something (once a night)
+    if (this.atmo.night > 0.75 && !this.nightSaid) {
+      if (this.crewBark('night', { lights: this.store.has('deck_lights') }, { cool: 200 })) this.nightSaid = true;
+    } else if (this.atmo.night < 0.3) this.nightSaid = false;
     if (this.store.hasRole('mechanic') && s.hull < st.hullMax && storm < 0.4) s.hull = Math.min(st.hullMax, s.hull + dt * 0.35);
     // Lookout: early warning of a storm cell ahead
     if (this.store.hasRole('lookout')) {
       const ax = b.x + Math.sin(b.heading) * 160, az = b.z + Math.cos(b.heading) * 160;
       if (this.atmo.stormAt(ax, az) > 0.5 && storm < 0.2) {
-        this.say('lookout_storm', 'Kai: “Storm ahead, Captain. Go round, or brace.”', 25, { color: '#b26bff' });
-        pack.say('kai_storm', 40);
+        if ((this.msgCooldown.lookout_storm ?? 0) <= this.t) {
+          this.msgCooldown.lookout_storm = this.t + 25;
+          this.ui.toast('Kai: “Storm ahead, Captain. Go round, or brace.”', { color: ROLE_INFO.lookout.color, life: 3.5 });
+          pack.say('kai_storm', 40);
+        }
       }
     }
     // Fishing: rods and/or a Fisher bring in Silverfin while under way
@@ -805,7 +846,10 @@ export class Game implements GameAPI {
         if (got) {
           this.ui.toast('+1 Silverfin', { icon: 'fish', color: '#9ec5e8', life: 1.6 });
           audio.splash();
-          if (this.store.hasRole('fisher')) pack.say('tomas_catch', 180);
+          if (this.store.hasRole('fisher')) {
+            pack.say('tomas_catch', 180);
+            this.crewBark('fish', {}, { prefer: 'fisher', cool: 240 });
+          }
           this.store.commit();
         }
       }
@@ -867,7 +911,10 @@ export class Game implements GameAPI {
       this.ui.hit();
       audio.hullHit(Math.min(1, dmg / 12));
       pack.layer('hull', 0.35 + Math.min(0.5, dmg / 24));
-      if (this.store.hasRole('mechanic') && s.hull < this.store.stats.hullMax * 0.35) pack.say('juno_hull', 60);
+      if (this.store.hasRole('mechanic') && s.hull < this.store.stats.hullMax * 0.35) {
+        pack.say('juno_hull', 60);
+        this.crewBark('hull', {}, { prefer: 'mechanic', cool: 60 });
+      }
       this.haptic(Math.min(80, 20 + dmg * 4));
     }
     if (s.hull < st.hullMax * 0.25 && this.t - this.lastHullWarn > 20) {
@@ -983,6 +1030,7 @@ export class Game implements GameAPI {
     this.persistShip();
     this.store.commit();
     this.checkMilestones();
+    setTimeout(() => this.crewBark('dock', { [id]: true }, { specificOnly: true, cool: 120 }), 900);
     setTimeout(() => this.ui.openPanel('harbor'), 250);
   }
 
@@ -1215,6 +1263,7 @@ export class Game implements GameAPI {
       if (n) this.ui.toast(`Unloaded ${n} item${n > 1 ? 's' : ''} into your harbor vault`, { color: '#4f9a95', life: 3 });
       audio.phrase('harbor');
       this.dockhandHail();
+      setTimeout(() => this.crewBark('dock', { driftholm: true }, { specificOnly: true, cool: 120 }), 1400);
       setTimeout(() => this.ui.openPanel('harbor'), 300);
     });
   }
@@ -1794,7 +1843,7 @@ export class Game implements GameAPI {
     const q = this.store.data.quest;
     if (b.docked) {
       const sett = SETTLEMENT_MAP[b.dockedAt];
-      acts.push({ id: 'harbor', label: `⚓ ${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['sell', 'catalog', 'upgrade', 'return_harbor'].includes(q) });
+      acts.push({ id: 'harbor', label: `⚓ ${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['upgrade', 'return_harbor'].includes(q) });
     } else {
       const pierD = Math.hypot(b.x - this.env.pierTip.x, b.z - this.env.pierTip.z);
       if (pierD < 18) acts.push({ id: 'dock', label: '⚓ DOCK', glow: true });
@@ -1819,10 +1868,10 @@ export class Game implements GameAPI {
       }
       const depth = -heightAt(b.x, b.z);
       if (b.anchored) {
-        if (this.shoreCache) acts.push({ id: 'ashore', label: '\u{1F3DD} GO ASHORE', glow: q === 'ashore' });
+        if (this.shoreCache) acts.push({ id: 'ashore', label: '\u{1F3DD} GO ASHORE', glow: q === 'ashore' && b.anchored });
         acts.push({ id: 'raise', label: 'RAISE ANCHOR' });
       } else if (pierD >= 18 && (this.shoreCache || depth < 10)) {
-        acts.push({ id: 'anchor', label: '⚓ ANCHOR', glow: q === 'anchor' && b.speed < 3.2, disabled: b.speed > 3.2 || depth > 10 });
+        acts.push({ id: 'anchor', label: '⚓ ANCHOR', glow: q === 'ashore' && b.speed < 3.2, disabled: b.speed > 3.2 || depth > 10 });
       }
     }
     this.ui.setActions(acts);
@@ -2048,6 +2097,7 @@ export class Game implements GameAPI {
       if ((region === 'emerald' || region === 'stormwall') && !s.data.regionsSeen.includes(region)) {
         s.data.regionsSeen.push(region);
         this.ui.banner(REGIONS[region].name, REGIONS[region].blurb);
+        setTimeout(() => this.crewBark('region', { [region]: true }, { specificOnly: true, force: true }), 3500);
         s.commit();
       }
     }
@@ -2059,9 +2109,16 @@ export class Game implements GameAPI {
         this.ui.banner(poi.name, poi.blurb ?? SETTLEMENT_MAP[poi.id]?.blurb ?? SALVAGE_SITES.find((x) => Math.hypot(x.x - poi.x, x.z - poi.z) < 60)?.blurb ?? '');
         audio.discover(2);
         if (poi.id === 'spire' && !s.data.flags.includes('reached_spire')) s.data.flags.push('reached_spire');
+        setTimeout(() => this.crewBark('poi', { [poi.id]: true }, { specificOnly: true, force: true }), 3200);
         s.commit();
         this.checkMilestones();
       }
+    }
+    // Kai knows the sinking platform called Going Under: it was home
+    const sinking = OUTPOSTS.find((o) => o.kind === 'sinking');
+    if (sinking && s.hasRole('lookout') && !s.data.flags.includes('kai_going_under') && Math.hypot(px - sinking.x, pz - sinking.z) < 70) {
+      s.data.flags.push('kai_going_under');
+      this.crewBark('poi', { sinking: true }, { prefer: 'lookout', specificOnly: true, force: true });
     }
   }
 
@@ -2073,17 +2130,11 @@ export class Game implements GameAPI {
       const q = s.data.quest;
       let ok = false;
       switch (q) {
-        case 'steer':
-          ok = this.steerTime > 1.2;
-          break;
         case 'leave_dock':
           ok = Math.hypot(this.boat.x - this.env.pierTip.x, this.boat.z - this.env.pierTip.z) > 35;
           break;
         case 'reach_turtle':
           ok = Math.hypot(this.boat.x - turtle.x, this.boat.z - turtle.z) < turtle.r + 60;
-          break;
-        case 'anchor':
-          ok = this.boat.anchored && Math.hypot(this.boat.x - turtle.x, this.boat.z - turtle.z) < turtle.r + 70;
           break;
         case 'ashore':
           ok = this.mode === 'foot' && this.foot.island.id === 'turtle';
@@ -2091,17 +2142,11 @@ export class Game implements GameAPI {
         case 'find_bottle':
           ok = s.data.fragments.includes('turtle_scrap');
           break;
-        case 'read_map':
-          ok = s.data.mapsCompleted.includes('turtle_map');
-          break;
         case 'dig_x':
           ok = s.data.mapsCompleted.includes('turtle_map');
           break;
         case 'return_harbor':
           ok = this.boat.docked && this.mode === 'sail';
-          break;
-        case 'sell':
-          ok = s.data.flags.includes('sold');
           break;
         case 'upgrade':
           ok = s.data.upgrades.length > 0;
@@ -2126,21 +2171,28 @@ export class Game implements GameAPI {
       case 'reach_turtle':
         target = { x: turtle.x, z: turtle.z, y: 10 };
         break;
-      case 'anchor':
-        target = this.boat.anchored ? null : { x: turtle.x + 6, z: turtle.z + turtle.r + 14 };
+      case 'ashore':
+        target = this.mode === 'sail' && !this.boat.anchored ? { x: turtle.x + 6, z: turtle.z + turtle.r + 14 } : null;
         break;
       case 'find_bottle': {
         const b = turtle.finds[0];
         target = this.mode === 'foot' ? { x: turtle.x + b.x, z: turtle.z + b.z, y: 1.5 } : { x: turtle.x, z: turtle.z, y: 10 };
         break;
       }
-      case 'read_map':
       case 'dig_x':
         target = this.mode === 'foot' ? null : { x: turtle.x, z: turtle.z, y: 10 };
         break;
-      case 'return_harbor':
-        target = this.mode === 'foot' ? { x: this.foot.landX, z: this.foot.landZ, y: 1 } : { x: this.env.pierTip.x, z: this.env.pierTip.z, y: 3 };
+      case 'return_harbor': {
+        // home by way of the Sunken Tower: the first SALVAGE is taught on the voyage. Skip past it and the marker
+        // simply moves on to the pier.
+        const tower = SALVAGE_SITES.find((x) => x.id === 'sv_stump')!;
+        if (this.mode === 'foot') target = { x: this.foot.landX, z: this.foot.landZ, y: 1 };
+        else {
+          if (Math.hypot(this.boat.x - tower.x, this.boat.z - tower.z) < 45) this.voyageTowerPassed = true;
+          target = s.data.hauls === 0 && !this.voyageTowerPassed ? { x: tower.x, z: tower.z, y: 8 } : { x: this.env.pierTip.x, z: this.env.pierTip.z, y: 3 };
+        }
         break;
+      }
     }
     if (q === 'free' && !target && this.mode === 'sail') {
       const g = GOALS[s.data.goal];

@@ -1,5 +1,6 @@
 // DOM UI: HUD, touch controls, panels (harbor, catalog, maps, ship, cargo, settings), reveals.
 import { goalProgressText } from '../game/goalHelp';
+import { pickLine, CHARACTER_MAP } from '../data/characters';
 import { ITEMS, CATALOG_ITEMS, ITEM_MAP, RARITY_COLOR, RARITY_LABEL, RARITY_ORDER, CATEGORY_LABEL, LIVING_GREEN, isLiving, item, type Category } from '../data/items';
 import { UPGRADES, VESSELS, COSMETICS, COSMETIC_MAP, SLOT_LABEL, SLOT_ORDER, UPGRADE_MAP, type Cost } from '../data/ship';
 import { RECIPES } from '../data/crafting';
@@ -107,6 +108,8 @@ const SETTLEMENT_NPCS: Record<string, { trader: keyof typeof NPCS; wright: keyof
 
 export class UI {
   root: HTMLElement;
+  private npcRecent = new Set<string>();
+  private greetings = new Map<string, string>(); // this visit's greetings, so re-rendering the panel keeps them
   joy = { x: 0, y: 0, active: false };
   onAction: (id: string) => void = () => {};
   private hud!: HTMLElement;
@@ -750,6 +753,7 @@ export class UI {
       case 'settings':
         return this.settingsPanel();
       case 'harbor':
+        this.greetings.clear(); // a fresh visit: people say something new
         return this.harborPanel();
       case 'appraiser':
         return this.appraiserPanel();
@@ -776,19 +780,33 @@ export class UI {
     const vaultCount = s.data.vault.reduce((a, b) => a + b.n, 0);
     const sellable = [...s.data.vault, ...s.data.cargo].filter((v) => item(v.id).category !== 'resource').length;
     const st = s.stats;
-    const lines: Record<string, string> = {
-      pip: sellable ? '“Ooh, what did the sea give you today? Let’s have a look!”' : '“Bring me the old world and I’ll give you gold.”',
-      sal: '“Fish, scrap, old records… I buy what floats and what sinks.”',
-      dace: '“Rig rules: everybody trades, nobody steals. Rustfang excepted.”',
-      marlo: '“Every plate I weld, you’ll see. That’s my guarantee. Also my only guarantee.”',
-      nori: '“Rods, rafts and rope. We keep it simple up here.”',
-      vik: '“Diesels, radar, harpoons. Proper kit for the Reach.”',
+    // who's aboard and what's in the hold colours what people say (src/data/characters.ts)
+    const ctx: Record<string, boolean> = {
+      sellable: sellable > 0, empty: sellable === 0,
+      green: [...s.data.vault, ...s.data.cargo].some((v) => isLiving(v.id)),
+      fragment: s.data.fragments.length > s.data.mapsCompleted.length,
+      reach: s.data.regionsSeen.includes('emerald'),
+      bare: s.data.upgrades.length === 0,
+      damaged: s.data.hull < st.hullMax * 0.6,
+      sloop: s.data.vessel === 'sloop', ironwake: s.data.vessel === 'ironwake',
+      repelled: s.data.raidersRepelled > 0,
+      tomas_aboard: s.data.crew.includes('tomas'), juno_aboard: s.data.crew.includes('juno'),
+    };
+    const greet = (id: string) => {
+      const kept = this.greetings.get(id);
+      if (kept !== undefined) return kept;
+      const text = pickLine(id, 'dock', ctx, { recent: this.npcRecent });
+      if (text) this.npcRecent.add(text);
+      if (this.npcRecent.size > 24) this.npcRecent.delete(this.npcRecent.values().next().value!);
+      const out = text ? `“${text}”` : '';
+      this.greetings.set(id, out);
+      return out;
     };
     let html = `<div class="speech">${sett.blurb}</div>`;
-    if (sett.services.includes('appraiser')) html += this.npcCard(npc.trader, 'appraiser', lines[npc.trader] ?? '');
-    if (sett.services.includes('shipwright')) html += this.npcCard(npc.wright, 'shipwright', lines[npc.wright] ?? '');
-    if (sett.services.includes('cartographer')) html += this.npcCard('wren', 'cartographer', s.data.fragments.length ? '“A map fragment! Show it to old Wren.”' : '“Every chart is a promise someone forgot to keep.”');
-    if (sett.services.includes('curios')) html += this.npcCard('odessa', 'curios', '“A boat should look like its captain. Yours looks… damp.”');
+    if (sett.services.includes('appraiser')) html += this.npcCard(npc.trader, 'appraiser', greet(npc.trader));
+    if (sett.services.includes('shipwright')) html += this.npcCard(npc.wright, 'shipwright', greet(npc.wright));
+    if (sett.services.includes('cartographer')) html += this.npcCard('wren', 'cartographer', greet('wren'));
+    if (sett.services.includes('curios')) html += this.npcCard('odessa', 'curios', greet('odessa'));
     const recruitable = CREW.filter((c) => (c.home === sett.id || (home && c.home === 'castaway' && s.data.castaways.some((cw) => cw.endsWith(c.id)))) && !s.data.crew.includes(c.id));
     html += `<div class="section-title">Services</div><div class="svc">
       ${sett.services.includes('fuel') ? `<button class="btn fuelb" ${st.engine ? '' : 'disabled'}>⛽ Fill tank · ${sett.fuelPrice}g/unit</button>` : ''}
@@ -850,7 +868,7 @@ export class UI {
         const info = ROLE_INFO[c.role];
         const needUp = c.requires?.upgrade && !s.has(c.requires.upgrade);
         const full = s.data.crew.length >= s.stats.berths;
-        const row = el(`<div class="row"><div class="crew-face" style="background:${info.color}">${info.icon}</div><div class="r-main"><div class="r-title">${c.name} · ${info.label}</div><div class="r-sub">${c.pitch}</div><div class="r-sub"><b>${info.perk}</b></div>${needUp ? `<div class="r-sub"><b>Needs: ${UPGRADE_MAP[c.requires!.upgrade!].name}</b></div>` : ''}</div>
+        const row = el(`<div class="row"><div class="crew-face" style="background:${info.color}">${info.icon}</div><div class="r-main"><div class="r-title">${c.name} · ${info.label}</div><div class="r-sub">${c.pitch}</div>${CHARACTER_MAP[c.id] ? `<div class="r-sub"><i>${CHARACTER_MAP[c.id].pronouns} · ${CHARACTER_MAP[c.id].voice} Wants ${CHARACTER_MAP[c.id].want.charAt(0).toLowerCase()}${CHARACTER_MAP[c.id].want.slice(1)}</i></div>` : ''}<div class="r-sub"><b>${info.perk}</b></div>${needUp ? `<div class="r-sub"><b>Needs: ${UPGRADE_MAP[c.requires!.upgrade!].name}</b></div>` : ''}</div>
           <button class="btn" ${needUp || full || (c.cost ?? 0) > s.data.gold ? 'disabled' : ''}>${c.cost ? `Hire ${c.cost}g` : 'Sign on'}</button></div>`);
         row.querySelector('button')!.addEventListener('click', () => {
           this.game.recruit(c.id);
