@@ -1,0 +1,439 @@
+{
+  "generated_at": "2026-11-05T16:36:03.454Z",
+  "commit": "d7c69561c97c9235706d90bbab1b8f1957a8af83",
+  "branch": "main",
+  "dirty_src": false,
+  "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
+  "server": "vite dev server (src/)",
+  "evidence_class": "simulation-measured (what-if: data patched in a throwaway page; not the shipped game)",
+  "winch": "2/3",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "variants": [
+    {
+      "id": "baseline",
+      "label": "current game",
+      "campaign": [
+        {
+          "seed": 1,
+          "trimaran_actions": 21,
+          "trimaran_hauls": 10,
+          "trimaran_wait_min": 24.03,
+          "max_earlier_step": 11,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 48,
+          "total_actions": 208,
+          "total_wait_h": 1.03
+        },
+        {
+          "seed": 2,
+          "trimaran_actions": 24,
+          "trimaran_hauls": 10,
+          "trimaran_wait_min": 26.03,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 25,
+          "ironwake_actions": 51,
+          "total_actions": 212,
+          "total_wait_h": 1.01
+        },
+        {
+          "seed": 3,
+          "trimaran_actions": 20,
+          "trimaran_hauls": 12,
+          "trimaran_wait_min": 24.03,
+          "max_earlier_step": 9,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 52,
+          "total_actions": 224,
+          "total_wait_h": 0.96
+        },
+        {
+          "seed": 4,
+          "trimaran_actions": 20,
+          "trimaran_hauls": 13,
+          "trimaran_wait_min": 27.05,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 56,
+          "total_actions": 227,
+          "total_wait_h": 1.03
+        },
+        {
+          "seed": 5,
+          "trimaran_actions": 17,
+          "trimaran_hauls": 7,
+          "trimaran_wait_min": 17.02,
+          "max_earlier_step": 14,
+          "actions_before_trimaran": 28,
+          "ironwake_actions": 52,
+          "total_actions": 220,
+          "total_wait_h": 0.86
+        }
+      ],
+      "mean": {
+        "trimaran_actions": 20.4,
+        "trimaran_wait_min": 23.6,
+        "max_earlier_step": 10.8,
+        "spike_ratio": 1.89,
+        "actions_before_trimaran": 26.2,
+        "ironwake_actions": 51.8,
+        "total_actions": 218.2
+      }
+    },
+    {
+      "id": "gold_320",
+      "label": "Trimaran 420g → 320g",
+      "campaign": [
+        {
+          "seed": 1,
+          "trimaran_actions": 18,
+          "trimaran_hauls": 7,
+          "trimaran_wait_min": 20.02,
+          "max_earlier_step": 11,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 51,
+          "total_actions": 191,
+          "total_wait_h": 1
+        },
+        {
+          "seed": 2,
+          "trimaran_actions": 20,
+          "trimaran_hauls": 6,
+          "trimaran_wait_min": 18,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 25,
+          "ironwake_actions": 49,
+          "total_actions": 207,
+          "total_wait_h": 0.82
+        },
+        {
+          "seed": 3,
+          "trimaran_actions": 17,
+          "trimaran_hauls": 9,
+          "trimaran_wait_min": 18.02,
+          "max_earlier_step": 9,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 47,
+          "total_actions": 203,
+          "total_wait_h": 0.93
+        },
+        {
+          "seed": 4,
+          "trimaran_actions": 19,
+          "trimaran_hauls": 12,
+          "trimaran_wait_min": 24.03,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 77,
+          "total_actions": 218,
+          "total_wait_h": 1.06
+        },
+        {
+          "seed": 5,
+          "trimaran_actions": 14,
+          "trimaran_hauls": 4,
+          "trimaran_wait_min": 12,
+          "max_earlier_step": 14,
+          "actions_before_trimaran": 28,
+          "ironwake_actions": 50,
+          "total_actions": 224,
+          "total_wait_h": 0.78
+        }
+      ],
+      "mean": {
+        "trimaran_actions": 17.6,
+        "trimaran_wait_min": 18.4,
+        "max_earlier_step": 10.8,
+        "spike_ratio": 1.63,
+        "actions_before_trimaran": 26.2,
+        "ironwake_actions": 54.8,
+        "total_actions": 208.6
+      }
+    },
+    {
+      "id": "driftwood_5",
+      "label": "Trimaran driftwood 8 → 5",
+      "campaign": [
+        {
+          "seed": 1,
+          "trimaran_actions": 18,
+          "trimaran_hauls": 10,
+          "trimaran_wait_min": 18.03,
+          "max_earlier_step": 11,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 68,
+          "total_actions": 213,
+          "total_wait_h": 0.95
+        },
+        {
+          "seed": 2,
+          "trimaran_actions": 18,
+          "trimaran_hauls": 9,
+          "trimaran_wait_min": 18.03,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 25,
+          "ironwake_actions": 41,
+          "total_actions": 210,
+          "total_wait_h": 0.77
+        },
+        {
+          "seed": 3,
+          "trimaran_actions": 19,
+          "trimaran_hauls": 12,
+          "trimaran_wait_min": 22.05,
+          "max_earlier_step": 9,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 47,
+          "total_actions": 189,
+          "total_wait_h": 0.97
+        },
+        {
+          "seed": 4,
+          "trimaran_actions": 18,
+          "trimaran_hauls": 12,
+          "trimaran_wait_min": 22.05,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 59,
+          "total_actions": 195,
+          "total_wait_h": 0.98
+        },
+        {
+          "seed": 5,
+          "trimaran_actions": 13,
+          "trimaran_hauls": 5,
+          "trimaran_wait_min": 12.02,
+          "max_earlier_step": 14,
+          "actions_before_trimaran": 28,
+          "ironwake_actions": 43,
+          "total_actions": 219,
+          "total_wait_h": 0.67
+        }
+      ],
+      "mean": {
+        "trimaran_actions": 17.2,
+        "trimaran_wait_min": 18.4,
+        "max_earlier_step": 10.8,
+        "spike_ratio": 1.59,
+        "actions_before_trimaran": 26.2,
+        "ironwake_actions": 51.6,
+        "total_actions": 205.2
+      }
+    },
+    {
+      "id": "drift_source",
+      "label": "driftwood added to Sunken Tower + Hollow Underfloors loot (w3, 1-2)",
+      "campaign": [
+        {
+          "seed": 1,
+          "trimaran_actions": 21,
+          "trimaran_hauls": 12,
+          "trimaran_wait_min": 24.03,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 55,
+          "total_actions": 223,
+          "total_wait_h": 1.07
+        },
+        {
+          "seed": 2,
+          "trimaran_actions": 20,
+          "trimaran_hauls": 13,
+          "trimaran_wait_min": 27.05,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 44,
+          "total_actions": 220,
+          "total_wait_h": 1.08
+        },
+        {
+          "seed": 3,
+          "trimaran_actions": 23,
+          "trimaran_hauls": 12,
+          "trimaran_wait_min": 28.03,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 59,
+          "total_actions": 207,
+          "total_wait_h": 1.16
+        },
+        {
+          "seed": 4,
+          "trimaran_actions": 21,
+          "trimaran_hauls": 9,
+          "trimaran_wait_min": 24.03,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 28,
+          "ironwake_actions": 48,
+          "total_actions": 217,
+          "total_wait_h": 1.03
+        },
+        {
+          "seed": 5,
+          "trimaran_actions": 18,
+          "trimaran_hauls": 12,
+          "trimaran_wait_min": 23.05,
+          "max_earlier_step": 7,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 62,
+          "total_actions": 207,
+          "total_wait_h": 1.01
+        }
+      ],
+      "mean": {
+        "trimaran_actions": 20.6,
+        "trimaran_wait_min": 25.2,
+        "max_earlier_step": 8.2,
+        "spike_ratio": 2.51,
+        "actions_before_trimaran": 28.2,
+        "ironwake_actions": 53.6,
+        "total_actions": 214.8
+      }
+    },
+    {
+      "id": "gold_340_drift_source",
+      "label": "Trimaran 340g + driftwood in two Drift sites",
+      "campaign": [
+        {
+          "seed": 1,
+          "trimaran_actions": 18,
+          "trimaran_hauls": 9,
+          "trimaran_wait_min": 18.02,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 53,
+          "total_actions": 217,
+          "total_wait_h": 0.87
+        },
+        {
+          "seed": 2,
+          "trimaran_actions": 17,
+          "trimaran_hauls": 10,
+          "trimaran_wait_min": 22.03,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 73,
+          "total_actions": 223,
+          "total_wait_h": 0.98
+        },
+        {
+          "seed": 3,
+          "trimaran_actions": 20,
+          "trimaran_hauls": 9,
+          "trimaran_wait_min": 22.02,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 65,
+          "total_actions": 214,
+          "total_wait_h": 1.03
+        },
+        {
+          "seed": 4,
+          "trimaran_actions": 19,
+          "trimaran_hauls": 7,
+          "trimaran_wait_min": 21.02,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 28,
+          "ironwake_actions": 55,
+          "total_actions": 200,
+          "total_wait_h": 0.98
+        },
+        {
+          "seed": 5,
+          "trimaran_actions": 14,
+          "trimaran_hauls": 8,
+          "trimaran_wait_min": 16.03,
+          "max_earlier_step": 7,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 36,
+          "total_actions": 220,
+          "total_wait_h": 0.92
+        }
+      ],
+      "mean": {
+        "trimaran_actions": 17.6,
+        "trimaran_wait_min": 19.8,
+        "max_earlier_step": 8.2,
+        "spike_ratio": 2.15,
+        "actions_before_trimaran": 28.2,
+        "ironwake_actions": 56.4,
+        "total_actions": 214.8
+      }
+    },
+    {
+      "id": "gold_340_drift_source_respawn",
+      "label": "…and Drift site respawns −25%",
+      "campaign": [
+        {
+          "seed": 1,
+          "trimaran_actions": 18,
+          "trimaran_hauls": 9,
+          "trimaran_wait_min": 16.52,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 61,
+          "total_actions": 229,
+          "total_wait_h": 0.83
+        },
+        {
+          "seed": 2,
+          "trimaran_actions": 17,
+          "trimaran_hauls": 10,
+          "trimaran_wait_min": 19.53,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 50,
+          "total_actions": 212,
+          "total_wait_h": 0.91
+        },
+        {
+          "seed": 3,
+          "trimaran_actions": 20,
+          "trimaran_hauls": 9,
+          "trimaran_wait_min": 20.52,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 62,
+          "total_actions": 222,
+          "total_wait_h": 0.96
+        },
+        {
+          "seed": 4,
+          "trimaran_actions": 19,
+          "trimaran_hauls": 7,
+          "trimaran_wait_min": 19.77,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 28,
+          "ironwake_actions": 60,
+          "total_actions": 223,
+          "total_wait_h": 0.94
+        },
+        {
+          "seed": 5,
+          "trimaran_actions": 14,
+          "trimaran_hauls": 8,
+          "trimaran_wait_min": 14.03,
+          "max_earlier_step": 7,
+          "actions_before_trimaran": 29,
+          "ironwake_actions": 46,
+          "total_actions": 211,
+          "total_wait_h": 0.88
+        }
+      ],
+      "mean": {
+        "trimaran_actions": 17.6,
+        "trimaran_wait_min": 18.1,
+        "max_earlier_step": 8.2,
+        "spike_ratio": 2.15,
+        "actions_before_trimaran": 28.2,
+        "ironwake_actions": 55.8,
+        "total_actions": 219.4
+      }
+    }
+  ]
+}
