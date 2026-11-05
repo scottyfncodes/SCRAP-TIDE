@@ -53,6 +53,19 @@ function glyph(ctx: CanvasRenderingContext2D, type: LandmarkType, x: number, y: 
       ctx.scale(1.4, 1.4);
       palm(0, 3 * s);
       break;
+    case 'cave':
+      // a rock hood over a black mouth
+      ctx.beginPath();
+      ctx.moveTo(-11 * s, 8 * s);
+      ctx.quadraticCurveTo(-10 * s, -10 * s, 0, -11 * s);
+      ctx.quadraticCurveTo(10 * s, -10 * s, 11 * s, 8 * s);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-6 * s, 8 * s);
+      ctx.quadraticCurveTo(0, -8 * s, 6 * s, 8 * s);
+      ctx.closePath();
+      ctx.fill();
+      break;
     case 'skull_rock':
       ctx.beginPath();
       ctx.arc(0, -2 * s, 10 * s, Math.PI, 0);

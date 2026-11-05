@@ -77,7 +77,7 @@ export class Environment {
     const sway: THREE.BufferGeometry[] = [];
     const glows: THREE.BufferGeometry[] = [];
     const exclude: { x: number; z: number; r: number }[] = [];
-    for (const l of isl.landmarks) exclude.push({ x: isl.x + l.x, z: isl.z + l.z, r: l.type === 'wreck' ? 14 : l.type === 'lighthouse' ? 6 : 5 });
+    for (const l of isl.landmarks) exclude.push({ x: isl.x + l.x, z: isl.z + l.z, r: l.type === 'wreck' ? 14 : l.type === 'lighthouse' ? 6 : l.type === 'cave' ? 7 : 5 });
     for (const f of isl.finds) exclude.push({ x: isl.x + f.x, z: isl.z + f.z, r: 3 });
     for (const m of TREASURE_MAPS) if (m.island === isl.id) exclude.push({ x: isl.x + m.x, z: isl.z + m.z, r: 4 });
     if (isl.style === 'harbor') exclude.push({ x: 0, z: 222, r: 85 }); // town area handled separately
@@ -234,6 +234,14 @@ export class Environment {
           );
           this.colliders.push({ x, z: z - 2, r: 5 });
           this.addWaterfall(x, y, z);
+          break;
+        }
+        case 'cave': {
+          // the mouth faces out to sea, so it is seen from the water first
+          const face = Math.atan2(x - isl.x, z - isl.z);
+          geos.push(xf(P.caveMouth(fr(x, z)), x, y - 0.4, z, 0, face, 0, 1.2));
+          this.colliders.push({ x: x - Math.sin(face) * 3.2, z: z - Math.cos(face) * 3.2, r: 3.2 });
+          for (const s2 of [-1, 1]) this.colliders.push({ x: x + Math.cos(face) * s2 * 2.8, z: z - Math.sin(face) * s2 * 2.8, r: 1.4 });
           break;
         }
         case 'boulder':
