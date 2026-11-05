@@ -5,7 +5,7 @@ import { ITEMS, ITEM_MAP } from '../src/data/items';
 import { UPGRADES, UPGRADE_MAP, VESSELS, COSMETICS, SLOT_ORDER } from '../src/data/ship';
 import { RECIPES } from '../src/data/crafting';
 import { CREW, ROLE_INFO } from '../src/data/crew';
-import { GOALS, MILESTONES, FIRST_VOYAGE } from '../src/data/progress';
+import { GOALS, MILESTONES, FIRST_VOYAGE, RETIRED_STEPS, liveStep } from '../src/data/progress';
 import { SALVAGE_SITES, CACHE_POOL, STRUCTURES, SETTLEMENTS, CASTAWAYS, RAIDER_ZONES, ISLANDS, BEACH_POOL, DIG_POOL, WORLD } from '../src/data/world';
 import { DROWNED_ICONS } from '../src/ui/iconsDrowned';
 import { LIVING_ICONS } from '../src/ui/iconsLiving';
@@ -80,6 +80,19 @@ describe('crew, goals, settlements', () => {
   it('the Captain’s Log ends on a terminal goal and the first voyage ends free', () => {
     expect(GOALS[GOALS.length - 1].id).toBe('g_done');
     expect(FIRST_VOYAGE[FIRST_VOYAGE.length - 1].id).toBe('free');
+  });
+  it('the First Voyage is 8 steps of things done in the world, and every retired step continues somewhere live', () => {
+    expect(FIRST_VOYAGE).toHaveLength(8);
+    const live = new Set(FIRST_VOYAGE.map((q) => q.id));
+    for (const id of ['steer', 'anchor', 'read_map', 'sell', 'catalog']) expect(live.has(id as never), id).toBe(false);
+    for (const [from, to] of Object.entries(RETIRED_STEPS)) {
+      expect(live.has(to!), `${from} -> ${to}`).toBe(true);
+      expect(liveStep(from)).toBe(to);
+    }
+    for (const q of FIRST_VOYAGE) expect(liveStep(q.id)).toBe(q.id);
+    expect(liveStep('nonsense')).toBe(FIRST_VOYAGE[0].id);
+    // the salvage verb is part of the voyage now
+    expect(FIRST_VOYAGE.some((q) => /salvage/i.test(q.text + q.hint))).toBe(true);
   });
 });
 

@@ -93,7 +93,7 @@ async function playOnce(runNo) {
   if (process.env.SIM_TRACE) await page.evaluate(() => (window.__sim.trace = true));
   // ── 1. voyage started
   let s = await event('title → SET SAIL → welcome dismissed; harness takes the clock', { boot_ms: bootMs });
-  check('voyage starts docked at Driftholm on the first-voyage quest', s.docked && s.quest === 'steer', `quest=${s.quest}, gold=${s.gold}`);
+  check('voyage starts docked at Driftholm on the first-voyage quest', s.docked && s.quest === 'leave_dock', `quest=${s.quest}, gold=${s.gold}`);
   const before = await sailBox();
   await shot('1_start');
 

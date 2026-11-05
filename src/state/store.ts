@@ -3,7 +3,7 @@ import { CATALOG_ITEMS, ITEM_MAP, item, type Category } from '../data/items';
 import { VESSELS, UPGRADE_MAP, BASE_FUEL, type UpgradeDef, type VesselId, type Cost } from '../data/ship';
 import { CREW_MAP, type CrewRole } from '../data/crew';
 import { GOALS } from '../data/progress';
-import { MILESTONES, FIRST_VOYAGE, type QuestStepId } from '../data/progress';
+import { MILESTONES, FIRST_VOYAGE, liveStep, type QuestStepId } from '../data/progress';
 import { WORLD } from '../data/world';
 import { seaAdvance } from './seaClock';
 
@@ -92,7 +92,7 @@ export function freshSave(): SaveData {
     equipped: { paint: 'paint_driftwood', sail: 'sail_plain', flag: 'flag_none' },
     trophies: [null, null, null, null],
     milestones: [],
-    quest: 'steer',
+    quest: FIRST_VOYAGE[0].id,
     chestsOpened: 0,
     flags: [],
     stats: { goldEarned: 0, digs: 0, distance: 0, trips: 0 },
@@ -132,6 +132,7 @@ function migrate(raw: any): SaveData {
   merged.vesselsOwned = (merged.vesselsOwned || ['dinghy']).filter((v) => VESSELS[v]);
   merged.upgrades = (merged.upgrades || []).filter((u) => UPGRADE_MAP[u]);
   if (raw.hull === undefined) merged.hull = VESSELS[merged.vessel].hull;
+  merged.quest = liveStep(merged.quest); // the First Voyage was shortened: retired steps continue from their successor
   merged.goal = Math.max(0, Math.min(GOALS.length - 1, merged.goal | 0));
   if (!Number.isFinite(merged.seaClock)) merged.seaClock = base.seaClock;
   if (!Number.isFinite(merged.seaWall)) merged.seaWall = base.seaWall;

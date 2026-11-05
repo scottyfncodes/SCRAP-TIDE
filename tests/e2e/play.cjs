@@ -67,11 +67,12 @@ const check = (name, ok, detail = '') => {
 
   // ── first voyage still works: steering advances the quest
   await dismiss();
+  const q0 = await g(() => window.__game.store.data.quest);
   await joy(0, 1);
-  await playFor(2.5);
+  await playFor(12);
   await joy(0, 0);
   const q = await g(() => window.__game.store.data.quest);
-  check('first voyage: steering casts off and advances the quest', q !== 'steer', `quest=${q}`);
+  check('first voyage: starts on "cast off", and steering clear of the pier advances it', q0 === 'leave_dock' && q !== 'leave_dock', `quest ${q0} -> ${q}`);
 
   // put the save into open play for the systems below
   await g(() => { const s = window.__game.store.data; s.quest = 'free'; s.flags.push('met_raiders'); s.gold = 5000; });
