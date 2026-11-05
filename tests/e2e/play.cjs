@@ -58,6 +58,9 @@ const check = (name, ok, detail = '') => {
   await page.goto(url);
   await page.waitForSelector('.title-screen .act', { timeout: 180000 });
   check('boots to title with all GITCRAFT models loaded', await g(() => (window.__loadReport || []).every((r) => r.ok)), `${Date.now() - t0} ms`);
+  // asset modernization (docs/asset-modernization): islands, landmarks, the pier, finds and fittings are GITCRAFT kits
+  const kits = await g(() => ['tb_coast_kit', 'tb_landmark_kit', 'tb_finds_kit', 'tb_fittings_kit'].map((f) => (window.__loadReport || []).some((r) => r.file === f && r.ok)));
+  check('the coast, landmark, finds and fittings kits load (no procedural stand-ins drawn)', kits.every(Boolean), JSON.stringify(kits));
   await page.click('.title-screen .act');
   await page.waitForTimeout(600);
   await dismiss();

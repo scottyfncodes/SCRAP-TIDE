@@ -39,6 +39,12 @@ for (const ship of SHIPS) {
   page.on('pageerror', (e) => fails.push(`${ship}: page error ${e.message}`));
   await page.goto(`${url}/?ship=${ship}`);
   await page.waitForFunction(() => window.__game?.ship, null, { timeout: 90000 });
+  if (ship === 'ironwake') {
+    // the Ironwake is the GITCRAFT model (creative/3d-ironwake), lazily loaded: wait for it, then check it is drawn
+    const ok = await page.waitForFunction(() => (window.__loadReport || []).some((r) => r.file === 'tb_ironwake' && r.ok), null, { timeout: 60000 }).then(() => true, () => false);
+    if (!ok) fails.push('ironwake: tb_ironwake.glb did not load (the code-built stand-in would be drawn)');
+    await page.waitForTimeout(500); // the ship rebuilds with it
+  }
   await page.getByText('SET SAIL').click({ timeout: 30000 }).catch(() => {});
   await page.waitForTimeout(1500);
   for (let i = 0; i < 6; i++) {

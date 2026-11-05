@@ -1,0 +1,97 @@
+{
+ "checks": [
+  {
+   "check": "has_meshes",
+   "level": "pass",
+   "detail": "6 mesh objects"
+  },
+  {
+   "check": "triangle_budget",
+   "level": "pass",
+   "detail": "5912 triangles (budget 8000)",
+   "tris": 5912
+  },
+  {
+   "check": "degenerate_faces",
+   "level": "pass",
+   "detail": "0 zero-area faces"
+  },
+  {
+   "check": "non_manifold_edges",
+   "level": "info",
+   "detail": "40 non-manifold edges (expected for kit-bashed props built from closed parts)"
+  },
+  {
+   "check": "applied_scale",
+   "level": "pass",
+   "detail": "all mesh scales are 1"
+  },
+  {
+   "check": "naming",
+   "level": "pass",
+   "detail": "no default object names"
+  },
+  {
+   "check": "origin_centered",
+   "level": "pass",
+   "detail": "footprint centre (0.000, 0.247)"
+  },
+  {
+   "check": "materials_assigned",
+   "level": "pass",
+   "detail": "every mesh has materials"
+  },
+  {
+   "check": "vertex_colors",
+   "level": "pass",
+   "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+  },
+  {
+   "check": "textures_resolvable",
+   "level": "pass",
+   "detail": "no missing texture files"
+  },
+  {
+   "check": "animation_clips",
+   "level": "pass",
+   "detail": "actions: []",
+   "clips": []
+  },
+  {
+   "check": "gltf_version",
+   "level": "pass",
+   "detail": "glTF 2.0, generator glTF-Transform v4.1.1"
+  },
+  {
+   "check": "gltf_color0",
+   "level": "pass",
+   "detail": "every primitive has COLOR_0"
+  },
+  {
+   "check": "gltf_counts",
+   "level": "info",
+   "detail": "7 nodes, 6 meshes, 51 primitives, 19 materials, 0 animations, 0 skins, 0 images",
+   "animations": []
+  },
+  {
+   "check": "contract_nodes",
+   "level": "pass",
+   "detail": "nodes present: ['ironwake_deck', 'ironwake_hulls', 'ironwake_mast', 'ironwake_rudder_port', 'ironwake_rudder_starboard', 'ironwake_wheelhouse', 'tidebreakers_ironwake']"
+  },
+  {
+   "check": "khronos_validator",
+   "level": "pass",
+   "detail": "0 errors, 0 warnings, 2 infos",
+   "messages": [
+    "Cannot validate an extension as it is not supported by the validator: 'EXT_meshopt_compression'.",
+    "This object may be unused."
+   ]
+  }
+ ],
+ "summary": {
+  "pass": 14,
+  "warn": 0,
+  "fail": 0,
+  "info": 2
+ }
+}

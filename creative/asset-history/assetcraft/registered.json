@@ -1,0 +1,192 @@
+[
+ {
+  "id": 1,
+  "project": "/home/user/TIDEBREAKERS",
+  "path": "/home/user/TIDEBREAKERS/public/models/tb_ironwake.glb",
+  "rel": "public/models/tb_ironwake.glb",
+  "kind": "model",
+  "format": "glb",
+  "sha256": "c68c9a7115d75d8919bf9847f563f47d2bf2cbbe2b30387a1c4c7eb5f28104ee",
+  "bytes": 185528,
+  "version": 1,
+  "current": 1,
+  "valid": 1,
+  "info": {
+   "ok": true,
+   "format": "glb",
+   "meshes": 6,
+   "nodes": 7,
+   "triangles": 5912,
+   "animations": [],
+   "materials": 19
+  },
+  "license": "CC0-1.0",
+  "attribution": null,
+  "source": {
+   "type": "manual",
+   "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization)"
+  },
+  "tags": [
+   "asset-modernization",
+   "meshcraft",
+   "tidebreakers"
+  ],
+  "thumb": null,
+  "phash": null,
+  "created": "2026-11-05T04:51:29+00:00",
+  "updated": "2026-11-05T05:25:56+00:00",
+  "exists": true
+ },
+ {
+  "id": 6,
+  "project": "/home/user/TIDEBREAKERS",
+  "path": "/home/user/TIDEBREAKERS/public/models/tb_coast_kit.glb",
+  "rel": "public/models/tb_coast_kit.glb",
+  "kind": "model",
+  "format": "glb",
+  "sha256": "10f688702d2f437efd9f0000e3748525f607d1dfcafc37a6f84563bf96022bc5",
+  "bytes": 228668,
+  "version": 2,
+  "current": 1,
+  "valid": 1,
+  "info": {
+   "ok": true,
+   "format": "glb",
+   "meshes": 20,
+   "nodes": 21,
+   "triangles": 4512,
+   "animations": [],
+   "materials": 23
+  },
+  "license": "CC0-1.0",
+  "attribution": null,
+  "source": {
+   "type": "manual",
+   "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization)"
+  },
+  "tags": [
+   "tidebreakers",
+   "asset-modernization",
+   "meshcraft"
+  ],
+  "thumb": null,
+  "phash": null,
+  "created": "2026-11-05T05:25:56+00:00",
+  "updated": "2026-11-05T05:25:56+00:00",
+  "exists": true
+ },
+ {
+  "id": 3,
+  "project": "/home/user/TIDEBREAKERS",
+  "path": "/home/user/TIDEBREAKERS/public/models/tb_landmark_kit.glb",
+  "rel": "public/models/tb_landmark_kit.glb",
+  "kind": "model",
+  "format": "glb",
+  "sha256": "2344de9fd326f624e3bd8c25d3bb7e98f6b135c6f0ca157308245b7201d0067a",
+  "bytes": 368508,
+  "version": 1,
+  "current": 1,
+  "valid": 1,
+  "info": {
+   "ok": true,
+   "format": "glb",
+   "meshes": 8,
+   "nodes": 9,
+   "triangles": 8856,
+   "animations": [],
+   "materials": 32
+  },
+  "license": "CC0-1.0",
+  "attribution": null,
+  "source": {
+   "type": "manual",
+   "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization)"
+  },
+  "tags": [
+   "asset-modernization",
+   "meshcraft",
+   "tidebreakers"
+  ],
+  "thumb": null,
+  "phash": null,
+  "created": "2026-11-05T04:51:29+00:00",
+  "updated": "2026-11-05T05:25:57+00:00",
+  "exists": true
+ },
+ {
+  "id": 4,
+  "project": "/home/user/TIDEBREAKERS",
+  "path": "/home/user/TIDEBREAKERS/public/models/tb_finds_kit.glb",
+  "rel": "public/models/tb_finds_kit.glb",
+  "kind": "model",
+  "format": "glb",
+  "sha256": "cf52e7178ccf4abdb0168d570a6217ba1babe506ff1b6551ce7b53252b4de5eb",
+  "bytes": 219816,
+  "version": 1,
+  "current": 1,
+  "valid": 1,
+  "info": {
+   "ok": true,
+   "format": "glb",
+   "meshes": 30,
+   "nodes": 31,
+   "triangles": 4176,
+   "animations": [],
+   "materials": 30
+  },
+  "license": "CC0-1.0",
+  "attribution": null,
+  "source": {
+   "type": "manual",
+   "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization)"
+  },
+  "tags": [
+   "asset-modernization",
+   "meshcraft",
+   "tidebreakers"
+  ],
+  "thumb": null,
+  "phash": null,
+  "created": "2026-11-05T04:51:29+00:00",
+  "updated": "2026-11-05T05:25:57+00:00",
+  "exists": true
+ },
+ {
+  "id": 7,
+  "project": "/home/user/TIDEBREAKERS",
+  "path": "/home/user/TIDEBREAKERS/public/models/tb_fittings_kit.glb",
+  "rel": "public/models/tb_fittings_kit.glb",
+  "kind": "model",
+  "format": "glb",
+  "sha256": "cb973905f618d77d9d9547ceb93d09722f9e94c7afc6422aed9c4d1629c867a4",
+  "bytes": 79924,
+  "version": 2,
+  "current": 1,
+  "valid": 1,
+  "info": {
+   "ok": true,
+   "format": "glb",
+   "meshes": 22,
+   "nodes": 23,
+   "triangles": 1420,
+   "animations": [],
+   "materials": 14
+  },
+  "license": "CC0-1.0",
+  "attribution": null,
+  "source": {
+   "type": "manual",
+   "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization)"
+  },
+  "tags": [
+   "tidebreakers",
+   "asset-modernization",
+   "meshcraft"
+  ],
+  "thumb": null,
+  "phash": null,
+  "created": "2026-11-05T05:25:57+00:00",
+  "updated": "2026-11-05T05:25:57+00:00",
+  "exists": true
+ }
+]

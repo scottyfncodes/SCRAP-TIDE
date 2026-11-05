@@ -1,0 +1,57 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/exports/tb_landmark_kit.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 715660,
+  "sha256": "f322c2b08e7cf190e06dd707455e85266a36b05ce7c28ea52d060fa7a17404a3",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/exports/tb_landmark_kit.three-web-toon.lod50.glb",
+    "kind": "lod",
+    "bytes": 490216,
+    "sha256": "309d51dc34cfad2cd67429d4c13ce599027555b329953fba323eeb288286a123",
+    "ratio": 0.5,
+    "triangles": 4380
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/exports/tb_landmark_kit.three-web-toon.lod25.glb",
+    "kind": "lod",
+    "bytes": 267692,
+    "sha256": "56f433d5974b9536d0329d2acb5e80bb2d0ffcfd013452a2e0c05750ffe8c073",
+    "ratio": 0.25,
+    "triangles": 1963
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/exports/tb_landmark_kit.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 12136,
+    "sha256": "c283434abff06d795eedb6ee68645f0d876eff46d08a1991c35e74433ca60c8b",
+    "shape": "convex_hull",
+    "triangles": 150
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/exports/tb_landmark_kit.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 12136,
+    "sha256": "c283434abff06d795eedb6ee68645f0d876eff46d08a1991c35e74433ca60c8b"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/exports/tb_landmark_kit.three-web-toon.lod25.glb",
+    "kind": "sidecar",
+    "bytes": 267692,
+    "sha256": "56f433d5974b9536d0329d2acb5e80bb2d0ffcfd013452a2e0c05750ffe8c073"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/exports/tb_landmark_kit.three-web-toon.lod50.glb",
+    "kind": "sidecar",
+    "bytes": 490216,
+    "sha256": "309d51dc34cfad2cd67429d4c13ce599027555b329953fba323eeb288286a123"
+   }
+  ]
+ }
+]

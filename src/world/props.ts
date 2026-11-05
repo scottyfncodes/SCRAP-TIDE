@@ -1,4 +1,6 @@
-// Procedural weathered props (drowned-world palette; the shared toon material adds grime and rust). Each returns a vertex-colored geometry (or group) to be merged.
+// Procedural weathered props (drowned-world palette; the shared toon material adds grime and rust). Each returns a
+// vertex-coloured geometry to be merged. These are now only the FALLBACK for the GITCRAFT coast and landmark kits
+// (creative/3d-coast, public/models/tb_coast_kit.glb + tb_landmark_kit.glb): drawn only if a kit fails to load.
 import * as THREE from 'three';
 import { paint, paintGradient, xf, merge } from './materials';
 import { RNG, valueNoise } from '../core/noise';
@@ -13,46 +15,6 @@ const C = {
   rockDark: '#3f3a36',
   moss: '#4a5530',
 };
-
-export function palm(rng: RNG, height = 7, lean = 0.3, leafColor = C.leafA, darkLeaf = C.leafB): THREE.BufferGeometry {
-  const parts: THREE.BufferGeometry[] = [];
-  const segs = 7;
-  const dir = rng.range(0, Math.PI * 2);
-  const lx = Math.cos(dir) * lean;
-  const lz = Math.sin(dir) * lean;
-  let px = 0, py = 0, pz = 0;
-  const pts: THREE.Vector3[] = [];
-  for (let i = 0; i <= segs; i++) {
-    const t = i / segs;
-    pts.push(new THREE.Vector3(lx * height * t * t, height * t, lz * height * t * t));
-  }
-  for (let i = 0; i < segs; i++) {
-    const a = pts[i];
-    const b = pts[i + 1];
-    const len = a.distanceTo(b);
-    const r0 = 0.42 - (i / segs) * 0.2;
-    const cyl = new THREE.CylinderGeometry(r0 * 0.88, r0, len * 1.04, 8, 1);
-    const mid = a.clone().add(b).multiplyScalar(0.5);
-    const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
-    cyl.applyQuaternion(q);
-    cyl.translate(mid.x, mid.y, mid.z);
-    parts.push(paint(cyl, i % 2 ? C.trunkA : C.trunkB, 0.08, (i / segs) * 0.3));
-  }
-  const top = pts[segs];
-  px = top.x; py = top.y; pz = top.z;
-  // fronds
-  const n = rng.int(7, 9);
-  for (let i = 0; i < n; i++) {
-    const ang = (i / n) * Math.PI * 2 + rng.range(-0.2, 0.2);
-    parts.push(frond(rng, px, py, pz, ang, rng.range(3.6, 4.8) * (height / 7), leafColor, darkLeaf));
-  }
-  // coconuts
-  for (let i = 0; i < 3; i++) {
-    const a = (i / 3) * Math.PI * 2;
-    parts.push(paint(xf(new THREE.SphereGeometry(0.3, 8, 6), px + Math.cos(a) * 0.35, py - 0.35, pz + Math.sin(a) * 0.35), C.coconut, 0.1, 0.4));
-  }
-  return merge(parts);
-}
 
 function frond(rng: RNG, x: number, y: number, z: number, ang: number, len: number, light: string, dark: string) {
   const N = 9;
@@ -137,56 +99,6 @@ export function rock(rng: RNG, r = 1.5, squash = 0.7, color = C.rock, mossy = fa
   ng.setAttribute('sway', new THREE.BufferAttribute(new Float32Array(n), 1));
   ng.deleteAttribute('uv');
   return ng;
-}
-
-export function bush(rng: RNG, s = 1, green = '#5e5e36'): THREE.BufferGeometry {
-  const parts: THREE.BufferGeometry[] = [];
-  const n = rng.int(3, 5);
-  const base = new THREE.Color(green);
-  for (let i = 0; i < n; i++) {
-    const r = rng.range(0.7, 1.2) * s;
-    const c = base.clone().multiplyScalar(rng.range(0.8, 1.15));
-    parts.push(paint(xf(new THREE.IcosahedronGeometry(r, 1), rng.range(-0.9, 0.9) * s, r * 0.7, rng.range(-0.9, 0.9) * s, 0, 0, 0, [1, 0.8, 1]), c, 0.12, 0.25));
-  }
-  // a few blooms
-  if (rng.next() > 0.4) {
-    const fc = rng.pick(['#8a6a3a', '#9a8a52', '#6a4a30', '#a89a7a', '#5a4a3a']);
-    for (let i = 0; i < 4; i++) {
-      parts.push(paint(xf(new THREE.IcosahedronGeometry(0.16 * s, 0), rng.range(-1, 1) * s, rng.range(0.9, 1.5) * s, rng.range(-1, 1) * s), fc, 0.1, 0.3));
-    }
-  }
-  return merge(parts);
-}
-
-/** Oversized tropical leaves (monstera / banana style) fanning from the ground. */
-export function bigLeaves(rng: RNG, s = 1, green = '#4e5530'): THREE.BufferGeometry {
-  const parts: THREE.BufferGeometry[] = [];
-  const n = rng.int(4, 7);
-  for (let i = 0; i < n; i++) {
-    const shape = new THREE.Shape();
-    const L = rng.range(1.6, 2.6) * s;
-    const W = L * 0.42;
-    shape.moveTo(0, 0);
-    shape.bezierCurveTo(W, L * 0.15, W * 1.05, L * 0.75, 0, L);
-    shape.bezierCurveTo(-W * 1.05, L * 0.75, -W, L * 0.15, 0, 0);
-    const g = new THREE.ShapeGeometry(shape, 6);
-    // bend leaf
-    const p = g.attributes.position;
-    for (let k = 0; k < p.count; k++) {
-      const y = p.getY(k);
-      const x = p.getX(k);
-      p.setZ(k, -Math.pow(y / L, 2) * L * 0.5 - Math.abs(x) * 0.25);
-    }
-    const ang = (i / n) * Math.PI * 2 + rng.range(-0.3, 0.3);
-    const tilt = rng.range(0.6, 1.1);
-    xf(g, 0, 0.1, 0, -Math.PI / 2 + tilt, ang, 0);
-    const c = new THREE.Color(green).multiplyScalar(rng.range(0.85, 1.15));
-    const pg = paintGradient(g, c.clone().multiplyScalar(0.7), c, 0.6);
-    parts.push(pg);
-    // stem
-    parts.push(paint(xf(new THREE.CylinderGeometry(0.04 * s, 0.06 * s, 0.5 * s, 4), 0, 0.25 * s, 0), '#3d4226'));
-  }
-  return merge(parts);
 }
 
 export function grassTuft(rng: RNG, color = '#7a7246'): THREE.BufferGeometry {

@@ -64,7 +64,7 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | Gerstner ocean with GITCRAFT WorldCraft FFT wind chop (`creative/ocean/`), wake, storm swell, reflections | `src/world/ocean.ts` |
 | Sky, clouds, storm decks, rain, lightning, skylines | `src/world/sky.ts` |
 | Drowned structures and raft-towns | `src/world/drowned.ts` |
-| Boat builder (procedural hulls + MeshCraft boat kit + crew) | `src/ship/shipModel.ts` |
+| Boat builder (GITCRAFT hulls for all three vessels, MeshCraft boat kit + fittings, crew) | `src/ship/shipModel.ts` |
 | Salvage and raiders | `src/game/salvage.ts`, `src/game/raiders.ts` |
 | Game loop | `src/game/game.ts` |
 | UI: HUD, radar, winch, settlements, workbench, crew | `src/ui/ui.ts` |
@@ -75,8 +75,10 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | Flipbook effects: salvage/harpoon splashes, sparks, lightning, engine smoke, bow-slam spray, storm rain sheets (GITCRAFT FXCraft; `?fx=low` / `?fx=high`) | `src/game/flipfx.ts`, `public/fx/` |
 
 3D models in `public/models` come from GITCRAFT MeshCraft/ForgeCraft (`creative/3d-drowned`, and the Waterworld atoll,
-outpost and flora kits in `creative/3d-waterworld`, the rigged cast in `creative/3d-characters`, and the Scrap Trimaran's Coastal Sloop body from GITCRAFT's TIDEBREAKERS 3D
-package, see `creative/3d-sloop`); item icons from VectorCraft (`creative/ui-drowned`) plus the living-plant
+outpost and flora kits in `creative/3d-waterworld`, the rigged cast in `creative/3d-characters`, the Scrap Trimaran's Coastal Sloop body from GITCRAFT's TIDEBREAKERS 3D
+package, see `creative/3d-sloop`, and the asset-modernization pass: the Ironwake (`creative/3d-ironwake`), island scatter,
+landmarks and the pier (`creative/3d-coast`), finds, wildlife and ship fittings (`creative/3d-finds`); inventory, replacement
+manifest and before/after in `docs/asset-modernization/`, history in `creative/asset-history/`); item icons from VectorCraft (`creative/ui-drowned`) plus the living-plant
 icons in `src/ui/iconsLiving.ts`.
 
 ## Tech

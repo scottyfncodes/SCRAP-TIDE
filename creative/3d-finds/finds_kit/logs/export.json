@@ -1,0 +1,57 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 397448,
+  "sha256": "976de9d8cac729f5c585c896fa8c3fdd6a86339058bc045bcf1a0ed86f7cfb0f",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.lod50.glb",
+    "kind": "lod",
+    "bytes": 266016,
+    "sha256": "a8d879ff90ebe9401c6499830837fe7ab554c5224a7420b181c769db5c0cb36c",
+    "ratio": 0.5,
+    "triangles": 2070
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.lod25.glb",
+    "kind": "lod",
+    "bytes": 161056,
+    "sha256": "9e4ba73fdc0c10843aba888f75ada192ac41c0f0c48d7ce0239570f689071eb2",
+    "ratio": 0.25,
+    "triangles": 926
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 13748,
+    "sha256": "cc615d1773224979892a1ded0388f77deb8c342966dd8b482a1ed4bc97110b22",
+    "shape": "convex_hull",
+    "triangles": 194
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 13748,
+    "sha256": "cc615d1773224979892a1ded0388f77deb8c342966dd8b482a1ed4bc97110b22"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.lod25.glb",
+    "kind": "sidecar",
+    "bytes": 161056,
+    "sha256": "9e4ba73fdc0c10843aba888f75ada192ac41c0f0c48d7ce0239570f689071eb2"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.three-web-toon.lod50.glb",
+    "kind": "sidecar",
+    "bytes": 266016,
+    "sha256": "a8d879ff90ebe9401c6499830837fe7ab554c5224a7420b181c769db5c0cb36c"
+   }
+  ]
+ }
+]

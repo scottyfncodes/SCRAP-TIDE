@@ -60,6 +60,16 @@ const NEEDED: Record<string, string[]> = {
   tb_upg_cargo_nets: ['tb_upg_cargo_nets_mesh'],
   tb_upg_armour_plating: ['tb_upg_armour_plating_mesh'],
   tb_upg_deck_lights: ['deck_lights_strings', 'deck_spotlight'],
+  // GITCRAFT asset modernization (docs/asset-modernization): the Ironwake, the coast + landmark kits, finds + fittings
+  tb_ironwake: ['tidebreakers_ironwake', 'ironwake_hulls', 'ironwake_deck', 'ironwake_wheelhouse', 'ironwake_mast', 'ironwake_rudder_port', 'ironwake_rudder_starboard'],
+  tb_coast_kit: ['dead_palm_a', 'dead_palm_b', 'dead_palm_c', 'dead_palm_d', 'rock_a', 'rock_b', 'rock_c', 'rock_d', 'scrub_a', 'scrub_b', 'grass_tuft', 'driftwood',
+    'bollard', 'pier_lamp', 'barrel', 'cargo_crate', 'pier_section', 'finger_section', 'fence_panel', 'flagpole'],
+  tb_landmark_kit: ['skull_rock', 'lighthouse', 'hut', 'wreck', 'sun_arch', 'pillar_ring', 'spring', 'slipway'],
+  tb_finds_kit: ['chest_small_body', 'chest_small_lid', 'chest_grand_body', 'chest_grand_lid', 'chest_sea_body', 'chest_sea_lid', 'crate_find_body', 'crate_find_lid',
+    'msg_bottle', 'msg_bottle_glass', 'dig_mound', 'crab_body', 'crab_legs', 'gull_body', 'gull_wing', 'pickup_conch__a', 'pickup_starfish__a', 'pickup_sanddollar__a',
+    'pickup_plank__a', 'pickup_rope__a', 'pickup_bottle__a', 'pickup_coral__a', 'pickup_gem__a'],
+  tb_fittings_kit: ['anchor', 'paddle', 'skiff_rudder', 'skiff_mast', 'trophy_base', 'trophy_idol__a', 'trophy_bell__a', 'trophy_mask__a', 'trophy_spyglass__a',
+    'trophy_flag__a', 'trophy_whistle__a', 'trophy_relic__a'],
 };
 
 describe('GITCRAFT models in public/models', () => {
@@ -89,6 +99,15 @@ describe('GITCRAFT models in public/models', () => {
     // the Container Cabin's painted steel and trim, the lantern the wheel moves aside, the cabin it replaces
     for (const mt of ['GC_Steel_4fb39a_m3', 'GC_Steel_f2ead8_m3']) expect(names('tb_upg_container_cabin').has(mt), mt).toBe(true);
     for (const mt of ['GC_Plain_ff9f2e_e2', 'GC_Plank_f2ead8', 'GC_Plank_5e331b']) expect(sloop.has(mt), mt).toBe(true);
+  });
+  it('the Ironwake keeps the materials its paint cosmetic and Ash Rudder tint', () => {
+    const mats = new Set((glbJson('public/models/tb_ironwake.glb').materials ?? []).map((m: { name: string }) => m.name));
+    for (const m of ['TBI_Paint', 'TBI_Trim', 'TBI_Wood_dk']) expect(mats.has(m), m).toBe(true);
+  });
+  it('kits flattened with part() ship unquantized (a quantized node would bake its dequantization scale away)', () => {
+    for (const f of ['tb_coast_kit', 'tb_landmark_kit', 'tb_finds_kit', 'tb_fittings_kit']) {
+      expect(glbJson(`public/models/${f}.glb`).extensionsUsed ?? [], f).not.toContain('KHR_mesh_quantization');
+    }
   });
   it('the cast are people, not block toys: one skinned primitive, 4k+ triangles, a sculpted head, smooth normals', () => {
     const NEED: Record<string, string[]> = { tb_captain: ['Idle', 'Walk', 'Sit', 'Dig', 'Cheer'], tb_raider: ['Idle', 'Attack'], tb_npc_trader: ['Idle', 'Interact'],

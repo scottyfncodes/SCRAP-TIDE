@@ -7,6 +7,7 @@ import { merge, paint, paintGradient, xf } from './materials';
 import { RNG } from '../core/noise';
 import { WORLD } from '../data/world';
 import type { Atmosphere } from './atmosphere';
+import { model } from './assets';
 
 /**
  * Fog that dissolves a far object into whatever sky is behind it, instead of painting it the flat fog colour.
@@ -72,7 +73,7 @@ export class Sky {
   private boltLife = 0;
   private flares: THREE.Sprite[] = [];
   private flarePos: THREE.Vector3[] = [];
-  private gulls: { m: THREE.Group; r: number; c: THREE.Vector3; sp: number; ph: number; wingL: THREE.Mesh; wingR: THREE.Mesh }[] = [];
+  private gulls: { m: THREE.Group; r: number; c: THREE.Vector3; sp: number; ph: number; wingL: THREE.Object3D; wingR: THREE.Object3D }[] = [];
 
   constructor(scene: THREE.Scene, private atmo: Atmosphere) {
     this.domeU = {
@@ -237,11 +238,14 @@ export class Sky {
     wingGeo.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, -0.3, 0, 0, 0.35, 1.6, 0.1, 0.1], 3));
     wingGeo.computeVertexNormals();
     const spots = [[0, 260], [-150, 70], [175, 10], [40, -175], [92, 150], [-235, -70], [-540, 170], [500, -440], [270, 650], [-330, -320]];
+    // the GITCRAFT gull (creative/3d-finds): a body, and a wing hinged at the shoulder that flaps (mirrored for the right)
+    const kitBody = model('tb_finds_kit', 'gull_body');
+    const kitWing = model('tb_finds_kit', 'gull_wing', { side: THREE.DoubleSide });
     for (let i = 0; i < 18; i++) {
       const g = new THREE.Group();
-      const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.18, 0.6, 3, 6).rotateX(Math.PI / 2), gullBody);
-      const wl = new THREE.Mesh(wingGeo, gullWing);
-      const wr = new THREE.Mesh(wingGeo, gullWing);
+      const body = kitBody && kitWing ? kitBody.clone() : new THREE.Mesh(new THREE.CapsuleGeometry(0.18, 0.6, 3, 6).rotateX(Math.PI / 2), gullBody);
+      const wl = kitBody && kitWing ? kitWing.clone() : new THREE.Mesh(wingGeo, gullWing);
+      const wr = kitBody && kitWing ? kitWing.clone() : new THREE.Mesh(wingGeo, gullWing);
       wr.scale.x = -1;
       g.add(body, wl, wr);
       g.scale.setScalar(1.6);

@@ -1,0 +1,12 @@
+{
+ "stdout": "Info: Saved as \"tb_ironwake.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-ironwake/source/tb_ironwake.blend\", \"tris\": 5912, \"objects\": [\"tidebreakers_ironwake\", \"ironwake_hulls\", \"ironwake_deck\", \"ironwake_wheelhouse\", \"ironwake_rudder_starboard\", \"ironwake_rudder_port\", \"ironwake_mast\"]}\n",
+ "objects": [
+  "ironwake_deck",
+  "ironwake_hulls",
+  "ironwake_mast",
+  "ironwake_rudder_port",
+  "ironwake_rudder_starboard",
+  "ironwake_wheelhouse",
+  "tidebreakers_ironwake"
+ ]
+}

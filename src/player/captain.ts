@@ -3,7 +3,7 @@
 // Locomotion is the procedural Walk/Run from gait.ts, phase-locked to ground speed (see docs/expedition-pass).
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat } from '../world/materials';
-import type { Character } from '../world/assets';
+import { part, type Character } from '../world/assets';
 import { WALK, RUN, captureRest, buildGaitClip, strideAt } from './gait';
 
 const CLIP_FOR: Record<string, string> = { idle: 'Idle', sit: 'Sit', dig: 'Dig', cheer: 'Cheer' };
@@ -50,11 +50,15 @@ export class Captain {
     // a salvaged shovel in the right hand, shown while digging
     const hand = c.root.getObjectByName('mixamorigRightHand');
     if (hand) {
+      // (GITCRAFT fittings kit, creative/3d-finds: modelled in this frame; the code-built shovel is the fallback)
+      const kitShovel = part('tb_fittings_kit', 'shovel');
       const sh = new THREE.Mesh(
-        merge([
-          paint(xf(new THREE.CylinderGeometry(0.016, 0.016, 0.95, 5), 0, 0.12, 0), '#8a5a34'),
-          paint(xf(new THREE.BoxGeometry(0.17, 0.22, 0.014), 0, -0.42, 0.02), '#7f8a94'),
-        ]),
+        kitShovel
+          ? kitShovel.geo
+          : merge([
+              paint(xf(new THREE.CylinderGeometry(0.016, 0.016, 0.95, 5), 0, 0.12, 0), '#8a5a34'),
+              paint(xf(new THREE.BoxGeometry(0.17, 0.22, 0.014), 0, -0.42, 0.02), '#7f8a94'),
+            ]),
         vcMat({ weather: 0.6 })
       );
       // bone space: the hand bone runs along its local Y; stand the shaft across the fist

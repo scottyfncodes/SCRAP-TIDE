@@ -347,9 +347,10 @@ export class Game implements GameAPI {
     this.ensureUpgradeModels();
   }
 
-  /** Upgrade model files the current boat shows: the Trimaran's owned upgrades (other boats use kit parts). */
+  /** Lazily loaded model files the current boat shows: the Trimaran's owned upgrades, or the Ironwake's own model. */
   private upgradeModelsNeeded() {
-    return this.store.data.vessel === 'sloop' ? sloopUpgradeFiles(this.store.data.upgrades) : [];
+    const v = this.store.data.vessel;
+    return v === 'sloop' ? sloopUpgradeFiles(this.store.data.upgrades) : v === 'ironwake' ? ['tb_ironwake'] : [];
   }
 
   /**
@@ -1499,6 +1500,8 @@ export class Game implements GameAPI {
       c.obj.position.z += c.vz * dt;
       c.obj.position.y = heightAt(c.obj.position.x, c.obj.position.z) + Math.abs(Math.sin(this.t * 20)) * 0.05;
       c.obj.rotation.y = Math.atan2(c.vx, c.vz) + Math.PI / 2;
+      const legs = c.obj.userData.legs as THREE.Object3D | undefined;
+      if (legs) legs.rotation.x = Math.sin(this.t * 28) * 0.22; // scuttle
       if (c.life <= 0) this.scene.remove(c.obj);
     }
     this.crabs = this.crabs.filter((c) => c.life > 0);
