@@ -1,0 +1,74 @@
+{
+  "before": {
+    "source": "main bed002d: playcraft_assess with its evidence pack",
+    "overall": {
+      "score": 81,
+      "confidence": "medium",
+      "coverage": 1.0,
+      "strong_evidence_share": 0.39,
+      "note": null
+    }
+  },
+  "after": {
+    "source": "balance/winch-payouts: playcraft_assess with this branch evidence pack and this branch play report",
+    "overall": {
+      "score": 81,
+      "confidence": "medium",
+      "coverage": 1.0,
+      "strong_evidence_share": 0.39,
+      "note": null
+    }
+  },
+  "categories": [
+    {
+      "category": "core_gameplay",
+      "before": 85,
+      "after": 85
+    },
+    {
+      "category": "game_feel",
+      "before": 80,
+      "after": 80
+    },
+    {
+      "category": "controls",
+      "before": 80,
+      "after": 80
+    },
+    {
+      "category": "progression",
+      "before": 81,
+      "after": 81
+    },
+    {
+      "category": "difficulty",
+      "before": 75,
+      "after": 75
+    },
+    {
+      "category": "player_experience",
+      "before": 74,
+      "after": 74
+    },
+    {
+      "category": "replayability",
+      "before": 70,
+      "after": 70
+    },
+    {
+      "category": "technical",
+      "before": 92,
+      "after": 92
+    },
+    {
+      "category": "presentation",
+      "before": 83,
+      "after": 83
+    },
+    {
+      "category": "mobile",
+      "before": 95,
+      "after": 95
+    }
+  ]
+}
