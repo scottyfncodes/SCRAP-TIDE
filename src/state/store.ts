@@ -49,7 +49,7 @@ export interface SaveData {
   flags: string[];
   stats: { goldEarned: number; digs: number; distance: number; trips: number };
   ship: { x: number; z: number; heading: number; anchored: boolean; docked: boolean; dockedAt: string };
-  settings: { sfx: number; music: number; haptics: boolean };
+  settings: { sfx: number; music: number; haptics: boolean; calm: boolean };
   // v2: the drowned world
   fuel: number;
   hull: number;
@@ -94,7 +94,7 @@ export function freshSave(): SaveData {
     flags: [],
     stats: { goldEarned: 0, digs: 0, distance: 0, trips: 0 },
     ship: { x: WORLD.spawn.x, z: WORLD.spawn.z, heading: WORLD.spawn.heading, anchored: false, docked: true, dockedAt: 'driftholm' },
-    settings: { sfx: 0.8, music: 0.5, haptics: true },
+    settings: { sfx: 0.8, music: 0.5, haptics: true, calm: prefersReducedMotion() },
     fuel: 30,
     hull: 60,
     crew: [],
@@ -423,5 +423,14 @@ export class Store {
     const i = this.questIndex();
     if (i < FIRST_VOYAGE.length - 1) this.data.quest = FIRST_VOYAGE[i + 1].id;
     return true;
+  }
+}
+
+/** The device asks for less motion (iOS: Settings → Accessibility → Motion → Reduce Motion). */
+function prefersReducedMotion(): boolean {
+  try {
+    return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch {
+    return false;
   }
 }

@@ -709,7 +709,8 @@ export class Game implements GameAPI {
     u.uSkyTop.value.copy(a.skyTop);
     u.uStorm.value = a.storm;
     u.uNight.value = a.night;
-    const amb = 0.3 + 0.7 * (1 - a.night) * (1 - a.storm * 0.45) + a.lightning * 0.5;
+    a.calm = !!this.store.data.settings.calm;
+    const amb = 0.3 + 0.7 * (1 - a.night) * (1 - a.storm * 0.45) + a.flash * 0.5;
     u.uAmbient.value.setRGB(amb * 0.9, amb * 0.97, amb);
     oceanState.storm = a.storm;
     if (this.ship.lamp) this.ship.lamp.intensity = a.night * 3 + a.storm * 1.2;
@@ -2010,7 +2011,7 @@ export class Game implements GameAPI {
     }
     const desired = new THREE.Vector3(cx, cy, cz);
     this.camera.position.lerp(desired, 1 - Math.exp(-dt * 6));
-    if (this.shake > 0.001) {
+    if (this.shake > 0.001 && !this.store.data.settings.calm) {
       const k = this.shake * this.shake * 0.6;
       this.camera.position.x += (Math.random() - 0.5) * k;
       this.camera.position.y += (Math.random() - 0.5) * k;

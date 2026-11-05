@@ -71,6 +71,11 @@ export class Atmosphere {
   wall = 0; // Stormwall part of storm
   night = 0; // 0 day .. 1 deep night
   lightning = 0; // flash 0..1
+  /** Calm effects: lightning lights the world at a third of its strength. */
+  calm = false;
+  get flash() {
+    return this.lightning * (this.calm ? 0.3 : 1);
+  }
   private flashT = 0;
   private nextFlash = 4;
   onThunder: (dist: number) => void = () => {};

@@ -267,7 +267,14 @@ export class UI {
       keys.delete(e.key.toLowerCase());
       upd();
     });
+    this.applyCalm();
     this.refreshHUD();
+  }
+
+  /** Calm effects (Settings; on by default when the device asks for reduced motion). */
+  applyCalm() {
+    const on = !!this.store.data.settings.calm;
+    document.body.classList.toggle('calm', on);
   }
 
   refreshHUD() {
@@ -1277,6 +1284,7 @@ export class UI {
       <div class="setting-row">Sound effects <input type="range" min="0" max="1" step="0.05" value="${s.data.settings.sfx}" class="sfx"></div>
       <div class="setting-row">Music <input type="range" min="0" max="1" step="0.05" value="${s.data.settings.music}" class="mus"></div>
       <div class="setting-row">Vibration <input type="checkbox" class="hap" ${s.data.settings.haptics ? 'checked' : ''} style="width:26px;height:26px"></div>
+      <div class="setting-row">Calm effects <span class="note" style="flex:1;margin:0 8px;text-align:left">no screen shake, softer flashes</span><input type="checkbox" class="calm" ${s.data.settings.calm ? 'checked' : ''} style="width:26px;height:26px"></div>
       <div class="section-title">Progress</div>
       <div class="statgrid"><div class="stat"><b>${s.discoveryCount}</b><span>discoveries</span></div><div class="stat"><b>${s.data.stats.goldEarned}</b><span>gold earned</span></div><div class="stat"><b>${Math.round(s.data.stats.distance)}</b><span>meters sailed</span></div>
       <div class="stat"><b>${s.data.hauls}</b><span>salvage hauls</span></div><div class="stat"><b>${s.data.upgrades.length}</b><span>upgrades</span></div><div class="stat"><b>${s.data.chestsOpened}</b><span>chests opened</span></div></div>
@@ -1288,7 +1296,10 @@ export class UI {
     const sfx = body.querySelector('.sfx') as HTMLInputElement;
     const mus = body.querySelector('.mus') as HTMLInputElement;
     const hap = body.querySelector('.hap') as HTMLInputElement;
+    const calm = body.querySelector('.calm') as HTMLInputElement;
     const apply = () => {
+      s.data.settings.calm = calm.checked;
+      this.applyCalm();
       s.data.settings.sfx = +sfx.value;
       s.data.settings.music = +mus.value;
       s.data.settings.haptics = hap.checked;
@@ -1298,6 +1309,7 @@ export class UI {
     sfx.addEventListener('input', apply);
     mus.addEventListener('input', apply);
     hap.addEventListener('change', apply);
+    calm.addEventListener('change', apply);
     body.querySelector('.save')!.addEventListener('click', () => {
       s.saveNow();
       this.toast('Progress saved ✔', { color: '#4f9a95' });
