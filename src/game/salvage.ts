@@ -6,6 +6,7 @@ import { SALVAGE_SITES, CACHE_POOL, type SalvageSiteDef, type LootRoll, type Reg
 import { item } from '../data/items';
 import { audio } from '../audio/audio';
 import { pack } from '../audio/pack';
+import { haulRolls } from './haul';
 
 function roll(rng: () => number, list: LootRoll[]) {
   const total = list.reduce((a, b) => a + b.w, 0);
@@ -112,7 +113,7 @@ export class Salvage {
     const s = g.store;
     const first = !s.data.firstHauls.includes(site.id);
     const salvager = s.hasRole('salvager');
-    const rolls = Math.max(1, Math.round(site.rolls * (0.35 + 0.22 * hits)) + (salvager ? 1 : 0) + (hits === 3 ? 1 : 0));
+    const rolls = haulRolls(site.rolls, hits, salvager);
     const got: Record<string, number> = {};
     const rng = () => Math.random();
     for (let i = 0; i < rolls; i++) {
