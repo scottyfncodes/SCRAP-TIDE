@@ -1,916 +1,21 @@
 {
-  "generated_at": "2026-11-05T14:22:21.417Z",
-  "commit": "18cd5746765d11accb19ad918ca53831090d600e",
-  "branch": "balance/winch-payouts",
+  "generated_at": "2026-11-05T15:35:58.750Z",
+  "commit": "f59beb6f9b5bd575dbbb4c5d0759486f21b05206",
+  "branch": "balance/sea-clock",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
   "seed": 20261105,
-  "quick": false,
+  "quick": true,
   "boot_ms": 0,
   "simulation": "affordability",
   "evidence_class": "simulation-measured",
   "method": "For every upgrade and vessel: start from the game’s freshSave() with only its prerequisites (and the boat needed to reach its shop), 15 gold. Repeat: craft what helps (Game.craft), dock and sell surplus (Store.unloadToVault + Game.sell), then take the most useful ready source — a salvage haul (Salvage.finish; respawn timers on a virtual clock), a drifting cache (Salvage.openCache; at most one per 6 s) or flotsam (Game.updateCaches with the boat in it) — until Store.canAfford(cost); then buy it through Game.buyUpgrade/buyVessel. Travel between places is not simulated (teleported); beach finds and treasure digs are not used, so these are upper bounds on effort from salvage alone.",
   "seeds": [
     1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10
+    2
   ],
   "results": {
-    "hits_1": [
-      {
-        "target": "sail_canvas",
-        "kind": "upgrade",
-        "name": "Canvas Mainsail",
-        "cost": {
-          "gold": 60
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.7,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 0,
-        "crafted": 0,
-        "actions": {
-          "mean": 1.7,
-          "p90": 2
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "sail_cutter",
-        "kind": "upgrade",
-        "name": "Cutter Rig + Jib",
-        "cost": {
-          "gold": 150,
-          "mats": [
-            {
-              "id": "canvas",
-              "n": 3
-            },
-            {
-              "id": "rope",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "sail_canvas"
-          ],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 3.5,
-          "p90": 5,
-          "max": 5
-        },
-        "caches": 0,
-        "flotsam": 3.4,
-        "crafted": 0,
-        "actions": {
-          "mean": 6.9,
-          "p90": 9
-        },
-        "respawn_wait_min": 3.91,
-        "failures": []
-      },
-      {
-        "target": "engine_outboard",
-        "kind": "upgrade",
-        "name": "Salvaged Outboard",
-        "cost": {
-          "gold": 90,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 4
-            },
-            {
-              "id": "wire",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 2.9,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0,
-        "flotsam": 0,
-        "crafted": 0.7,
-        "actions": {
-          "mean": 2.9,
-          "p90": 3
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "engine_twin",
-        "kind": "upgrade",
-        "name": "Twin Diesel Drive",
-        "cost": {
-          "gold": 380,
-          "mats": [
-            {
-              "id": "engine_parts",
-              "n": 3
-            },
-            {
-              "id": "scrap_metal",
-              "n": 6
-            },
-            {
-              "id": "wire",
-              "n": 3
-            }
-          ]
-        },
-        "start": {
-          "vessel": "sloop",
-          "owned": [
-            "engine_outboard"
-          ],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 7.2,
-          "p90": 10,
-          "max": 10
-        },
-        "caches": 10.5,
-        "flotsam": 0.8,
-        "crafted": 4,
-        "actions": {
-          "mean": 18.5,
-          "p90": 37
-        },
-        "respawn_wait_min": 2.48,
-        "failures": []
-      },
-      {
-        "target": "hull_copper",
-        "kind": "upgrade",
-        "name": "Copper-Banded Hull",
-        "cost": {
-          "gold": 130,
-          "mats": [
-            {
-              "id": "driftwood",
-              "n": 4
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 2.8,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0,
-        "flotsam": 3.9,
-        "crafted": 0,
-        "actions": {
-          "mean": 6.7,
-          "p90": 10
-        },
-        "respawn_wait_min": 4.8,
-        "failures": []
-      },
-      {
-        "target": "hull_armor",
-        "kind": "upgrade",
-        "name": "Riveted Armour Plating",
-        "cost": {
-          "gold": 260,
-          "mats": [
-            {
-              "id": "alloy_plate",
-              "n": 4
-            },
-            {
-              "id": "iron_nails",
-              "n": 6
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "hull_copper"
-          ],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 7.4,
-          "p90": 10,
-          "max": 10
-        },
-        "caches": 0,
-        "flotsam": 12.7,
-        "crafted": 4,
-        "actions": {
-          "mean": 20.1,
-          "p90": 24
-        },
-        "respawn_wait_min": 20.3,
-        "failures": []
-      },
-      {
-        "target": "cargo_crate",
-        "kind": "upgrade",
-        "name": "Lashed Cargo Crate",
-        "cost": {
-          "gold": 40,
-          "mats": [
-            {
-              "id": "driftwood",
-              "n": 3
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 0.7,
-          "p90": 1,
-          "max": 1
-        },
-        "caches": 0,
-        "flotsam": 4,
-        "crafted": 0,
-        "actions": {
-          "mean": 4.7,
-          "p90": 9
-        },
-        "respawn_wait_min": 4.8,
-        "failures": []
-      },
-      {
-        "target": "cargo_net",
-        "kind": "upgrade",
-        "name": "Rope Cargo Nets",
-        "cost": {
-          "gold": 85,
-          "mats": [
-            {
-              "id": "rope",
-              "n": 3
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "cargo_crate"
-          ],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.6,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 5.1,
-        "crafted": 0,
-        "actions": {
-          "mean": 6.7,
-          "p90": 10
-        },
-        "respawn_wait_min": 7.6,
-        "failures": []
-      },
-      {
-        "target": "tank_drums",
-        "kind": "upgrade",
-        "name": "Fuel Drum Rack",
-        "cost": {
-          "gold": 70,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 2
-            },
-            {
-              "id": "rope",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "engine_outboard"
-          ],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.6,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 3,
-        "crafted": 0,
-        "actions": {
-          "mean": 4.6,
-          "p90": 7
-        },
-        "respawn_wait_min": 2.8,
-        "failures": []
-      },
-      {
-        "target": "rudder_ash",
-        "kind": "upgrade",
-        "name": "Ash-Wood Rudder",
-        "cost": {
-          "gold": 45,
-          "mats": [
-            {
-              "id": "driftwood",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.1,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 3.2,
-        "crafted": 0,
-        "actions": {
-          "mean": 4.3,
-          "p90": 8
-        },
-        "respawn_wait_min": 3.2,
-        "failures": []
-      },
-      {
-        "target": "compass_brass",
-        "kind": "upgrade",
-        "name": "Brass Compass",
-        "cost": {
-          "gold": 90
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 2.3,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0,
-        "flotsam": 0,
-        "crafted": 0,
-        "actions": {
-          "mean": 2.3,
-          "p90": 3
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "radar_mast",
-        "kind": "upgrade",
-        "name": "Salvage Radar",
-        "cost": {
-          "gold": 240,
-          "mats": [
-            {
-              "id": "electronics",
-              "n": 4
-            },
-            {
-              "id": "wire",
-              "n": 3
-            },
-            {
-              "id": "scrap_metal",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "sloop",
-          "owned": [
-            "compass_brass"
-          ],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 5.3,
-          "p90": 7,
-          "max": 7
-        },
-        "caches": 4,
-        "flotsam": 0,
-        "crafted": 0.8,
-        "actions": {
-          "mean": 9.3,
-          "p90": 17
-        },
-        "respawn_wait_min": 0.38,
-        "failures": []
-      },
-      {
-        "target": "salvage_crane",
-        "kind": "upgrade",
-        "name": "Salvage Crane & Winch",
-        "cost": {
-          "gold": 160,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 6
-            },
-            {
-              "id": "rope",
-              "n": 3
-            },
-            {
-              "id": "wire",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 4.8,
-          "p90": 6,
-          "max": 6
-        },
-        "caches": 0,
-        "flotsam": 4.2,
-        "crafted": 0.7,
-        "actions": {
-          "mean": 9,
-          "p90": 11
-        },
-        "respawn_wait_min": 7.31,
-        "failures": []
-      },
-      {
-        "target": "harpoon_turret",
-        "kind": "upgrade",
-        "name": "Harpoon Turret",
-        "cost": {
-          "gold": 220,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 5
-            },
-            {
-              "id": "engine_parts",
-              "n": 1
-            },
-            {
-              "id": "rope",
-              "n": 4
-            }
-          ]
-        },
-        "start": {
-          "vessel": "sloop",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 4.2,
-          "p90": 7,
-          "max": 7
-        },
-        "caches": 1.8,
-        "flotsam": 5,
-        "crafted": 1,
-        "actions": {
-          "mean": 11,
-          "p90": 17
-        },
-        "respawn_wait_min": 0.4,
-        "failures": []
-      },
-      {
-        "target": "solar_array",
-        "kind": "upgrade",
-        "name": "Solar Array",
-        "cost": {
-          "gold": 120,
-          "mats": [
-            {
-              "id": "electronics",
-              "n": 3
-            },
-            {
-              "id": "wire",
-              "n": 2
-            },
-            {
-              "id": "plastic",
-              "n": 3
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 7.5,
-          "p90": 13,
-          "max": 13
-        },
-        "caches": 0,
-        "flotsam": 0.9,
-        "crafted": 0,
-        "actions": {
-          "mean": 8.4,
-          "p90": 14
-        },
-        "respawn_wait_min": 16.21,
-        "failures": []
-      },
-      {
-        "target": "deck_turbine",
-        "kind": "upgrade",
-        "name": "Deck Wind Turbine",
-        "cost": {
-          "gold": 180,
-          "mats": [
-            {
-              "id": "engine_parts",
-              "n": 1
-            },
-            {
-              "id": "wire",
-              "n": 3
-            },
-            {
-              "id": "plastic",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "solar_array"
-          ],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 7,
-          "p90": 9,
-          "max": 9
-        },
-        "caches": 0,
-        "flotsam": 0.8,
-        "crafted": 2.7,
-        "actions": {
-          "mean": 7.8,
-          "p90": 11
-        },
-        "respawn_wait_min": 15.21,
-        "failures": []
-      },
-      {
-        "target": "cabin_container",
-        "kind": "upgrade",
-        "name": "Container Cabin",
-        "cost": {
-          "gold": 200,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 6
-            },
-            {
-              "id": "driftwood",
-              "n": 4
-            },
-            {
-              "id": "plastic",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "cargo_crate"
-          ],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 5.4,
-          "p90": 9,
-          "max": 9
-        },
-        "caches": 0.4,
-        "flotsam": 6.4,
-        "crafted": 0,
-        "actions": {
-          "mean": 12.2,
-          "p90": 17
-        },
-        "respawn_wait_min": 10.51,
-        "failures": []
-      },
-      {
-        "target": "deck_lights",
-        "kind": "upgrade",
-        "name": "String Lights & Spotlight",
-        "cost": {
-          "gold": 50,
-          "mats": [
-            {
-              "id": "wire",
-              "n": 2
-            },
-            {
-              "id": "electronics",
-              "n": 1
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 2.8,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0,
-        "flotsam": 0,
-        "crafted": 0.7,
-        "actions": {
-          "mean": 2.8,
-          "p90": 3
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "fishing_rig",
-        "kind": "upgrade",
-        "name": "Trolling Rods",
-        "cost": {
-          "gold": 60,
-          "mats": [
-            {
-              "id": "rope",
-              "n": 2
-            },
-            {
-              "id": "driftwood",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.1,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 4.8,
-        "crafted": 0,
-        "actions": {
-          "mean": 5.9,
-          "p90": 8
-        },
-        "respawn_wait_min": 3.6,
-        "failures": []
-      },
-      {
-        "target": "sloop",
-        "kind": "vessel",
-        "name": "Scrap Trimaran",
-        "cost": {
-          "gold": 420,
-          "mats": [
-            {
-              "id": "driftwood",
-              "n": 8
-            },
-            {
-              "id": "scrap_metal",
-              "n": 6
-            },
-            {
-              "id": "canvas",
-              "n": 3
-            },
-            {
-              "id": "iron_nails",
-              "n": 4
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 12.4,
-          "p90": 15,
-          "max": 15
-        },
-        "caches": 0,
-        "flotsam": 9,
-        "crafted": 0,
-        "actions": {
-          "mean": 21.4,
-          "p90": 24
-        },
-        "respawn_wait_min": 26.54,
-        "failures": []
-      },
-      {
-        "target": "ironwake",
-        "kind": "vessel",
-        "name": "Ironwake Expedition Cat",
-        "cost": {
-          "gold": 1400,
-          "mats": [
-            {
-              "id": "alloy_plate",
-              "n": 8
-            },
-            {
-              "id": "engine_parts",
-              "n": 4
-            },
-            {
-              "id": "electronics",
-              "n": 6
-            },
-            {
-              "id": "canvas",
-              "n": 6
-            }
-          ]
-        },
-        "start": {
-          "vessel": "sloop",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 1,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 23,
-          "p90": 36,
-          "max": 36
-        },
-        "caches": 39.5,
-        "flotsam": 16.3,
-        "crafted": 12.1,
-        "actions": {
-          "mean": 78.8,
-          "p90": 89
-        },
-        "respawn_wait_min": 14.82,
-        "failures": []
-      }
-    ],
     "hits_2": [
       {
         "target": "sail_canvas",
@@ -925,9 +30,9 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
           "mean": 1.5,
           "p90": 2,
@@ -968,22 +73,22 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 2.8,
+          "mean": 3.5,
           "p90": 4,
           "max": 4
         },
         "caches": 0,
-        "flotsam": 3.2,
+        "flotsam": 3.5,
         "crafted": 0,
         "actions": {
-          "mean": 6,
+          "mean": 7,
           "p90": 9
         },
-        "respawn_wait_min": 2.8,
+        "respawn_wait_min": 4,
         "failures": []
       },
       {
@@ -1009,19 +114,19 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 2.8,
+          "mean": 2.5,
           "p90": 3,
           "max": 3
         },
         "caches": 0,
         "flotsam": 0,
-        "crafted": 0.3,
+        "crafted": 0,
         "actions": {
-          "mean": 2.8,
+          "mean": 2.5,
           "p90": 3
         },
         "respawn_wait_min": 0,
@@ -1056,22 +161,22 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 6.1,
+          "mean": 7,
           "p90": 9,
           "max": 9
         },
-        "caches": 5.2,
-        "flotsam": 1.3,
-        "crafted": 3.9,
+        "caches": 6.5,
+        "flotsam": 1.5,
+        "crafted": 3,
         "actions": {
-          "mean": 12.6,
-          "p90": 24
+          "mean": 15,
+          "p90": 21
         },
-        "respawn_wait_min": 1.1,
+        "respawn_wait_min": 3.01,
         "failures": []
       },
       {
@@ -1093,20 +198,20 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 2.4,
-          "p90": 3,
-          "max": 3
+          "mean": 2,
+          "p90": 2,
+          "max": 2
         },
         "caches": 0,
-        "flotsam": 4.4,
+        "flotsam": 4.5,
         "crafted": 0,
         "actions": {
-          "mean": 6.8,
-          "p90": 11
+          "mean": 6.5,
+          "p90": 8
         },
         "respawn_wait_min": 6,
         "failures": []
@@ -1136,22 +241,22 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 5.9,
-          "p90": 7,
-          "max": 7
+          "mean": 5.5,
+          "p90": 6,
+          "max": 6
         },
         "caches": 0,
-        "flotsam": 8.7,
+        "flotsam": 8.5,
         "crafted": 4,
         "actions": {
-          "mean": 14.6,
-          "p90": 18
+          "mean": 14,
+          "p90": 15
         },
-        "respawn_wait_min": 12.1,
+        "respawn_wait_min": 11,
         "failures": []
       },
       {
@@ -1173,22 +278,22 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 0.7,
-          "p90": 1,
-          "max": 1
+          "mean": 0,
+          "p90": 0,
+          "max": 0
         },
         "caches": 0,
-        "flotsam": 3.2,
+        "flotsam": 7,
         "crafted": 0,
         "actions": {
-          "mean": 3.9,
-          "p90": 5
+          "mean": 7,
+          "p90": 9
         },
-        "respawn_wait_min": 3.6,
+        "respawn_wait_min": 12,
         "failures": []
       },
       {
@@ -1212,11 +317,11 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 1.4,
+          "mean": 2,
           "p90": 2,
           "max": 2
         },
@@ -1224,10 +329,10 @@
         "flotsam": 4,
         "crafted": 0,
         "actions": {
-          "mean": 5.4,
+          "mean": 6,
           "p90": 7
         },
-        "respawn_wait_min": 4.8,
+        "respawn_wait_min": 6,
         "failures": []
       },
       {
@@ -1255,22 +360,22 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 1.7,
+          "mean": 1.5,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 3.6,
+        "flotsam": 4,
         "crafted": 0,
         "actions": {
-          "mean": 5.3,
+          "mean": 5.5,
           "p90": 7
         },
-        "respawn_wait_min": 4,
+        "respawn_wait_min": 6,
         "failures": []
       },
       {
@@ -1292,20 +397,20 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 1.1,
-          "p90": 2,
-          "max": 2
+          "mean": 1,
+          "p90": 1,
+          "max": 1
         },
         "caches": 0,
-        "flotsam": 2.5,
+        "flotsam": 2,
         "crafted": 0,
         "actions": {
-          "mean": 3.6,
-          "p90": 6
+          "mean": 3,
+          "p90": 4
         },
         "respawn_wait_min": 2,
         "failures": []
@@ -1323,20 +428,20 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 2,
-          "p90": 3,
-          "max": 3
+          "mean": 1.5,
+          "p90": 2,
+          "max": 2
         },
         "caches": 0,
         "flotsam": 0,
         "crafted": 0,
         "actions": {
-          "mean": 2,
-          "p90": 3
+          "mean": 1.5,
+          "p90": 2
         },
         "respawn_wait_min": 0,
         "failures": []
@@ -1370,20 +475,20 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 4.7,
-          "p90": 6,
-          "max": 6
+          "mean": 4.5,
+          "p90": 5,
+          "max": 5
         },
         "caches": 0,
         "flotsam": 0,
-        "crafted": 0.5,
+        "crafted": 0,
         "actions": {
-          "mean": 4.7,
-          "p90": 6
+          "mean": 4.5,
+          "p90": 5
         },
         "respawn_wait_min": 0,
         "failures": []
@@ -1415,22 +520,22 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 3.1,
-          "p90": 5,
-          "max": 5
+          "mean": 3.5,
+          "p90": 4,
+          "max": 4
         },
         "caches": 0,
         "flotsam": 4,
-        "crafted": 0.5,
+        "crafted": 0,
         "actions": {
-          "mean": 7.1,
-          "p90": 13
+          "mean": 7.5,
+          "p90": 8
         },
-        "respawn_wait_min": 6.5,
+        "respawn_wait_min": 6,
         "failures": []
       },
       {
@@ -1460,907 +565,20 @@
           "gold": 15
         },
         "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 3.1,
-          "p90": 4,
-          "max": 4
-        },
-        "caches": 0.2,
-        "flotsam": 5.4,
-        "crafted": 1,
-        "actions": {
-          "mean": 8.7,
-          "p90": 14
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "solar_array",
-        "kind": "upgrade",
-        "name": "Solar Array",
-        "cost": {
-          "gold": 120,
-          "mats": [
-            {
-              "id": "electronics",
-              "n": 3
-            },
-            {
-              "id": "wire",
-              "n": 2
-            },
-            {
-              "id": "plastic",
-              "n": 3
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 6.5,
-          "p90": 14,
-          "max": 14
-        },
-        "caches": 0,
-        "flotsam": 0.2,
-        "crafted": 0,
-        "actions": {
-          "mean": 6.7,
-          "p90": 14
-        },
-        "respawn_wait_min": 10.02,
-        "failures": []
-      },
-      {
-        "target": "deck_turbine",
-        "kind": "upgrade",
-        "name": "Deck Wind Turbine",
-        "cost": {
-          "gold": 180,
-          "mats": [
-            {
-              "id": "engine_parts",
-              "n": 1
-            },
-            {
-              "id": "wire",
-              "n": 3
-            },
-            {
-              "id": "plastic",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "solar_array"
-          ],
-          "gold": 15
-        },
-        "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 5.2,
-          "p90": 6,
-          "max": 6
-        },
-        "caches": 0,
-        "flotsam": 0.3,
-        "crafted": 2.3,
-        "actions": {
-          "mean": 5.5,
-          "p90": 7
-        },
-        "respawn_wait_min": 6.01,
-        "failures": []
-      },
-      {
-        "target": "cabin_container",
-        "kind": "upgrade",
-        "name": "Container Cabin",
-        "cost": {
-          "gold": 200,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 6
-            },
-            {
-              "id": "driftwood",
-              "n": 4
-            },
-            {
-              "id": "plastic",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "cargo_crate"
-          ],
-          "gold": 15
-        },
-        "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 4.5,
-          "p90": 6,
-          "max": 6
-        },
-        "caches": 0.2,
-        "flotsam": 4.2,
-        "crafted": 0,
-        "actions": {
-          "mean": 8.9,
-          "p90": 13
-        },
-        "respawn_wait_min": 5.71,
-        "failures": []
-      },
-      {
-        "target": "deck_lights",
-        "kind": "upgrade",
-        "name": "String Lights & Spotlight",
-        "cost": {
-          "gold": 50,
-          "mats": [
-            {
-              "id": "wire",
-              "n": 2
-            },
-            {
-              "id": "electronics",
-              "n": 1
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 2.6,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0,
-        "flotsam": 0,
-        "crafted": 0.3,
-        "actions": {
-          "mean": 2.6,
-          "p90": 3
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "fishing_rig",
-        "kind": "upgrade",
-        "name": "Trolling Rods",
-        "cost": {
-          "gold": 60,
-          "mats": [
-            {
-              "id": "rope",
-              "n": 2
-            },
-            {
-              "id": "driftwood",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 0.8,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 5.2,
-        "crafted": 0,
-        "actions": {
-          "mean": 6,
-          "p90": 8
-        },
-        "respawn_wait_min": 4,
-        "failures": []
-      },
-      {
-        "target": "sloop",
-        "kind": "vessel",
-        "name": "Scrap Trimaran",
-        "cost": {
-          "gold": 420,
-          "mats": [
-            {
-              "id": "driftwood",
-              "n": 8
-            },
-            {
-              "id": "scrap_metal",
-              "n": 6
-            },
-            {
-              "id": "canvas",
-              "n": 3
-            },
-            {
-              "id": "iron_nails",
-              "n": 4
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 9.9,
-          "p90": 11,
-          "max": 11
-        },
-        "caches": 0,
-        "flotsam": 8.5,
-        "crafted": 0,
-        "actions": {
-          "mean": 18.4,
-          "p90": 22
-        },
-        "respawn_wait_min": 24.53,
-        "failures": []
-      },
-      {
-        "target": "ironwake",
-        "kind": "vessel",
-        "name": "Ironwake Expedition Cat",
-        "cost": {
-          "gold": 1400,
-          "mats": [
-            {
-              "id": "alloy_plate",
-              "n": 8
-            },
-            {
-              "id": "engine_parts",
-              "n": 4
-            },
-            {
-              "id": "electronics",
-              "n": 6
-            },
-            {
-              "id": "canvas",
-              "n": 6
-            }
-          ]
-        },
-        "start": {
-          "vessel": "sloop",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 2,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 18.6,
-          "p90": 31,
-          "max": 31
-        },
-        "caches": 24.6,
-        "flotsam": 19,
-        "crafted": 12.4,
-        "actions": {
-          "mean": 62.2,
-          "p90": 71
-        },
-        "respawn_wait_min": 12.8,
-        "failures": []
-      }
-    ],
-    "hits_3": [
-      {
-        "target": "sail_canvas",
-        "kind": "upgrade",
-        "name": "Canvas Mainsail",
-        "cost": {
-          "gold": 60
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.4,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 0,
-        "crafted": 0,
-        "actions": {
-          "mean": 1.4,
-          "p90": 2
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "sail_cutter",
-        "kind": "upgrade",
-        "name": "Cutter Rig + Jib",
-        "cost": {
-          "gold": 150,
-          "mats": [
-            {
-              "id": "canvas",
-              "n": 3
-            },
-            {
-              "id": "rope",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "sail_canvas"
-          ],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 2.6,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0,
-        "flotsam": 2.6,
-        "crafted": 0.1,
-        "actions": {
-          "mean": 5.2,
-          "p90": 8
-        },
-        "respawn_wait_min": 2,
-        "failures": []
-      },
-      {
-        "target": "engine_outboard",
-        "kind": "upgrade",
-        "name": "Salvaged Outboard",
-        "cost": {
-          "gold": 90,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 4
-            },
-            {
-              "id": "wire",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
           "mean": 2.5,
           "p90": 3,
           "max": 3
         },
         "caches": 0,
-        "flotsam": 0.1,
-        "crafted": 0.5,
-        "actions": {
-          "mean": 2.6,
-          "p90": 3
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "engine_twin",
-        "kind": "upgrade",
-        "name": "Twin Diesel Drive",
-        "cost": {
-          "gold": 380,
-          "mats": [
-            {
-              "id": "engine_parts",
-              "n": 3
-            },
-            {
-              "id": "scrap_metal",
-              "n": 6
-            },
-            {
-              "id": "wire",
-              "n": 3
-            }
-          ]
-        },
-        "start": {
-          "vessel": "sloop",
-          "owned": [
-            "engine_outboard"
-          ],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 5.1,
-          "p90": 6,
-          "max": 6
-        },
-        "caches": 2.7,
-        "flotsam": 0,
-        "crafted": 3.9,
-        "actions": {
-          "mean": 7.8,
-          "p90": 11
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "hull_copper",
-        "kind": "upgrade",
-        "name": "Copper-Banded Hull",
-        "cost": {
-          "gold": 130,
-          "mats": [
-            {
-              "id": "driftwood",
-              "n": 4
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.9,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0,
-        "flotsam": 5,
-        "crafted": 0,
-        "actions": {
-          "mean": 6.9,
-          "p90": 14
-        },
-        "respawn_wait_min": 6.8,
-        "failures": []
-      },
-      {
-        "target": "hull_armor",
-        "kind": "upgrade",
-        "name": "Riveted Armour Plating",
-        "cost": {
-          "gold": 260,
-          "mats": [
-            {
-              "id": "alloy_plate",
-              "n": 4
-            },
-            {
-              "id": "iron_nails",
-              "n": 6
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "hull_copper"
-          ],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 4.9,
-          "p90": 6,
-          "max": 6
-        },
-        "caches": 0,
-        "flotsam": 8.2,
-        "crafted": 4,
-        "actions": {
-          "mean": 13.1,
-          "p90": 15
-        },
-        "respawn_wait_min": 11.8,
-        "failures": []
-      },
-      {
-        "target": "cargo_crate",
-        "kind": "upgrade",
-        "name": "Lashed Cargo Crate",
-        "cost": {
-          "gold": 40,
-          "mats": [
-            {
-              "id": "driftwood",
-              "n": 3
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 0.6,
-          "p90": 1,
-          "max": 1
-        },
-        "caches": 0,
-        "flotsam": 4,
-        "crafted": 0,
-        "actions": {
-          "mean": 4.6,
-          "p90": 8
-        },
-        "respawn_wait_min": 5.2,
-        "failures": []
-      },
-      {
-        "target": "cargo_net",
-        "kind": "upgrade",
-        "name": "Rope Cargo Nets",
-        "cost": {
-          "gold": 85,
-          "mats": [
-            {
-              "id": "rope",
-              "n": 3
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "cargo_crate"
-          ],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.7,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 4,
-        "crafted": 0,
-        "actions": {
-          "mean": 5.7,
-          "p90": 7
-        },
-        "respawn_wait_min": 4.8,
-        "failures": []
-      },
-      {
-        "target": "tank_drums",
-        "kind": "upgrade",
-        "name": "Fuel Drum Rack",
-        "cost": {
-          "gold": 70,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 2
-            },
-            {
-              "id": "rope",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [
-            "engine_outboard"
-          ],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.4,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 2.9,
-        "crafted": 0,
-        "actions": {
-          "mean": 4.3,
-          "p90": 6
-        },
-        "respawn_wait_min": 2.4,
-        "failures": []
-      },
-      {
-        "target": "rudder_ash",
-        "kind": "upgrade",
-        "name": "Ash-Wood Rudder",
-        "cost": {
-          "gold": 45,
-          "mats": [
-            {
-              "id": "driftwood",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 0.9,
-          "p90": 1,
-          "max": 1
-        },
-        "caches": 0,
-        "flotsam": 3.2,
-        "crafted": 0,
-        "actions": {
-          "mean": 4.1,
-          "p90": 7
-        },
-        "respawn_wait_min": 3.2,
-        "failures": []
-      },
-      {
-        "target": "compass_brass",
-        "kind": "upgrade",
-        "name": "Brass Compass",
-        "cost": {
-          "gold": 90
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 1.6,
-          "p90": 2,
-          "max": 2
-        },
-        "caches": 0,
-        "flotsam": 0,
-        "crafted": 0,
-        "actions": {
-          "mean": 1.6,
-          "p90": 2
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "radar_mast",
-        "kind": "upgrade",
-        "name": "Salvage Radar",
-        "cost": {
-          "gold": 240,
-          "mats": [
-            {
-              "id": "electronics",
-              "n": 4
-            },
-            {
-              "id": "wire",
-              "n": 3
-            },
-            {
-              "id": "scrap_metal",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "sloop",
-          "owned": [
-            "compass_brass"
-          ],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 3.9,
-          "p90": 5,
-          "max": 5
-        },
-        "caches": 0.3,
-        "flotsam": 0,
-        "crafted": 0.5,
-        "actions": {
-          "mean": 4.2,
-          "p90": 6
-        },
-        "respawn_wait_min": 0,
-        "failures": []
-      },
-      {
-        "target": "salvage_crane",
-        "kind": "upgrade",
-        "name": "Salvage Crane & Winch",
-        "cost": {
-          "gold": 160,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 6
-            },
-            {
-              "id": "rope",
-              "n": 3
-            },
-            {
-              "id": "wire",
-              "n": 2
-            }
-          ]
-        },
-        "start": {
-          "vessel": "dinghy",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 2.7,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0,
-        "flotsam": 3.7,
-        "crafted": 0.5,
-        "actions": {
-          "mean": 6.4,
-          "p90": 10
-        },
-        "respawn_wait_min": 4.8,
-        "failures": []
-      },
-      {
-        "target": "harpoon_turret",
-        "kind": "upgrade",
-        "name": "Harpoon Turret",
-        "cost": {
-          "gold": 220,
-          "mats": [
-            {
-              "id": "scrap_metal",
-              "n": 5
-            },
-            {
-              "id": "engine_parts",
-              "n": 1
-            },
-            {
-              "id": "rope",
-              "n": 4
-            }
-          ]
-        },
-        "start": {
-          "vessel": "sloop",
-          "owned": [],
-          "gold": 15
-        },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
-        "hauls": {
-          "mean": 2.6,
-          "p90": 3,
-          "max": 3
-        },
-        "caches": 0.3,
-        "flotsam": 5.4,
+        "flotsam": 5.5,
         "crafted": 1,
         "actions": {
-          "mean": 8.3,
-          "p90": 15
+          "mean": 8,
+          "p90": 8
         },
         "respawn_wait_min": 0,
         "failures": []
@@ -2391,23 +609,23 @@
           "owned": [],
           "gold": 15
         },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "hits": 2,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 4,
-          "p90": 7,
-          "max": 7
+          "mean": 3,
+          "p90": 3,
+          "max": 3
         },
         "caches": 0,
-        "flotsam": 0.2,
+        "flotsam": 0,
         "crafted": 0,
         "actions": {
-          "mean": 4.2,
-          "p90": 7
+          "mean": 3,
+          "p90": 3
         },
-        "respawn_wait_min": 4.41,
+        "respawn_wait_min": 2.5,
         "failures": []
       },
       {
@@ -2438,23 +656,23 @@
           ],
           "gold": 15
         },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "hits": 2,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 4.2,
-          "p90": 6,
-          "max": 6
+          "mean": 4,
+          "p90": 5,
+          "max": 5
         },
         "caches": 0,
-        "flotsam": 0.2,
-        "crafted": 2.1,
+        "flotsam": 0.5,
+        "crafted": 1.5,
         "actions": {
-          "mean": 4.4,
+          "mean": 4.5,
           "p90": 6
         },
-        "respawn_wait_min": 4.11,
+        "respawn_wait_min": 2.51,
         "failures": []
       },
       {
@@ -2485,23 +703,23 @@
           ],
           "gold": 15
         },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "hits": 2,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 3,
-          "p90": 4,
-          "max": 4
+          "mean": 4,
+          "p90": 5,
+          "max": 5
         },
-        "caches": 0,
-        "flotsam": 5.2,
+        "caches": 1,
+        "flotsam": 5.5,
         "crafted": 0,
         "actions": {
-          "mean": 8.2,
-          "p90": 13
+          "mean": 10.5,
+          "p90": 12
         },
-        "respawn_wait_min": 7.2,
+        "respawn_wait_min": 10.01,
         "failures": []
       },
       {
@@ -2526,21 +744,21 @@
           "owned": [],
           "gold": 15
         },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "hits": 2,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 2.6,
-          "p90": 3,
-          "max": 3
+          "mean": 2,
+          "p90": 2,
+          "max": 2
         },
         "caches": 0,
         "flotsam": 0,
-        "crafted": 0.3,
+        "crafted": 0,
         "actions": {
-          "mean": 2.6,
-          "p90": 3
+          "mean": 2,
+          "p90": 2
         },
         "respawn_wait_min": 0,
         "failures": []
@@ -2567,23 +785,23 @@
           "owned": [],
           "gold": 15
         },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "hits": 2,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 0.9,
+          "mean": 1,
           "p90": 1,
           "max": 1
         },
         "caches": 0,
-        "flotsam": 5.7,
+        "flotsam": 4.5,
         "crafted": 0,
         "actions": {
-          "mean": 6.6,
-          "p90": 13
+          "mean": 5.5,
+          "p90": 6
         },
-        "respawn_wait_min": 5.2,
+        "respawn_wait_min": 4,
         "failures": []
       },
       {
@@ -2616,23 +834,23 @@
           "owned": [],
           "gold": 15
         },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "hits": 2,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 8.1,
+          "mean": 10,
           "p90": 10,
           "max": 10
         },
         "caches": 0,
-        "flotsam": 8.6,
+        "flotsam": 9.5,
         "crafted": 0,
         "actions": {
-          "mean": 16.7,
-          "p90": 23
+          "mean": 19.5,
+          "p90": 21
         },
-        "respawn_wait_min": 21.93,
+        "respawn_wait_min": 27.03,
         "failures": []
       },
       {
@@ -2665,26 +883,26 @@
           "owned": [],
           "gold": 15
         },
-        "hits": 3,
-        "runs": 10,
-        "affordable_runs": 10,
-        "bought_through_game": 10,
+        "hits": 2,
+        "runs": 2,
+        "affordable_runs": 2,
+        "bought_through_game": 2,
         "hauls": {
-          "mean": 17,
-          "p90": 23,
-          "max": 23
+          "mean": 23.5,
+          "p90": 27,
+          "max": 27
         },
-        "caches": 15.8,
-        "flotsam": 21.5,
-        "crafted": 12.2,
+        "caches": 20,
+        "flotsam": 22.5,
+        "crafted": 12,
         "actions": {
-          "mean": 54.3,
-          "p90": 66
+          "mean": 66,
+          "p90": 71
         },
-        "respawn_wait_min": 11.68,
+        "respawn_wait_min": 16.64,
         "failures": []
       }
     ]
   },
-  "result_hash": "a364191b"
+  "result_hash": "42fee729"
 }

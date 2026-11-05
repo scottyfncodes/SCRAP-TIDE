@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T14:34:30.427Z",
-  "commit": "18cd5746765d11accb19ad918ca53831090d600e",
+  "generated_at": "2026-11-05T15:29:50.324Z",
+  "commit": "f59beb6f9b5bd575dbbb4c5d0759486f21b05206",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {

@@ -1,6 +1,6 @@
 # TIDEBREAKERS · PLAYCRAFT evidence pack
 
-Generated 2026-11-05T14:34:30.427Z from commit `18cd574` (simulations) / `18cd574` (playtest bot). Game source unchanged by this pack.
+Generated 2026-11-05T15:29:50.324Z from commit `18cd574` (simulations) / `f59beb6` (playtest bot). Game source unchanged by this pack.
 
 **Where this was measured:** headless Chromium with software WebGL (SwiftShader) in a Linux container. Nothing here was observed on a real phone.
 
@@ -15,7 +15,7 @@ Generated 2026-11-05T14:34:30.427Z from commit `18cd574` (simulations) / `18cd57
 
 ## Playtest bot (runtime-observed)
 
-Production build (`dist/`), iPhone-sized viewport, seed 1105, 3 run(s). Reproducible: **yes (identical fingerprints)**. Wall time per run: 49.4s, 43.6s, 42.9s.
+Production build (`dist/`), iPhone-sized viewport, seed 1105, 3 run(s). Reproducible: **yes (identical fingerprints)**. Wall time per run: 46.3s, 41.7s, 41.3s.
 
 | Check | Result | Detail |
 |---|---|---|

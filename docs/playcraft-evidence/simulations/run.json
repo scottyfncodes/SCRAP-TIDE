@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-05T14:22:21.417Z",
-  "commit": "18cd5746765d11accb19ad918ca53831090d600e",
-  "branch": "balance/winch-payouts",
+  "generated_at": "2026-11-05T15:35:58.750Z",
+  "commit": "f59beb6f9b5bd575dbbb4c5d0759486f21b05206",
+  "branch": "balance/sea-clock",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
   "seed": 20261105,
-  "quick": false,
+  "quick": true,
   "boot_ms": 0,
   "simulation": "run",
   "evidence_class": "harness",
@@ -14,8 +14,8 @@
     "page_errors": [],
     "localStorage_keys_after_run": [],
     "timings_ms": {
-      "boot_max": 16337
+      "boot_max": 4240
     }
   },
-  "result_hash": "41f95675"
+  "result_hash": "8ce7b33b"
 }
