@@ -68,6 +68,8 @@ export interface SaveData {
   // v3: the living world (design bible Phase 1)
   pinned: string[]; // rumour ids pinned from Old Wren's board, in pin order
   followSide: boolean; // the waypoint follows the Captain's Log side lead instead of the main goal
+  shipName: string; // what you called her ('' until named)
+  renown: string; // the highest renown title announced so far (data/renown.ts)
 }
 
 export function freshSave(): SaveData {
@@ -116,6 +118,8 @@ export function freshSave(): SaveData {
     settlementsVisited: ['driftholm'],
     pinned: [],
     followSide: false,
+    shipName: '',
+    renown: 'drifter',
   };
 }
 
@@ -139,6 +143,7 @@ function migrate(raw: any): SaveData {
   if (raw.hull === undefined) merged.hull = VESSELS[merged.vessel].hull;
   merged.pinned = Array.isArray(raw.pinned) ? raw.pinned.filter((x: unknown) => typeof x === 'string') : [];
   merged.followSide = raw.followSide === true;
+  merged.shipName = typeof raw.shipName === 'string' ? raw.shipName.slice(0, 24) : '';
   merged.quest = liveStep(merged.quest); // the First Voyage was shortened: retired steps continue from their successor
   merged.goal = Math.max(0, Math.min(GOALS.length - 1, merged.goal | 0));
   if (!Number.isFinite(merged.seaClock)) merged.seaClock = base.seaClock;

@@ -2,6 +2,7 @@
 import { goalProgressText } from '../game/goalHelp';
 import { pickLine, CHARACTER_MAP } from '../data/characters';
 import { openRumours, canReach } from '../game/leads';
+import { SHIP_NAMES, REFIT_STAGES, RENOWN, refitStage, renownTitle } from '../data/renown';
 import { ITEMS, CATALOG_ITEMS, ITEM_MAP, RARITY_COLOR, RARITY_LABEL, RARITY_ORDER, CATEGORY_LABEL, LIVING_GREEN, isLiving, item, type Category } from '../data/items';
 import { UPGRADES, VESSELS, COSMETICS, COSMETIC_MAP, SLOT_LABEL, SLOT_ORDER, UPGRADE_MAP, type Cost } from '../data/ship';
 import { RECIPES } from '../data/crafting';
@@ -49,6 +50,7 @@ export interface GameAPI {
   sideLead(): import('../game/leads').Lead | null;
   toggleFollowSide(): void;
   pinRumour(id: string): void;
+  nameShip(): void;
 }
 
 export interface StatusInfo {
@@ -685,6 +687,26 @@ export class UI {
     );
   }
 
+  /** Name your boat: a text field and a few names the Drift would give her. */
+  promptShipName(current: string, onName: (name: string) => void) {
+    this.queueReveal(() => {
+      const picks = [...SHIP_NAMES].sort(() => Math.random() - 0.5).slice(0, 4);
+      const node = el(`<div class="reveal"><div class="reveal-card" style="--rc:#d6a62a"><div class="rays"></div>
+        <div class="r-kicker">Every boat on the water has a name</div><div class="r-name">Name her</div>
+        <div class="r-desc">Paint it on the stern. Marlo will call her by it, and so will everyone else.</div>
+        <input class="ship-name" maxlength="24" autocomplete="off" spellcheck="false" placeholder="${picks[0]}" value="${current.replace(/"/g, '')}">
+        <div class="name-picks">${picks.map((n) => `<span class="pick" role="button" tabindex="0">${n}</span>`).join('')}</div>
+        <button class="btn r-ok" style="min-width:160px">Paint it on</button></div></div>`);
+      const input = node.querySelector('input') as HTMLInputElement;
+      node.querySelectorAll<HTMLElement>('.pick').forEach((b) => b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        input.value = b.textContent ?? '';
+      }));
+      node.querySelector('.r-ok')!.addEventListener('click', () => onName((input.value.trim() || input.placeholder).slice(0, 24)));
+      return node;
+    });
+  }
+
   revealInfo(kicker: string, title: string, body: string, btn = 'Aye') {
     this.queueReveal(() =>
       el(`<div class="reveal"><div class="reveal-card" style="--rc:#4aa3ff"><div class="rays"></div>
@@ -808,6 +830,7 @@ export class UI {
       sloop: s.data.vessel === 'sloop', ironwake: s.data.vessel === 'ironwake',
       repelled: s.data.raidersRepelled > 0,
       tomas_aboard: s.data.crew.includes('tomas'), juno_aboard: s.data.crew.includes('juno'),
+      named: !!s.data.shipName,
     };
     const greet = (id: string) => {
       const kept = this.greetings.get(id);
@@ -815,7 +838,7 @@ export class UI {
       const text = pickLine(id, 'dock', ctx, { recent: this.npcRecent });
       if (text) this.npcRecent.add(text);
       if (this.npcRecent.size > 24) this.npcRecent.delete(this.npcRecent.values().next().value!);
-      const out = text ? `“${text}”` : '';
+      const out = text ? `“${text.replace('{ship}', s.data.shipName)}”` : '';
       this.greetings.set(id, out);
       return out;
     };
@@ -1101,7 +1124,7 @@ export class UI {
 
   shipPanel() {
     const s = this.store;
-    const { body, tabs } = this.openSheet(s.vesselDef.name, 'Your boat · equipment, crew, workbench & looks', { short: true });
+    const { body, tabs } = this.openSheet(s.data.shipName || s.vesselDef.name, `${s.data.shipName ? `${s.vesselDef.name} · ` : ''}${refitStage(s.data.upgrades.length).name} · Captain, ${renownTitle(s.data).title}`, { short: true });
     this.game.setShowcase(true);
     let tab = 'stats';
     const render = () => {
@@ -1142,6 +1165,16 @@ export class UI {
           <div class="stat"><b>${Math.round(s.data.hull)}/${st.hullMax}</b><span>hull</span></div><div class="stat"><b>${Math.round(s.data.fuel)}/${st.fuelCap}</b><span>fuel</span></div><div class="stat"><b>${st.armor ? Math.round(st.armor * 100) + '%' : '—'}</b><span>armour</span></div>
           <div class="stat"><b>${st.reef ? 'Yes' : 'No'}</b><span>reef-safe</span></div><div class="stat"><b>${st.crossSwell ? 'Yes' : 'No'}</b><span>open swell</span></div><div class="stat"><b>${st.crossStorm ? 'Yes' : 'No'}</b><span>Stormwall</span></div></div>
           <div class="svc"><button class="btn rf" ${s.countOwned('fuel_can') && s.data.fuel < st.fuelCap - 2 ? '' : 'disabled'}>⛽ Pour fuel cans (${s.countOwned('fuel_can')})</button><button class="btn ghost pk" ${s.countOwned('hull_patch') && s.data.hull < st.hullMax ? '' : 'disabled'}>🩹 Patch hull (${s.countOwned('hull_patch')})</button></div>`;
+        const stage = refitStage(s.data.upgrades.length);
+        const next = REFIT_STAGES.find((r) => r.min > s.data.upgrades.length);
+        const title = renownTitle(s.data);
+        const ren = el(`<div class="renown"><div class="section-title">Her refit · ${stage.name}</div>
+          <div class="note">${stage.look}${next ? ` <b>${next.min - s.data.upgrades.length} more part${next.min - s.data.upgrades.length > 1 ? 's' : ''}</b> and she’s ${next.name}: ${next.look.charAt(0).toLowerCase()}${next.look.slice(1)}` : ''}</div>
+          <div class="section-title">Renown · Captain, ${title.title}</div>
+          ${RENOWN.map((r) => `<div class="rank ${r.earned(s.data) ? 'got' : ''}"><b>${r.earned(s.data) ? '✓' : '○'} ${r.title}</b> <span>${r.how}</span></div>`).join('')}
+          <button class="btn ghost rename">✎ ${s.data.shipName ? `Rename the ${s.data.shipName}` : 'Name her'}</button></div>`);
+        ren.querySelector('.rename')!.addEventListener('click', () => this.game.nameShip());
+        body.append(ren);
         body.querySelector('.rf')!.addEventListener('click', () => {
           this.game.refuel();
           render();
