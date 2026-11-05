@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T13:14:44.687Z",
-  "commit": "f55a35177d8db72fe94c4cd7cc8e6702b74b2ef8",
+  "generated_at": "2026-11-05T13:31:03.457Z",
+  "commit": "001a06728ed33afa91e23c266b0f77633571b96f",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {
@@ -8,7 +8,7 @@
       "category": "core_gameplay",
       "status": "pass",
       "title": "Playtest bot: the core loop runs end to end on the production build (runtime-observed)",
-      "detail": "2 run(s), seed 1105: dock → wheel → beacon → winch (3/3) → haul → dock → sell → install sail_canvas by game 58.03s; 15/15 checks passed",
+      "detail": "3 run(s), seed 1105: dock → wheel → beacon → winch (3/3) → haul → dock → sell → install sail_canvas by game 58.03s; 15/15 checks passed",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -32,7 +32,7 @@
       "category": "technical",
       "status": "pass",
       "title": "Playtest bot: deterministic and reproducible (same seed → identical run fingerprint)",
-      "detail": "2 runs, fingerprints 9920317a, 9920317a",
+      "detail": "3 runs, fingerprints 9920317a, 9920317a, 9920317a",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
