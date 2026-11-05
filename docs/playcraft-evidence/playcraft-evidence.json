@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T15:29:50.324Z",
-  "commit": "f59beb6f9b5bd575dbbb4c5d0759486f21b05206",
+  "generated_at": "2026-11-05T16:00:46.301Z",
+  "commit": "da5f6ee8e2e00b5a9e7c4a0f715400ce90ef8db4",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {
@@ -88,7 +88,7 @@
       "category": "difficulty",
       "status": "pass",
       "title": "Simulation: no economy exploits through crafting, fuel or repair",
-      "detail": "craft Refine Fuel then sell: ok; craft Hull Patch Kit then sell: ok; craft Alloy Plate then sell: ok; craft Engine Parts then sell: ok; craft Stitch Sailcloth then sell: ok; craft Strip Wire then sell: ok; buy fuel at driftholm: ok; buy fuel at hollow: ok; buy fuel at helios: ok; repair 35 hull at a dock vs a patch kit: ok; salvage respawn follows the device clock: EXPLOIT",
+      "detail": "craft Refine Fuel then sell: ok; craft Hull Patch Kit then sell: ok; craft Alloy Plate then sell: ok; craft Engine Parts then sell: ok; craft Stitch Sailcloth then sell: ok; craft Strip Wire then sell: ok; buy fuel at driftholm: ok; buy fuel at hollow: ok; buy fuel at helios: ok; repair 35 hull at a dock vs a patch kit: ok; salvage respawn: clock set forward a day mid-session: ok; salvage respawn: clock set back, then one respawn of real time: ok; salvage respawn: relaunch after the clock was set forward a day: ok",
       "source": "docs/playcraft-evidence/simulations/exploits.json"
     },
     {
@@ -111,12 +111,6 @@
       "severity": "medium",
       "title": "The Stormwall barely scratches the Ironwake",
       "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
-      "evidence_class": "simulation-measured"
-    },
-    {
-      "severity": "low",
-      "title": "Exploit: salvage respawn follows the device clock",
-      "detail": "Salvage.ready compares Date.now() with the saved haul time, so changing the phone’s clock skips respawn timers. Severity is a design call (single-player).",
       "evidence_class": "simulation-measured"
     },
     {

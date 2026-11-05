@@ -1,6 +1,6 @@
 # TIDEBREAKERS · PLAYCRAFT evidence pack
 
-Generated 2026-11-05T15:29:50.324Z from commit `18cd574` (simulations) / `f59beb6` (playtest bot). Game source unchanged by this pack.
+Generated 2026-11-05T16:00:46.301Z from commit `446a03c` (simulations) / `f59beb6` (playtest bot). Game source unchanged by this pack.
 
 **Where this was measured:** headless Chromium with software WebGL (SwiftShader) in a Linux container. Nothing here was observed on a real phone.
 
@@ -60,18 +60,18 @@ Seeded runs of the real game code; see `tests/sim/sims.page.js` for exactly whic
 
 | Site | Region | Boat (slots) | Gold/haul mean | p10–p90 | Items/haul | Gold per respawn-minute | Perfect hauls overflowing |
 |---|---|---|---|---|---|---|---|
-| The Sunken Tower | shallows | dinghy (6) | 23.0 | 16–30 | 5.1 | 5.7 | 0% |
-| The Box Yard | shallows | dinghy (6) | 36.3 | 20–82 | 5.9 | 7.3 | 0% |
-| Hollow Underfloors | shallows | dinghy (6) | 42.5 | 20–75 | 6.1 | 7.1 | 0% |
-| Meridian Plaza | emerald | sloop (14) | 80.2 | 42–132 | 8.1 | 11.5 | 0% |
-| Broadcast Spire | emerald | sloop (14) | 118.7 | 67–196 | 8.1 | 14.8 | 0% |
-| The Leaning Block | emerald | sloop (14) | 64.3 | 24–142 | 6.4 | 9.2 | 0% |
-| Helios Lower Deck | emerald | sloop (14) | 42.1 | 24–61 | 5.3 | 7.0 | 0% |
-| Hull of the Meridian Star | emerald | sloop (14) | 179.9 | 85–316 | 13.3 | 18.0 | 0% |
-| Graveyard Boxes | emerald | sloop (14) | 65.2 | 38–106 | 8.8 | 9.3 | 0% |
-| The Meridian Spire | stormwall | ironwake (22) | 350.8 | 223–486 | 8.5 | 23.4 | 0% |
+| The Sunken Tower | shallows | dinghy (6) | 22.6 | 16–29 | 5.0 | 5.6 | 0% |
+| The Box Yard | shallows | dinghy (6) | 37.2 | 19–83 | 5.8 | 7.4 | 0% |
+| Hollow Underfloors | shallows | dinghy (6) | 42.1 | 19–75 | 6.1 | 7.0 | 0% |
+| Meridian Plaza | emerald | sloop (14) | 81.2 | 41–135 | 8.0 | 11.6 | 0% |
+| Broadcast Spire | emerald | sloop (14) | 118.3 | 68–197 | 8.1 | 14.8 | 0% |
+| The Leaning Block | emerald | sloop (14) | 62.5 | 23–142 | 6.3 | 8.9 | 0% |
+| Helios Lower Deck | emerald | sloop (14) | 42.5 | 24–62 | 5.2 | 7.1 | 0% |
+| Hull of the Meridian Star | emerald | sloop (14) | 187.3 | 86–354 | 13.2 | 18.7 | 0% |
+| Graveyard Boxes | emerald | sloop (14) | 66.1 | 38–109 | 8.9 | 9.4 | 0% |
+| The Meridian Spire | stormwall | ironwake (22) | 354.4 | 218–490 | 8.3 | 23.6 | 0% |
 
-Winch skill matters: the Sunken Tower pays 0/3 → 7.8g, 1/3 → 15.3g, 2/3 → 23.0g, 3/3 → 30.8g. A Salvager adds about 24.8g a haul on average.
+Winch skill matters: the Sunken Tower pays 0/3 → 7.6g, 1/3 → 15.5g, 2/3 → 22.6g, 3/3 → 30.6g. A Salvager adds about 23.7g a haul on average.
 
 | Site | Difficulty | No gear | Crane | Crane + Salvager |
 |---|---|---|---|---|
@@ -119,7 +119,7 @@ From the state a player could first buy it in (prerequisites only, 15 gold), 10 
 | Winch | Seed | Actions | Hauls | Caches | Flotsam | Crafted | Respawn wait | Upgrades | Vessels | Log reached |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1/3 | 1 | 251 | 64 | 85 | 102 | 17 | 1.35 h | 19/19 | 3 | g_raiders |
-| 1/3 | 2 | 249 | 58 | 77 | 114 | 21 | 1.47 h | 19/19 | 3 | g_raiders |
+| 1/3 | 2 | 257 | 61 | 87 | 109 | 22 | 1.47 h | 19/19 | 3 | g_raiders |
 | 1/3 | 3 | 281 | 47 | 127 | 107 | 23 | 1.09 h | 19/19 | 3 | g_raiders |
 | 2/3 | 1 | 221 | 38 | 82 | 101 | 22 | 1.02 h | 19/19 | 3 | g_raiders |
 | 2/3 | 2 | 206 | 37 | 60 | 109 | 24 | 1 h | 19/19 | 3 | g_raiders |
@@ -284,7 +284,9 @@ The Skiff was stopped by the open swell in 3/3 runs and the Trimaran by the Stor
 | buy fuel at hollow | ok | cans cannot be bought back from fuel, so this is only an exploit if fuel can be turned into cans (it cannot) |
 | buy fuel at helios | ok | cans cannot be bought back from fuel, so this is only an exploit if fuel can be turned into cans (it cannot) |
 | repair 35 hull at a dock vs a patch kit | ok | a kit also works at sea |
-| salvage respawn follows the device clock | **exploit** | Salvage.ready compares Date.now() with the saved haul time, so changing the phone’s clock skips respawn timers. Severity is a design call (single-player). |
+| salvage respawn: clock set forward a day mid-session | ok | respawn follows the sea clock (monotonic in a session): the clock change did nothing |
+| salvage respawn: clock set back, then one respawn of real time | ok | the site refilled after its respawn of real time |
+| salvage respawn: relaunch after the clock was set forward a day | ok | between sessions the device clock is the only clock; the credit is capped at 2 h (with 4-15 min respawns that equals having been away that long) |
 
 ## Findings (computed from the data above)
 
@@ -292,7 +294,6 @@ The Skiff was stopped by the open swell in 3/3 runs and the Trimaran by the Stor
 |---|---|---|---|
 | medium | Difficulty/pacing spike: commission Scrap Trimaran | 19 sourcing actions for this step vs at most 7 for any earlier step (campaign, winch 2/3). | simulation-measured |
 | medium | The Stormwall barely scratches the Ironwake | Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call. | simulation-measured |
-| low | Exploit: salvage respawn follows the device clock | Salvage.ready compares Date.now() with the saved haul time, so changing the phone’s clock skips respawn timers. Severity is a design call (single-player). | simulation-measured |
 | info | No progression dead ends found | Every one of the 21 upgrades and vessels became affordable and was bought through the game in every seed at every winch skill (hits_1, hits_2, hits_3). | simulation-measured |
 | info | Captain's Log in the campaign stops at g_raiders | Completed: g_salvage → g_engine → g_crew → g_trimaran → g_helios → g_meridian. The raider goal needs real-time combat, which the simulation does not play; nothing after it can complete here (purchases are not gated by goals). | simulation-measured |
 | info | Storm damage | A full storm (storm 1.0) costs the stock Skiff 57.6 hull/min (swamped from full in 1.0 min); the Trimaran 57.6 hull/min (1.7 min). Riveted Armour cuts it by 45.0%. Below storm 0.4 there is no damage. | simulation-measured |
