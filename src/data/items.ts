@@ -81,6 +81,11 @@ export const ITEMS: ItemDef[] = [
   // ── Old world records ──
   { id: 'journal_redfinch', name: 'Redfinch’s Journal Page', category: 'history', rarity: 'uncommon', value: 25, icon: 'page', colors: ['#efdcb0', '#7a4a21'], stack: 5,
     desc: '“Day 41. The lighthouse keeper owes me a debt. I have hidden half the chart where only the tide can read it.”' },
+  // the Redfinch Line (design bible PR 2.4)
+  { id: 'gannet_bell', name: 'The Gannet’s Bell', category: 'history', rarity: 'epic', value: 140, icon: 'bell', colors: ['#9a7a3c', '#3f2c12'], stack: 1, displayable: true,
+    desc: 'Engraved “GANNET”. Bram’s boat, before Rustfang made a gate of her. It rings a note lower than the Wren’s.' },
+  { id: 'dace_ledger', name: 'Rustfang Tribute Ledger', category: 'history', rarity: 'rare', value: 60, icon: 'page', colors: ['#d9c79a', '#5c260f'], stack: 1,
+    desc: 'Fifteen years of payments from Rig Helios to Rustfang Hold, every one signed “D.” Rig rules: nobody steals. Rustfang excepted.' },
   { id: 'tattered_flag', name: 'Tattered Jolly Flag', category: 'history', rarity: 'rare', value: 80, icon: 'flag', colors: ['#1c1c22', '#efe6d2'], stack: 1, displayable: true,
     desc: 'The flag of the trawler Wren, Captain Redfinch’s salvage boat. More hole than flag, but unmistakable.' },
 

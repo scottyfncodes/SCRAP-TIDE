@@ -417,7 +417,11 @@ export class Store {
   /** Price multiplier at a port for parts, fuel and repairs, from your standing there (data/contracts.ts). */
   portDiscount(port: string) {
     const n = this.data.standing[port as 'driftholm'] ?? 0;
-    return n >= 9 ? 0.8 : n >= 5 ? 0.9 : 1;
+    let m = n >= 9 ? 0.8 : n >= 5 ? 0.9 : 1;
+    // Dace's ledger (PR 2.4): kept secret, he owes you for life; read out, the rig pays more for its own defence
+    if (port === 'helios' && this.data.flags.includes('ledger_secret')) m *= 0.85;
+    if (port === 'helios' && this.data.flags.includes('ledger_confront')) m *= 1.1;
+    return m;
   }
   canAfford(c: Cost) {
     if (this.data.gold < c.gold) return false;

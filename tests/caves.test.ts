@@ -41,3 +41,27 @@ describe('The Keeper’s Light', () => {
     expect(RUMOURS.some((r) => r.done.find === 'turtle_cave')).toBe(true);
   });
 });
+
+describe('the Redfinch Line, maps 4 and 5 (PR 2.4)', () => {
+  it('map 4’s fragment comes up from the Broadcast Spire, and is dug on Gull Shoal beside the wreck', async () => {
+    const { SALVAGE_SITES } = await import('../src/data/world');
+    const m = TREASURE_MAPS.find((t) => t.id === 'radio_map')!;
+    const site = SALVAGE_SITES.find((s) => s.fragment === m.fragments[0])!;
+    expect(site.id).toBe('sv_meridian_b');
+    const isl = ISLAND_MAP[m.island];
+    expect(isl.id).toBe('gull');
+    expect(heightAt(isl.x + m.x, isl.z + m.z)).toBeGreaterThan(0.5);
+  });
+  it('Under the Rust is once only, heavy, locked until someone shows you the way, and holds the Gannet’s Bell and the ledger', async () => {
+    const { SALVAGE_SITES } = await import('../src/data/world');
+    const { ARCS } = await import('../src/data/arcs');
+    const s = SALVAGE_SITES.find((x) => x.id === 'sv_hold')!;
+    expect(s.respawn).toBe(0);
+    expect(s.heavy).toBe(true);
+    expect(s.requiresFlag).toBe('hold_way');
+    expect(s.first!.map((f) => f.id)).toEqual(expect.arrayContaining(['gannet_bell', 'dace_ledger']));
+    expect(ARCS.filter((b) => b.effect === 'hold_way').map((b) => b.who).sort()).toEqual(['bram', 'ines']);
+    expect(ARCS.some((b) => b.effect === 'ledger_choice')).toBe(true);
+    expect(heightAt(s.x, s.z)).toBeLessThan(-6);
+  });
+});

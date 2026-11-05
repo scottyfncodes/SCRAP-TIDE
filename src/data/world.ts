@@ -222,6 +222,7 @@ export const MAP_FRAGMENTS: MapFragmentDef[] = [
   { id: 'redfinch_a', mapId: 'redfinch_map', name: 'Redfinch’s Chart (left half)', where: 'Wreck of the Wren' },
   { id: 'redfinch_b', mapId: 'redfinch_map', name: 'Redfinch’s Chart (right half)', where: 'Lantern Rock' },
   { id: 'keeper_light', mapId: 'keeper_map', name: 'The Keeper’s Count', where: 'In the Belly of Turtle Atoll' },
+  { id: 'radio_log', mapId: 'radio_map', name: 'The Wren’s Last Call', where: 'Hauled up from the Broadcast Spire' },
 ];
 
 export const TREASURE_MAPS: TreasureMapDef[] = [
@@ -248,6 +249,15 @@ export const TREASURE_MAPS: TreasureMapDef[] = [
     clue: 'Stand at the dark mouth in the rock. Walk toward the dead lamp. Dig before you reach its door.',
     landmarks: ['cave', 'lighthouse', 'hut'],
     loot: [{ id: 'journal_redfinch', n: 1 }, { id: 'strange_coin', n: 1 }, { id: 'silver_piece', n: 6 }, { id: 'pearl', n: 2 }],
+    chestTier: 'small',
+  },
+  {
+    // the Redfinch Line, map 4 (PR 2.4): the Wren's last radio call, transcribed on the Broadcast Spire's log
+    id: 'radio_map', name: 'The Wren’s Last Call', island: 'gull', fragments: ['radio_log'],
+    x: -12, z: -6,
+    clue: 'Wren to anyone. Bell’s gone over the side, west of where she lies. Spare chart’s under the bell. Tell Wren I’m sorry.',
+    landmarks: ['wreck'],
+    loot: [{ id: 'sextant', n: 1 }, { id: 'gold_bar', n: 1 }, { id: 'sea_emerald', n: 1 }, { id: 'journal_redfinch', n: 1 }],
     chestTier: 'small',
   },
 ];
@@ -386,6 +396,9 @@ export interface SalvageSiteDef {
   respawn: number; // seconds until it can be salvaged again (0 = only once)
   loot: LootRoll[];
   first?: { id: string; n: number }[]; // guaranteed loot on the first haul
+  fragment?: string; // a treasure-map fragment that comes up with the first haul (the Redfinch Line)
+  requiresFlag?: string; // a site you can't work until someone shows you the way
+  lockedText?: string;
   blurb: string;
 }
 
@@ -409,7 +422,7 @@ export const SALVAGE_SITES: SalvageSiteDef[] = [
     blurb: 'The tallest roof of Old Meridian. The view is the whole drowned city.' },
   { id: 'sv_meridian_b', name: 'Broadcast Spire', kind: 'rooftop', x: 570, z: -480, r: 20, region: 'emerald', difficulty: 3, heavy: true, rolls: 4, respawn: 480,
     loot: [L('electronics', 5, 2, 3), L('wire', 4, 2, 3), L('seed_packet', 1, 1), L('traffic_light', 1, 1), L('engine_parts', 2, 1)],
-    first: [{ id: 'traffic_light', n: 1 }],
+    first: [{ id: 'traffic_light', n: 1 }], fragment: 'radio_log',
     blurb: 'The antenna still hums when the wind is right. Heavy gear down there.' },
   { id: 'sv_meridian_c', name: 'The Leaning Block', kind: 'rooftop', x: 460, z: -500, r: 18, region: 'emerald', difficulty: 2, rolls: 3, respawn: 420,
     loot: [L('scrap_metal', 5, 2, 4), L('plastic', 4, 2, 3), L('vinyl_record', 2, 1), L('rubber_duck', 2, 1), L('diamond_ring', 1, 1)],
@@ -425,6 +438,13 @@ export const SALVAGE_SITES: SalvageSiteDef[] = [
   { id: 'sv_graveyard', name: 'Graveyard Boxes', kind: 'containers', x: 280, z: 620, r: 22, region: 'emerald', difficulty: 2, rolls: 4, respawn: 420,
     loot: [L('electronics', 3, 1, 3), L('canvas', 3, 2, 3), L('plastic', 4, 2, 4), L('snow_globe', 1, 1), L('fuel_can', 3, 1, 2)],
     blurb: 'Boxes spilled from the tanker when she went down.' },
+  // the Redfinch Line's fifth find (PR 2.4): under Rustfang Hold's gate. Once only, and only once someone aboard
+  // knows the way in (Bram's back way, or Ines's dawn approach)
+  { id: 'sv_hold', name: 'Under the Rust', kind: 'wreck', x: 322, z: 646, r: 18, region: 'emerald', difficulty: 3, heavy: true, rolls: 3, respawn: 0,
+    loot: [L('scrap_metal', 5, 2, 4), L('alloy_plate', 2, 1, 2)],
+    first: [{ id: 'gannet_bell', n: 1 }, { id: 'dace_ledger', n: 1 }, { id: 'alloy_plate', n: 2 }],
+    requiresFlag: 'hold_way', lockedText: 'The water under the gate is chained and watched. You’d need someone who knows the way in.',
+    blurb: 'Rustfang dumped what they couldn’t use under their own gate. Including a boat called the Gannet.' },
   { id: 'sv_spire', name: 'The Meridian Spire', kind: 'spire', x: -210, z: -1040, r: 30, region: 'stormwall', difficulty: 3, heavy: true, rolls: 5, respawn: 900,
     loot: [L('electronics', 4, 2, 4), L('alloy_plate', 3, 1, 2), L('diamond_ring', 2, 1), L('gold_bar', 2, 1), L('seed_packet', 2, 1), L('jar_of_soil', 1, 1)],
     first: [{ id: 'summit_chart', n: 1 }, { id: 'gold_bar', n: 2 }],
