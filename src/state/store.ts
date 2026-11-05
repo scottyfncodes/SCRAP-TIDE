@@ -389,6 +389,12 @@ export class Store {
     if (left > 0) left -= this.removeFrom(this.data.cargo, id, left);
     return n - left;
   }
+  /** What an upgrade costs you: Marlo's welcome price (PR 2.1, the first-voyage starter part) halves the gold. */
+  upgradeCost(id: string): Cost {
+    const u = UPGRADE_MAP[id];
+    if (!u) return { gold: Infinity };
+    return this.data.flags.includes(`welcome_${id}`) ? { ...u.cost, gold: Math.ceil(u.cost.gold / 2) } : u.cost;
+  }
   canAfford(c: Cost) {
     if (this.data.gold < c.gold) return false;
     for (const m of c.mats ?? []) if (this.countOwned(m.id) < m.n) return false;
