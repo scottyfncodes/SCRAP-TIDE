@@ -56,13 +56,13 @@ export interface QuestStep {
  * and the first salvage happens on the way home. Retired ids stay in QuestStepId so old saves load: see liveStep().
  */
 export const FIRST_VOYAGE: QuestStep[] = [
-  { id: 'leave_dock', text: 'Cast off from Driftholm', hint: 'Drag the wheel (bottom-left) toward where you want to go. Push further for more sail. Head north, clear of the rafts.' },
+  { id: 'leave_dock', text: 'Cast off from Driftholm', hint: 'Old Wren wants the bottle from Turtle Atoll. Drag the wheel (bottom-left) toward where you want to go; push further for more sail. Head north, clear of the rafts.' },
   { id: 'reach_turtle', text: 'Sail to Turtle Atoll', hint: 'Follow the gold marker west: a ring of dead coral on top of a drowned hill. Old Wren says something washed up there.' },
   { id: 'ashore', text: 'Anchor and go ashore', hint: 'Ease off the wheel in the turquoise shallows, tap ANCHOR, then GO ASHORE.' },
   { id: 'find_bottle', text: 'Search the beach', hint: 'Something is glinting on the south beach.' },
   { id: 'dig_x', text: 'Read the scrap, find the X, dig', hint: 'Study the map: the landmarks are real. Stand where the clue says. Your shovel tells you when the sand is loose.' },
-  { id: 'return_harbor', text: 'Sail home. Salvage the Sunken Tower on the way', hint: 'The drowned office block east of the pier: slow down beside it and tap SALVAGE. Then dock at the raft pier.' },
-  { id: 'upgrade', text: 'Trade with Pip, refit with Marlo', hint: 'Sell what you dug up to Pip, then have Marlo fit your first part. The Canvas Mainsail is a good start.' },
+  { id: 'return_harbor', text: 'Sail home. Salvage the Sunken Tower on the way', hint: 'Pick up the raft if you said you would. The drowned office block east of the pier: slow down beside it and tap SALVAGE. Then dock at the raft pier.' },
+  { id: 'upgrade', text: 'Trade with Pip, refit with Marlo', hint: 'Sell what you dug up to Pip, then have Marlo fit your first part: the one you chose gets his welcome price.' },
   { id: 'free', text: 'The world drowned. You didn’t.', hint: 'Follow the Captain’s Log: salvage, refit, push further out.' },
 ];
 
