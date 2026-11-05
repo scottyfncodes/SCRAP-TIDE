@@ -54,7 +54,7 @@ describe('Store', () => {
     mem.set('tidebreakers.save.v1', JSON.stringify(v1));
     const s = new Store();
     expect(s.isNew).toBe(false);
-    expect(s.data.version).toBe(2);
+    expect(s.data.version).toBe(SAVE_VERSION);
     expect(s.data.gold).toBe(512);
     expect(s.data.vessel).toBe('sloop');
     expect(s.data.upgrades).toEqual(['sail_canvas', 'hull_copper']);

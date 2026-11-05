@@ -23,12 +23,14 @@ import { pack, VOICE_LINES, type VoiceId } from '../audio/pack';
 import { FlipFX } from './flipfx';
 import { goalTarget } from './goalHelp';
 import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh, plantFindMesh } from './fx';
-import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, OUTPOSTS, STORMWALL, stormwallLee, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
+import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, OUTPOSTS, SEA_MARKS, STORMWALL, stormwallLee, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
 import { item, RARITY_ORDER, LIVING_GREEN, isLiving } from '../data/items';
 import { UPGRADE_MAP, VESSELS, COSMETIC_MAP, type VesselId } from '../data/ship';
 import { RECIPE_MAP } from '../data/crafting';
 import { CREW_MAP, ROLE_INFO, type CrewRole } from '../data/crew';
 import { pickLine, type LineTrigger } from '../data/characters';
+import { RUMOUR_MAP } from '../data/rumours';
+import { sideLead, type Lead } from './leads';
 import { GOALS } from '../data/progress';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
 
@@ -118,6 +120,8 @@ export class Game implements GameAPI {
   private barkAt = -99;
   private nightSaid = false;
   private voyageTowerPassed = false;
+  private side: Lead | null = null;
+  private sideTimer = 0;
   private steerTime = 0;
   private shoreCache: { x: number; z: number } | null = null;
   private shoreTimer = 0;
@@ -182,6 +186,7 @@ export class Game implements GameAPI {
     this.salvage = new Salvage(this);
     this.raiders = new Raiders(this);
     this.placeCastaways();
+    this.placeSeaMarks();
     this.foam = new Particles(this.scene, 500, 0.7);
     this.wakeFoam = new Particles(this.scene, 300, WAKE_PUFF);
     this.wakeFoam.fade = 1.6;
@@ -719,6 +724,7 @@ export class Game implements GameAPI {
       default:
         if (id.startsWith('dock:')) this.dockAt(id.slice(5));
         else if (id.startsWith('rescue:')) this.rescue(id.slice(7));
+        else if (id.startsWith('mark:')) this.investigate(id.slice(5));
     }
   }
 
@@ -947,6 +953,98 @@ export class Game implements GameAPI {
       s.commit();
       this.ui.revealInfo('Swamped', 'Towed home to Driftholm', `The sea came over the rails. A Driftholm tug found you and towed you home${lost ? `, but ${lost} items went over the side` : ''}. Marlo patched the worst of it.<br><br>Armour plating, a Mechanic and hull patch kits keep you afloat in storms.`, 'Never again');
     });
+  }
+
+  /** The sea marks of the north-west (data/world.ts SEA_MARKS), built from the GITCRAFT kits. */
+  private placeSeaMarks() {
+    for (const m of SEA_MARKS) {
+      const g = new THREE.Group();
+      const kit = (file: string, node: string, x = 0, z = 0, ry = 0, sc = 1) => {
+        const o = model(file, node, { shadows: true });
+        if (!o) return;
+        o.position.set(x, 0, z);
+        o.rotation.y = ry;
+        o.scale.setScalar(sc);
+        g.add(o);
+      };
+      if (m.kind === 'bell') {
+        kit('tb_flotsam_kit', 'bell_buoy', 0, 0, 0.4, 1.25);
+        kit('tb_flotsam_kit', 'hull_shard', 4.5, 2, 1.1);
+      } else if (m.kind === 'shrine') {
+        kit('tb_outpost_kit', 'pontoon', 0, 0, 0.3);
+        kit('tb_outpost_kit', 'dead_tree', 0, 0, 0.9, 0.8);
+        kit('tb_debris_kit', 'oil_drum', 2.2, 1.4, 0.2);
+        kit('tb_debris_kit', 'oil_drum', -2, 1.6, 1.3);
+        kit('tb_debris_kit', 'oil_drum', 1.4, -2.2, 2.2);
+      } else {
+        const bb = billboardMesh();
+        bb.scale.setScalar(0.8);
+        g.add(bb);
+        kit('tb_flotsam_kit', 'barrel_raft', -1.5, 2.5, 0.6);
+      }
+      g.position.set(m.x, 0, m.z);
+      // face the Drift, so the first look from the usual routes is the front
+      g.rotation.y = m.kind === 'billboard' ? Math.atan2(0 - m.x, 100 - m.z) : (m.x * 0.013) % 6.28;
+      this.scene.add(g);
+      const ph = m.x * 0.02;
+      this.drowned.animators.push((t) => {
+        g.position.y = Math.sin(t * 0.9 + ph) * 0.18 - 0.1;
+        g.rotation.z = Math.sin(t * 0.7 + ph) * 0.03;
+      });
+    }
+  }
+
+  /** Sail up to a sea mark and look it over: its find comes aboard, and its story with it. */
+  private investigate(id: string) {
+    const m = SEA_MARKS.find((x) => x.id === id);
+    const s = this.store;
+    if (!m || s.data.flags.includes(`found_${m.id}`)) return;
+    if (this.boat.speed > 3) return this.say('slow', 'Ease off to come alongside.');
+    s.data.flags.push(`found_${m.id}`);
+    for (const l of m.loot) this.gain(l.id, l.n, m.name, { force: true, reveal: 'none' });
+    this.ui.revealChest(m.name, m.loot, m.lore);
+    audio.discover(2);
+    this.haptic(25);
+    s.commit();
+    this.checkMilestones();
+  }
+
+  /** The Captain's Log side lead (leads.ts), refreshed twice a second. */
+  sideLead(): Lead | null {
+    return this.side;
+  }
+
+  toggleFollowSide() {
+    const s = this.store.data;
+    s.followSide = !s.followSide && !!this.side;
+    this.store.commit();
+  }
+
+  /** Pin (or unpin) one of Old Wren's rumours: a pinned rumour becomes the side lead. */
+  pinRumour(id: string) {
+    const s = this.store.data;
+    if (!RUMOUR_MAP[id]) return;
+    if (s.pinned.includes(id)) s.pinned = s.pinned.filter((x) => x !== id);
+    else {
+      s.pinned = [id, ...s.pinned];
+      s.followSide = true; // you pinned it because you mean to go
+    }
+    this.updateSide(true);
+    this.store.commit();
+  }
+
+  private updateSide(force = false) {
+    const s = this.store;
+    if (s.data.quest !== 'free') {
+      this.side = null;
+      return;
+    }
+    const st = s.stats;
+    const g = GOALS[s.data.goal];
+    const prev = this.side?.id;
+    this.side = sideLead(s.data, { crossSwell: st.crossSwell, crossStorm: st.crossStorm, heavy: !!st.salvage }, { x: this.boat.x, z: this.boat.z }, g?.target ?? null);
+    if (!this.side && s.data.followSide) s.data.followSide = false;
+    if (force || prev !== this.side?.id) this.ui.refreshHUD();
   }
 
   private placeCastaways() {
@@ -1191,6 +1289,7 @@ export class Game implements GameAPI {
       structures: STRUCTURES.map((s) => ({ x: s.x, z: s.z, kind: s.kind })),
       raiders: RAIDER_ZONES.map((r) => ({ x: r.x, z: r.z, r: r.r, name: r.name })),
       pois: POIS,
+      pins: d.pinned.map((id) => RUMOUR_MAP[id]).filter(Boolean).map((r) => ({ x: r.x, z: r.z, name: r.label })),
     };
   }
 
@@ -1861,6 +1960,10 @@ export class Game implements GameAPI {
         if (this.store.data.castaways.includes(cw.id)) continue;
         if (Math.hypot(b.x - cw.x, b.z - cw.z) < 12 + this.ship.beam) acts.push({ id: `rescue:${cw.id}`, label: '\u{1F6DF} RESCUE', glow: true, disabled: b.speed > 3 });
       }
+      for (const m of SEA_MARKS) {
+        if (this.store.data.flags.includes(`found_${m.id}`)) continue;
+        if (Math.hypot(b.x - m.x, b.z - m.z) < 24 + this.ship.beam) acts.push({ id: `mark:${m.id}`, label: '\u{1F50D} INVESTIGATE', glow: true, disabled: b.speed > 3 });
+      }
       this.shoreTimer -= dt;
       if (this.shoreTimer <= 0) {
         this.shoreTimer = 0.4;
@@ -2194,6 +2297,12 @@ export class Game implements GameAPI {
         break;
       }
     }
+    this.sideTimer -= 1 / 60;
+    if (this.sideTimer <= 0) {
+      this.sideTimer = 0.5;
+      this.updateSide();
+    }
+    if (q === 'free' && s.data.followSide && this.side && this.mode === 'sail') target = { x: this.side.x, z: this.side.z, y: 8 };
     if (q === 'free' && !target && this.mode === 'sail') {
       const g = GOALS[s.data.goal];
       // build goals: the nearest salvage site with a missing material, then home to Marlo
@@ -2250,4 +2359,52 @@ export class Game implements GameAPI {
       this.ui.setCompass(-angleDiff(this.camYaw, ang), `${am.name.split(' ').slice(-1)[0]} · ${Math.round(d)}m`);
     } else this.ui.setCompass(null);
   }
+}
+
+/** The Smiling Family: half a billboard out of the swell, its lawn bleached khaki and LIAR painted across it. */
+function billboardMesh(): THREE.Object3D {
+  const g = new THREE.Group();
+  const c = document.createElement('canvas');
+  c.width = 256;
+  c.height = 128;
+  const x = c.getContext('2d')!;
+  x.fillStyle = '#b9c3c4'; // washed-out sky
+  x.fillRect(0, 0, 256, 128);
+  x.fillStyle = '#8f8a62'; // the lawn, bleached to khaki (green is only for living things)
+  x.fillRect(0, 78, 256, 50);
+  x.fillStyle = '#c9a98a';
+  for (const [px, h] of [[70, 46], [100, 38], [128, 30], [156, 40]]) {
+    x.fillRect(px - 8, 82 - h, 16, h); // four smiling figures, reduced to silhouettes by the sun
+    x.beginPath();
+    x.arc(px, 74 - h, 9, 0, Math.PI * 2);
+    x.fill();
+  }
+  x.fillStyle = '#e8e2cf';
+  x.font = 'bold 20px sans-serif';
+  x.fillText('A HOME FOR EVERY FAMILY', 14, 24);
+  x.save();
+  x.translate(128, 76);
+  x.rotate(-0.12);
+  x.fillStyle = '#b3341f';
+  x.font = 'bold 54px sans-serif';
+  x.textAlign = 'center';
+  x.fillText('LIAR', 0, 18);
+  x.restore();
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const panel = new THREE.Mesh(new THREE.BoxGeometry(9, 4.5, 0.3), [
+    ...Array(4).fill(new THREE.MeshToonMaterial({ color: 0x5c5a54 })),
+    new THREE.MeshToonMaterial({ map: tex }),
+    new THREE.MeshToonMaterial({ color: 0x4a4740 }),
+  ]);
+  panel.position.y = 4.2;
+  panel.rotation.z = 0.08;
+  panel.castShadow = true;
+  g.add(panel);
+  for (const px of [-3, 3]) {
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 6, 6), new THREE.MeshToonMaterial({ color: 0x6b4a33 }));
+    post.position.set(px, 1.5, -0.3);
+    g.add(post);
+  }
+  return g;
 }
