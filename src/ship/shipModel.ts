@@ -9,6 +9,7 @@ import { model, crewModel, part, glowMat, kitGeo, sceneModel, tintModel, cullMod
 // ship fittings modelled in MeshCraft (creative/3d-finds/fittings_kit): anchor, paddle, the skiff's rudder and mast, trophies
 const FITTINGS = 'tb_fittings_kit';
 import { CREW_MAP } from '../data/crew';
+import { refitStage } from '../data/renown';
 
 interface HullSpec {
   L: number; // length
@@ -965,6 +966,65 @@ export function buildShip(store: Store): ShipParts {
   // after wall and its flat top reads as a slab on the roof. The model steers with its own tiller (the wheel
   // upgrade will mount on socket_steering), so it is left off there.
   if (vessel !== 'dinghy' && !glb) kit('nav_console', 0.9 * K, dy, -h.L * 0.38, Math.PI);
+
+  // ── refit stages (data/renown.ts): the boat looks more lived-in and more dangerous as parts go on her ──
+  const stage = refitStage(s.upgrades.length);
+  const rail = (u: number, side: number) => {
+    const p = P(u, side);
+    p.y += lift;
+    return p;
+  };
+  const sk = vessel === 'dinghy' ? 0.6 : vessel === 'sloop' ? 1 : 1.15;
+  if (stage.id !== 'stripped') {
+    // old car tyres lashed along both rails as fenders
+    const tyres = vessel === 'dinghy' ? [0.3, 0.62] : [0.25, 0.45, 0.65];
+    for (const side of [-1, 1]) for (const u of tyres) {
+      const p = rail(u, side * 0.97);
+      kitSolid.push(paint(xf(new THREE.TorusGeometry(0.3 * sk, 0.12 * sk, 6, 12), p.x + side * 0.1 * sk, p.y - 0.42 * sk, p.z, 0, Math.PI / 2, 0), '#1e1f21', 0.04));
+      kitSolid.push(paint(xf(new THREE.CylinderGeometry(0.02, 0.02, 0.4 * sk, 4), p.x + side * 0.06 * sk, p.y - 0.12 * sk, p.z), '#8c7a55'));
+    }
+  }
+  if (stage.id === 'fitted') {
+    // a welded ram on the bow: a road-sign plate with three spikes, rivets showing
+    const bow = rail(1, 0);
+    bow.y = (P(0.97, 1).y + P(0.97, 0).y) / 2 + lift;
+    kitSolid.push(paint(xf(new THREE.ConeGeometry(0.55 * sk, 1.1 * sk, 4), bow.x, bow.y, bow.z + 0.15 * sk, Math.PI / 2, Math.PI / 4, 0), '#7f8a94', 0.06));
+    for (const dx of [-0.32, 0, 0.32]) {
+      kitSolid.push(paint(xf(new THREE.ConeGeometry(0.07 * sk, 0.8 * sk, 5), bow.x + dx * sk, bow.y + (dx ? -0.1 : 0.18) * sk, bow.z + 0.75 * sk, Math.PI / 2, 0, 0), '#a24b21'));
+    }
+    // hubcaps riveted along the rails
+    for (const side of [-1, 1]) for (const u of vessel === 'dinghy' ? [0.45] : [0.35, 0.55, 0.75]) {
+      const p = rail(u, side);
+      kitSolid.push(paint(xf(new THREE.CylinderGeometry(0.22 * sk, 0.22 * sk, 0.05, 10), p.x + side * 0.04, p.y - 0.2 * sk, p.z, 0, 0, Math.PI / 2), '#a7b0b5', 0.05));
+    }
+    // a lantern at the prow
+    const lan = rail(0.9, 0);
+    lan.y = P(0.9, 1).y + lift;
+    kitSolid.push(paint(xf(new THREE.CylinderGeometry(0.04, 0.04, 0.9 * sk, 4), lan.x, lan.y + 0.45 * sk, lan.z), '#2b2f36'));
+    kitGlow.push(paint(xf(new THREE.BoxGeometry(0.2 * sk, 0.26 * sk, 0.2 * sk), lan.x, lan.y + 0.95 * sk, lan.z), '#ffc46b'));
+  }
+  // her name, painted on a scrap plate across the stern
+  if (s.shipName) {
+    const tex = canvasTex(512, 96, (c) => {
+      c.fillStyle = '#d9d2bf';
+      c.fillRect(0, 0, 512, 96);
+      c.fillStyle = '#1a1a17';
+      c.font = '900 58px "Saira Stencil One", Impact, sans-serif';
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      c.fillText(s.shipName.toUpperCase(), 256, 52, 480);
+      c.strokeStyle = '#8c8068';
+      c.lineWidth = 6;
+      c.strokeRect(3, 3, 506, 90);
+    });
+    const plateW = vessel === 'dinghy' ? 1.2 : vessel === 'sloop' ? 2.2 : 3.2;
+    const plate = new THREE.Mesh(new THREE.PlaneGeometry(plateW, plateW * 0.19), toonMat('#ffffff', { map: tex }, 0.5));
+    const st = P(0.02, 0);
+    plate.position.set(0, (cat ? dy + 0.25 : (P(0, 1).y + st.y) / 2 + lift + 0.05), -h.L / 2 - (cat ? 0.6 : 0.06));
+    plate.rotation.y = Math.PI;
+    plate.name = 'nameplate';
+    group.add(plate);
+  }
 
   if (kitSolid.length) {
     const km = new THREE.Mesh(merge(kitSolid), vcMat());

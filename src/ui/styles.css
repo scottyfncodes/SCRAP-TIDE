@@ -515,3 +515,14 @@ body.calm .hit-flash.on { animation: hitflash-calm .55s ease-out; }
 body.calm .hull-critical .hit-flash { animation: none; opacity: .25; }
 body.calm .engine-btn.on { animation: none; }
 body.calm .quest.pulse { animation: none; }
+
+/* naming the boat, renown (design bible PR 1.4) */
+.reveal .ship-name { display: block; width: 100%; margin: 10px 0 6px; min-height: 44px; padding: 8px 10px; border: 1px solid var(--paper-edge); border-radius: 2px;
+  background: rgba(255,255,255,.55); font-family: var(--display); font-size: 22px; color: var(--ink); text-align: center; }
+.reveal .name-picks { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 10px; }
+.reveal .name-picks .pick { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 12px; border: 1px solid var(--paper-edge); border-radius: 2px;
+  background: rgba(255,255,255,.35); font-family: var(--label); font-weight: 700; font-size: 14px; letter-spacing: .5px; text-transform: uppercase; color: var(--ink); cursor: pointer; }
+.renown .rank { font-family: var(--body); font-size: 13px; color: var(--ink-soft); padding: 3px 0; }
+.renown .rank b { font-family: var(--label); font-size: 15px; color: var(--ink-soft); margin-right: 4px; }
+.renown .rank.got b { color: var(--ink); }
+.renown .rename { margin-top: 8px; min-height: 44px; }

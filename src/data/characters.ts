@@ -165,6 +165,7 @@ export const CHARACTERS: CharacterDef[] = [
       L('dock', 'You’ve been letting the sea chew on her. Give her here.', 'damaged'),
       L('dock', 'Fuel-tank floats. Ugly as sin. She’ll cross the swell anyway.', 'sloop'),
       L('dock', 'I built one boat for that wall before. She didn’t come back. This one will.', 'ironwake'),
+      L('dock', 'How’s the {ship} holding? Don’t answer. I can hear her from here.', 'named'),
     ],
   },
   {
