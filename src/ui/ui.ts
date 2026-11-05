@@ -687,6 +687,25 @@ export class UI {
     );
   }
 
+  /**
+   * A choice card: one button per option, each closes the card and runs its pick. (The first option comes first in
+   * the DOM, so scripted players that tap "the reveal button" make a choice instead of stalling.)
+   */
+  revealChoice(kicker: string, title: string, body: string, options: { label: string; sub?: string; pick: () => void }[]) {
+    this.queueReveal(() => {
+      const node = el(`<div class="reveal"><div class="reveal-card" style="--rc:#d6a62a"><div class="rays"></div>
+        <div class="r-kicker">${kicker}</div><div class="r-name">${title}</div><div class="r-desc">${body}</div>
+        <div class="choices">${options.map((o, i) => `<button class="btn ${i ? 'ghost' : ''} choice" data-i="${i}">${o.label}${o.sub ? `<small>${o.sub}</small>` : ''}</button>`).join('')}</div>
+        <button class="r-ok" hidden></button></div></div>`);
+      node.querySelectorAll<HTMLElement>('.choice').forEach((b) => b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        options[Number(b.dataset.i)].pick();
+        (node.querySelector('.r-ok') as HTMLElement).click();
+      }));
+      return node;
+    });
+  }
+
   /** Name your boat: a text field and a few names the Drift would give her. */
   promptShipName(current: string, onName: (name: string) => void) {
     this.queueReveal(() => {
@@ -988,9 +1007,11 @@ export class UI {
           const owned = s.has(u.id);
           const locked = !!u.requires && !s.has(u.requires);
           const sold = (u.where ?? ['driftholm']).includes(sett.id);
-          const afford = s.canAfford(u.cost);
+          const cost = s.upgradeCost(u.id);
+          const afford = s.canAfford(cost);
+          const welcome = cost.gold < u.cost.gold;
           const where = (u.where ?? ['driftholm']).map((w) => SETTLEMENT_MAP[w]?.name).join(' or ');
-          const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked || !sold ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : !sold ? `<div class="r-sub"><b>Fitted at ${where}</b></div>` : costHTML(s, u.cost)}</div>
+          const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked || !sold ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : !sold ? `<div class="r-sub"><b>Fitted at ${where}</b></div>` : `${welcome ? '<div class="r-sub"><b>Marlo’s welcome price: half the gold</b></div>' : ''}${costHTML(s, cost)}`}</div>
             ${owned ? '<span class="rar" style="background:#4f9a95">Installed</span>' : `<button class="btn" ${!afford || locked || !sold ? 'disabled' : ''}>Install</button>`}</div>`);
           row.querySelector('button')?.addEventListener('click', () => {
             this.game.buyUpgrade(u.id);

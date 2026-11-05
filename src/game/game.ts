@@ -248,7 +248,7 @@ export class Game implements GameAPI {
     audio.unlock();
     setTimeout(() => pack.prefetch(), 4000);
     if (this.store.isNew) {
-      this.ui.revealInfo('Driftholm · Year 61 After the Water', 'Wake up, Captain!', 'The sea took the cities, the roads and the mountains. It left you a patchwork skiff, fifteen gold and a head full of stories.<br><br>Out there: drowned towers full of the old world, castaways who need a berth, and a boat that could become a home.<br><br><b>Drag the wheel</b> (bottom-left) toward where you want to sail.', 'Let’s go');
+      this.ui.revealInfo('Driftholm · Year 61 After the Water', 'Wake up, Captain!', 'The sea took the cities, the roads and the mountains. It left you a patchwork skiff, fifteen gold and a head full of stories.<br><br>Old Wren is waiting at the end of the pier, lantern up: <i>“A bottle washed up on Turtle Atoll, the gulls say. Bring me what’s inside. Don’t read it first.” …“Read it first.”</i><br><br><b>Drag the wheel</b> (bottom-left) toward where you want to sail.', 'Let’s go');
       this.store.isNew = false;
       this.store.saveNow();
     } else {
@@ -421,11 +421,13 @@ export class Game implements GameAPI {
     const s = this.store;
     const u = UPGRADE_MAP[id];
     if (!u || s.has(id) || (u.requires && !s.has(u.requires))) return;
-    if (!s.canAfford(u.cost)) {
+    const cost = s.upgradeCost(id);
+    if (!s.canAfford(cost)) {
       audio.deny();
       return;
     }
-    s.pay(u.cost);
+    s.pay(cost);
+    s.data.flags = s.data.flags.filter((f) => !f.startsWith('welcome_')); // the welcome price is good for one part
     s.data.upgrades.push(id);
     s.advanceQuest('upgrade');
     s.commit();
@@ -444,8 +446,8 @@ export class Game implements GameAPI {
       setTimeout(() => this.ui.revealInfo('Her refit', `${s.data.shipName || 'She'} is ${stageNow.name}`, `${stageNow.look} Every part you fit shows on her.`, 'Looks mean'), 1200);
     }
     if (s.data.upgrades.length === 1 && !s.data.shipName) setTimeout(() => this.nameShip(), 700);
-    if (s.data.quest === 'free' && s.data.upgrades.length === 1) {
-      setTimeout(() => this.ui.revealInfo('First upgrade!', 'She looks better already', 'Every part you fit shows up on your boat. Now open your Captain’s Log (top of the screen): salvage the drowned tower, fit an engine, find a crew, and build her into something that can cross the swell.', 'Fair winds'), 900);
+    if (s.data.quest === 'free' && s.data.upgrades.length === 1 && !s.data.flags.includes('voyage_finale')) {
+      setTimeout(() => this.voyageFinale(), 900);
     }
   }
 
@@ -675,6 +677,47 @@ export class Game implements GameAPI {
       }
     }
     return got;
+  }
+
+  // ───────── the Wren's Bottle (design bible PR 2.1): the First Voyage as a story with two choices ─────────
+  /** The chest is up: two letters on its lid, and (if Kai is still adrift) the first choice of the game. */
+  private voyageAfterDig() {
+    const s = this.store;
+    this.ui.revealInfo('Scratched into the lid', 'R.F.', 'Two letters, cut deep with a knife, a long time ago. Old Wren will want to see this.', 'Take it to Wren');
+    const kai = CASTAWAYS.find((c) => c.crew === 'kai');
+    if (!kai || s.data.castaways.includes(kai.id)) return;
+    this.ui.revealChoice('On the radar', 'A raft, north of here', 'A ragged flag and someone waving both arms. It’s a detour on the way home, and the sea won’t wait for them forever. Probably.', [
+      { label: 'Go to the raft', sub: 'A minute out of your way', pick: () => { s.data.flags.push('voyage_kai'); s.commit(); } },
+      { label: 'Later', sub: 'Home first. The Captain’s Log will remember', pick: () => {} },
+    ]);
+  }
+
+  /** Home from the first voyage: Marlo offers one starter part at a welcome price, your pick. */
+  private voyageStarterOffer() {
+    const s = this.store;
+    if (s.data.quest !== 'upgrade' || s.data.flags.includes('starter_offer')) return;
+    s.data.flags.push('starter_offer');
+    const pick = (id: string) => () => {
+      s.data.flags.push(`welcome_${id}`);
+      s.commit();
+      this.ui.toast(`Marlo will fit the ${UPGRADE_MAP[id].name} at half the gold. Sell to Pip, then see him.`, { color: '#d6a62a', life: 4 });
+    };
+    const opt = (id: string, sub: string) => ({ label: `${UPGRADE_MAP[id].name} · ${Math.ceil(UPGRADE_MAP[id].cost.gold / 2)}g`, sub, pick: pick(id) });
+    this.ui.revealChoice('Marlo Keelhart · Shipwright', 'One part, at a welcome price', '“Came back in one piece. That earns you a discount on one thing. One. Choose.”', [
+      opt('sail_canvas', 'Faster everywhere: more sea for your time'),
+      opt('rudder_ash', 'Turns sharp: easier to work wrecks and reefs'),
+      opt('cargo_crate', '+4 cargo: more salvage per trip home'),
+    ]);
+  }
+
+  /** The voyage is done: Wren reads the letters, and the Log opens on two roads. */
+  private voyageFinale() {
+    const s = this.store;
+    if (s.data.flags.includes('voyage_finale')) return;
+    s.data.flags.push('voyage_finale');
+    if (RUMOUR_MAP.r_wren && !s.data.pinned.includes('r_wren')) s.data.pinned = ['r_wren', ...s.data.pinned];
+    s.commit();
+    this.ui.revealInfo('Old Wren · Driftholm', '“R.F. Redfinch.”', '“So he did come this way.” She turns the lid in her hands for a long time. “He had a trawler once. The Wren. She went down inside the reef ring north of here.”<br><br>Your <b>Captain’s Log</b> now shows two roads: the main goal, and a side lead (the wreck of the Wren). Tap the side lead to follow it. Every part you fit shows on your boat.', 'Fair winds');
   }
 
   /** Name (or rename) the boat: painted on her stern, and people call her by it. */
@@ -1394,6 +1437,7 @@ export class Game implements GameAPI {
       audio.phrase('harbor');
       this.dockhandHail();
       setTimeout(() => this.crewBark('dock', { driftholm: true }, { specificOnly: true, cool: 120 }), 1400);
+      setTimeout(() => this.voyageStarterOffer(), 700);
       setTimeout(() => this.ui.openPanel('harbor'), 300);
     });
   }
@@ -1646,6 +1690,7 @@ export class Game implements GameAPI {
     setTimeout(() => {
       for (const l of m.loot) this.gain(l.id, l.n, ISLAND_MAP[m.island].name, { force: true, reveal: 'none' });
       this.ui.revealChest(m.name, m.loot, m.chestTier === 'grand' ? 'A GRAND TREASURE!' : 'Buried treasure!');
+      if (mapId === 'turtle_map' && s.data.quest === 'dig_x') this.voyageAfterDig();
       s.advanceQuest('dig_x');
       s.commit();
       this.checkMilestones();
@@ -2328,7 +2373,9 @@ export class Game implements GameAPI {
         if (this.mode === 'foot') target = { x: this.foot.landX, z: this.foot.landZ, y: 1 };
         else {
           if (Math.hypot(this.boat.x - tower.x, this.boat.z - tower.z) < 45) this.voyageTowerPassed = true;
-          target = s.data.hauls === 0 && !this.voyageTowerPassed ? { x: tower.x, z: tower.z, y: 8 } : { x: this.env.pierTip.x, z: this.env.pierTip.z, y: 3 };
+          const kai = CASTAWAYS.find((c) => c.crew === 'kai' && !s.data.castaways.includes(c.id));
+          target = kai && s.data.flags.includes('voyage_kai') ? { x: kai.x, z: kai.z, y: 4 }
+            : s.data.hauls === 0 && !this.voyageTowerPassed ? { x: tower.x, z: tower.z, y: 8 } : { x: this.env.pierTip.x, z: this.env.pierTip.z, y: 3 };
         }
         break;
       }

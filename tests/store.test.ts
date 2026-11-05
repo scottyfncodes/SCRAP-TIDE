@@ -48,6 +48,16 @@ describe('Store', () => {
     expect(old.data.renown).toBe('drifter');
   });
 
+  it('Marlo’s welcome price halves the gold of the part chosen on the First Voyage, and nothing else', () => {
+    mem.clear();
+    const s = new Store();
+    expect(s.upgradeCost('sail_canvas').gold).toBe(60);
+    s.data.flags.push('welcome_sail_canvas');
+    expect(s.upgradeCost('sail_canvas').gold).toBe(30);
+    expect(s.upgradeCost('rudder_ash').gold).toBe(45);
+    expect(s.upgradeCost('cargo_crate').mats).toEqual([{ id: 'driftwood', n: 3 }]);
+  });
+
   it('calm effects default off without a reduced-motion preference, and old saves gain the setting', () => {
     expect(new Store().data.settings.calm).toBe(false);
     mem.clear();

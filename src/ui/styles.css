@@ -526,3 +526,8 @@ body.calm .quest.pulse { animation: none; }
 .renown .rank b { font-family: var(--label); font-size: 15px; color: var(--ink-soft); margin-right: 4px; }
 .renown .rank.got b { color: var(--ink); }
 .renown .rename { margin-top: 8px; min-height: 44px; }
+
+/* choice cards (PR 2.1) */
+.reveal .choices { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.reveal .choices .choice { min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.reveal .choices .choice small { display: block; font-family: var(--body); font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; opacity: .8; margin-top: 2px; }
