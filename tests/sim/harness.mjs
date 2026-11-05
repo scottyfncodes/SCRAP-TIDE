@@ -78,8 +78,12 @@ export const INIT = String.raw`(() => {
   const realCAF = window.cancelAnimationFrame.bind(window);
   let manual = false, vt = 0, baseP = 0, baseD = 0, nextId = 1, baseSeed = seed;
   let queue = new Map();
-  performance.now = () => (manual ? baseP + vt : realPerf());
-  Date.now = () => (manual ? Math.floor(baseD + vt) : realDate());
+  // Before the harness takes over, time stands still: the game's loop sees dt = 0 through loading and the title
+  // screen (so the clock, time of day and storm cells start every run in the same place), and anything seeded from
+  // Date.now() at boot (the game's own RNG) gets the same seed every run.
+  const EPOCH = 1793000000000, P0 = 1000;
+  performance.now = () => (manual ? baseP + vt : P0);
+  Date.now = () => (manual ? Math.floor(baseD + vt) : EPOCH);
   window.requestAnimationFrame = (cb) => {
     if (manual) { const id = nextId++; queue.set(id, cb); return id; }
     return realRAF(() => cb(performance.now()));
@@ -95,7 +99,7 @@ export const INIT = String.raw`(() => {
     /** Switch to the virtual clock. Resolves once callbacks already handed to the real rAF have come back and
      *  re-registered in the manual queue (the game loop among them). */
     takeOver(s) {
-      baseP = realPerf(); baseD = realDate(); vt = 0; manual = true;
+      baseP = P0; baseD = EPOCH; vt = 0; manual = true;
       if (s !== undefined) seed = baseSeed = s >>> 0;
       return new Promise((res) => realRAF(() => realRAF(() => setTimeout(() => { if (s !== undefined) seed = baseSeed = s >>> 0; res(queue.size); }, 30))));
     },
@@ -114,6 +118,8 @@ export const INIT = String.raw`(() => {
       }
       return sim.frames;
     },
+    /** Reseed at a scripted moment (e.g. right after a tap whose outcome the game rolls on a real-time timer). */
+    checkpoint(n = 0) { seed = (baseSeed ^ Math.imul(sim.frames + 7919 * (n + 1), 0x85ebca6b)) >>> 0; },
     /** Move the virtual clock without running frames (e.g. a salvage site's respawn timer). */
     advance(ms) { vt += ms; },
   };

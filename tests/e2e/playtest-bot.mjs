@@ -158,6 +158,8 @@ async function playOnce(runNo) {
     if (w && w.nl >= w.zl + w.zw * 0.2 && w.nl <= w.zl + w.zw * 0.8) {
       await page.dispatchEvent('.w-reel', 'pointerdown');
       pulls++;
+      // the next zone (and, after the last pull, the loot) is rolled on a 550 ms real-time timer: fix its seed now
+      await page.evaluate((n) => window.__sim.checkpoint(n), pulls);
       winchHits = await page.evaluate(() => document.querySelectorAll('.w-pips i.hit').length);
       await page.waitForTimeout(650); // the reel locks for 550 ms between pulls
     } else await page.evaluate((dt) => window.__sim.step(1, dt), DT);
