@@ -1,6 +1,7 @@
 // DOM UI: HUD, touch controls, panels (harbor, catalog, maps, ship, cargo, settings), reveals.
 import { goalProgressText } from '../game/goalHelp';
 import { pickLine, CHARACTER_MAP } from '../data/characters';
+import { ARCS } from '../data/arcs';
 import { openRumours, canReach } from '../game/leads';
 import { SHIP_NAMES, REFIT_STAGES, RENOWN, refitStage, renownTitle } from '../data/renown';
 import { CONTRACT_MAP, boardFor, contractReady, contractProgress, standingRank, gardenStage, freshFood, GARDENS, GARDEN_POINTS, MAX_ACTIVE, type PortId } from '../data/contracts';
@@ -1054,7 +1055,7 @@ export class UI {
         for (const u of list) {
           const owned = s.has(u.id);
           const locked = !!u.requires && !s.has(u.requires);
-          const sold = (u.where ?? ['driftholm']).includes(sett.id);
+          const sold = (u.where ?? ['driftholm']).includes(sett.id) || (u.id === 'engine_twin' && sett.id === 'driftholm' && s.data.flags.includes('juno_diesel')); // Juno builds her own
           const cost = s.upgradeCost(u.id, sett.id);
           const afford = s.canAfford(cost);
           const welcome = s.data.flags.includes(`welcome_${u.id}`);
@@ -1220,7 +1221,9 @@ export class UI {
         for (const id of s.data.crew) {
           const c = CREW_MAP[id];
           const info = ROLE_INFO[c.role];
-          const row = el(`<div class="row"><div class="crew-face" style="background:${info.color}">${info.icon}</div><div class="r-main"><div class="r-title">${c.name} · ${info.label}</div><div class="r-sub"><b>${info.perk}</b></div></div><button class="btn ghost">Ashore</button></div>`);
+          const story = ARCS.filter((b) => b.who === id);
+          const seen = story.filter((b) => s.data.beats.includes(b.id));
+          const row = el(`<div class="row"><div class="crew-face" style="background:${info.color}">${info.icon}</div><div class="r-main"><div class="r-title">${c.name} · ${info.label}</div><div class="r-sub"><b>${info.perk}</b></div><div class="r-sub">Story ${seen.length}/${story.length}${seen.length ? `: ${seen.map((b) => b.title.replace(/[“”]/g, '')).join(' · ')}` : ''}</div></div><button class="btn ghost">Ashore</button></div>`);
           row.querySelector('button')!.addEventListener('click', () => {
             this.game.dismiss(id);
             this.toast(`${c.name} will wait for you on the crew board at ${SETTLEMENT_MAP[c.home]?.name ?? 'Driftholm'}.`);

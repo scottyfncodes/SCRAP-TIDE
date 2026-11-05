@@ -529,8 +529,8 @@ body.calm .quest.pulse { animation: none; }
 
 /* choice cards (PR 2.1) */
 .reveal .choices { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-.reveal .choices .choice { min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.reveal .choices .choice small { display: block; font-family: var(--body); font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; opacity: .8; margin-top: 2px; }
+.reveal .choices .choice { min-height: 48px; height: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; white-space: normal; padding: 8px 12px; line-height: 1.15; }
+.reveal .choices .choice small { display: block; white-space: normal; font-family: var(--body); font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; opacity: .8; margin-top: 2px; }
 
 /* work board and the Green Choice (PR 2.2) */
 .row.job .who { font-family: var(--body); font-weight: 600; font-size: 12px; color: var(--ink-soft); text-transform: none; letter-spacing: 0; }

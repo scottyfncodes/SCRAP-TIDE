@@ -30,6 +30,8 @@ import { RECIPE_MAP } from '../data/crafting';
 import { CREW_MAP, ROLE_INFO, type CrewRole } from '../data/crew';
 import { pickLine, type LineTrigger } from '../data/characters';
 import { RUMOUR_MAP } from '../data/rumours';
+import { nextBeat, type ArcBeat } from '../data/arcs';
+import { CHARACTER_MAP } from '../data/characters';
 import { CONTRACT_MAP, MAX_ACTIVE, contractReady, GARDEN_POINTS, gardenStage, freshFood, standingRank, type PortId } from '../data/contracts';
 import { RENOWN, renownTitle, refitStage } from '../data/renown';
 import { sideLead, type Lead } from './leads';
@@ -123,6 +125,7 @@ export class Game implements GameAPI {
   private nightSaid = false;
   private voyageTowerPassed = false;
   private side: Lead | null = null;
+  private beatTimer = 3;
   private sideTimer = 0;
   private steerTime = 0;
   private shoreCache: { x: number; z: number } | null = null;
@@ -856,6 +859,11 @@ export class Game implements GameAPI {
       add(kit('tb_outpost_kit', 'pontoon', -246, 0, -38, 0.5, 1.2));
       add(kit('tb_outpost_kit', 'net_tower', -246, 0.6, -38, 0.5, 0.9));
     }
+    // Pip's museum: a stall on its own pontoon by the pier, full of the things the sea gave back
+    if (s.flags.includes('growth_museum')) {
+      add(kit('tb_outpost_kit', 'pontoon', -16, 0, 179, -0.3, 1.1));
+      add(kit('tb_outpost_kit', 'market_stall', -16, 0.9, 179, -0.3 + Math.PI, 1));
+    }
     // Dace's second flare: a burning stack on a pontoon off the rig
     if (s.flags.includes('growth_helios_flare')) {
       add(kit('tb_outpost_kit', 'pontoon', -566, 0, 196, 0.6, 1.2));
@@ -867,6 +875,74 @@ export class Game implements GameAPI {
       add(flame);
       this.drowned.animators.push((t) => flame.scale.set(1 + Math.sin(t * 9) * 0.12, 1 + Math.sin(t * 6.3) * 0.2, 1 + Math.cos(t * 8) * 0.12));
     }
+  }
+
+  // ───────── character arcs (design bible PR 2.3) ─────────
+  private checkBeats() {
+    const st = this.store;
+    const d = st.data;
+    if (d.quest !== 'free') return;
+    const beat = nextBeat(d.beats, {
+      aboard: (id) => d.crew.includes(id),
+      port: this.boat.docked ? this.boat.dockedAt : null,
+      flags: d.flags,
+      has: (u) => st.has(u),
+      owns: (v) => d.vesselsOwned.includes(v as VesselId),
+      regions: d.regionsSeen,
+      done: d.contracts.done,
+      discoveries: st.discoveryCount,
+      standing: d.standing,
+      items: (id) => st.countOwned(id),
+      mapsDone: d.mapsCompleted,
+    });
+    if (!beat) return;
+    d.beats.push(beat.id);
+    this.playBeat(beat);
+    st.commit();
+  }
+
+  private playBeat(b: ArcBeat) {
+    const st = this.store;
+    const d = st.data;
+    const who = CHARACTER_MAP[b.who];
+    const kicker = `${who?.name ?? b.who} · ${who?.role ?? ''}`;
+    switch (b.effect) {
+      case 'cache_going_under':
+        this.gain('clay_whistle', 1, 'Going Under', { force: true, reveal: 'none' });
+        this.gain('rope', 3, 'Going Under', { force: true, reveal: 'none' });
+        break;
+      case 'mara_survey':
+        this.gain('polaroid', 1, 'Old Meridian', { force: true, reveal: 'none' });
+        break;
+      case 'juno_plate':
+        if (!d.flags.includes('juno_plate')) d.flags.push('juno_plate');
+        break;
+      case 'tidebreaker_colours':
+        if (!d.cosmetics.includes('flag_tidebreaker')) d.cosmetics.push('flag_tidebreaker');
+        break;
+      case 'museum':
+        if (!d.flags.includes('growth_museum')) d.flags.push('growth_museum');
+        this.buildGrowth();
+        break;
+    }
+    if (b.effect === 'vik_choice') {
+      this.ui.revealInfo(kicker, b.title, b.text, 'Find Vik');
+      // the first choice an NPC asks of you: price, or principle
+      this.ui.revealChoice('Vik Ashby · Rig Mechanic', '“It was drifting.”', '“It was drifting. It was. I told myself it was.” Vik can’t look at Juno. “Take the diesels at cost. Least I can do.” Juno says nothing at all.', [
+        { label: 'Take them at cost', sub: 'Twin Diesel Drive for half the gold. Juno never mentions it again.', pick: () => {
+          d.flags.push('twin_at_cost');
+          d.standing.helios = (d.standing.helios ?? 0) + 2;
+          st.commit();
+          this.ui.toast('Juno: “Fine. They’re still Dad’s.”', { color: ROLE_INFO.mechanic.color, life: 4 });
+        } },
+        { label: 'Let Juno build her own', sub: 'She can fit a twin diesel at Driftholm, and her engines drink less.', pick: () => {
+          d.flags.push('juno_diesel');
+          st.commit();
+          this.ui.toast('Juno: “Keep them, Vik. I’ll build better.” She means it.', { color: ROLE_INFO.mechanic.color, life: 4 });
+        } },
+      ]);
+    } else this.ui.revealInfo(kicker, b.title, b.text, 'Go on');
+    this.crewCheer(400);
   }
 
   /** Name (or rename) the boat: painted on her stern, and people call her by it. */
@@ -1057,6 +1133,8 @@ export class Game implements GameAPI {
       if (this.crewBark('night', { lights: this.store.has('deck_lights') }, { cool: 200 })) this.nightSaid = true;
     } else if (this.atmo.night < 0.3) this.nightSaid = false;
     if (this.store.hasRole('mechanic') && s.hull < st.hullMax && storm < 0.4) s.hull = Math.min(st.hullMax, s.hull + dt * 0.35 * freshFood(s)); // the gardens feed the crew
+    // Juno's plate from her father's tug: her repairs keep going inside the Stormwall, twice as fast
+    if (this.store.hasRole('mechanic') && s.flags.includes('juno_plate') && this.atmo.wall > 0.5 && s.hull < st.hullMax) s.hull = Math.min(st.hullMax, s.hull + dt * 0.7);
     // Lookout: early warning of a storm cell ahead
     if (this.store.hasRole('lookout')) {
       const ax = b.x + Math.sin(b.heading) * 160, az = b.z + Math.cos(b.heading) * 160;
@@ -2547,9 +2625,14 @@ export class Game implements GameAPI {
         break;
       }
     }
-    this.sideTimer -= 1 / 60;
-    if (this.sideTimer <= 0) {
-      this.sideTimer = 0.5;
+    // character arcs: one beat at a time, when its moment comes (data/arcs.ts)
+    // (timed on game time, not frames: right at any frame rate)
+    if (this.t >= this.beatTimer) {
+      this.beatTimer = this.t + 2;
+      this.checkBeats();
+    }
+    if (this.t >= this.sideTimer) {
+      this.sideTimer = this.t + 0.5;
       this.updateSide();
     }
     if (q === 'free' && s.data.followSide && this.side && this.mode === 'sail') target = { x: this.side.x, z: this.side.z, y: 8 };
