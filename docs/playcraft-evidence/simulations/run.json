@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-11-05T12:19:29.868Z",
+  "commit": "c0aab91a0e59c88500459b001f1f99cd13e5fcbe",
+  "branch": "playcraft/evidence",
+  "dirty_src": false,
+  "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
+  "server": "vite dev server (src/)",
+  "seed": 20261105,
+  "quick": true,
+  "boot_ms": 4324,
+  "simulation": "run",
+  "evidence_class": "harness",
+  "results": {
+    "page_errors": [],
+    "localStorage_keys_after_run": [],
+    "timings_ms": {
+      "boot": 4324
+    }
+  },
+  "result_hash": "f2fb33cf"
+}

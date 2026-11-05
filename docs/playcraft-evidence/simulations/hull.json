@@ -1,0 +1,964 @@
+{
+  "generated_at": "2026-11-05T12:19:29.868Z",
+  "commit": "c0aab91a0e59c88500459b001f1f99cd13e5fcbe",
+  "branch": "playcraft/evidence",
+  "dirty_src": false,
+  "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
+  "server": "vite dev server (src/)",
+  "seed": 20261105,
+  "quick": true,
+  "boot_ms": 4324,
+  "simulation": "hull",
+  "evidence_class": "simulation-measured",
+  "method": "Game.updateHull(dt) at fixed storm/Stormwall levels for 120 s (or until 2 hull left); Game.damage(speed × 1.4) for a wreck strike as updateSail applies it; Mechanic repair in calm water.",
+  "results": {
+    "storms": [
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 9.6,
+        "minutes_to_swamp_from_full": 6.25
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 19.2,
+        "minutes_to_swamp_from_full": 3.13
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 28.8,
+        "minutes_to_swamp_from_full": 2.08
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 1.04
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 48,
+        "minutes_to_swamp_from_full": 1.25
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 96,
+        "minutes_to_swamp_from_full": 0.62
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 1.04
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "no plating",
+        "hull_max": 60,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 115.2,
+        "minutes_to_swamp_from_full": 0.52
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 9.6,
+        "minutes_to_swamp_from_full": 8.33
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 19.2,
+        "minutes_to_swamp_from_full": 4.17
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 28.8,
+        "minutes_to_swamp_from_full": 2.78
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 1.39
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 48,
+        "minutes_to_swamp_from_full": 1.67
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 96,
+        "minutes_to_swamp_from_full": 0.83
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 1.39
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 80,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 115.2,
+        "minutes_to_swamp_from_full": 0.69
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 5.28,
+        "minutes_to_swamp_from_full": 22.73
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 10.56,
+        "minutes_to_swamp_from_full": 11.36
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 15.84,
+        "minutes_to_swamp_from_full": 7.58
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 31.68,
+        "minutes_to_swamp_from_full": 3.79
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 26.4,
+        "minutes_to_swamp_from_full": 4.55
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 52.8,
+        "minutes_to_swamp_from_full": 2.27
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 31.68,
+        "minutes_to_swamp_from_full": 3.79
+      },
+      {
+        "vessel": "dinghy",
+        "plating": "Riveted Armour",
+        "hull_max": 120,
+        "armor": 0.45,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 63.36,
+        "minutes_to_swamp_from_full": 1.89
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 9.6,
+        "minutes_to_swamp_from_full": 10.42
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 19.2,
+        "minutes_to_swamp_from_full": 5.21
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 28.8,
+        "minutes_to_swamp_from_full": 3.47
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 1.74
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 48,
+        "minutes_to_swamp_from_full": 2.08
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 96,
+        "minutes_to_swamp_from_full": 1.04
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 1.74
+      },
+      {
+        "vessel": "sloop",
+        "plating": "no plating",
+        "hull_max": 100,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 115.2,
+        "minutes_to_swamp_from_full": 0.87
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 9.6,
+        "minutes_to_swamp_from_full": 12.5
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 19.2,
+        "minutes_to_swamp_from_full": 6.25
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 28.8,
+        "minutes_to_swamp_from_full": 4.17
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 2.08
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 48,
+        "minutes_to_swamp_from_full": 2.5
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 96,
+        "minutes_to_swamp_from_full": 1.25
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 2.08
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 120,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 115.2,
+        "minutes_to_swamp_from_full": 1.04
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 5.28,
+        "minutes_to_swamp_from_full": 30.3
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 10.56,
+        "minutes_to_swamp_from_full": 15.15
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 15.84,
+        "minutes_to_swamp_from_full": 10.1
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 31.68,
+        "minutes_to_swamp_from_full": 5.05
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 26.4,
+        "minutes_to_swamp_from_full": 6.06
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 52.8,
+        "minutes_to_swamp_from_full": 3.03
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 31.68,
+        "minutes_to_swamp_from_full": 5.05
+      },
+      {
+        "vessel": "sloop",
+        "plating": "Riveted Armour",
+        "hull_max": 160,
+        "armor": 0.45,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 63.36,
+        "minutes_to_swamp_from_full": 2.53
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 9.6,
+        "minutes_to_swamp_from_full": 16.67
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 5.28,
+        "minutes_to_swamp_from_full": 30.3
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 28.8,
+        "minutes_to_swamp_from_full": 5.56
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 15.84,
+        "minutes_to_swamp_from_full": 10.1
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 48,
+        "minutes_to_swamp_from_full": 3.33
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 26.4,
+        "minutes_to_swamp_from_full": 6.06
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 2.78
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "no plating",
+        "hull_max": 160,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 31.68,
+        "minutes_to_swamp_from_full": 5.05
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 9.6,
+        "minutes_to_swamp_from_full": 18.75
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 5.28,
+        "minutes_to_swamp_from_full": 34.09
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 28.8,
+        "minutes_to_swamp_from_full": 6.25
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 15.84,
+        "minutes_to_swamp_from_full": 11.36
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 48,
+        "minutes_to_swamp_from_full": 3.75
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 26.4,
+        "minutes_to_swamp_from_full": 6.82
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 57.6,
+        "minutes_to_swamp_from_full": 3.12
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Copper-Banded Hull",
+        "hull_max": 180,
+        "armor": 0,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 31.68,
+        "minutes_to_swamp_from_full": 5.68
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 0.3,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 0.3,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 0,
+        "minutes_to_swamp_from_full": null
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 0.5,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 5.28,
+        "minutes_to_swamp_from_full": 41.67
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 0.5,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 2.9,
+        "minutes_to_swamp_from_full": 75.76
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 0.7,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 15.84,
+        "minutes_to_swamp_from_full": 13.89
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 0.7,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 8.71,
+        "minutes_to_swamp_from_full": 25.25
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 0.9,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 26.4,
+        "minutes_to_swamp_from_full": 8.33
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 0.9,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 14.52,
+        "minutes_to_swamp_from_full": 15.15
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 1,
+        "in_stormwall": false,
+        "hull_lost_per_minute": 31.68,
+        "minutes_to_swamp_from_full": 6.94
+      },
+      {
+        "vessel": "ironwake",
+        "plating": "Riveted Armour",
+        "hull_max": 220,
+        "armor": 0.45,
+        "storm": 1,
+        "in_stormwall": true,
+        "hull_lost_per_minute": 17.42,
+        "minutes_to_swamp_from_full": 12.63
+      }
+    ],
+    "collisions": [
+      {
+        "plating": "no plating",
+        "speed": 4,
+        "hull_lost": 5.6
+      },
+      {
+        "plating": "no plating",
+        "speed": 8,
+        "hull_lost": 11.2
+      },
+      {
+        "plating": "no plating",
+        "speed": 12,
+        "hull_lost": 16.8
+      },
+      {
+        "plating": "no plating",
+        "speed": 16,
+        "hull_lost": 22.4
+      },
+      {
+        "plating": "Riveted Armour",
+        "speed": 4,
+        "hull_lost": 3.08
+      },
+      {
+        "plating": "Riveted Armour",
+        "speed": 8,
+        "hull_lost": 6.16
+      },
+      {
+        "plating": "Riveted Armour",
+        "speed": 12,
+        "hull_lost": 9.24
+      },
+      {
+        "plating": "Riveted Armour",
+        "speed": 16,
+        "hull_lost": 12.32
+      }
+    ],
+    "repair": {
+      "mechanic_hull_per_minute_calm": 21
+    }
+  },
+  "result_hash": "4eb1f385"
+}

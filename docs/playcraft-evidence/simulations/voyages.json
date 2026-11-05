@@ -1,0 +1,456 @@
+{
+  "generated_at": "2026-11-05T12:19:29.868Z",
+  "commit": "c0aab91a0e59c88500459b001f1f99cd13e5fcbe",
+  "branch": "playcraft/evidence",
+  "dirty_src": false,
+  "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
+  "server": "vite dev server (src/)",
+  "seed": 20261105,
+  "quick": true,
+  "boot_ms": 4324,
+  "simulation": "voyages",
+  "evidence_class": "simulation-measured",
+  "method": "The real frame loop with the wheel held toward each waypoint in turn (the boat sheers off for 4 s when it stalls against something, as a player would). Real wind, swell, Stormwall, storm cells, collisions and hull damage. Arrival flags come from the game’s own updateIslands.",
+  "results": [
+    {
+      "name": "Driftholm → Rig Helios",
+      "vessel": "sloop",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 1,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.98,
+      "distance_m": 535.99,
+      "hull": {
+        "start": 100,
+        "end": 51.99,
+        "lost": 48.01
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 0,
+      "stormwall_s": 0,
+      "max_storm": 0,
+      "flags": [],
+      "track": [
+        [
+          -107,
+          125
+        ],
+        [
+          -240,
+          142
+        ],
+        [
+          -373,
+          158
+        ],
+        [
+          -494,
+          167
+        ],
+        [
+          -495,
+          165
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Rig Helios (Skiff: should be turned back by the swell)",
+      "vessel": "dinghy",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 1,
+      "engine": false,
+      "arrived": false,
+      "waypoints_reached": 1,
+      "of": 3,
+      "minutes": 5,
+      "distance_m": 740.99,
+      "hull": {
+        "start": 60,
+        "end": 60,
+        "lost": 0
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 0,
+      "stormwall_s": 0,
+      "max_storm": 0,
+      "flags": [],
+      "track": [
+        [
+          -64,
+          129
+        ],
+        [
+          -145,
+          130
+        ],
+        [
+          -228,
+          141
+        ],
+        [
+          -310,
+          151
+        ],
+        [
+          -350,
+          155
+        ],
+        [
+          -350,
+          153
+        ],
+        [
+          -350,
+          152
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas",
+        "sail_cutter"
+      ],
+      "crew": [],
+      "seed": 1,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.95,
+      "distance_m": 1141,
+      "hull": {
+        "start": 160,
+        "end": 157.73,
+        "lost": 2.27
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 5.83,
+      "stormwall_s": 6.53,
+      "max_storm": 0.99,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -20,
+          -31
+        ],
+        [
+          -50,
+          -231
+        ],
+        [
+          -92,
+          -427
+        ],
+        [
+          -138,
+          -622
+        ],
+        [
+          -180,
+          -818
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas",
+        "sail_cutter",
+        "hull_copper",
+        "hull_armor"
+      ],
+      "crew": [],
+      "seed": 1,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.95,
+      "distance_m": 1141.26,
+      "hull": {
+        "start": 220,
+        "end": 218.5,
+        "lost": 1.5
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 6.93,
+      "stormwall_s": 6.53,
+      "max_storm": 0.99,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -21,
+          -38
+        ],
+        [
+          -51,
+          -237
+        ],
+        [
+          -93,
+          -433
+        ],
+        [
+          -139,
+          -628
+        ],
+        [
+          -181,
+          -824
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall)",
+      "vessel": "sloop",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 1,
+      "engine": false,
+      "arrived": false,
+      "waypoints_reached": 2,
+      "of": 3,
+      "minutes": 4.85,
+      "distance_m": 1448.93,
+      "hull": {
+        "start": 100,
+        "end": 0,
+        "lost": 100
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 219.33,
+      "stormwall_s": 218.93,
+      "max_storm": 0.97,
+      "flags": [],
+      "track": [
+        [
+          -12,
+          17
+        ],
+        [
+          -33,
+          -121
+        ],
+        [
+          -54,
+          -259
+        ],
+        [
+          -84,
+          -394
+        ],
+        [
+          -116,
+          -529
+        ],
+        [
+          -148,
+          -664
+        ],
+        [
+          -178,
+          -800
+        ],
+        [
+          -182,
+          -834
+        ],
+        [
+          -181,
+          -834
+        ],
+        [
+          -180,
+          -834
+        ],
+        [
+          -179,
+          -834
+        ],
+        [
+          -179,
+          -835
+        ],
+        [
+          -178,
+          -835
+        ],
+        [
+          -178,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -175,
+          -835
+        ],
+        [
+          -175,
+          -835
+        ],
+        [
+          -175,
+          -836
+        ],
+        [
+          -175,
+          -835
+        ]
+      ]
+    }
+  ],
+  "result_hash": "368bb298"
+}
