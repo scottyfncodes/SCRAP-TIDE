@@ -80,6 +80,12 @@ const SLOOP_UPGRADES: Record<string, { file: string; socket: string; at?: [numbe
 };
 const SLOOP_MAST_Z = 1.0; // the model's mast (socket_sail)
 
+// The Patchwork Skiff (public/models/tb_patchwork_skiff.glb, MeshCraft, creative/3d-skiff): the starter boat as a
+// scrap-welded raider skiff (mismatched strakes, riveted corrugated patches, a spiked bumper ram, oil-drum sponsons,
+// tyre fenders, a car-seat helm). Lofted from HULLS.dinghy, so it shares this file's frame at scale 1: it replaces the
+// procedural hull, floorboards and thwarts; the captain's seat, crew spots, mast step and upgrades keep their places.
+const SKIFF_FILE = 'tb_patchwork_skiff';
+
 /** The upgrade model files the Trimaran needs for these owned upgrades (loaded lazily: see world/assets.ts). */
 export function sloopUpgradeFiles(owned: readonly string[]): string[] {
   const files = new Set<string>();
@@ -429,6 +435,8 @@ export interface ShipParts {
   wake: THREE.Vector3; // stern point
   length: number;
   beam: number;
+  /** the hull's footprint at the waterline (half-length, half-beam of one hull, twin-hull centre offset) */
+  waterline: { halfLen: number; halfBeam: number; twin: number };
   rotors: THREE.Object3D[];
   crew: { id: string; root: THREE.Object3D; mixer: THREE.AnimationMixer; actions: Record<string, THREE.AnimationAction> }[];
   lamp: THREE.PointLight | null;
@@ -453,6 +461,8 @@ export function buildShip(store: Store): ShipParts {
   // how far the model's deck sits from the procedural one, so deck-mounted parts and the captain stand on it
   const lift = glb ? glb.deckY - (h.sheer - 0.05) : 0;
   if (glb) group.add(glb.root);
+  const skiff = vessel === 'dinghy' ? sceneModel(SKIFF_FILE, { shadows: true, side: THREE.DoubleSide }) : null;
+  if (skiff) group.add(skiff);
   // outrigger floats: the MeshCraft model when it loaded, else the kit floats placed further down
   const outriggers = vessel === 'sloop' ? sceneModel(OUTRIGGER_FILE, { shadows: true, side: THREE.DoubleSide }) : null;
   if (outriggers) group.add(outriggers);
@@ -498,6 +508,7 @@ export function buildShip(store: Store): ShipParts {
   const tints = cosmeticTints(paintCos.colors, sailCos.colors);
   if (glb) tintModel(glb.root, tints);
   if (outriggers) tintModel(outriggers, tints);
+  if (skiff) tintModel(skiff, tints);
   if (container) tintModel(container, tints);
   const roofTop = container ? CONTAINER_ROOF : SLOOP_ROOF;
   // Ironwake: two hulls; P() then measures from the outer side of each hull
@@ -516,7 +527,7 @@ export function buildShip(store: Store): ShipParts {
     // bridge deck between the hulls, on cross-beams
     parts.push(paint(xf(new THREE.BoxGeometry(CAT_OFFSET * 2 + 0.6, 0.3, h.L * 0.72), 0, h.sheer - 0.05, -0.4), '#3a4148', 0.06));
     for (const z of [-3.8, 0, 3.8]) parts.push(paint(xf(new THREE.BoxGeometry(CAT_OFFSET * 2 + 1.6, 0.35, 0.5), 0, h.sheer - 0.35, z), '#a24b21'));
-  } else if (!glb) parts.push(hullOut.g);
+  } else if (!glb && !skiff) parts.push(hullOut.g);
   const wood = '#a3784c';
   const woodDark = '#6e4b2a';
 
@@ -542,12 +553,14 @@ export function buildShip(store: Store): ShipParts {
   const sailTier = store.bestInSlot('sail')?.tier ?? 0;
 
   if (vessel === 'dinghy') {
-    // floorboards + thwarts
+    // floorboards + thwarts (the skiff model has its own pallet floor, plank thwart and car-seat helm)
+    if (!skiff) {
     parts.push(paint(xf(new THREE.BoxGeometry(h.W * 1.1, 0.06, h.L * 0.7), 0, h.sheer - h.D * 0.72, -0.1), wood, 0.05));
     parts.push(paint(xf(new THREE.BoxGeometry(h.W * 1.75, 0.08, 0.35), 0, h.sheer - 0.2, 0.55), wood));
     parts.push(paint(xf(new THREE.BoxGeometry(h.W * 1.5, 0.08, 0.4), 0, h.sheer - 0.18, -1.3), wood));
     // little storage box under aft seat
     parts.push(paint(xf(new THREE.BoxGeometry(0.7, 0.35, 0.36), 0, h.sheer - 0.42, -1.3), woodDark));
+    }
     // paddle resting across the gunwale
     parts.push(paint(xf(new THREE.CylinderGeometry(0.035, 0.035, 2.2, 5), 0.45, h.sheer + 0.05, -0.4, Math.PI / 2, 0.15, 0), '#c9a074'));
     parts.push(paint(xf(new THREE.BoxGeometry(0.22, 0.03, 0.55), 0.6, h.sheer + 0.05, 0.62, 0, 0.15, 0), '#c9a074'));
@@ -606,7 +619,13 @@ export function buildShip(store: Store): ShipParts {
   }
 
   // mast
-  if (!glb) parts.push(paint(xf(new THREE.CylinderGeometry(0.06 * (vessel !== 'dinghy' ? 2.2 : 1), 0.08 * (vessel !== 'dinghy' ? 2.2 : 1), mastH, 7), 0, h.sheer - h.D * 0.6 + mastH / 2, mastZ), woodDark));
+  // (on the skiff: a length of rusty scaffold pipe, with a strip of hazard tape)
+  if (!glb) parts.push(paint(xf(new THREE.CylinderGeometry(0.06 * (vessel !== 'dinghy' ? 2.2 : 1), 0.08 * (vessel !== 'dinghy' ? 2.2 : 1), mastH, 7), 0, h.sheer - h.D * 0.6 + mastH / 2, mastZ), skiff ? '#6d6a66' : woodDark));
+  if (skiff) {
+    parts.push(paint(xf(new THREE.CylinderGeometry(0.085, 0.085, 0.16, 7), 0, h.sheer + 0.5, mastZ), '#f4c542'));
+    parts.push(paint(xf(new THREE.CylinderGeometry(0.09, 0.09, 0.05, 7), 0, h.sheer + 0.5, mastZ), '#1b1b1f'));
+    parts.push(paint(xf(new THREE.CylinderGeometry(0.075, 0.075, 0.5, 7), 0, h.sheer + 1.3, mastZ), '#a24b21'));
+  }
   const mastBase = h.sheer - h.D * 0.6;
 
   // rudder
@@ -930,6 +949,7 @@ export function buildShip(store: Store): ShipParts {
     wake: new THREE.Vector3(0, 0, -h.L / 2),
     length: h.L,
     beam,
+    waterline: { halfLen: h.L * 0.47, halfBeam: h.W * 0.82, twin: cat ? CAT_OFFSET : 0 },
     rotors,
     crew,
     lamp,

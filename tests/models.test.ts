@@ -37,6 +37,8 @@ const NEEDED: Record<string, string[]> = {
   // upgrades attach to these sockets later; the hull/sail/flag/deck sockets must survive every re-export
   tb_coastal_sloop: ['tidebreakers_coastal_sloop', 'tidebreakers_coastal_sloop_mesh', 'socket_flag', 'socket_hull', 'socket_navigation', 'socket_sail',
     'socket_steering', 'socket_storage'],
+  // the Patchwork Skiff starter boat (creative/3d-skiff): one static body in the dinghy's frame
+  tb_patchwork_skiff: ['tb_patchwork_skiff', 'tb_patchwork_skiff_mesh'],
   tb_sloop_outriggers: ['tb_sloop_outriggers', 'outrigger_port', 'outrigger_starboard'],
   tb_upg_canvas_mainsail: ['upgrade_canvas_mainsail'],
   tb_upg_cargo_crates: ['upgrade_lashed_cargo_crates'],
@@ -75,6 +77,8 @@ describe('GITCRAFT models in public/models', () => {
     const names = (f: string) => new Set((glbJson(`public/models/${f}.glb`).materials ?? []).map((m: { name: string }) => m.name));
     const sloop = names('tb_coastal_sloop');
     for (const m of ['GC_Plank_4fb39a', 'GC_Wood_f2ead8', 'GC_Cloth_f1e6cc', 'GC_Cloth_c0392b']) expect(sloop.has(m), `sloop ${m}`).toBe(true);
+    const skiff = names('tb_patchwork_skiff');
+    for (const m of ['GC_Plank_4fb39a', 'GC_Wood_f2ead8']) expect(skiff.has(m), `skiff ${m}`).toBe(true);
     const out = names('tb_sloop_outriggers');
     for (const m of ['GC_Plank_4fb39a', 'GC_Wood_f2ead8']) expect(out.has(m), `outriggers ${m}`).toBe(true);
     // what buildShip culls / tints on the upgrades: the base sail + tiller materials, the canvas cloth, the rub-strakes
