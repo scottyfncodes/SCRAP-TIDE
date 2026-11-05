@@ -29,6 +29,8 @@ export const MODEL_FILES = [
   'tb_atoll_kit',
   'tb_outpost_kit',
   'tb_flora_kit',
+  // the Patchwork Skiff starter boat: a scrap-welded Waterworld x Mad Max hull in the dinghy's frame (creative/3d-skiff)
+  'tb_patchwork_skiff',
   // GITCRAFT TIDEBREAKERS 3D package: the Coastal Sloop player boat (hull, deck, cabin, rig, sails, socket_* nodes)
   'tb_coastal_sloop',
   // its outrigger floats and cross-beams (MeshCraft, creative/3d-sloop/outriggers), placed in the sloop's frame

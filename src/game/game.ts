@@ -1,5 +1,6 @@
 // TIDEBREAKERS core: rendering loop, sailing and motoring, weather and hull, salvage, crew, raiders,
 // settlements, going ashore, digging, treasure, the first voyage and the Captain's Log.
+import { heroize, updateHeroLight } from '../world/hero';
 import * as THREE from 'three';
 import { Store } from '../state/store';
 import { UI, type GameAPI, type Action } from '../ui/ui';
@@ -223,6 +224,7 @@ export class Game implements GameAPI {
     const cap = characterModel('tb_captain');
     if (cap) {
       this.captain.useCharacter(cap);
+      heroize(cap.root, 0.012);
       this.captain.onStep = (side, run) => this.footfall(side, run);
     }
     this.env.upgradeNpcs();
@@ -335,6 +337,8 @@ export class Game implements GameAPI {
   rebuildShip() {
     if (this.ship) this.shipRoot.remove(this.ship.group);
     this.ship = buildShip(this.store);
+    for (const c of this.ship.crew) heroize(c.root, 0.012); // (thinner ink on people than on hulls)
+    heroize(this.ship.group, this.store.data.vessel === 'dinghy' ? 0.022 : 0.035);
     this.shipRoot.add(this.ship.group);
     this.camDist = this.store.data.vessel === 'ironwake' ? 30 : this.store.data.vessel === 'sloop' ? 24 : 15;
     const st = this.store.stats;
@@ -708,6 +712,7 @@ export class Game implements GameAPI {
     u.uAmbient.value.setRGB(amb * 0.9, amb * 0.97, amb);
     oceanState.storm = a.storm;
     if (this.ship.lamp) this.ship.lamp.intensity = a.night * 3 + a.storm * 1.2;
+    updateHeroLight(a.sunColor, a.sunIntensity, a.night);
   }
 
   /** Dusk, night and storms flatten the boat into the dark sea (the sun is low or gone, and the ocean shader lights
@@ -1703,6 +1708,9 @@ export class Game implements GameAPI {
     this.captain.root.position.copy(seat);
     this.captain.root.rotation.y = b.heading;
     this.captain.update(dt, 0);
+
+    const wl = this.ship.waterline;
+    this.ocean.setHull(b.x, b.z, b.heading, wl.halfLen, wl.halfBeam, wl.twin, clamp(b.speed / 9, 0, 1));
 
     // wake trail in the water + foam spray
     if (b.speed > 1.2) {

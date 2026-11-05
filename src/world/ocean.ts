@@ -129,6 +129,8 @@ uniform vec3 uSkyTop;
 uniform vec3 uAmbient;
 uniform vec4 uWake[${WAKE_N}];
 uniform vec2 uWakeShape; // x: size scale, y: lifetime (s)
+uniform vec4 uHull;      // the player's hull: x, z, forward (sin, cos heading)
+uniform vec4 uHullSize;  // waterline half-length, half-beam, twin-hull offset, speed 0..1 (half-length 0: no collar)
 uniform sampler2D uChop; // GITCRAFT WorldCraft FFT chop normal tile (24 m, 9 m/s wind at 20°)
 uniform float uChopK;    // 0 until the tile has loaded (the swell normal alone is used)
 varying vec3 vWorld;
@@ -237,6 +239,20 @@ void main() {
     wk = max(wk, ring);
   }
   foam = max(foam, wk * smoothstep(0.25, 0.7, fn + 0.35));
+  // hull collar: water piles up and breaks into foam where it meets the hull, so the boat sits IN the sea; a bow
+  // wave builds with speed
+  if (uHullSize.x > 0.0) {
+    vec2 hd = p - uHull.xy;
+    vec2 lp = vec2(abs(dot(hd, vec2(uHull.w, -uHull.z))) - uHullSize.z, dot(hd, uHull.zw));
+    float al = lp.y / uHullSize.x;
+    float e = length(vec2(lp.x / uHullSize.y, al));
+    float dm = (e - 1.0) * uHullSize.y;
+    float bow = smoothstep(0.2, 1.0, al) * uHullSize.w;
+    float reach = 0.32 + bow * 0.9 + uHullSize.w * 0.25;
+    float collar = smoothstep(-0.12, 0.04, dm) * (1.0 - smoothstep(reach * 0.3, reach, dm));
+    float churn = 0.55 + 0.45 * noise(p * 3.1 + vec2(t * 1.3, -t * 0.9));
+    foam = max(foam, collar * churn * (0.75 + bow * 0.5));
+  }
   // spindrift: long scum lines blown along the wind, thicker in a blow
   vec2 wd = normalize(vec2(0.94, 0.34));
   float along = dot(p, wd), across = dot(p, vec2(-wd.y, wd.x));
@@ -289,6 +305,8 @@ export class Ocean {
       uAmbient: { value: new THREE.Color(1, 1, 1) },
       uWake: { value: this.wake },
       uWakeShape: { value: new THREE.Vector2(1, WAKE_LIFE) },
+      uHull: { value: new THREE.Vector4(0, 0, 0, 1) },
+      uHullSize: { value: new THREE.Vector4(0, 1, 0, 0) },
       uChop: { value: null },
       uChopK: { value: 0 },
     };
@@ -337,6 +355,12 @@ export class Ocean {
   setWakeAspect(aspect: number) {
     const k = Math.min(1, Math.max(0.45, aspect));
     this.uniforms.uWakeShape.value.set(0.7 + 0.3 * k, WAKE_LIFE * (0.75 + 0.25 * k));
+  }
+
+  /** Where the player's hull meets the water (the foam collar). halfLen 0 hides it (the captain is ashore). */
+  setHull(x: number, z: number, heading: number, halfLen: number, halfBeam: number, twinOffset: number, speed01: number) {
+    this.uniforms.uHull.value.set(x, z, Math.sin(heading), Math.cos(heading));
+    this.uniforms.uHullSize.value.set(halfLen, halfBeam, twinOffset, speed01);
   }
 
   /** Drop a wake point (call while the boat moves). strength 0..1 */
