@@ -9,7 +9,11 @@
     "preview": "vite preview --host",
     "test": "vitest run",
     "check:visual": "node scripts/visual-check.mjs",
-    "check:turn": "node scripts/turn-check.mjs"
+    "check:turn": "node scripts/turn-check.mjs",
+    "sim": "node tests/sim/run-sims.mjs",
+    "bot": "node tests/e2e/playtest-bot.mjs",
+    "evidence:report": "node tests/sim/report.mjs",
+    "evidence": "npm run build && npm run sim && npm run bot && npm run evidence:report"
   },
   "dependencies": {
     "three": "^0.170.0"
