@@ -23,6 +23,15 @@ describe('Store', () => {
     expect(s.data.crew).toEqual([]);
   });
 
+  it('calm effects default off without a reduced-motion preference, and old saves gain the setting', () => {
+    expect(new Store().data.settings.calm).toBe(false);
+    mem.clear();
+    const old = new Store();
+    delete (old.data.settings as any).calm;
+    old.commit();
+    expect(new Store().data.settings.calm).toBe(false);
+  });
+
   it('migrates a v1 save without losing progress', () => {
     const v1 = {
       version: 1, gold: 512, vessel: 'sloop', vesselsOwned: ['dinghy', 'sloop'], upgrades: ['sail_canvas', 'hull_copper', 'not_a_real_upgrade'],

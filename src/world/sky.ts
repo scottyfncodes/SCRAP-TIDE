@@ -303,8 +303,8 @@ export class Sky {
       this.stormDecks[i].scale.setScalar(s.r / 150);
     }
     const dark = 1 - a.night * 0.55;
-    this.stormMat.color.setRGB(0.29 * dark, 0.34 * dark, 0.39 * dark).lerp(new THREE.Color('#dfe6ff'), a.lightning * 0.6);
-    this.wallMat.color.setRGB(0.24 * dark, 0.29 * dark, 0.36 * dark).lerp(new THREE.Color('#dfe6ff'), a.lightning * 0.3);
+    this.stormMat.color.setRGB(0.29 * dark, 0.34 * dark, 0.39 * dark).lerp(new THREE.Color('#dfe6ff'), a.flash * 0.6);
+    this.wallMat.color.setRGB(0.24 * dark, 0.29 * dark, 0.36 * dark).lerp(new THREE.Color('#dfe6ff'), a.flash * 0.3);
     this.skylineMat.color.copy(a.skyHorizon).multiplyScalar(0.48);
     for (let i = 0; i < this.flares.length; i++) {
       const f = this.flares[i];
