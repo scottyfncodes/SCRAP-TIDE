@@ -1,0 +1,412 @@
+{
+  "generated_at": "2026-11-05T18:05:48.334Z",
+  "commit": "2a909e459686ea87e5d4b85549b3d8ef55c03598",
+  "branch": "balance/stormwall",
+  "dirty_src": false,
+  "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
+  "server": "vite dev server (src/)",
+  "evidence_class": "simulation-measured (STORMWALL values patched in a throwaway page; `current` is the code as committed)",
+  "grid": [
+    {
+      "id": "legacy",
+      "speedMul": 1,
+      "hullMul": 0.55,
+      "voyages": [
+        {
+          "fit": "stock sail",
+          "arrived": true,
+          "minutes": 1.54,
+          "hull_lost_pct": 9.7,
+          "hull_lost": 15.55,
+          "hull_start": 160,
+          "stormwall_s": 10.73,
+          "storm_s": 25,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Canvas Mainsail",
+          "arrived": true,
+          "minutes": 1.11,
+          "hull_lost_pct": 6.8,
+          "hull_lost": 10.92,
+          "hull_start": 160,
+          "stormwall_s": 7.8,
+          "storm_s": 18.13,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig",
+          "arrived": true,
+          "minutes": 0.92,
+          "hull_lost_pct": 5.5,
+          "hull_lost": 8.77,
+          "hull_start": 160,
+          "stormwall_s": 6.5,
+          "storm_s": 15,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig + Riveted Armour",
+          "arrived": true,
+          "minutes": 0.92,
+          "hull_lost_pct": 2.2,
+          "hull_lost": 4.82,
+          "hull_start": 220,
+          "stormwall_s": 6.5,
+          "storm_s": 15,
+          "loiter_hull_per_min_at_spire": 17.4,
+          "swamped": false
+        },
+        {
+          "fit": "Twin Diesel (engine) ",
+          "arrived": true,
+          "minutes": 1.37,
+          "hull_lost_pct": 9.5,
+          "hull_lost": 15.25,
+          "hull_start": 160,
+          "stormwall_s": 10.47,
+          "storm_s": 24.37,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        }
+      ]
+    },
+    {
+      "id": "current",
+      "current": true,
+      "voyages": [
+        {
+          "fit": "stock sail",
+          "arrived": true,
+          "minutes": 1.85,
+          "hull_lost_pct": 29.7,
+          "hull_lost": 47.49,
+          "hull_start": 160,
+          "stormwall_s": 29.27,
+          "storm_s": 43.57,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Canvas Mainsail",
+          "arrived": true,
+          "minutes": 1.33,
+          "hull_lost_pct": 20.7,
+          "hull_lost": 33.06,
+          "hull_start": 160,
+          "stormwall_s": 20.73,
+          "storm_s": 31.07,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig",
+          "arrived": true,
+          "minutes": 1.09,
+          "hull_lost_pct": 16.6,
+          "hull_lost": 26.52,
+          "hull_start": 160,
+          "stormwall_s": 16.93,
+          "storm_s": 25.43,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig + Riveted Armour",
+          "arrived": true,
+          "minutes": 1.09,
+          "hull_lost_pct": 6.6,
+          "hull_lost": 14.59,
+          "hull_start": 220,
+          "stormwall_s": 16.93,
+          "storm_s": 25.43,
+          "loiter_hull_per_min_at_spire": 17.4,
+          "swamped": false
+        },
+        {
+          "fit": "Twin Diesel (engine) ",
+          "arrived": true,
+          "minutes": 1.68,
+          "hull_lost_pct": 29.4,
+          "hull_lost": 47,
+          "hull_start": 160,
+          "stormwall_s": 28.9,
+          "storm_s": 42.87,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        }
+      ]
+    },
+    {
+      "id": "s0.35_h1.1",
+      "speedMul": 0.35,
+      "hullMul": 1.1,
+      "voyages": [
+        {
+          "fit": "stock sail",
+          "arrived": true,
+          "minutes": 1.79,
+          "hull_lost_pct": 21.5,
+          "hull_lost": 34.37,
+          "hull_start": 160,
+          "stormwall_s": 25.7,
+          "storm_s": 40,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Canvas Mainsail",
+          "arrived": true,
+          "minutes": 1.28,
+          "hull_lost_pct": 15,
+          "hull_lost": 23.96,
+          "hull_start": 160,
+          "stormwall_s": 18.23,
+          "storm_s": 28.57,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig",
+          "arrived": true,
+          "minutes": 1.06,
+          "hull_lost_pct": 12,
+          "hull_lost": 19.23,
+          "hull_start": 160,
+          "stormwall_s": 14.9,
+          "storm_s": 23.4,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig + Riveted Armour",
+          "arrived": true,
+          "minutes": 1.06,
+          "hull_lost_pct": 4.8,
+          "hull_lost": 10.57,
+          "hull_start": 220,
+          "stormwall_s": 14.9,
+          "storm_s": 23.4,
+          "loiter_hull_per_min_at_spire": 17.4,
+          "swamped": false
+        },
+        {
+          "fit": "Twin Diesel (engine) ",
+          "arrived": true,
+          "minutes": 1.62,
+          "hull_lost_pct": 21.2,
+          "hull_lost": 33.97,
+          "hull_start": 160,
+          "stormwall_s": 25.37,
+          "storm_s": 39.3,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        }
+      ]
+    },
+    {
+      "id": "s0.35_h1.5",
+      "speedMul": 0.35,
+      "hullMul": 1.5,
+      "voyages": [
+        {
+          "fit": "stock sail",
+          "arrived": true,
+          "minutes": 1.79,
+          "hull_lost_pct": 26.6,
+          "hull_lost": 42.57,
+          "hull_start": 160,
+          "stormwall_s": 25.7,
+          "storm_s": 40,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Canvas Mainsail",
+          "arrived": true,
+          "minutes": 1.28,
+          "hull_lost_pct": 18.5,
+          "hull_lost": 29.6,
+          "hull_start": 160,
+          "stormwall_s": 18.23,
+          "storm_s": 28.57,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig",
+          "arrived": true,
+          "minutes": 1.06,
+          "hull_lost_pct": 14.8,
+          "hull_lost": 23.72,
+          "hull_start": 160,
+          "stormwall_s": 14.9,
+          "storm_s": 23.4,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig + Riveted Armour",
+          "arrived": true,
+          "minutes": 1.06,
+          "hull_lost_pct": 5.9,
+          "hull_lost": 13.05,
+          "hull_start": 220,
+          "stormwall_s": 14.9,
+          "storm_s": 23.4,
+          "loiter_hull_per_min_at_spire": 17.4,
+          "swamped": false
+        },
+        {
+          "fit": "Twin Diesel (engine) ",
+          "arrived": true,
+          "minutes": 1.62,
+          "hull_lost_pct": 26.3,
+          "hull_lost": 42.1,
+          "hull_start": 160,
+          "stormwall_s": 25.37,
+          "storm_s": 39.3,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        }
+      ]
+    },
+    {
+      "id": "s0.45_h1.3",
+      "speedMul": 0.45,
+      "hullMul": 1.3,
+      "voyages": [
+        {
+          "fit": "stock sail",
+          "arrived": true,
+          "minutes": 1.71,
+          "hull_lost_pct": 20.4,
+          "hull_lost": 32.65,
+          "hull_start": 160,
+          "stormwall_s": 20.77,
+          "storm_s": 35.07,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Canvas Mainsail",
+          "arrived": true,
+          "minutes": 1.23,
+          "hull_lost_pct": 14.2,
+          "hull_lost": 22.72,
+          "hull_start": 160,
+          "stormwall_s": 14.83,
+          "storm_s": 25.17,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig",
+          "arrived": true,
+          "minutes": 1.01,
+          "hull_lost_pct": 11.4,
+          "hull_lost": 18.17,
+          "hull_start": 160,
+          "stormwall_s": 12.13,
+          "storm_s": 20.63,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig + Riveted Armour",
+          "arrived": true,
+          "minutes": 1.01,
+          "hull_lost_pct": 4.5,
+          "hull_lost": 9.99,
+          "hull_start": 220,
+          "stormwall_s": 12.13,
+          "storm_s": 20.63,
+          "loiter_hull_per_min_at_spire": 17.4,
+          "swamped": false
+        },
+        {
+          "fit": "Twin Diesel (engine) ",
+          "arrived": true,
+          "minutes": 1.54,
+          "hull_lost_pct": 20.1,
+          "hull_lost": 32.23,
+          "hull_start": 160,
+          "stormwall_s": 20.47,
+          "storm_s": 34.4,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        }
+      ]
+    },
+    {
+      "id": "s0.45_h1.6",
+      "speedMul": 0.45,
+      "hullMul": 1.6,
+      "voyages": [
+        {
+          "fit": "stock sail",
+          "arrived": true,
+          "minutes": 1.71,
+          "hull_lost_pct": 23.4,
+          "hull_lost": 37.47,
+          "hull_start": 160,
+          "stormwall_s": 20.77,
+          "storm_s": 35.07,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Canvas Mainsail",
+          "arrived": true,
+          "minutes": 1.23,
+          "hull_lost_pct": 16.3,
+          "hull_lost": 26.02,
+          "hull_start": 160,
+          "stormwall_s": 14.83,
+          "storm_s": 25.17,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig",
+          "arrived": true,
+          "minutes": 1.01,
+          "hull_lost_pct": 13,
+          "hull_lost": 20.79,
+          "hull_start": 160,
+          "stormwall_s": 12.13,
+          "storm_s": 20.63,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        },
+        {
+          "fit": "Cutter Rig + Riveted Armour",
+          "arrived": true,
+          "minutes": 1.01,
+          "hull_lost_pct": 5.2,
+          "hull_lost": 11.44,
+          "hull_start": 220,
+          "stormwall_s": 12.13,
+          "storm_s": 20.63,
+          "loiter_hull_per_min_at_spire": 17.4,
+          "swamped": false
+        },
+        {
+          "fit": "Twin Diesel (engine) ",
+          "arrived": true,
+          "minutes": 1.54,
+          "hull_lost_pct": 23.1,
+          "hull_lost": 37,
+          "hull_start": 160,
+          "stormwall_s": 20.47,
+          "storm_s": 34.4,
+          "loiter_hull_per_min_at_spire": 31.7,
+          "swamped": false
+        }
+      ]
+    }
+  ]
+}

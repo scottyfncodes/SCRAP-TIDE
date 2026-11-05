@@ -1,6 +1,6 @@
 # TIDEBREAKERS · PLAYCRAFT evidence pack
 
-Generated 2026-11-05T16:00:46.301Z from commit `446a03c` (simulations) / `f59beb6` (playtest bot). Game source unchanged by this pack.
+Generated 2026-11-05T17:59:59.939Z from commit `2a909e4` (simulations) / `2a909e4` (playtest bot). Game source unchanged by this pack.
 
 **Where this was measured:** headless Chromium with software WebGL (SwiftShader) in a Linux container. Nothing here was observed on a real phone.
 
@@ -15,11 +15,11 @@ Generated 2026-11-05T16:00:46.301Z from commit `446a03c` (simulations) / `f59beb
 
 ## Playtest bot (runtime-observed)
 
-Production build (`dist/`), iPhone-sized viewport, seed 1105, 3 run(s). Reproducible: **yes (identical fingerprints)**. Wall time per run: 46.3s, 41.7s, 41.3s.
+Production build (`dist/`), iPhone-sized viewport, seed 1105, 3 run(s). Reproducible: **yes (identical fingerprints)**. Wall time per run: 43.5s, 37.9s, 37.7s.
 
 | Check | Result | Detail |
 |---|---|---|
-| voyage starts docked at Driftholm on the first-voyage quest | PASS | quest=steer, gold=15 |
+| voyage starts docked at Driftholm on the first-voyage quest | PASS | quest=leave_dock, gold=15 |
 | steered from the dock to the Sunken Tower beacon with the wheel | PASS | game 32.83s, at (64.9, 135.5) |
 | SALVAGE opens the winch | PASS |  |
 | the winch was played to the end and the haul came aboard | PASS | 3/3 pulls in the green; cargo transistor_radio×1, scrap_metal×6, wire×4 |
@@ -71,7 +71,7 @@ Seeded runs of the real game code; see `tests/sim/sims.page.js` for exactly whic
 | Graveyard Boxes | emerald | sloop (14) | 66.1 | 38–109 | 8.9 | 9.4 | 0% |
 | The Meridian Spire | stormwall | ironwake (22) | 354.4 | 218–490 | 8.3 | 23.6 | 0% |
 
-Winch skill matters: the Sunken Tower pays 0/3 → 7.6g, 1/3 → 15.5g, 2/3 → 22.6g, 3/3 → 30.6g. A Salvager adds about 23.7g a haul on average.
+Winch skill matters: the Sunken Tower pays 0/3 → 7.6g, 1/3 → 15.5g, 2/3 → 22.6g, 3/3 → 30.6g. A Salvager adds about 23.2g a haul on average.
 
 | Site | Difficulty | No gear | Crane | Crane + Salvager |
 |---|---|---|---|---|
@@ -118,15 +118,15 @@ From the state a player could first buy it in (prerequisites only, 15 gold), 10 
 
 | Winch | Seed | Actions | Hauls | Caches | Flotsam | Crafted | Respawn wait | Upgrades | Vessels | Log reached |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1/3 | 1 | 251 | 64 | 85 | 102 | 17 | 1.35 h | 19/19 | 3 | g_raiders |
-| 1/3 | 2 | 257 | 61 | 87 | 109 | 22 | 1.47 h | 19/19 | 3 | g_raiders |
-| 1/3 | 3 | 281 | 47 | 127 | 107 | 23 | 1.09 h | 19/19 | 3 | g_raiders |
-| 2/3 | 1 | 221 | 38 | 82 | 101 | 22 | 1.02 h | 19/19 | 3 | g_raiders |
-| 2/3 | 2 | 206 | 37 | 60 | 109 | 24 | 1 h | 19/19 | 3 | g_raiders |
-| 2/3 | 3 | 198 | 38 | 54 | 106 | 19 | 0.95 h | 19/19 | 3 | g_raiders |
-| 3/3 | 1 | 195 | 31 | 77 | 87 | 21 | 0.73 h | 19/19 | 3 | g_raiders |
-| 3/3 | 2 | 193 | 32 | 76 | 85 | 23 | 0.78 h | 19/19 | 3 | g_raiders |
-| 3/3 | 3 | 179 | 32 | 51 | 96 | 20 | 0.81 h | 19/19 | 3 | g_raiders |
+| 1/3 | 1 | 233 | 50 | 82 | 101 | 22 | 1.17 h | 19/19 | 3 | g_raiders |
+| 1/3 | 2 | 280 | 57 | 109 | 114 | 23 | 1.37 h | 19/19 | 3 | g_raiders |
+| 1/3 | 3 | 228 | 51 | 81 | 96 | 22 | 1.26 h | 19/19 | 3 | g_raiders |
+| 2/3 | 1 | 235 | 45 | 74 | 116 | 18 | 1.08 h | 19/19 | 3 | g_raiders |
+| 2/3 | 2 | 218 | 45 | 66 | 107 | 21 | 0.97 h | 19/19 | 3 | g_raiders |
+| 2/3 | 3 | 216 | 38 | 81 | 97 | 19 | 0.85 h | 19/19 | 3 | g_raiders |
+| 3/3 | 1 | 204 | 34 | 81 | 89 | 21 | 0.81 h | 19/19 | 3 | g_raiders |
+| 3/3 | 2 | 223 | 38 | 87 | 98 | 14 | 0.88 h | 19/19 | 3 | g_raiders |
+| 3/3 | 3 | 220 | 32 | 92 | 96 | 22 | 0.82 h | 19/19 | 3 | g_raiders |
 
 Steps (winch 2/3, seed 1):
 
@@ -139,25 +139,25 @@ Steps (winch 2/3, seed 1):
 | buy Lashed Cargo Crate | 4 | 0 | 0 | 4 | 4 | 211 | 14 |
 | buy Copper-Banded Hull | 3 | 0 | 0 | 3 | 8 | 98 | 17 |
 | buy Ash-Wood Rudder | 5 | 0 | 0 | 5 | 8 | 70 | 22 |
-| buy Salvage Crane & Winch | 7 | 4 | 0 | 3 | 4 | 82 | 29 |
-| commission Scrap Trimaran | 19 | 9 | 0 | 10 | 26.0 | 86 | 48 |
-| dock at Rig Helios | 0 | 0 | 0 | 0 | 0 | 206 | 48 |
-| salvage Old Meridian | 0 | 0 | 0 | 0 | 0 | 489 | 49 |
-| buy Harpoon Turret | 6 | 1 | 0 | 5 | 0 | 700 | 55 |
-| buy Riveted Armour Plating | 15 | 2 | 0 | 13 | 0 | 590 | 70 |
-| buy Twin Diesel Drive | 19 | 2 | 14 | 3 | 0 | 715 | 89 |
-| buy Brass Compass | 0 | 0 | 0 | 0 | 0 | 625 | 89 |
-| buy Salvage Radar | 31 | 2 | 29 | 0 | 0 | 957 | 120 |
-| drive off a Rustfang raider _(NOT SIMULATED: raider combat is real-time; the Captain’s Log waits here. Purchases are not gated by it.)_ | 0 | 0 | 0 | 0 | 0 | 957 | 120 |
-| commission Ironwake Expedition Cat | 51 | 8 | 27 | 16 | 1.5 | 491 | 171 |
-| buy Cutter Rig + Jib | 4 | 0 | 0 | 4 | 0 | 369 | 175 |
-| buy Rope Cargo Nets | 3 | 0 | 0 | 3 | 0 | 310 | 178 |
-| buy Fuel Drum Rack | 4 | 0 | 0 | 4 | 0 | 270 | 182 |
-| buy Solar Array | 3 | 1 | 0 | 2 | 0 | 1191 | 185 |
-| buy Deck Wind Turbine | 14 | 0 | 10 | 4 | 0 | 1145 | 199 |
-| buy Container Cabin | 15 | 0 | 1 | 14 | 1.5 | 1027 | 214 |
-| buy String Lights & Spotlight | 3 | 2 | 1 | 0 | 0 | 1035 | 217 |
-| buy Trolling Rods | 4 | 0 | 0 | 4 | 0 | 1027 | 221 |
+| buy Salvage Crane & Winch | 8 | 4 | 0 | 4 | 8 | 104 | 30 |
+| commission Scrap Trimaran | 21 | 10 | 0 | 11 | 20.0 | 96 | 51 |
+| dock at Rig Helios | 0 | 0 | 0 | 0 | 0 | 216 | 51 |
+| salvage Old Meridian | 0 | 0 | 0 | 0 | 0 | 435 | 52 |
+| buy Harpoon Turret | 5 | 1 | 0 | 4 | 0 | 614 | 57 |
+| buy Riveted Armour Plating | 25 | 2 | 0 | 23 | 0 | 567 | 82 |
+| buy Twin Diesel Drive | 15 | 4 | 3 | 8 | 4 | 432 | 97 |
+| buy Brass Compass | 0 | 0 | 0 | 0 | 0 | 342 | 97 |
+| buy Salvage Radar | 29 | 2 | 27 | 0 | 0 | 644 | 126 |
+| drive off a Rustfang raider _(NOT SIMULATED: raider combat is real-time; the Captain’s Log waits here. Purchases are not gated by it.)_ | 0 | 0 | 0 | 0 | 0 | 644 | 126 |
+| commission Ironwake Expedition Cat | 49 | 10 | 14 | 25 | 4.6 | 34 | 175 |
+| buy Cutter Rig + Jib | 5 | 1 | 0 | 4 | 0 | 1063 | 180 |
+| buy Rope Cargo Nets | 3 | 0 | 0 | 3 | 0 | 1004 | 183 |
+| buy Fuel Drum Rack | 3 | 0 | 0 | 3 | 0 | 968 | 186 |
+| buy Solar Array | 14 | 1 | 11 | 2 | 0 | 1390 | 200 |
+| buy Deck Wind Turbine | 13 | 1 | 12 | 0 | 0 | 1581 | 213 |
+| buy Container Cabin | 10 | 1 | 1 | 8 | 0 | 1472 | 223 |
+| buy String Lights & Spotlight | 7 | 1 | 6 | 0 | 0 | 1860 | 230 |
+| buy Trolling Rods | 5 | 0 | 0 | 5 | 0 | 1824 | 235 |
 
 ### Fuel and range (engine, full throttle, into the wind)
 
@@ -234,9 +234,9 @@ Half throttle: dinghy/outboard 40.6 m per fuel, dinghy/twin 46.3 m per fuel, slo
 | sloop | no plating | 100 | 9.6 | 28.8 | 57.6 | 115.2 | 1.7 |
 | sloop | Copper-Banded Hull | 120 | 9.6 | 28.8 | 57.6 | 115.2 | 2.1 |
 | sloop | Riveted Armour | 160 | 5.3 | 15.8 | 31.7 | 63.4 | 5.0 |
-| ironwake | no plating | 160 | 9.6 | 28.8 | 57.6 | 31.7 | 2.8 |
-| ironwake | Copper-Banded Hull | 180 | 9.6 | 28.8 | 57.6 | 31.7 | 3.1 |
-| ironwake | Riveted Armour | 220 | 5.3 | 15.8 | 31.7 | 17.4 | 6.9 |
+| ironwake | no plating | 160 | 9.6 | 28.8 | 57.6 | 86.4 | 2.8 |
+| ironwake | Copper-Banded Hull | 180 | 9.6 | 28.8 | 57.6 | 86.4 | 3.1 |
+| ironwake | Riveted Armour | 220 | 5.3 | 15.8 | 31.7 | 47.5 | 6.9 |
 
 Values are hull lost per minute. Wreck strikes (Game.damage at speed × 1.4): no plating at 4 m/s −5.6, no plating at 8 m/s −11.2, no plating at 12 m/s −16.8, no plating at 16 m/s −22.4, Riveted Armour at 4 m/s −3.1, Riveted Armour at 8 m/s −6.2, Riveted Armour at 12 m/s −9.2, Riveted Armour at 16 m/s −12.3. A Mechanic repairs 21 hull/min in calm water.
 
@@ -246,24 +246,24 @@ Values are hull lost per minute. Wreck strikes (Game.damage at speed × 1.4): no
 |---|---|---|---|---|---|---|---|---|
 | Driftholm → Rig Helios | 1 | yes | 0.6 | 480 | 0 / 100 | 0 | 0 |  |
 | Driftholm → Rig Helios (Skiff: should be turned back by the swell) | 1 | no (1/3) | 5 | 741 | 0 / 60 | 0 | 0 |  |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 1 | yes | 0.9 | 1141 | 8.8 / 160 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 1 | yes | 0.9 | 1141 | 4.8 / 220 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 1 | yes | 1.1 | 1141 | 10.9 / 160 | 18.1 | 7.8 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, stock sail) | 1 | yes | 1.5 | 1141 | 15.6 / 160 | 25 | 10.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 1 | yes | 1.1 | 1141 | 26.5 / 160 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 1 | yes | 1.1 | 1141 | 14.6 / 220 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 1 | yes | 1.3 | 1141 | 33.1 / 160 | 31.1 | 20.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, stock sail) | 1 | yes | 1.9 | 1141 | 47.5 / 160 | 43.6 | 29.3 | reached_spire |
 | Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall) | 1 | no (2/3) | 4.5 | 1407 | 100 / 100 | 211.2 | 199.0 |  |
 | Driftholm → Rig Helios | 2 | yes | 0.6 | 480 | 0 / 100 | 0 | 0 |  |
 | Driftholm → Rig Helios (Skiff: should be turned back by the swell) | 2 | no (1/3) | 5 | 741 | 0 / 60 | 0 | 0 |  |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 2 | yes | 0.9 | 1141 | 8.8 / 160 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 2 | yes | 0.9 | 1141 | 4.8 / 220 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 2 | yes | 1.1 | 1141 | 10.9 / 160 | 18.1 | 7.8 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, stock sail) | 2 | yes | 1.5 | 1141 | 15.6 / 160 | 25 | 10.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 2 | yes | 1.1 | 1141 | 26.5 / 160 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 2 | yes | 1.1 | 1141 | 14.6 / 220 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 2 | yes | 1.3 | 1141 | 33.1 / 160 | 31.1 | 20.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, stock sail) | 2 | yes | 1.9 | 1141 | 47.5 / 160 | 43.6 | 29.3 | reached_spire |
 | Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall) | 2 | no (2/3) | 4.5 | 1407 | 100 / 100 | 211.2 | 199.0 |  |
 | Driftholm → Rig Helios | 3 | yes | 0.6 | 480 | 0 / 100 | 0 | 0 |  |
 | Driftholm → Rig Helios (Skiff: should be turned back by the swell) | 3 | no (1/3) | 5 | 741 | 0 / 60 | 0 | 0 |  |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 3 | yes | 0.9 | 1141 | 8.8 / 160 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 3 | yes | 0.9 | 1141 | 4.8 / 220 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 3 | yes | 1.1 | 1141 | 10.9 / 160 | 18.1 | 7.8 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, stock sail) | 3 | yes | 1.5 | 1141 | 15.6 / 160 | 25 | 10.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 3 | yes | 1.1 | 1141 | 26.5 / 160 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 3 | yes | 1.1 | 1141 | 14.6 / 220 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 3 | yes | 1.3 | 1141 | 33.1 / 160 | 31.1 | 20.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, stock sail) | 3 | yes | 1.9 | 1141 | 47.5 / 160 | 43.6 | 29.3 | reached_spire |
 | Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall) | 3 | no (2/3) | 4.5 | 1407 | 100 / 100 | 211.2 | 199.0 |  |
 
 Every seed produced the same voyage: storm cells start from fixed positions and nothing on these routes is random, so the seeds confirm determinism rather than add samples.
@@ -292,10 +292,10 @@ The Skiff was stopped by the open swell in 3/3 runs and the Trimaran by the Stor
 
 | Severity | Finding | Evidence | Class |
 |---|---|---|---|
-| medium | Difficulty/pacing spike: commission Scrap Trimaran | 19 sourcing actions for this step vs at most 7 for any earlier step (campaign, winch 2/3). | simulation-measured |
-| medium | The Stormwall barely scratches the Ironwake | Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call. | simulation-measured |
+| medium | Difficulty/pacing spike: commission Scrap Trimaran | 21 sourcing actions for this step vs at most 8 for any earlier step (campaign, winch 2/3). | simulation-measured |
 | info | No progression dead ends found | Every one of the 21 upgrades and vessels became affordable and was bought through the game in every seed at every winch skill (hits_1, hits_2, hits_3). | simulation-measured |
 | info | Captain's Log in the campaign stops at g_raiders | Completed: g_salvage → g_engine → g_crew → g_trimaran → g_helios → g_meridian. The raider goal needs real-time combat, which the simulation does not play; nothing after it can complete here (purchases are not gated by goals). | simulation-measured |
+| info | Stormwall crossing | Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 21.0 s inside the wall on average, losing 6.6-29.7% hull (best fit to stock sail). The Trimaran was swamped trying in 3/3 runs. | simulation-measured |
 | info | Storm damage | A full storm (storm 1.0) costs the stock Skiff 57.6 hull/min (swamped from full in 1.0 min); the Trimaran 57.6 hull/min (1.7 min). Riveted Armour cuts it by 45.0%. Below storm 0.4 there is no damage. | simulation-measured |
 | info | Crafting margins are small | Hull Patch Kit: +2g (20%); Alloy Plate: +2g (11%); Engine Parts: +3g (14%); Strip Wire: +1g (11%). Not worth farming. | simulation-measured |
 | info | Sailing never needs tacking | Stock Skiff: 6.5 m/s on a beam reach, 5.8 downwind, 2.9 dead into the wind (45%). Every boat can sail straight upwind at under half speed; wind shapes speed, not routes. | simulation-measured |
@@ -317,7 +317,7 @@ No gameplay, balance or content was changed to produce any of this. Findings are
 | progression | pass | Simulation: upgrades measurably change play (sail speed, turning, range) |
 | difficulty | pass | Balance is measured: headless simulations of economy, fuel, storms and voyages on the real game systems |
 | difficulty | partial | Simulation: pacing between purchases (difficulty spikes) |
-| difficulty | partial | Simulation: the Stormwall as the final barrier |
+| difficulty | pass | Simulation: the Stormwall as the final barrier |
 | difficulty | pass | Simulation: no economy exploits through crafting, fuel or repair |
 | player_experience | pass | Playtest bot: time from casting off to the first upgrade (game time) |
 

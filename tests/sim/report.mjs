@@ -86,8 +86,9 @@ if (vIron.length) {
   const lost = vIron.map((v) => v.hull.lost / v.hull.start);
   const wallS = mean(vIron.map((v) => v.stormwall_s));
   const sloopSwamped = vSloopWall.filter((v) => v.hull.end <= 0).length;
-  finding(Math.max(...lost) < 0.15 ? 'medium' : 'info', 'The Stormwall barely scratches the Ironwake',
-    `Driftholm → Meridian Spire under the real loop: Ironwake arrived in ${vIron.filter((v) => v.arrived).length}/${vIron.length} runs, ${f1(wallS)} s inside the wall on average, losing ${f1(Math.min(...lost) * 100)}-${f1(Math.max(...lost) * 100)}% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in ${sloopSwamped}/${vSloopWall.length} runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.`, 'simulation-measured');
+  const weak = Math.max(...lost) < 0.15;
+  finding(weak ? 'medium' : 'info', weak ? 'The Stormwall barely scratches the Ironwake' : 'Stormwall crossing',
+    `Driftholm → Meridian Spire under the real loop: Ironwake arrived in ${vIron.filter((v) => v.arrived).length}/${vIron.length} runs, ${f1(wallS)} s inside the wall on average, losing ${f1(Math.min(...lost) * 100)}-${f1(Math.max(...lost) * 100)}% hull (best fit to stock sail). The Trimaran was swamped trying in ${sloopSwamped}/${vSloopWall.length} runs.${weak ? ' For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.' : ''}`, 'simulation-measured');
 }
 {
   const d10 = sw('dinghy', 'no plating', 1, false);

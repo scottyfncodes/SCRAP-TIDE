@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-05T15:44:13.073Z",
-  "commit": "446a03c4cfdaf2170c989ce6e90ae49a59066b3c",
-  "branch": "balance/sea-clock",
+  "generated_at": "2026-11-05T17:41:27.870Z",
+  "commit": "2a909e459686ea87e5d4b85549b3d8ef55c03598",
+  "branch": "balance/stormwall",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
@@ -14,8 +14,8 @@
     "page_errors": [],
     "localStorage_keys_after_run": [],
     "timings_ms": {
-      "boot_max": 4478
+      "boot_max": 3865
     }
   },
-  "result_hash": "50997ba2"
+  "result_hash": "7921ab8f"
 }
