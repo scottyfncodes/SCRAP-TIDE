@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-05T13:03:31.675Z",
-  "commit": "15a16d9f1d2f3ba17b9e3b11512f942ed623a172",
-  "branch": "playcraft/evidence",
+  "generated_at": "2026-11-05T14:22:21.417Z",
+  "commit": "18cd5746765d11accb19ad918ca53831090d600e",
+  "branch": "balance/winch-payouts",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
@@ -14,8 +14,8 @@
     "page_errors": [],
     "localStorage_keys_after_run": [],
     "timings_ms": {
-      "boot_max": 4542
+      "boot_max": 16337
     }
   },
-  "result_hash": "38275c60"
+  "result_hash": "41f95675"
 }

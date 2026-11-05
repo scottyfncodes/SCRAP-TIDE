@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T13:14:44.687Z",
-  "commit": "f55a35177d8db72fe94c4cd7cc8e6702b74b2ef8",
+  "generated_at": "2026-11-05T14:34:30.427Z",
+  "commit": "18cd5746765d11accb19ad918ca53831090d600e",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {
@@ -8,7 +8,7 @@
       "category": "core_gameplay",
       "status": "pass",
       "title": "Playtest bot: the core loop runs end to end on the production build (runtime-observed)",
-      "detail": "2 run(s), seed 1105: dock → wheel → beacon → winch (3/3) → haul → dock → sell → install sail_canvas by game 58.03s; 15/15 checks passed",
+      "detail": "3 run(s), seed 1105: dock → wheel → beacon → winch (3/3) → haul → dock → sell → install sail_canvas by game 61.57s; 15/15 checks passed",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -16,7 +16,7 @@
       "category": "controls",
       "status": "pass",
       "title": "Playtest bot: steering by dragging the wheel and the winch timing reach their targets (runtime-observed)",
-      "detail": "steered from the dock to the Sunken Tower beacon with the wheel: game 32.83s, at (64.9, 135.5); SALVAGE opens the winch: ; the winch was played to the end and the haul came aboard: 3/3 pulls in the green; cargo transistor_radio×1, scrap_metal×7, rubber_duck×1, fuel_can×1; sailed back to the Driftholm pier: game 57.73s",
+      "detail": "steered from the dock to the Sunken Tower beacon with the wheel: game 32.83s, at (64.9, 135.5); SALVAGE opens the winch: ; the winch was played to the end and the haul came aboard: 3/3 pulls in the green; cargo transistor_radio×1, scrap_metal×6, wire×4; sailed back to the Driftholm pier: game 58.2s",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -24,7 +24,7 @@
       "category": "technical",
       "status": "pass",
       "title": "Playtest bot: save → reload → load keeps the upgrade; no page errors (runtime-observed)",
-      "detail": "the save in localStorage has the upgrade: saved upgrades: sail_canvas; after a reload the save loads with the upgrade installed: title button \"Continue Voyage\"; upgrades sail_canvas; gold 41; after a reload the boat is still rebuilt with it: sail 3.1 m after reload (3.11 m after install, 2.4 m stock); no page errors: ",
+      "detail": "the save in localStorage has the upgrade: saved upgrades: sail_canvas; after a reload the save loads with the upgrade installed: title button \"Continue Voyage\"; upgrades sail_canvas; gold 39; after a reload the boat is still rebuilt with it: sail 3.1 m after reload (3.16 m after install, 2.4 m stock); no page errors: ",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -32,7 +32,7 @@
       "category": "technical",
       "status": "pass",
       "title": "Playtest bot: deterministic and reproducible (same seed → identical run fingerprint)",
-      "detail": "2 runs, fingerprints 9920317a, 9920317a",
+      "detail": "3 runs, fingerprints 1f45f05a, 1f45f05a, 1f45f05a",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -40,7 +40,7 @@
       "category": "presentation",
       "status": "pass",
       "title": "Playtest bot: the installed upgrade is visible on the boat and survives a reload (runtime-observed)",
-      "detail": "sail 2.4 m → 3.11 m tall (top 2.97 → 3.79); parts none; sail 3.1 m after reload (3.11 m after install, 2.4 m stock)",
+      "detail": "sail 2.4 m → 3.16 m tall (top 2.97 → 3.72); parts none; sail 3.1 m after reload (3.16 m after install, 2.4 m stock)",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -48,7 +48,7 @@
       "category": "progression",
       "status": "pass",
       "title": "Simulation: every upgrade and vessel is reachable; the campaign completes (simulation-measured)",
-      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 259 sourcing actions (57 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
+      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 221 sourcing actions (38 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -72,7 +72,7 @@
       "category": "difficulty",
       "status": "partial",
       "title": "Simulation: pacing between purchases (difficulty spikes)",
-      "detail": "commission Scrap Trimaran: 34 actions vs ≤11 before",
+      "detail": "commission Scrap Trimaran: 19 actions vs ≤7 before",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -96,7 +96,7 @@
       "category": "player_experience",
       "status": "pass",
       "title": "Playtest bot: time from casting off to the first upgrade (game time)",
-      "detail": "first salvage beacon at game 32.83s, docked again at 58.03s, first upgrade at 58.03s (bot drives straight; humans will be slower)",
+      "detail": "first salvage beacon at game 32.83s, docked again at 59.53s, first upgrade at 61.57s (bot drives straight; humans will be slower)",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     }
   ],
@@ -104,19 +104,13 @@
     {
       "severity": "medium",
       "title": "Difficulty/pacing spike: commission Scrap Trimaran",
-      "detail": "34 sourcing actions for this step vs at most 11 for any earlier step (campaign, winch 2/3).",
+      "detail": "19 sourcing actions for this step vs at most 7 for any earlier step (campaign, winch 2/3).",
       "evidence_class": "simulation-measured"
     },
     {
       "severity": "medium",
       "title": "The Stormwall barely scratches the Ironwake",
       "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
-      "evidence_class": "simulation-measured"
-    },
-    {
-      "severity": "medium",
-      "title": "An extra winch hit sometimes pays nothing",
-      "detail": "The Sunken Tower: 1/3 → 15.6g vs 2/3 → 15.4g; The Box Yard: 1/3 → 23.7g vs 2/3 → 24.8g; Hollow Underfloors: 1/3 → 27.7g vs 2/3 → 25.8g. Loot rolls round to the same number for these hit counts, so landing the extra pull in the green earns no more on average.",
       "evidence_class": "simulation-measured"
     },
     {

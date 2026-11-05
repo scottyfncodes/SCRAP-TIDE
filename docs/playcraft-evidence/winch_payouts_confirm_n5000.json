@@ -1,0 +1,333 @@
+{
+  "generated_at": "2026-11-05T15:03:37.209Z",
+  "commit": "382e8159aac09572593bdab18a2c3806c73c5a32",
+  "branch": "balance/winch-payouts",
+  "dirty_src": false,
+  "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
+  "seed": 777,
+  "evidence_class": "simulation-measured",
+  "method": "salvageYield (Salvage.finish on the live game), 5 × 1000 hauls (5 seeds) per site × hits × Salvager, empty hold of the boat that reaches the site",
+  "min_gain_per_hit_pct": 16.4,
+  "rows": [
+    {
+      "site": "sv_stump",
+      "name": "The Sunken Tower",
+      "salvager": false,
+      "gold": [
+        7.575999999999999,
+        15.216000000000003,
+        22.948,
+        30.665999999999997
+      ],
+      "gain_pct": [
+        100.8,
+        50.8,
+        33.6
+      ]
+    },
+    {
+      "site": "sv_stump",
+      "name": "The Sunken Tower",
+      "salvager": true,
+      "gold": [
+        15.338,
+        22.894,
+        30.55,
+        38.266
+      ],
+      "gain_pct": [
+        49.3,
+        33.4,
+        25.3
+      ]
+    },
+    {
+      "site": "sv_boxyard",
+      "name": "The Box Yard",
+      "salvager": false,
+      "gold": [
+        12.187999999999999,
+        23.558,
+        36.238,
+        47.827999999999996
+      ],
+      "gain_pct": [
+        93.3,
+        53.8,
+        32
+      ]
+    },
+    {
+      "site": "sv_boxyard",
+      "name": "The Box Yard",
+      "salvager": true,
+      "gold": [
+        23.804,
+        35.315999999999995,
+        46.778,
+        59.072
+      ],
+      "gain_pct": [
+        48.4,
+        32.5,
+        26.3
+      ]
+    },
+    {
+      "site": "sv_hollow_sub",
+      "name": "Hollow Underfloors",
+      "salvager": false,
+      "gold": [
+        13.469999999999999,
+        27.972,
+        41.266,
+        55.34400000000001
+      ],
+      "gain_pct": [
+        107.7,
+        47.5,
+        34.1
+      ]
+    },
+    {
+      "site": "sv_hollow_sub",
+      "name": "Hollow Underfloors",
+      "salvager": true,
+      "gold": [
+        27.568,
+        41.998,
+        55.324,
+        69.696
+      ],
+      "gain_pct": [
+        52.3,
+        31.7,
+        26
+      ]
+    },
+    {
+      "site": "sv_meridian_a",
+      "name": "Meridian Plaza",
+      "salvager": false,
+      "gold": [
+        20.612000000000002,
+        40.684,
+        80.4,
+        102.194
+      ],
+      "gain_pct": [
+        97.4,
+        97.6,
+        27.1
+      ]
+    },
+    {
+      "site": "sv_meridian_a",
+      "name": "Meridian Plaza",
+      "salvager": true,
+      "gold": [
+        40.956,
+        60.492,
+        100.538,
+        121.45
+      ],
+      "gain_pct": [
+        47.7,
+        66.2,
+        20.8
+      ]
+    },
+    {
+      "site": "sv_meridian_b",
+      "name": "Broadcast Spire",
+      "salvager": false,
+      "gold": [
+        29.338,
+        57.977999999999994,
+        117.57000000000001,
+        148.04000000000002
+      ],
+      "gain_pct": [
+        97.6,
+        102.8,
+        25.9
+      ]
+    },
+    {
+      "site": "sv_meridian_b",
+      "name": "Broadcast Spire",
+      "salvager": true,
+      "gold": [
+        58.894000000000005,
+        88.466,
+        146.036,
+        176.148
+      ],
+      "gain_pct": [
+        50.2,
+        65.1,
+        20.6
+      ]
+    },
+    {
+      "site": "sv_meridian_c",
+      "name": "The Leaning Block",
+      "salvager": false,
+      "gold": [
+        20.904,
+        42.67,
+        62.95,
+        83.452
+      ],
+      "gain_pct": [
+        104.1,
+        47.5,
+        32.6
+      ]
+    },
+    {
+      "site": "sv_meridian_c",
+      "name": "The Leaning Block",
+      "salvager": true,
+      "gold": [
+        42.791999999999994,
+        64.102,
+        83.482,
+        106.824
+      ],
+      "gain_pct": [
+        49.8,
+        30.2,
+        28
+      ]
+    },
+    {
+      "site": "sv_rig",
+      "name": "Helios Lower Deck",
+      "salvager": false,
+      "gold": [
+        14.180000000000001,
+        28.139999999999997,
+        42.59,
+        56.629999999999995
+      ],
+      "gain_pct": [
+        98.4,
+        51.4,
+        33
+      ]
+    },
+    {
+      "site": "sv_rig",
+      "name": "Helios Lower Deck",
+      "salvager": true,
+      "gold": [
+        28.439999999999998,
+        42.428,
+        56.239999999999995,
+        71.02799999999999
+      ],
+      "gain_pct": [
+        49.2,
+        32.6,
+        26.3
+      ]
+    },
+    {
+      "site": "sv_tanker",
+      "name": "Hull of the Meridian Star",
+      "salvager": false,
+      "gold": [
+        35.730000000000004,
+        110.258,
+        184.036,
+        218.82399999999998
+      ],
+      "gain_pct": [
+        208.6,
+        66.9,
+        18.9
+      ]
+    },
+    {
+      "site": "sv_tanker",
+      "name": "Hull of the Meridian Star",
+      "salvager": true,
+      "gold": [
+        72.44800000000001,
+        145.204,
+        219.41199999999998,
+        256.70799999999997
+      ],
+      "gain_pct": [
+        100.4,
+        51.1,
+        17
+      ]
+    },
+    {
+      "site": "sv_graveyard",
+      "name": "Graveyard Boxes",
+      "salvager": false,
+      "gold": [
+        16.52,
+        32.379999999999995,
+        65.91999999999999,
+        82.85
+      ],
+      "gain_pct": [
+        96,
+        103.6,
+        25.7
+      ]
+    },
+    {
+      "site": "sv_graveyard",
+      "name": "Graveyard Boxes",
+      "salvager": true,
+      "gold": [
+        32.768,
+        49.238,
+        81.894,
+        98.53800000000001
+      ],
+      "gain_pct": [
+        50.3,
+        66.3,
+        20.3
+      ]
+    },
+    {
+      "site": "sv_spire",
+      "name": "The Meridian Spire",
+      "salvager": false,
+      "gold": [
+        71.714,
+        212.206,
+        353.134,
+        422.59
+      ],
+      "gain_pct": [
+        195.9,
+        66.4,
+        19.7
+      ]
+    },
+    {
+      "site": "sv_spire",
+      "name": "The Meridian Spire",
+      "salvager": true,
+      "gold": [
+        140.82999999999998,
+        281.76599999999996,
+        423.02799999999996,
+        492.31800000000004
+      ],
+      "gain_pct": [
+        100.1,
+        50.1,
+        16.4
+      ]
+    }
+  ]
+}

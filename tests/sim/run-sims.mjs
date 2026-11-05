@@ -47,8 +47,8 @@ const write = (file, body) => {
 };
 
 console.log('PLAYCRAFT simulations');
-const yieldMin = await run('salvage yield (boat that reaches the site)', 'salvageYield', { n: quick ? 30 : 200, hold: 'minimal' });
-const yieldLarge = await run('salvage yield (30-slot hold)', 'salvageYield', { n: quick ? 30 : 200, hold: 'large' });
+const yieldMin = await run('salvage yield (boat that reaches the site)', 'salvageYield', { n: quick ? 30 : 1000, hold: 'minimal' });
+const yieldLarge = await run('salvage yield (30-slot hold)', 'salvageYield', { n: quick ? 30 : 1000, hold: 'large' });
 const winch = await run('winch windows', 'winchWindows', {});
 const goldRank = {};
 for (const r of yieldMin.result) if (r.hits === 2 && !r.salvager) goldRank[r.site] = r.gold_per_haul.mean;

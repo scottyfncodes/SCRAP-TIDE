@@ -71,7 +71,11 @@ export const INIT = String.raw`(() => {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-  Math.random = rnd;
+  const trace = new Map();
+  Math.random = () => {
+    if (window.__sim?.trace) { const k = (new Error().stack || '').split('\n')[2]?.trim().replace(/\?[^:)]*/, '') ?? '?'; trace.set(k, (trace.get(k) ?? 0) + 1); }
+    return rnd();
+  };
   const realPerf = performance.now.bind(performance);
   const realDate = Date.now.bind(Date);
   const realRAF = window.requestAnimationFrame.bind(window);
@@ -89,6 +93,36 @@ export const INIT = String.raw`(() => {
     return realRAF(() => cb(performance.now()));
   };
   window.cancelAnimationFrame = (id) => { queue.delete(id); realCAF(id); };
+  // Timers: once the harness takes over, setTimeout/setInterval run on the virtual clock, inside step(), in due-time
+  // order. The game's delayed effects (the winch's next zone, the loot roll, fades, panels, the save debounce) then
+  // happen on the same frame every run instead of whenever the machine gets to them.
+  // The audio clock too: the game's music/ambience scheduler reads AudioContext.currentTime (the sound card's clock)
+  // and draws random numbers for each sound it schedules, so on a real-time audio clock the number of draws per
+  // frame varied run to run. Under the harness it reads the virtual clock.
+  const BAC = window.BaseAudioContext || window.AudioContext;
+  const ctDesc = BAC && Object.getOwnPropertyDescriptor(BAC.prototype, 'currentTime');
+  if (ctDesc?.get) {
+    const realCt = ctDesc.get;
+    Object.defineProperty(BAC.prototype, 'currentTime', { configurable: true, get() { return manual ? vt / 1000 : realCt.call(this); } });
+  }
+  const realST = window.setTimeout.bind(window), realCT = window.clearTimeout.bind(window);
+  const realSI = window.setInterval.bind(window), realCI = window.clearInterval.bind(window);
+  const timers = new Map();
+  let nextTimer = 1e9;
+  const addTimer = (fn, ms, a, every) => { const id = nextTimer++; timers.set(id, { due: vt + Math.max(0, +ms || 0), fn, a, every }); return id; };
+  window.setTimeout = (fn, ms, ...a) => (manual ? addTimer(fn, ms, a, 0) : realST(fn, ms, ...a));
+  window.setInterval = (fn, ms, ...a) => (manual ? addTimer(fn, ms, a, Math.max(1, +ms || 0)) : realSI(fn, ms, ...a));
+  window.clearTimeout = (id) => { if (!timers.delete(id)) realCT(id); };
+  window.clearInterval = (id) => { if (!timers.delete(id)) realCI(id); };
+  const runTimers = () => {
+    for (let guard = 0; guard < 10000; guard++) {
+      let bid = null, bt = null;
+      for (const [id, t] of timers) if (t.due <= vt && (!bt || t.due < bt.due || (t.due === bt.due && id < bid))) { bid = id; bt = t; }
+      if (!bt) return;
+      if (bt.every) bt.due += bt.every; else timers.delete(bid);
+      try { typeof bt.fn === 'function' ? bt.fn(...bt.a) : (0, eval)(bt.fn); } catch (e) { console.error(e); }
+    }
+  };
   const sim = {
     frames: 0,
     render: true,
@@ -101,7 +135,11 @@ export const INIT = String.raw`(() => {
     takeOver(s) {
       baseP = P0; baseD = EPOCH; vt = 0; manual = true;
       if (s !== undefined) seed = baseSeed = s >>> 0;
-      return new Promise((res) => realRAF(() => realRAF(() => setTimeout(() => { if (s !== undefined) seed = baseSeed = s >>> 0; res(queue.size); }, 30))));
+      // The game's own generator (Game.rng, a mulberry32 with state \`s\`) advances on every frame, including the
+      // dt = 0 title-screen frames, whose number depends on load time: start it from the same state every run.
+      const g = window.__game;
+      if (g?.rng && typeof g.rng.s === 'number') g.rng.s = ((s ?? baseSeed) ^ 0x5bd1e995) >>> 0 || 1;
+      return new Promise((res) => realRAF(() => realRAF(() => realST(() => { if (s !== undefined) seed = baseSeed = s >>> 0; res(queue.size); }, 30))));
     },
     /** Run n frames of every rAF callback (the game loop, UI animations) at a fixed dt in seconds. */
     step(n = 1, dt = 1 / 30) {
@@ -111,6 +149,7 @@ export const INIT = String.raw`(() => {
       for (let i = 0; i < n; i++) {
         if (sim.onFrame) sim.onFrame(dt);
         vt += dt * 1000;
+        runTimers();
         const q = queue; queue = new Map();
         const now = performance.now();
         for (const cb of q.values()) cb(now);
@@ -121,17 +160,21 @@ export const INIT = String.raw`(() => {
     /** Reseed at a scripted moment (e.g. right after a tap whose outcome the game rolls on a real-time timer). */
     checkpoint(n = 0) { seed = (baseSeed ^ Math.imul(sim.frames + 7919 * (n + 1), 0x85ebca6b)) >>> 0; },
     /** Move the virtual clock without running frames (e.g. a salvage site's respawn timer). */
-    advance(ms) { vt += ms; },
+    advance(ms) { vt += ms; runTimers(); },
+    /** Virtual timers still pending (for waits in scripts). */
+    get pendingTimers() { return timers.size; },
+    trace: false,
+    traceDump() { return [...trace].sort((a, b) => b[1] - a[1]); },
   };
   window.__sim = sim;
   // once the game exists, let the harness skip drawing (state is unaffected)
-  const hook = setInterval(() => {
+  const hook = realSI(() => {
     const g = window.__game;
     if (!g || !g.renderer || g.renderer.__simWrapped) return;
     const orig = g.renderer.render.bind(g.renderer);
     g.renderer.render = (s, c) => { if (sim.render) orig(s, c); };
     g.renderer.__simWrapped = true;
-    clearInterval(hook);
+    realCI(hook);
   }, 20);
 })();`;
 
@@ -161,17 +204,42 @@ export async function boot(browser, playwright, url, { seed = 1, query = '', vie
   return { ctx, page, errors, bootMs };
 }
 
+/** Wait `ms`: on the virtual clock (frames + timers, not drawn) once the harness has taken over, else in real time. */
+export async function pause(page, ms) {
+  const manual = await page.evaluate((ms) => {
+    const s = window.__sim;
+    if (!s?.manual) return false;
+    const r = s.render;
+    s.render = false;
+    s.step(Math.max(1, Math.round(ms / (1000 / 30))), 1 / 30);
+    s.render = r;
+    return true;
+  }, ms);
+  if (!manual) await page.waitForTimeout(ms);
+  else await page.waitForTimeout(0); // let the page settle (microtasks, DOM) between scripted steps
+}
+
 /** Reveal cards queue up (welcome, discoveries, Captain's Log): tap them away until none arrive for a while. */
 export async function dismissCards(page, quietRounds = 4) {
   let quiet = 0, n = 0;
   while (quiet < quietRounds) {
-    const b = await page.$('.reveal button, .reveal .btn');
-    if (b) {
+    // under the harness the tap is dispatched in-page with a reseed, in one task (no input-latency jitter)
+    const hit = await page.evaluate((n) => {
+      const b = document.querySelector('.reveal button, .reveal .btn');
+      if (!b) return 0;
+      if (window.__sim?.manual) {
+        window.__sim.checkpoint(500 + n);
+        b.click();
+        return 1;
+      }
+      return 2;
+    }, n);
+    if (hit) {
       quiet = 0;
       n++;
-      await b.click({ force: true }).catch(() => {});
+      if (hit === 2) await page.click('.reveal button, .reveal .btn', { force: true }).catch(() => {});
     } else quiet++;
-    await page.waitForTimeout(200);
+    await pause(page, 200);
   }
   return n;
 }

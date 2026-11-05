@@ -1,0 +1,615 @@
+{
+  "per_site": [
+    {
+      "site": "sv_stump",
+      "name": "The Sunken Tower",
+      "salvager": false,
+      "before": [
+        7.6,
+        15.6,
+        15.4,
+        30.5
+      ],
+      "after": [
+        7.8,
+        15.2,
+        23.0,
+        30.8
+      ],
+      "gain_per_hit_pct": [
+        97,
+        51,
+        34
+      ],
+      "perfect_change_pct": 1.1
+    },
+    {
+      "site": "sv_stump",
+      "name": "The Sunken Tower",
+      "salvager": true,
+      "before": [
+        14.8,
+        22.6,
+        22.9,
+        38.6
+      ],
+      "after": [
+        15.4,
+        23.1,
+        30.9,
+        38
+      ],
+      "gain_per_hit_pct": [
+        51,
+        34,
+        23
+      ],
+      "perfect_change_pct": -1.6
+    },
+    {
+      "site": "sv_boxyard",
+      "name": "The Box Yard",
+      "salvager": false,
+      "before": [
+        9.5,
+        23.7,
+        24.8,
+        47.6
+      ],
+      "after": [
+        11.6,
+        24.2,
+        36.3,
+        47.7
+      ],
+      "gain_per_hit_pct": [
+        109,
+        50,
+        32
+      ],
+      "perfect_change_pct": 0.2
+    },
+    {
+      "site": "sv_boxyard",
+      "name": "The Box Yard",
+      "salvager": true,
+      "before": [
+        23.4,
+        33.3,
+        37.6,
+        61.9
+      ],
+      "after": [
+        23.6,
+        35.5,
+        50.1,
+        57.9
+      ],
+      "gain_per_hit_pct": [
+        50,
+        41,
+        16
+      ],
+      "perfect_change_pct": -6.4
+    },
+    {
+      "site": "sv_hollow_sub",
+      "name": "Hollow Underfloors",
+      "salvager": false,
+      "before": [
+        13.7,
+        27.7,
+        25.8,
+        56.0
+      ],
+      "after": [
+        14.0,
+        28.4,
+        42.5,
+        56.5
+      ],
+      "gain_per_hit_pct": [
+        102,
+        50,
+        33
+      ],
+      "perfect_change_pct": 1.0
+    },
+    {
+      "site": "sv_hollow_sub",
+      "name": "Hollow Underfloors",
+      "salvager": true,
+      "before": [
+        29.5,
+        40.7,
+        41.6,
+        69.5
+      ],
+      "after": [
+        27.2,
+        42.1,
+        55.1,
+        69.7
+      ],
+      "gain_per_hit_pct": [
+        55,
+        31,
+        26
+      ],
+      "perfect_change_pct": 0.3
+    },
+    {
+      "site": "sv_meridian_a",
+      "name": "Meridian Plaza",
+      "salvager": false,
+      "before": [
+        21.5,
+        38.6,
+        62.8,
+        101.4
+      ],
+      "after": [
+        20.6,
+        41.1,
+        80.2,
+        100.8
+      ],
+      "gain_per_hit_pct": [
+        99,
+        95,
+        26
+      ],
+      "perfect_change_pct": -0.6
+    },
+    {
+      "site": "sv_meridian_a",
+      "name": "Meridian Plaza",
+      "salvager": true,
+      "before": [
+        39.9,
+        61.5,
+        81.8,
+        118.3
+      ],
+      "after": [
+        39.6,
+        61.9,
+        99.0,
+        121.3
+      ],
+      "gain_per_hit_pct": [
+        56,
+        60,
+        23
+      ],
+      "perfect_change_pct": 2.5
+    },
+    {
+      "site": "sv_meridian_b",
+      "name": "Broadcast Spire",
+      "salvager": false,
+      "before": [
+        30.2,
+        59.8,
+        87.1,
+        146.8
+      ],
+      "after": [
+        30.2,
+        58.8,
+        118.7,
+        149.3
+      ],
+      "gain_per_hit_pct": [
+        95,
+        102,
+        26
+      ],
+      "perfect_change_pct": 1.7
+    },
+    {
+      "site": "sv_meridian_b",
+      "name": "Broadcast Spire",
+      "salvager": true,
+      "before": [
+        60.3,
+        90.8,
+        116.3,
+        182.2
+      ],
+      "after": [
+        59.0,
+        87.0,
+        143.3,
+        181.3
+      ],
+      "gain_per_hit_pct": [
+        48,
+        65,
+        27
+      ],
+      "perfect_change_pct": -0.5
+    },
+    {
+      "site": "sv_meridian_c",
+      "name": "The Leaning Block",
+      "salvager": false,
+      "before": [
+        19.2,
+        43.4,
+        39.2,
+        86.8
+      ],
+      "after": [
+        21.4,
+        42.6,
+        64.2,
+        83.4
+      ],
+      "gain_per_hit_pct": [
+        99,
+        51,
+        30
+      ],
+      "perfect_change_pct": -3.8
+    },
+    {
+      "site": "sv_meridian_c",
+      "name": "The Leaning Block",
+      "salvager": true,
+      "before": [
+        45.7,
+        60.5,
+        63.4,
+        108.6
+      ],
+      "after": [
+        39.7,
+        63.3,
+        85.3,
+        107.0
+      ],
+      "gain_per_hit_pct": [
+        59,
+        35,
+        25
+      ],
+      "perfect_change_pct": -1.5
+    },
+    {
+      "site": "sv_rig",
+      "name": "Helios Lower Deck",
+      "salvager": false,
+      "before": [
+        15.0,
+        25.4,
+        28.2,
+        55.6
+      ],
+      "after": [
+        14.3,
+        28.3,
+        42.1,
+        56.1
+      ],
+      "gain_per_hit_pct": [
+        97,
+        49,
+        33
+      ],
+      "perfect_change_pct": 0.9
+    },
+    {
+      "site": "sv_rig",
+      "name": "Helios Lower Deck",
+      "salvager": true,
+      "before": [
+        28.6,
+        41.5,
+        41.4,
+        70.2
+      ],
+      "after": [
+        28.1,
+        42.5,
+        57.0,
+        70.0
+      ],
+      "gain_per_hit_pct": [
+        51,
+        34,
+        23
+      ],
+      "perfect_change_pct": -0.2
+    },
+    {
+      "site": "sv_tanker",
+      "name": "Hull of the Meridian Star",
+      "salvager": false,
+      "before": [
+        70.6,
+        103.3,
+        146.2,
+        227.9
+      ],
+      "after": [
+        36.0,
+        109.0,
+        179.9,
+        218.1
+      ],
+      "gain_per_hit_pct": [
+        203,
+        65,
+        21
+      ],
+      "perfect_change_pct": -4.3
+    },
+    {
+      "site": "sv_tanker",
+      "name": "Hull of the Meridian Star",
+      "salvager": true,
+      "before": [
+        105.8,
+        152.8,
+        182.7,
+        266.3
+      ],
+      "after": [
+        70.2,
+        145.1,
+        221.3,
+        253.6
+      ],
+      "gain_per_hit_pct": [
+        107,
+        53,
+        15
+      ],
+      "perfect_change_pct": -4.8
+    },
+    {
+      "site": "sv_graveyard",
+      "name": "Graveyard Boxes",
+      "salvager": false,
+      "before": [
+        17.8,
+        31.1,
+        53.1,
+        84.8
+      ],
+      "after": [
+        17.1,
+        33.3,
+        65.2,
+        81.3
+      ],
+      "gain_per_hit_pct": [
+        95,
+        96,
+        25
+      ],
+      "perfect_change_pct": -4.2
+    },
+    {
+      "site": "sv_graveyard",
+      "name": "Graveyard Boxes",
+      "salvager": true,
+      "before": [
+        30.3,
+        49.6,
+        64.4,
+        96.5
+      ],
+      "after": [
+        32.9,
+        50.7,
+        83.0,
+        100.5
+      ],
+      "gain_per_hit_pct": [
+        54,
+        64,
+        21
+      ],
+      "perfect_change_pct": 4.1
+    },
+    {
+      "site": "sv_spire",
+      "name": "The Meridian Spire",
+      "salvager": false,
+      "before": [
+        135.2,
+        208.4,
+        280.4,
+        422.1
+      ],
+      "after": [
+        72.2,
+        213.8,
+        350.8,
+        416.3
+      ],
+      "gain_per_hit_pct": [
+        196,
+        64,
+        19
+      ],
+      "perfect_change_pct": -1.4
+    },
+    {
+      "site": "sv_spire",
+      "name": "The Meridian Spire",
+      "salvager": true,
+      "before": [
+        219.1,
+        285.1,
+        336.0,
+        504.3
+      ],
+      "after": [
+        141.4,
+        283.4,
+        425.5,
+        493.3
+      ],
+      "gain_per_hit_pct": [
+        100,
+        50,
+        16
+      ],
+      "perfect_change_pct": -2.2
+    }
+  ],
+  "checks": {
+    "min_gain_per_hit_pct": 14.6,
+    "max_perfect_change_pct": 6.4,
+    "ironwake_actions_hits_1": {
+      "before": {
+        "mean": 78.5,
+        "p90": 89
+      },
+      "after": {
+        "mean": 78.8,
+        "p90": 89
+      },
+      "hauls_after": {
+        "mean": 23,
+        "p90": 36,
+        "max": 36
+      }
+    },
+    "all_affordable_hits_1": true,
+    "ironwake_actions_hits_2": {
+      "before": {
+        "mean": 70.3,
+        "p90": 78
+      },
+      "after": {
+        "mean": 62.2,
+        "p90": 71
+      },
+      "hauls_after": {
+        "mean": 18.6,
+        "p90": 31,
+        "max": 31
+      }
+    },
+    "all_affordable_hits_2": true,
+    "ironwake_actions_hits_3": {
+      "before": {
+        "mean": 51.9,
+        "p90": 62
+      },
+      "after": {
+        "mean": 54.3,
+        "p90": 66
+      },
+      "hauls_after": {
+        "mean": 17,
+        "p90": 23,
+        "max": 23
+      }
+    },
+    "all_affordable_hits_3": true,
+    "campaign_hits_1": {
+      "total_before": [
+        257,
+        245,
+        257
+      ],
+      "total_after": [
+        251,
+        249,
+        281
+      ],
+      "ironwake_step_before": [
+        55,
+        51,
+        64
+      ],
+      "ironwake_step_after": [
+        72,
+        55,
+        100
+      ],
+      "trimaran_step_before": [
+        34,
+        29,
+        32
+      ],
+      "trimaran_step_after": [
+        26,
+        28,
+        26
+      ],
+      "all_19_upgrades_3_vessels": true
+    },
+    "campaign_hits_2": {
+      "total_before": [
+        259,
+        269,
+        231
+      ],
+      "total_after": [
+        221,
+        206,
+        198
+      ],
+      "ironwake_step_before": [
+        59,
+        67,
+        70
+      ],
+      "ironwake_step_after": [
+        51,
+        63,
+        47
+      ],
+      "trimaran_step_before": [
+        34,
+        33,
+        25
+      ],
+      "trimaran_step_after": [
+        19,
+        21,
+        18
+      ],
+      "all_19_upgrades_3_vessels": true
+    },
+    "campaign_hits_3": {
+      "total_before": [
+        186,
+        202,
+        188
+      ],
+      "total_after": [
+        195,
+        193,
+        179
+      ],
+      "ironwake_step_before": [
+        52,
+        54,
+        53
+      ],
+      "ironwake_step_after": [
+        57,
+        57,
+        55
+      ],
+      "trimaran_step_before": [
+        15,
+        15,
+        20
+      ],
+      "trimaran_step_after": [
+        17,
+        16,
+        11
+      ],
+      "all_19_upgrades_3_vessels": true
+    }
+  }
+}
