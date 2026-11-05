@@ -347,9 +347,10 @@ export class Game implements GameAPI {
     this.ensureUpgradeModels();
   }
 
-  /** Upgrade model files the current boat shows: the Trimaran's owned upgrades (other boats use kit parts). */
+  /** Lazily loaded model files the current boat shows: the Trimaran's owned upgrades, or the Ironwake's own model. */
   private upgradeModelsNeeded() {
-    return this.store.data.vessel === 'sloop' ? sloopUpgradeFiles(this.store.data.upgrades) : [];
+    const v = this.store.data.vessel;
+    return v === 'sloop' ? sloopUpgradeFiles(this.store.data.upgrades) : v === 'ironwake' ? ['tb_ironwake'] : [];
   }
 
   /**
@@ -1465,6 +1466,9 @@ export class Game implements GameAPI {
   private update(dt: number) {
     this.t += dt;
     swayUniforms.uTime.value = this.t;
+    // the camera's yaw settles first: steering is camera-relative, so the boat and the camera must agree on this
+    // frame's yaw (see followYaw)
+    this.followYaw(dt);
     if (this.mode === 'sail') this.updateSail(dt);
     else this.updateFoot(dt);
     this.updateCamera(dt);
@@ -1499,6 +1503,8 @@ export class Game implements GameAPI {
       c.obj.position.z += c.vz * dt;
       c.obj.position.y = heightAt(c.obj.position.x, c.obj.position.z) + Math.abs(Math.sin(this.t * 20)) * 0.05;
       c.obj.rotation.y = Math.atan2(c.vx, c.vz) + Math.PI / 2;
+      const legs = c.obj.userData.legs as THREE.Object3D | undefined;
+      if (legs) legs.rotation.x = Math.sin(this.t * 28) * 0.22; // scuttle
       if (c.life <= 0) this.scene.remove(c.obj);
     }
     this.crabs = this.crabs.filter((c) => c.life > 0);
@@ -1681,13 +1687,18 @@ export class Game implements GameAPI {
     this.shipRoot.position.set(b.x, w.y + 0.05, b.z);
     this.shipRoot.rotation.order = 'YXZ';
     this.shipRoot.rotation.y = b.heading;
-    this.shipRoot.rotation.x = lerp(this.shipRoot.rotation.x, -fwdSlope * (8 / L) * 0.6, 0.1);
-    this.shipRoot.rotation.z = lerp(this.shipRoot.rotation.z, sideSlope * (8 / L) * 0.6 + clamp(diff, -0.5, 0.5) * 0.12 * Math.min(1, b.speed / 4), 0.1);
+    // pitch and roll ease toward the wave slope (and the heel into a turn) at a rate in time, not per frame: the
+    // old fixed 10 %/frame stepped unevenly on uneven frames and ran twice as stiff on 120 Hz screens. 6.32/s is
+    // exactly the old 10 %/frame at 60 fps.
+    const ease = 1 - Math.exp(-dt * 6.32);
+    this.shipRoot.rotation.x = lerp(this.shipRoot.rotation.x, -fwdSlope * (8 / L) * 0.6, ease);
+    this.shipRoot.rotation.z = lerp(this.shipRoot.rotation.z, sideSlope * (8 / L) * 0.6 + clamp(diff, -0.5, 0.5) * 0.12 * Math.min(1, b.speed / 4), ease);
 
     // sails swing with the wind
     const rel = angleDiff(b.heading, WORLD.wind.dir);
     const swing = clamp(-Math.sin(rel) * 0.9, -1.0, 1.0);
-    for (const sail of this.ship.sails) sail.rotation.y = lerp(sail.rotation.y, Math.PI / 2 + swing, 0.05);
+    const sailEase = 1 - Math.exp(-dt * 3.08); // the old 5 %/frame at 60 fps, in time
+    for (const sail of this.ship.sails) sail.rotation.y = lerp(sail.rotation.y, Math.PI / 2 + swing, sailEase);
     animateShip(this.ship, this.t, b.anchored || b.docked ? 0.15 : clamp(b.speed / st.speed, 0, 1) * eff);
 
     // anchor visuals
@@ -1937,6 +1948,22 @@ export class Game implements GameAPI {
     this.ui.setActions(acts);
   }
 
+  /**
+   * The follow camera swings round behind the boat (or the captain on foot). This runs at the START of the frame,
+   * before steering: the stick is read relative to camYaw, and the heading is then rate-limited toward that target.
+   * When the yaw was updated after steering (in updateCamera), each frame's heading moved by the camera's swing of
+   * the PREVIOUS frame while the clock moved by this frame's dt, so on uneven frame times (every phone) a turning
+   * boat stuttered against a smoothly turning camera. Same follow rates as before.
+   */
+  private followYaw(dt: number) {
+    if (!this.started || this.showcase || this.t - this.lastDrag <= 1.5) return;
+    if (this.mode === 'sail') {
+      if (this.boat.speed > 0.8) this.camYaw += angleDiff(this.camYaw, this.boat.heading) * Math.min(1, dt * 0.9);
+    } else if (this.foot.speed > 0.5) {
+      this.camYaw += angleDiff(this.camYaw, this.foot.heading) * Math.min(1, dt * 0.6);
+    }
+  }
+
   private updateCamera(dt: number) {
     this.shake = Math.max(0, this.shake - dt * 2.2);
     const target = new THREE.Vector3();
@@ -1960,16 +1987,10 @@ export class Game implements GameAPI {
       target.y -= dist * 0.3;
     } else if (this.mode === 'sail') {
       target.set(this.boat.x, 1.5, this.boat.z);
-      if (this.t - this.lastDrag > 1.5 && this.boat.speed > 0.8) {
-        this.camYaw += angleDiff(this.camYaw, this.boat.heading) * Math.min(1, dt * 0.9);
-      }
       dist = this.camDist * this.zoom;
       pitch = this.camPitch;
     } else {
       target.set(this.foot.x, heightAt(this.foot.x, this.foot.z) + 1.4, this.foot.z);
-      if (this.t - this.lastDrag > 1.5 && this.foot.speed > 0.5) {
-        this.camYaw += angleDiff(this.camYaw, this.foot.heading) * Math.min(1, dt * 0.6);
-      }
       dist = 10 * this.zoom;
       pitch = Math.max(0.35, this.camPitch);
     }

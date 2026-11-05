@@ -2,7 +2,11 @@
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat, canvasTex } from '../world/materials';
 import { item, LIVING_GREEN } from '../data/items';
-import { model } from '../world/assets';
+import { model, part, tintedPart } from '../world/assets';
+
+// GITCRAFT MeshCraft finds kit (creative/3d-finds): every find below is its model; the code-built shape after each
+// lookup is only the fallback for a kit that failed to load.
+const FINDS = 'tb_finds_kit';
 
 let sparkTex: THREE.Texture | null = null;
 function sparkTexture() {
@@ -144,7 +148,11 @@ export function pickupMesh(id: string): THREE.Object3D {
   const d = item(id);
   const [a, b] = d.colors;
   const parts: THREE.BufferGeometry[] = [];
-  switch (d.icon) {
+  const node = ({ conch: 'pickup_conch', spiral: 'pickup_conch', starfish: 'pickup_starfish', sanddollar: 'pickup_sanddollar', plank: 'pickup_plank',
+    rope: 'pickup_rope', bottle: 'pickup_bottle', coral: 'pickup_coral' } as Record<string, string>)[d.icon] ?? 'pickup_gem';
+  const kitGeo = tintedPart(FINDS, node, a, b);
+  if (kitGeo) parts.push(d.icon === 'plank' ? kitGeo.rotateY(Math.random() * 3) : kitGeo);
+  else switch (d.icon) {
     case 'conch':
     case 'spiral':
       parts.push(paint(xf(new THREE.ConeGeometry(0.22, 0.5, 8), 0, 0.12, 0, 0, 0, Math.PI / 2.4), a));
@@ -186,6 +194,20 @@ export function pickupMesh(id: string): THREE.Object3D {
 
 export function bottleMesh(): THREE.Object3D {
   const g = new THREE.Group();
+  const letter = model(FINDS, 'msg_bottle', { shadows: true });
+  const glassPart = part(FINDS, 'msg_bottle_glass');
+  if (letter && glassPart) {
+    // the letter, cork and twine inside sea glass you can see through
+    const glassMesh = new THREE.Mesh(glassPart.geo, new THREE.MeshToonMaterial({ color: 0x7fd6a8, transparent: true, opacity: 0.6, depthWrite: false }));
+    glassMesh.renderOrder = 1;
+    g.add(letter, glassMesh);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTexture(), color: 0xffffff, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+    sp.scale.setScalar(1.6);
+    sp.position.y = 0.7;
+    sp.userData.sparkle = true;
+    g.add(sp);
+    return g;
+  }
   const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.9, 12), new THREE.MeshToonMaterial({ color: 0x7fd6a8, transparent: true, opacity: 0.75 }));
   glass.rotation.z = Math.PI / 2.2;
   glass.position.y = 0.2;
@@ -211,6 +233,18 @@ export function bottleMesh(): THREE.Object3D {
 export function chestMesh(tier: 'small' | 'grand' | 'sea'): { root: THREE.Group; lid: THREE.Object3D; glow: THREE.PointLight } {
   const s = tier === 'grand' ? 1.5 : tier === 'sea' ? 1.1 : 1;
   const root = new THREE.Group();
+  const kitBody = model(FINDS, `chest_${tier}_body`, { shadows: true });
+  const kitLid = model(FINDS, `chest_${tier}_lid`, { shadows: true });
+  if (kitBody && kitLid) {
+    // same hinge, opening arc (lid.rotation.x) and glow as the code-built chest
+    root.add(kitBody);
+    kitLid.position.set(0, 0.8 * s, -0.45 * s);
+    root.add(kitLid);
+    const glow = new THREE.PointLight(0xffd36b, 0, 8, 2);
+    glow.position.set(0, 1.2 * s, 0);
+    root.add(glow);
+    return { root, lid: kitLid, glow };
+  }
   const wood = tier === 'sea' ? '#5a7a8a' : '#8a5a34';
   const band = tier === 'grand' ? '#f4c542' : '#4a4a4a';
   const body = new THREE.Mesh(
@@ -251,6 +285,14 @@ export function crateFindMesh(kind: 'crate' | 'drawer'): { root: THREE.Group; li
     return { root: c.root, lid: c.lid };
   }
   const root = new THREE.Group();
+  const kitBody = model(FINDS, 'crate_find_body', { shadows: true });
+  const kitLid = model(FINDS, 'crate_find_lid', { shadows: true });
+  if (kitBody && kitLid) {
+    root.add(kitBody);
+    kitLid.position.set(0, 0.92, -0.52);
+    root.add(kitLid);
+    return { root, lid: kitLid };
+  }
   const body = new THREE.Mesh(
     merge([
       paint(xf(new THREE.BoxGeometry(1.2, 0.9, 1.0), 0, 0.45, 0), '#7d5a36', 0.08),
@@ -279,12 +321,21 @@ export function digHole(): THREE.Object3D {
   const inner = new THREE.Mesh(new THREE.CircleGeometry(0.45, 12), new THREE.MeshBasicMaterial({ color: 0x5a4224, transparent: true, opacity: 0.9, depthWrite: false }));
   inner.rotation.x = -Math.PI / 2;
   inner.position.y = 0.05;
-  const mound = new THREE.Mesh(paint(xf(new THREE.SphereGeometry(0.5, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2), 0.9, 0, 0, 0, 0, 0, [1, 0.45, 0.8]), '#d9bf86'), vcMat());
+  const mound = model(FINDS, 'dig_mound') ?? new THREE.Mesh(paint(xf(new THREE.SphereGeometry(0.5, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2), 0, 0, 0, 0, 0, 0, [1, 0.45, 0.8]), '#d9bf86'), vcMat());
+  mound.position.x = 0.9;
   g.add(hole, inner, mound);
   return g;
 }
 
 export function crabMesh(): THREE.Object3D {
+  const body = model(FINDS, 'crab_body', { shadows: true });
+  const legs = model(FINDS, 'crab_legs', { shadows: true });
+  if (body && legs) {
+    const g = new THREE.Group();
+    g.add(body, legs);
+    g.userData.legs = legs; // the game scuttles them
+    return g;
+  }
   const parts: THREE.BufferGeometry[] = [];
   parts.push(paint(xf(new THREE.SphereGeometry(0.25, 10, 6), 0, 0.15, 0, 0, 0, 0, [1.3, 0.6, 1]), '#e2553a'));
   for (const s of [-1, 1]) {

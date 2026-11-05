@@ -1,0 +1,80 @@
+[
+ {
+  "id": 13,
+  "project": "/home/user/TIDEBREAKERS",
+  "path": "/home/user/TIDEBREAKERS/public/models/tb_coast_kit.glb",
+  "rel": "public/models/tb_coast_kit.glb",
+  "kind": "model",
+  "format": "glb",
+  "sha256": "981a3d14f660cf7ba3630fad2eb8d9684dd23546ae44a9829307fdccd5239511",
+  "bytes": 222488,
+  "version": 4,
+  "current": 1,
+  "valid": 1,
+  "info": {
+   "ok": true,
+   "format": "glb",
+   "meshes": 20,
+   "nodes": 21,
+   "triangles": 4452,
+   "animations": [],
+   "materials": 23
+  },
+  "license": "CC0-1.0",
+  "attribution": null,
+  "source": {
+   "type": "manual",
+   "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization, polish: weathered values, no crust bands)"
+  },
+  "tags": [
+   "tidebreakers",
+   "asset-modernization",
+   "meshcraft",
+   "polish"
+  ],
+  "thumb": null,
+  "phash": null,
+  "created": "2026-11-05T07:35:57+00:00",
+  "updated": "2026-11-05T07:35:57+00:00",
+  "exists": true
+ },
+ {
+  "id": 14,
+  "project": "/home/user/TIDEBREAKERS",
+  "path": "/home/user/TIDEBREAKERS/public/models/tb_landmark_kit.glb",
+  "rel": "public/models/tb_landmark_kit.glb",
+  "kind": "model",
+  "format": "glb",
+  "sha256": "3400803c1364dc79952a0ab562dc091b4a4564b862a3b1edb40f91b559cdfcf7",
+  "bytes": 355104,
+  "version": 3,
+  "current": 1,
+  "valid": 1,
+  "info": {
+   "ok": true,
+   "format": "glb",
+   "meshes": 8,
+   "nodes": 9,
+   "triangles": 8676,
+   "animations": [],
+   "materials": 33
+  },
+  "license": "CC0-1.0",
+  "attribution": null,
+  "source": {
+   "type": "manual",
+   "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization, polish: weathered values, no crust bands)"
+  },
+  "tags": [
+   "tidebreakers",
+   "asset-modernization",
+   "meshcraft",
+   "polish"
+  ],
+  "thumb": null,
+  "phash": null,
+  "created": "2026-11-05T07:35:57+00:00",
+  "updated": "2026-11-05T07:35:57+00:00",
+  "exists": true
+ }
+]

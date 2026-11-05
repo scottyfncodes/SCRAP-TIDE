@@ -1,0 +1,113 @@
+{
+ "ok": true,
+ "extensions": [
+  "EXT_meshopt_compression",
+  "KHR_materials_emissive_strength",
+  "KHR_mesh_quantization"
+ ],
+ "clips": [],
+ "meshes": 51,
+ "meshesWithVertexColor": 51,
+ "meshesWithBaseColorMap": 0,
+ "material": "game-toon",
+ "triangles": 5912,
+ "nodes": [
+  "Scene",
+  "tidebreakers_ironwake",
+  "ironwake_deck",
+  "ironwake_deck_1",
+  "ironwake_deck_2",
+  "ironwake_deck_3",
+  "ironwake_deck_4",
+  "ironwake_deck_5",
+  "ironwake_deck_6",
+  "ironwake_deck_7",
+  "ironwake_deck_8",
+  "ironwake_deck_9",
+  "ironwake_deck_10",
+  "ironwake_hulls",
+  "ironwake_hulls_1",
+  "ironwake_hulls_2",
+  "ironwake_hulls_3",
+  "ironwake_hulls_4",
+  "ironwake_hulls_5",
+  "ironwake_hulls_6",
+  "ironwake_hulls_7",
+  "ironwake_hulls_8",
+  "ironwake_hulls_9",
+  "ironwake_hulls_10",
+  "ironwake_hulls_11",
+  "ironwake_hulls_12",
+  "ironwake_hulls_13",
+  "ironwake_hulls_14",
+  "ironwake_mast",
+  "ironwake_mast_1",
+  "ironwake_mast_2",
+  "ironwake_mast_3",
+  "ironwake_mast_4",
+  "ironwake_mast_5",
+  "ironwake_rudder_port",
+  "ironwake_rudder_port_1",
+  "ironwake_rudder_port_2",
+  "ironwake_rudder_port_3",
+  "ironwake_rudder_port_4",
+  "ironwake_rudder_port_5",
+  "ironwake_rudder_starboard",
+  "ironwake_rudder_starboard_1",
+  "ironwake_rudder_starboard_2",
+  "ironwake_rudder_starboard_3",
+  "ironwake_rudder_starboard_4",
+  "ironwake_rudder_starboard_5",
+  "ironwake_wheelhouse",
+  "ironwake_wheelhouse_1",
+  "ironwake_wheelhouse_2",
+  "ironwake_wheelhouse_3",
+  "ironwake_wheelhouse_4",
+  "ironwake_wheelhouse_5",
+  "ironwake_wheelhouse_6",
+  "ironwake_wheelhouse_7",
+  "ironwake_wheelhouse_8",
+  "ironwake_wheelhouse_9",
+  "ironwake_wheelhouse_10",
+  "ironwake_wheelhouse_11",
+  "ironwake_wheelhouse_12"
+ ],
+ "named": {},
+ "bounds": {
+  "min": [
+   -4.09,
+   -0.54,
+   -7.17
+  ],
+  "max": [
+   4.09,
+   10.74,
+   6.675
+  ],
+  "size": [
+   8.179,
+   11.28,
+   13.845
+  ]
+ },
+ "skinned": 0,
+ "checks": [
+  {
+   "check": "engine_load",
+   "level": "pass",
+   "detail": "GLTFLoader (three@0.170) loaded the file"
+  },
+  {
+   "check": "engine_vertex_colors",
+   "level": "pass",
+   "detail": "51/51 meshes carry COLOR_0 for the toon material"
+  },
+  {
+   "check": "engine_base_on_ground",
+   "level": "fail",
+   "detail": "lowest point y=-0.54 m"
+  }
+ ],
+ "console": [],
+ "screenshot": null
+}

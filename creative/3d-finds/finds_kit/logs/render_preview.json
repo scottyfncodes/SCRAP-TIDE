@@ -1,0 +1,22 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/previews/tb_finds_kit_three_quarter.png",
+  "kind": "preview",
+  "bytes": 114065,
+  "sha256": "6c34349c54b6c1c12860ba7763e28897ab929aae8fc89b0a0e2c44f541781b1b",
+  "view": "three_quarter",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/previews/tb_finds_kit_front.png",
+  "kind": "preview",
+  "bytes": 107992,
+  "sha256": "9f809cc3a9b1cac04f49b16bd3cd8b18ec8ca9cfeb7dfa77a1053ad2ee12c410",
+  "view": "front",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ }
+]

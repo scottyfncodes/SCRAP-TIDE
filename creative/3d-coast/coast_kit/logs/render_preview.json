@@ -1,0 +1,22 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/previews/tb_coast_kit_three_quarter.png",
+  "kind": "preview",
+  "bytes": 123355,
+  "sha256": "97bb96ebbe58abbf023ed22e96d80002be10de96e42c41c08987cb9327602b13",
+  "view": "three_quarter",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/previews/tb_coast_kit_front.png",
+  "kind": "preview",
+  "bytes": 115661,
+  "sha256": "0faf2a3ed7d33fae5536b94f65e8b07f748273d506b08f8d54be2ff1a9dd26ed",
+  "view": "front",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ }
+]

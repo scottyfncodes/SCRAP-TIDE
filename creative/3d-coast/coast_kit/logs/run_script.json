@@ -1,0 +1,26 @@
+{
+ "stdout": "Info: Saved as \"tb_coast_kit.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/source/tb_coast_kit.blend\", \"tris\": 4452, \"per_node\": {\"dead_palm_a\": 396, \"dead_palm_b\": 368, \"dead_palm_c\": 428, \"dead_palm_d\": 396, \"rock_a\": 100, \"rock_b\": 200, \"rock_c\": 156, \"rock_d\": 180, \"scrub_a\": 276, \"scrub_b\": 376, \"grass_tuft\": 56, \"driftwood\": 112, \"bollard\": 176, \"pier_lamp\": 92, \"barrel\": 204, \"cargo_crate\": 228, \"pier_section\": 240, \"finger_section\": 240, \"fence_panel\": 168, \"flagpole\": 60}}\n",
+ "objects": [
+  "barrel",
+  "bollard",
+  "cargo_crate",
+  "coast_kit",
+  "dead_palm_a",
+  "dead_palm_b",
+  "dead_palm_c",
+  "dead_palm_d",
+  "driftwood",
+  "fence_panel",
+  "finger_section",
+  "flagpole",
+  "grass_tuft",
+  "pier_lamp",
+  "pier_section",
+  "rock_a",
+  "rock_b",
+  "rock_c",
+  "rock_d",
+  "scrub_a",
+  "scrub_b"
+ ]
+}

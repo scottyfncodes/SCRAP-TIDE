@@ -1,0 +1,38 @@
+{
+ "uri": "/home/user/TIDEBREAKERS/creative/3d-finds/finds_kit/exports/tb_finds_kit.mobile.glb",
+ "mimeType": "model/gltf-binary",
+ "validatorVersion": "2.0.0-dev.3.10",
+ "validatedAt": "2026-11-05T06:51:16.039Z",
+ "issues": {
+  "numErrors": 0,
+  "numWarnings": 0,
+  "numInfos": 0,
+  "numHints": 0,
+  "messages": [],
+  "truncated": false
+ },
+ "info": {
+  "version": "2.0",
+  "generator": "glTF-Transform v4.1.1",
+  "resources": [
+   {
+    "pointer": "/buffers/0",
+    "mimeType": "application/gltf-buffer",
+    "storage": "glb",
+    "byteLength": 154616
+   }
+  ],
+  "animationCount": 0,
+  "materialCount": 30,
+  "hasMorphTargets": false,
+  "hasSkins": false,
+  "hasTextures": false,
+  "hasDefaultScene": true,
+  "drawCallCount": 80,
+  "totalVertexCount": 8120,
+  "totalTriangleCount": 4176,
+  "maxUVs": 0,
+  "maxInfluences": 0,
+  "maxAttributes": 2
+ }
+}

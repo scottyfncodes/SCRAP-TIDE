@@ -8,7 +8,7 @@ import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 // the ship models ship Meshopt-compressed (EXT_meshopt_compression + KHR_mesh_quantization); the decoder comes with three
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
-import { merge, vcMat, toonGradient, weather } from './materials';
+import { merge, vcMat, toonGradient, weather, paint } from './materials';
 
 export const MODEL_FILES = [
   'tb_tower_glass',
@@ -29,6 +29,13 @@ export const MODEL_FILES = [
   'tb_atoll_kit',
   'tb_outpost_kit',
   'tb_flora_kit',
+  // island scatter + Driftholm's pier furniture, and the one-off landmarks (MeshCraft, creative/3d-coast)
+  'tb_coast_kit',
+  'tb_landmark_kit',
+  // finds and wildlife (chests, crate, bottle, dig mound, crab, gull, beach pickups) and ship fittings (anchor, paddle,
+  // the skiff's rudder and mast, deck trophies), MeshCraft, creative/3d-finds
+  'tb_finds_kit',
+  'tb_fittings_kit',
   // the Patchwork Skiff starter boat: a scrap-welded Waterworld x Mad Max hull in the dinghy's frame (creative/3d-skiff)
   'tb_patchwork_skiff',
   // GITCRAFT TIDEBREAKERS 3D package: the Coastal Sloop player boat (hull, deck, cabin, rig, sails, socket_* nodes)
@@ -57,6 +64,9 @@ export const MODEL_FILES = [
   'tb_upg_cargo_nets',
   'tb_upg_armour_plating',
   'tb_upg_deck_lights',
+  // the Ironwake Expedition Cat (MeshCraft, creative/3d-ironwake): twin hulls, bridge deck, wheelhouse and mast in
+  // shipModel.ts's own frame; loaded lazily like the upgrades, only when the save sails it
+  'tb_ironwake',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
 /**
@@ -64,7 +74,10 @@ export type ModelFile = (typeof MODEL_FILES)[number];
  * (loadModelFiles). Until a file arrives, its upgrade's code-built part stands in.
  */
 export const UPGRADE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => f.startsWith('tb_upg_'));
-const CORE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => !f.startsWith('tb_upg_'));
+/** Vessel models that load lazily too: only a save that sails the vessel fetches it. */
+export const VESSEL_MODEL_FILES: readonly string[] = ['tb_ironwake'];
+const lazyFile = (f: string) => UPGRADE_MODEL_FILES.includes(f) || VESSEL_MODEL_FILES.includes(f);
+const CORE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => !lazyFile(f));
 
 export const CREW_FILES = ['mechanic', 'navigator', 'salvager', 'fisher', 'lookout', 'defender'] as const;
 /** Apocalyptic-pirate cast (creative/3d-characters): the captain, Driftholm's townsfolk and the Rustfang raiders. */
@@ -117,7 +130,7 @@ export const modelRequested = (file: string) => requested.has(file);
  * ones the save owns). Failures fall back to procedural geometry.
  */
 export async function loadModels(onProgress?: (k: number) => void, upgrades: readonly string[] = []) {
-  const names = [...CORE_MODEL_FILES, ...upgrades.filter((f) => UPGRADE_MODEL_FILES.includes(f))];
+  const names = [...CORE_MODEL_FILES, ...upgrades.filter(lazyFile)];
   let done = 0;
   await Promise.all(
     names.map((n) =>
@@ -232,6 +245,36 @@ export function sceneModel(file: string, opts: { shadows?: boolean; side?: THREE
     }
   });
   return root;
+}
+
+/**
+ * Bake a sceneModel() clone (after tintModel, node transforms and scales applied) into plain toon and glow geometries
+ * in `root`'s space, so a many-material model joins a batched mesh: one draw call instead of one per material.
+ * `skip` names nodes to leave out (with their children); `only`, if given, bakes just those nodes.
+ */
+export function bakeModel(
+  root: THREE.Object3D,
+  solid: THREE.BufferGeometry[],
+  glow: THREE.BufferGeometry[],
+  opts: { skip?: readonly string[]; only?: readonly string[] } = {}
+) {
+  root.updateMatrixWorld(true);
+  const inv = root.matrixWorld.clone().invert();
+  const under = (o: THREE.Object3D | null, names: readonly string[]): boolean => !!o && o !== root && (names.includes(o.name) || under(o.parent, names));
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || under(m, opts.skip ?? []) || (opts.only && !under(m, opts.only))) return;
+    const geo = toFloat(m.geometry.clone());
+    geo.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
+    const c = geo.attributes.color;
+    if (c && c.itemSize === 4) {
+      const arr = new Float32Array(c.count * 3);
+      for (let i = 0; i < c.count; i++) arr.set([c.getX(i), c.getY(i), c.getZ(i)], i * 3);
+      geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
+    }
+    geo.deleteAttribute('normal'); // flat toon normals are rebuilt on merge (and a non-uniform scale would skew these)
+    (m.userData.glow ? glow : solid).push(geo);
+  });
 }
 
 const tintCache = new Map<string, THREE.BufferGeometry>();
@@ -401,11 +444,26 @@ export function model(file: string, name: string, opts: { shadows?: boolean; sid
  * A node's geometry baked into world space, ready to merge into a static batch (one draw call for a whole
  * settlement). Returns null if the model failed to load so callers can skip or fall back.
  */
-export function kitGeo(file: string, name: string, x: number, y: number, z: number, ry = 0, s = 1) {
+export function kitGeo(file: string, name: string, x: number, y: number, z: number, ry = 0, s = 1, rz = 0) {
   const p = part(file, name);
   if (!p) return null;
-  const m = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), ry), new THREE.Vector3(s, s, s));
+  const m = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, ry, rz)), new THREE.Vector3(s, s, s));
   return { geo: p.geo.clone().applyMatrix4(m), glow: p.glow ? p.glow.clone().applyMatrix4(m) : null };
+}
+
+/**
+ * A kit piece in an item's own colours: node `base` as modelled, plus `base__a` / `base__b` recoloured to `a` / `b`
+ * (an item's two colours in items.ts). Null if the kit is not loaded or has no such piece.
+ */
+export function tintedPart(file: string, base: string, a: THREE.ColorRepresentation, b: THREE.ColorRepresentation = a) {
+  const fixed = part(file, base);
+  const pa = part(file, `${base}__a`);
+  const pb = part(file, `${base}__b`);
+  if (!pa) return null;
+  const geos = [paint(pa.geo.clone(), a, 0.06)];
+  if (pb) geos.push(paint(pb.geo.clone(), b, 0.06));
+  if (fixed && fixed.geo.attributes.position) geos.push(fixed.geo.clone());
+  return merge(geos);
 }
 
 const skinMats = new Map<THREE.Material, THREE.Material>();

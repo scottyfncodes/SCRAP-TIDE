@@ -1,0 +1,101 @@
+{
+ "ok": true,
+ "extensions": [],
+ "clips": [],
+ "meshes": 42,
+ "meshesWithVertexColor": 42,
+ "meshesWithBaseColorMap": 0,
+ "material": "game-toon",
+ "triangles": 1420,
+ "nodes": [
+  "Scene",
+  "fittings_kit",
+  "anchor",
+  "anchor_1",
+  "anchor_2",
+  "anchor_3",
+  "paddle",
+  "paddle_1",
+  "paddle_2",
+  "paddle_3",
+  "paddle_4",
+  "shovel",
+  "shovel_1",
+  "shovel_2",
+  "shovel_3",
+  "shovel_4",
+  "shovel_5",
+  "skiff_mast",
+  "skiff_mast_1",
+  "skiff_mast_2",
+  "skiff_mast_3",
+  "skiff_mast_4",
+  "skiff_mast_5",
+  "skiff_mast_6",
+  "skiff_rudder",
+  "skiff_rudder_1",
+  "skiff_rudder_2",
+  "skiff_rudder_3",
+  "skiff_rudder_4",
+  "skiff_rudder_5",
+  "trophy_base",
+  "trophy_base_1",
+  "trophy_base_2",
+  "trophy_bell",
+  "trophy_bell_1",
+  "trophy_bell_2",
+  "trophy_bell__a",
+  "trophy_bell__b",
+  "trophy_flag",
+  "trophy_flag__a",
+  "trophy_idol__a",
+  "trophy_idol__b",
+  "trophy_mask",
+  "trophy_mask__a",
+  "trophy_relic__a",
+  "trophy_spyglass",
+  "trophy_spyglass__a",
+  "trophy_spyglass__b",
+  "trophy_whistle",
+  "trophy_whistle__a",
+  "trophy_whistle__b"
+ ],
+ "named": {},
+ "bounds": {
+  "min": [
+   -0.3,
+   -0.78,
+   -1.295
+  ],
+  "max": [
+   14.125,
+   3,
+   1.1
+  ],
+  "size": [
+   14.425,
+   3.78,
+   2.395
+  ]
+ },
+ "skinned": 0,
+ "checks": [
+  {
+   "check": "engine_load",
+   "level": "pass",
+   "detail": "GLTFLoader (three@0.170) loaded the file"
+  },
+  {
+   "check": "engine_vertex_colors",
+   "level": "pass",
+   "detail": "42/42 meshes carry COLOR_0 for the toon material"
+  },
+  {
+   "check": "engine_base_on_ground",
+   "level": "fail",
+   "detail": "lowest point y=-0.78 m"
+  }
+ ],
+ "console": [],
+ "screenshot": null
+}

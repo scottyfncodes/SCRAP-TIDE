@@ -1,0 +1,28 @@
+{
+ "stdout": "Warning: No mesh data to join\nWarning: No mesh data to join\nWarning: No mesh data to join\nWarning: No mesh data to join\nWarning: No mesh data to join\nWarning: No mesh data to join\nWarning: No mesh data to join\nWarning: No mesh data to join\nWarning: No mesh data to join\nInfo: Saved as \"tb_fittings_kit.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-finds/fittings_kit/source/tb_fittings_kit.blend\", \"tris\": 1420, \"per_node\": {\"anchor\": 304, \"paddle\": 64, \"skiff_rudder\": 80, \"skiff_mast\": 188, \"shovel\": 124, \"trophy_base\": 72, \"trophy_idol__a\": 40, \"trophy_idol__b\": 40, \"trophy_bell\": 24, \"trophy_bell__a\": 88, \"trophy_bell__b\": 20, \"trophy_mask__a\": 108, \"trophy_mask\": 40, \"trophy_spyglass\": 12, \"trophy_spyglass__a\": 28, \"trophy_spyglass__b\": 56, \"trophy_flag\": 12, \"trophy_flag__a\": 12, \"trophy_whistle\": 48, \"trophy_whistle__a\": 20, \"trophy_whistle__b\": 20, \"trophy_relic__a\": 20}}\n",
+ "objects": [
+  "anchor",
+  "fittings_kit",
+  "paddle",
+  "shovel",
+  "skiff_mast",
+  "skiff_rudder",
+  "trophy_base",
+  "trophy_bell",
+  "trophy_bell__a",
+  "trophy_bell__b",
+  "trophy_flag",
+  "trophy_flag__a",
+  "trophy_idol__a",
+  "trophy_idol__b",
+  "trophy_mask",
+  "trophy_mask__a",
+  "trophy_relic__a",
+  "trophy_spyglass",
+  "trophy_spyglass__a",
+  "trophy_spyglass__b",
+  "trophy_whistle",
+  "trophy_whistle__a",
+  "trophy_whistle__b"
+ ]
+}

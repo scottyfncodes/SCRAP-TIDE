@@ -1,0 +1,94 @@
+{
+ "checks": [
+  {
+   "check": "has_meshes",
+   "level": "pass",
+   "detail": "22 mesh objects"
+  },
+  {
+   "check": "triangle_budget",
+   "level": "pass",
+   "detail": "1420 triangles (budget 8000)",
+   "tris": 1420
+  },
+  {
+   "check": "degenerate_faces",
+   "level": "pass",
+   "detail": "0 zero-area faces"
+  },
+  {
+   "check": "non_manifold_edges",
+   "level": "info",
+   "detail": "0 non-manifold edges (expected for kit-bashed props built from closed parts)"
+  },
+  {
+   "check": "applied_scale",
+   "level": "pass",
+   "detail": "all mesh scales are 1"
+  },
+  {
+   "check": "naming",
+   "level": "pass",
+   "detail": "no default object names"
+  },
+  {
+   "check": "origin_centered",
+   "level": "warn",
+   "detail": "footprint centre (6.912, 0.097)"
+  },
+  {
+   "check": "materials_assigned",
+   "level": "pass",
+   "detail": "every mesh has materials"
+  },
+  {
+   "check": "vertex_colors",
+   "level": "pass",
+   "detail": "every mesh carries a 'Color' attribute (glTF COLOR_0)"
+  },
+  {
+   "check": "textures_resolvable",
+   "level": "pass",
+   "detail": "no missing texture files"
+  },
+  {
+   "check": "animation_clips",
+   "level": "pass",
+   "detail": "actions: []",
+   "clips": []
+  },
+  {
+   "check": "gltf_version",
+   "level": "pass",
+   "detail": "glTF 2.0, generator glTF-Transform v4.1.1"
+  },
+  {
+   "check": "gltf_color0",
+   "level": "pass",
+   "detail": "every primitive has COLOR_0"
+  },
+  {
+   "check": "gltf_counts",
+   "level": "info",
+   "detail": "23 nodes, 22 meshes, 42 primitives, 14 materials, 0 animations, 0 skins, 0 images",
+   "animations": []
+  },
+  {
+   "check": "contract_nodes",
+   "level": "pass",
+   "detail": "nodes present: ['anchor', 'fittings_kit', 'paddle', 'shovel', 'skiff_mast', 'skiff_rudder', 'trophy_base', 'trophy_bell', 'trophy_bell__a', 'trophy_bell__b', 'trophy_flag', 'trophy_flag__a', 'trophy_idol__a', 'trophy_idol__b', 'trophy_mask', 'trophy_mask__a', 'trophy_relic__a', 'trophy_spyglass', 'trophy_spyglass__a', 'trophy_spyglass__b', 'trophy_whistle', 'trophy_whistle__a', 'trophy_whistle__b']"
+  },
+  {
+   "check": "khronos_validator",
+   "level": "pass",
+   "detail": "0 errors, 0 warnings, 0 infos",
+   "messages": []
+  }
+ ],
+ "summary": {
+  "pass": 13,
+  "warn": 1,
+  "fail": 0,
+  "info": 2
+ }
+}

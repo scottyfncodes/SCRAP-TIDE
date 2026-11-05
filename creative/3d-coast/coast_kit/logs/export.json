@@ -1,0 +1,57 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/exports/tb_coast_kit.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 401100,
+  "sha256": "7fd93da6e8bf2f5c77d20642c4f167ba69d44ff7f7836a7a84e4583df80d18f7",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/exports/tb_coast_kit.three-web-toon.lod50.glb",
+    "kind": "lod",
+    "bytes": 293604,
+    "sha256": "3269f4a322261d7607d218e577cecc184e4393f198863af4c072d57dd53c194a",
+    "ratio": 0.5,
+    "triangles": 2183
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/exports/tb_coast_kit.three-web-toon.lod25.glb",
+    "kind": "lod",
+    "bytes": 176804,
+    "sha256": "49b61facffe6cf9a4875c735b2a0551004afaa074a00ddc077d9d55bf9c452e5",
+    "ratio": 0.25,
+    "triangles": 950
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/exports/tb_coast_kit.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 12268,
+    "sha256": "7894ef1cc6978f38e8d448390d8cf4aff78ffb1322132078714038fa67f6bd0c",
+    "shape": "convex_hull",
+    "triangles": 158
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/exports/tb_coast_kit.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 12268,
+    "sha256": "7894ef1cc6978f38e8d448390d8cf4aff78ffb1322132078714038fa67f6bd0c"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/exports/tb_coast_kit.three-web-toon.lod25.glb",
+    "kind": "sidecar",
+    "bytes": 176804,
+    "sha256": "49b61facffe6cf9a4875c735b2a0551004afaa074a00ddc077d9d55bf9c452e5"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-coast/coast_kit/exports/tb_coast_kit.three-web-toon.lod50.glb",
+    "kind": "sidecar",
+    "bytes": 293604,
+    "sha256": "3269f4a322261d7607d218e577cecc184e4393f198863af4c072d57dd53c194a"
+   }
+  ]
+ }
+]

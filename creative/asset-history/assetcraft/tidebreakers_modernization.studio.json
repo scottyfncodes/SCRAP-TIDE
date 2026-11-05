@@ -1,0 +1,247 @@
+{
+ "department": "assetcraft",
+ "action": "register",
+ "studio": "1.0.0",
+ "status": "ok",
+ "out_dir": "/home/user/TIDEBREAKERS/creative/asset-history/assetcraft",
+ "request": {
+  "files": [
+   "/home/user/TIDEBREAKERS/public/models/tb_ironwake.glb",
+   "/home/user/TIDEBREAKERS/public/models/tb_coast_kit.glb",
+   "/home/user/TIDEBREAKERS/public/models/tb_landmark_kit.glb",
+   "/home/user/TIDEBREAKERS/public/models/tb_finds_kit.glb",
+   "/home/user/TIDEBREAKERS/public/models/tb_fittings_kit.glb"
+  ],
+  "license": "CC0-1.0",
+  "source": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization, polish: weathered values)",
+  "tags": [
+   "tidebreakers",
+   "asset-modernization",
+   "meshcraft",
+   "polish"
+  ],
+  "name": "tidebreakers_modernization",
+  "out_dir": "/home/user/TIDEBREAKERS/creative/asset-history/assetcraft"
+ },
+ "created": "2026-11-05T06:54:21+00:00",
+ "seconds": 0.09,
+ "outputs": [
+  {
+   "path": "registered.json",
+   "role": "report",
+   "format": "json",
+   "ok": true,
+   "items": 5,
+   "sha256": "8547fa6d9c67d62feca12bb68625da05b1dbde978a659aa99a1d42cdaa2f39a7",
+   "bytes": 4585
+  }
+ ],
+ "checks": [
+  {
+   "name": "registered",
+   "ok": true
+  }
+ ],
+ "tools": {},
+ "output_license": "CC0-1.0",
+ "attribution": null,
+ "stages": [],
+ "notes": [],
+ "assets": [
+  {
+   "id": 8,
+   "project": "/home/user/TIDEBREAKERS",
+   "path": "/home/user/TIDEBREAKERS/public/models/tb_ironwake.glb",
+   "rel": "public/models/tb_ironwake.glb",
+   "kind": "model",
+   "format": "glb",
+   "sha256": "266d8edb6a47516d156873ebbf976999dd6769bf6ad0a541bb5fbffb1a5e1bd0",
+   "bytes": 185200,
+   "version": 2,
+   "current": 1,
+   "valid": 1,
+   "info": {
+    "ok": true,
+    "format": "glb",
+    "meshes": 6,
+    "nodes": 7,
+    "triangles": 5912,
+    "animations": [],
+    "materials": 19
+   },
+   "license": "CC0-1.0",
+   "attribution": null,
+   "source": {
+    "type": "manual",
+    "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization, polish: weathered values)"
+   },
+   "tags": [
+    "tidebreakers",
+    "asset-modernization",
+    "meshcraft",
+    "polish"
+   ],
+   "thumb": null,
+   "phash": null,
+   "created": "2026-11-05T06:54:21+00:00",
+   "updated": "2026-11-05T06:54:21+00:00",
+   "exists": true
+  },
+  {
+   "id": 9,
+   "project": "/home/user/TIDEBREAKERS",
+   "path": "/home/user/TIDEBREAKERS/public/models/tb_coast_kit.glb",
+   "rel": "public/models/tb_coast_kit.glb",
+   "kind": "model",
+   "format": "glb",
+   "sha256": "73234cc6634f9f845b23a2f020cb04257c73663b119b1ad0185074e0ad0314a9",
+   "bytes": 227704,
+   "version": 3,
+   "current": 1,
+   "valid": 1,
+   "info": {
+    "ok": true,
+    "format": "glb",
+    "meshes": 20,
+    "nodes": 21,
+    "triangles": 4512,
+    "animations": [],
+    "materials": 23
+   },
+   "license": "CC0-1.0",
+   "attribution": null,
+   "source": {
+    "type": "manual",
+    "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization, polish: weathered values)"
+   },
+   "tags": [
+    "tidebreakers",
+    "asset-modernization",
+    "meshcraft",
+    "polish"
+   ],
+   "thumb": null,
+   "phash": null,
+   "created": "2026-11-05T06:54:21+00:00",
+   "updated": "2026-11-05T06:54:21+00:00",
+   "exists": true
+  },
+  {
+   "id": 10,
+   "project": "/home/user/TIDEBREAKERS",
+   "path": "/home/user/TIDEBREAKERS/public/models/tb_landmark_kit.glb",
+   "rel": "public/models/tb_landmark_kit.glb",
+   "kind": "model",
+   "format": "glb",
+   "sha256": "cde77328e31c6315b0c066d4cda7021acbf656b02b85ad30ecfc9c69624d57e7",
+   "bytes": 364720,
+   "version": 2,
+   "current": 1,
+   "valid": 1,
+   "info": {
+    "ok": true,
+    "format": "glb",
+    "meshes": 8,
+    "nodes": 9,
+    "triangles": 8836,
+    "animations": [],
+    "materials": 33
+   },
+   "license": "CC0-1.0",
+   "attribution": null,
+   "source": {
+    "type": "manual",
+    "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization, polish: weathered values)"
+   },
+   "tags": [
+    "tidebreakers",
+    "asset-modernization",
+    "meshcraft",
+    "polish"
+   ],
+   "thumb": null,
+   "phash": null,
+   "created": "2026-11-05T06:54:21+00:00",
+   "updated": "2026-11-05T06:54:21+00:00",
+   "exists": true
+  },
+  {
+   "id": 11,
+   "project": "/home/user/TIDEBREAKERS",
+   "path": "/home/user/TIDEBREAKERS/public/models/tb_finds_kit.glb",
+   "rel": "public/models/tb_finds_kit.glb",
+   "kind": "model",
+   "format": "glb",
+   "sha256": "30773cba6586c2eed14699cc15456290d79bef4b1aa3893211ab16f571f5ef9e",
+   "bytes": 218888,
+   "version": 2,
+   "current": 1,
+   "valid": 1,
+   "info": {
+    "ok": true,
+    "format": "glb",
+    "meshes": 30,
+    "nodes": 31,
+    "triangles": 4176,
+    "animations": [],
+    "materials": 30
+   },
+   "license": "CC0-1.0",
+   "attribution": null,
+   "source": {
+    "type": "manual",
+    "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization, polish: weathered values)"
+   },
+   "tags": [
+    "tidebreakers",
+    "asset-modernization",
+    "meshcraft",
+    "polish"
+   ],
+   "thumb": null,
+   "phash": null,
+   "created": "2026-11-05T06:54:21+00:00",
+   "updated": "2026-11-05T06:54:21+00:00",
+   "exists": true
+  },
+  {
+   "id": 12,
+   "project": "/home/user/TIDEBREAKERS",
+   "path": "/home/user/TIDEBREAKERS/public/models/tb_fittings_kit.glb",
+   "rel": "public/models/tb_fittings_kit.glb",
+   "kind": "model",
+   "format": "glb",
+   "sha256": "8178e51509ace92e6513e330e7814048b617ec65a14ce0680826224b7c4efd10",
+   "bytes": 79800,
+   "version": 3,
+   "current": 1,
+   "valid": 1,
+   "info": {
+    "ok": true,
+    "format": "glb",
+    "meshes": 22,
+    "nodes": 23,
+    "triangles": 1420,
+    "animations": [],
+    "materials": 14
+   },
+   "license": "CC0-1.0",
+   "attribution": null,
+   "source": {
+    "type": "manual",
+    "note": "GITCRAFT MeshCraft run_script (TIDEBREAKERS asset modernization, polish: weathered values)"
+   },
+   "tags": [
+    "tidebreakers",
+    "asset-modernization",
+    "meshcraft",
+    "polish"
+   ],
+   "thumb": null,
+   "phash": null,
+   "created": "2026-11-05T06:54:21+00:00",
+   "updated": "2026-11-05T06:54:21+00:00",
+   "exists": true
+  }
+ ]
+}

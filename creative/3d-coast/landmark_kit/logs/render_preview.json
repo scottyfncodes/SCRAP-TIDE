@@ -1,0 +1,22 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/previews/tb_landmark_kit_three_quarter.png",
+  "kind": "preview",
+  "bytes": 141506,
+  "sha256": "6905bb12d72f032033740bdda3f7d4384de99277d828876f013b4e94d72aada2",
+  "view": "three_quarter",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-coast/landmark_kit/previews/tb_landmark_kit_front.png",
+  "kind": "preview",
+  "bytes": 129908,
+  "sha256": "00b5775b10ab60753b3838d6a27dffe24c0e89fef1e2572b4835f6106a9f58b3",
+  "view": "front",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ }
+]

@@ -1,0 +1,57 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-ironwake/exports/tb_ironwake.three-web-toon.glb",
+  "kind": "export",
+  "bytes": 442716,
+  "sha256": "ca69084c5bd3057a31f2801ab308d48a17d39742e1a1469daa4e0dd57ca5251e",
+  "profile": "three-web-toon",
+  "format": "glb",
+  "engine": "Three.js (GLTFLoader) \u2014 vertex-colour toon pipeline",
+  "extras": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-ironwake/exports/tb_ironwake.three-web-toon.lod50.glb",
+    "kind": "lod",
+    "bytes": 304236,
+    "sha256": "702fb80e1ca978d3670e420645a60120209360a876c9ad5a78b20109d3578cc8",
+    "ratio": 0.5,
+    "triangles": 2932
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-ironwake/exports/tb_ironwake.three-web-toon.lod25.glb",
+    "kind": "lod",
+    "bytes": 175668,
+    "sha256": "77cd0a615416096dd5d04c4ac2bf41dec7b6c4c608a30f7f30eb5c9c1966b27f",
+    "ratio": 0.25,
+    "triangles": 1362
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-ironwake/exports/tb_ironwake.three-web-toon.collision.glb",
+    "kind": "collision",
+    "bytes": 16972,
+    "sha256": "822ae8c52b3c96570eb0c1641ab1e3847c599bb124c79ebfa537d4ec794a591b",
+    "shape": "convex_hull",
+    "triangles": 236
+   }
+  ],
+  "sidecars": [
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-ironwake/exports/tb_ironwake.three-web-toon.collision.glb",
+    "kind": "sidecar",
+    "bytes": 16972,
+    "sha256": "822ae8c52b3c96570eb0c1641ab1e3847c599bb124c79ebfa537d4ec794a591b"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-ironwake/exports/tb_ironwake.three-web-toon.lod25.glb",
+    "kind": "sidecar",
+    "bytes": 175668,
+    "sha256": "77cd0a615416096dd5d04c4ac2bf41dec7b6c4c608a30f7f30eb5c9c1966b27f"
+   },
+   {
+    "path": "/home/user/TIDEBREAKERS/creative/3d-ironwake/exports/tb_ironwake.three-web-toon.lod50.glb",
+    "kind": "sidecar",
+    "bytes": 304236,
+    "sha256": "702fb80e1ca978d3670e420645a60120209360a876c9ad5a78b20109d3578cc8"
+   }
+  ]
+ }
+]

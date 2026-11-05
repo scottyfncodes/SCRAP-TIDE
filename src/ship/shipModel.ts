@@ -4,7 +4,10 @@ import { paint, xf, merge, vcMat, toonMat, canvasTex, weather } from '../world/m
 import { COSMETIC_MAP, type VesselId } from '../data/ship';
 import { item } from '../data/items';
 import type { Store } from '../state/store';
-import { model, crewModel, part, glowMat, kitGeo, sceneModel, tintModel, cullModel, offsetModel, nodeOrigin, type Tint } from '../world/assets';
+import { model, crewModel, part, glowMat, kitGeo, sceneModel, tintModel, cullModel, offsetModel, nodeOrigin, bakeModel, tintedPart, type Tint } from '../world/assets';
+
+// ship fittings modelled in MeshCraft (creative/3d-finds/fittings_kit): anchor, paddle, the skiff's rudder and mast, trophies
+const FITTINGS = 'tb_fittings_kit';
 import { CREW_MAP } from '../data/crew';
 
 interface HullSpec {
@@ -85,6 +88,28 @@ const SLOOP_MAST_Z = 1.0; // the model's mast (socket_sail)
 // tyre fenders, a car-seat helm). Lofted from HULLS.dinghy, so it shares this file's frame at scale 1: it replaces the
 // procedural hull, floorboards and thwarts; the captain's seat, crew spots, mast step and upgrades keep their places.
 const SKIFF_FILE = 'tb_patchwork_skiff';
+
+// The Ironwake Expedition Cat (public/models/tb_ironwake.glb, MeshCraft, creative/3d-ironwake): both hulls lofted from
+// HULLS.ironwake and offset by CAT_OFFSET, so it shares this file's frame at scale 1 and the waterline the buoyancy and
+// wake use is the same surface. It replaces the code-built hulls, bridge deck, cross-beams, wheelhouse, rails, helm,
+// rudder and mast. TBI_Paint / TBI_Trim take the paint cosmetic. The mast is modelled at the tier-0 height and
+// stretched to the sail tier's; the rudders grow for the Ash Rudder upgrade.
+const IRONWAKE_FILE = 'tb_ironwake';
+const IRONWAKE_MAST_H = 10.2;
+const IRONWAKE_MAST_FOOT = new THREE.Vector3(0, HULLS.ironwake.sheer - HULLS.ironwake.D * 0.6, 0.8);
+const IRONWAKE_RUDDERS: [string, THREE.Vector3][] = [
+  ['ironwake_rudder_starboard', new THREE.Vector3(CAT_OFFSET, 1.75, -HULLS.ironwake.L / 2 - 0.07)],
+  ['ironwake_rudder_port', new THREE.Vector3(-CAT_OFFSET, 1.75, -HULLS.ironwake.L / 2 - 0.07)],
+];
+/** Bake `nodes` of a model clone into `solid`/`glow`, scaled about `about` (a mast stretched to its height, a bigger rudder). */
+function bakeScaled(root: THREE.Object3D, nodes: string[], about: THREE.Vector3, scale: THREE.Vector3, solid: THREE.BufferGeometry[], glow: THREE.BufferGeometry[]) {
+  const s: THREE.BufferGeometry[] = [];
+  const g: THREE.BufferGeometry[] = [];
+  bakeModel(root, s, g, { only: nodes });
+  const m = new THREE.Matrix4().makeTranslation(about.x, about.y, about.z).multiply(new THREE.Matrix4().makeScale(scale.x, scale.y, scale.z)).multiply(new THREE.Matrix4().makeTranslation(-about.x, -about.y, -about.z));
+  for (const x of s) solid.push(x.applyMatrix4(m));
+  for (const x of g) glow.push(x.applyMatrix4(m));
+}
 
 /** The upgrade model files the Trimaran needs for these owned upgrades (loaded lazily: see world/assets.ts). */
 export function sloopUpgradeFiles(owned: readonly string[]): string[] {
@@ -379,7 +404,15 @@ export function trophyGeometry(id: string): THREE.BufferGeometry {
   const d = item(id);
   const [a, b] = d.colors;
   const parts: THREE.BufferGeometry[] = [];
-  parts.push(paint(xf(new THREE.CylinderGeometry(0.22, 0.26, 0.14, 10), 0, 0.07, 0), '#5a3a1e'));
+  // the GITCRAFT trophy on its plinth, in the item's own colours (plants use the flora kit below)
+  const living = ['plant', 'bloom', 'fruitvine', 'sapling'].includes(d.icon);
+  const base = part(FITTINGS, 'trophy_base');
+  const node = ({ idol: 'trophy_idol', bell: 'trophy_bell', mask: 'trophy_mask', spyglass: 'trophy_spyglass', sextant: 'trophy_spyglass', flag: 'trophy_flag',
+    whistle: 'trophy_whistle' } as Record<string, string>)[d.icon] ?? 'trophy_relic';
+  const piece = !living && base ? tintedPart(FITTINGS, node, a, b) : null;
+  if (piece && base) return merge([base.geo.clone(), piece]);
+  if (living && base) parts.push(base.geo.clone());
+  else parts.push(paint(xf(new THREE.CylinderGeometry(0.22, 0.26, 0.14, 10), 0, 0.07, 0), '#5a3a1e'));
   switch (d.icon) {
     case 'idol':
       parts.push(paint(xf(new THREE.SphereGeometry(0.2, 10, 8), 0, 0.3, 0, 0, 0, 0, [1.2, 0.6, 1]), a));
@@ -456,6 +489,10 @@ export function buildShip(store: Store): ShipParts {
   const parts: THREE.BufferGeometry[] = [];
   const hullOut = hullGeometry(h, hullColor, trimColor);
   const cat = vessel === 'ironwake';
+  // the Ironwake is the GITCRAFT model once its file has loaded (lazily: until then, the code-built cat below)
+  const iron = cat ? sceneModel(IRONWAKE_FILE) : null;
+  const ironGlow: THREE.BufferGeometry[] = [];
+  if (iron) tintModel(iron, { TBI_Paint: hullColor, TBI_Trim: trimColor });
   // the sloop is the GITCRAFT model: it replaces the lofted hull, deck, cabin, rails, helm, mast, rudder, sails and pennant
   const glb = vessel === 'sloop' ? sloopModel() : null;
   // how far the model's deck sits from the procedural one, so deck-mounted parts and the captain stand on it
@@ -523,7 +560,10 @@ export function buildShip(store: Store): ShipParts {
         return p;
       }
     : hullOut.P;
-  if (cat) {
+  if (iron) {
+    // hulls, deck and fittings join the ship's batched mesh; the mast and rudders are baked further down, sized
+    bakeModel(iron, parts, ironGlow, { skip: ['ironwake_mast', ...IRONWAKE_RUDDERS.map(([n]) => n), ...(store.has('cabin_container') ? ['ironwake_wheelhouse'] : [])] });
+  } else if (cat) {
     const port = hullOut.g.clone();
     port.translate(-CAT_OFFSET, 0, 0);
     hullOut.g.translate(CAT_OFFSET, 0, 0);
@@ -565,16 +605,20 @@ export function buildShip(store: Store): ShipParts {
     // little storage box under aft seat
     parts.push(paint(xf(new THREE.BoxGeometry(0.7, 0.35, 0.36), 0, h.sheer - 0.42, -1.3), woodDark));
     }
-    // paddle resting across the gunwale
-    parts.push(paint(xf(new THREE.CylinderGeometry(0.035, 0.035, 2.2, 5), 0.45, h.sheer + 0.05, -0.4, Math.PI / 2, 0.15, 0), '#c9a074'));
-    parts.push(paint(xf(new THREE.BoxGeometry(0.22, 0.03, 0.55), 0.6, h.sheer + 0.05, 0.62, 0, 0.15, 0), '#c9a074'));
+    // paddle resting across the gunwale (a scavenged oar, blade cut from a road sign)
+    const paddle = kitGeo(FITTINGS, 'paddle', 0.45, h.sheer + 0.05, -0.4, Math.PI + 0.15);
+    if (paddle) parts.push(paddle.geo);
+    else {
+      parts.push(paint(xf(new THREE.CylinderGeometry(0.035, 0.035, 2.2, 5), 0.45, h.sheer + 0.05, -0.4, Math.PI / 2, 0.15, 0), '#c9a074'));
+      parts.push(paint(xf(new THREE.BoxGeometry(0.22, 0.03, 0.55), 0.6, h.sheer + 0.05, 0.62, 0, 0.15, 0), '#c9a074'));
+    }
     mastH = sailTier >= 2 ? 4.6 : sailTier >= 1 ? 4.0 : 3.0;
     mastZ = 0.75;
     seat.set(0, h.sheer - 0.12, -1.3);
   } else {
     // decked sloop: deck, cabin, bowsprit, rails, helm
     const deckY = h.sheer - 0.05;
-    if (!glb) {
+    if (!glb && !iron) {
       const deck: THREE.BufferGeometry[] = [];
       for (let i = 0; i < 16; i++) {
         const u = 0.03 + i * 0.058;
@@ -622,10 +666,13 @@ export function buildShip(store: Store): ShipParts {
     }
   }
 
-  // mast
-  // (on the skiff: a length of rusty scaffold pipe, with a strip of hazard tape)
-  if (!glb) parts.push(paint(xf(new THREE.CylinderGeometry(0.06 * (vessel !== 'dinghy' ? 2.2 : 1), 0.08 * (vessel !== 'dinghy' ? 2.2 : 1), mastH, 7), 0, h.sheer - h.D * 0.6 + mastH / 2, mastZ), skiff ? '#6d6a66' : woodDark));
-  if (skiff) {
+  // mast: the Ironwake's own (stretched to the sail tier's height); on the skiff a length of rusty scaffold pipe
+  // with a strip of hazard tape (fittings kit, modelled 3 m tall and stretched the same way); else code-built
+  const skiffMast = skiff ? part(FITTINGS, 'skiff_mast') : null;
+  if (iron) bakeScaled(iron, ['ironwake_mast'], IRONWAKE_MAST_FOOT, new THREE.Vector3(1, mastH / IRONWAKE_MAST_H, 1), parts, ironGlow);
+  else if (skiffMast) parts.push(skiffMast.geo.clone().applyMatrix4(new THREE.Matrix4().makeTranslation(0, h.sheer - h.D * 0.6, mastZ).multiply(new THREE.Matrix4().makeScale(1, mastH / 3, 1))));
+  else if (!glb) parts.push(paint(xf(new THREE.CylinderGeometry(0.06 * (vessel !== 'dinghy' ? 2.2 : 1), 0.08 * (vessel !== 'dinghy' ? 2.2 : 1), mastH, 7), 0, h.sheer - h.D * 0.6 + mastH / 2, mastZ), skiff ? '#6d6a66' : woodDark));
+  if (skiff && !skiffMast) {
     parts.push(paint(xf(new THREE.CylinderGeometry(0.085, 0.085, 0.16, 7), 0, h.sheer + 0.5, mastZ), '#f4c542'));
     parts.push(paint(xf(new THREE.CylinderGeometry(0.09, 0.09, 0.05, 7), 0, h.sheer + 0.5, mastZ), '#1b1b1f'));
     parts.push(paint(xf(new THREE.CylinderGeometry(0.075, 0.075, 0.5, 7), 0, h.sheer + 1.3, mastZ), '#a24b21'));
@@ -637,9 +684,16 @@ export function buildShip(store: Store): ShipParts {
   // on the model, the code-built ash rudder only stands in when the wheel & rudder model failed to load
   const codeRudder = bigRudder && !fitted.rudder_ash;
   const rs = (vessel !== 'dinghy' ? 2 : 1) * (bigRudder ? 1.35 : 1);
-  if (!glb || codeRudder) parts.push(paint(xf(new THREE.BoxGeometry(0.07, 0.75 * rs, 0.42 * rs), 0, h.sheer - 0.55 * rs, -h.L / 2 - 0.16 * rs), bigRudder ? '#d9c08c' : woodDark));
-  if (!glb || codeRudder) parts.push(paint(xf(new THREE.CylinderGeometry(0.03 * rs, 0.03 * rs, 0.9 * rs, 5), 0, h.sheer + 0.12, -h.L / 2 + 0.25 * rs, Math.PI / 2 - 0.25, 0, 0), bigRudder ? '#c9a074' : woodDark));
-  if (bigRudder && (!glb || codeRudder)) parts.push(paint(xf(new THREE.SphereGeometry(0.06 * rs, 6, 4), 0, h.sheer + 0.24, -h.L / 2 + 0.7 * rs), '#d4a64a'));
+  // the Ironwake's twin rudders are part of its model: the Ash Rudder makes them bigger (and paler: ash)
+  if (iron) {
+    if (bigRudder) tintModel(iron, { TBI_Wood_dk: '#d9c08c' });
+    for (const [n, at] of IRONWAKE_RUDDERS) bakeScaled(iron, [n], at, new THREE.Vector3(1, 1, 1).multiplyScalar(bigRudder ? 1.35 : 1), parts, ironGlow);
+  } else if (skiff && part(FITTINGS, 'skiff_rudder')) {
+    // the skiff's rudder: a cut-down steel sign on a pipe stock, bigger with the Ash Rudder
+    parts.push(kitGeo(FITTINGS, 'skiff_rudder', 0, h.sheer, -h.L / 2, 0, bigRudder ? 1.35 : 1)!.geo);
+  } else if (!glb || codeRudder) parts.push(paint(xf(new THREE.BoxGeometry(0.07, 0.75 * rs, 0.42 * rs), 0, h.sheer - 0.55 * rs, -h.L / 2 - 0.16 * rs), bigRudder ? '#d9c08c' : woodDark));
+  if (!iron && (!glb || codeRudder)) parts.push(paint(xf(new THREE.CylinderGeometry(0.03 * rs, 0.03 * rs, 0.9 * rs, 5), 0, h.sheer + 0.12, -h.L / 2 + 0.25 * rs, Math.PI / 2 - 0.25, 0, 0), bigRudder ? '#c9a074' : woodDark));
+  if (!iron && bigRudder && (!glb || codeRudder)) parts.push(paint(xf(new THREE.SphereGeometry(0.06 * rs, 6, 4), 0, h.sheer + 0.24, -h.L / 2 + 0.7 * rs), '#d4a64a'));
 
   // storage upgrades
   if (store.has('cargo_crate') && !fitted.cargo_crate) {
@@ -684,7 +738,7 @@ export function buildShip(store: Store): ShipParts {
 
   // anchor (hangs at bow when stowed)
   const anchor = new THREE.Group();
-  const anchorMesh = new THREE.Mesh(
+  const anchorMesh = model(FITTINGS, 'anchor', { shadows: true }) ?? new THREE.Mesh(
     merge([
       paint(xf(new THREE.CylinderGeometry(0.04, 0.04, 0.6, 5), 0, 0, 0), '#4a4a4a'),
       paint(xf(new THREE.TorusGeometry(0.22, 0.04, 4, 10, Math.PI), 0, -0.28, 0, 0, 0, Math.PI), '#4a4a4a'),
@@ -707,6 +761,7 @@ export function buildShip(store: Store): ShipParts {
     hull.receiveShadow = true;
     group.add(hull);
   }
+  if (ironGlow.length) group.add(new THREE.Mesh(merge(ironGlow), glowMat()));
 
   // sails
   const sails: THREE.Mesh[] = [];

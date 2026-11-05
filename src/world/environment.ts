@@ -106,19 +106,32 @@ export class Environment {
 
     // Nothing grows out here unless someone guards it. Palms are bleached trunks, scrub is dead brush, and the
     // sand is littered with what the sea threw up. Living green appears only as a find or behind a garden wall.
-    const kit = (file: string, node: string, x: number, y: number, z: number, ry = 0, sc = 1) => {
-      const k = kitGeo(file, node, x, y, z, ry, sc);
+    const kit = (file: string, node: string, x: number, y: number, z: number, ry = 0, sc = 1, rz = 0) => {
+      const k = kitGeo(file, node, x, y, z, ry, sc, rz);
       if (k) {
         geos.push(k.geo);
         if (k.glow) glows.push(k.glow);
       }
       return !!k;
     };
+    // GITCRAFT coast kit pieces (creative/3d-coast); the code-built prop is only drawn if the kit failed to load.
+    // A fallback draws its shape from its own seeded RNG, so the island's layout (and its colliders) is the same
+    // whichever one is drawn.
+    const fr = (x: number, z: number) => new RNG(Math.floor(x * 31 + z * 17) >>> 0);
+    const coast = (node: string, x: number, y: number, z: number, ry: number, sc: number, fallback: () => THREE.BufferGeometry, rz = 0) => {
+      if (!kit('tb_coast_kit', node, x, y, z, ry, sc, rz)) geos.push(fallback());
+    };
+    const landmark = (node: string, x: number, y: number, z: number, ry: number, fallback: () => THREE.BufferGeometry) => {
+      if (!kit('tb_landmark_kit', node, x, y, z, ry)) geos.push(fallback());
+    };
+    const PALMS = ['dead_palm_a', 'dead_palm_b', 'dead_palm_c', 'dead_palm_d'];
+    const ROCKS = ['rock_a', 'rock_b', 'rock_c', 'rock_d'];
     for (let i = 0; i < isl.palms; i++) {
       place(40, 0.5, 9, 0.6, 1.4, (x, y, z) => {
         if (rng.next() < 0.3 && kit('tb_outpost_kit', 'dead_tree', x, y - 0.3, z, rng.range(0, 6), rng.range(0.7, 1.05))) this.colliders.push({ x, z, r: 0.8 });
         else {
-          geos.push(xf(P.deadPalm(rng, rng.range(4.5, 8.5), rng.range(0.15, 0.5)), x, y - 0.2, z));
+          const h = rng.range(4.5, 8.5), lean = rng.range(0.15, 0.5), ry = rng.range(0, 6), v = PALMS[rng.int(0, 3)];
+          coast(v, x, y - 0.2, z, ry, h / 7, () => xf(P.deadPalm(fr(x, z), h, lean), x, y - 0.2, z));
           this.colliders.push({ x, z, r: 0.6 });
         }
       });
@@ -126,7 +139,10 @@ export class Environment {
     for (let i = 0; i < isl.rocks; i++) {
       place(30, -1.2, 20, 2, 1.5, (x, y, z) => {
         const s = rng.range(0.8, isl.style === 'rocky' ? 3.2 : 2.2);
-        geos.push(xf(P.rock(rng, s, rng.range(0.5, 0.85), isl.style === 'jungle' ? '#585650' : '#625a52', false), x, y + s * 0.15, z, 0, rng.range(0, 6), 0));
+        const squash = rng.range(0.5, 0.85), ry = rng.range(0, 6);
+        // drowned rubble (rock_c) only on the scrap-strewn islands, not on Canopy Rise's old stone
+        const v = ROCKS[isl.style === 'jungle' ? rng.int(0, 1) * 3 : rng.int(0, 3)];
+        coast(v, x, y - s * 0.12, z, ry, s, () => xf(P.rock(fr(x, z), s, squash, isl.style === 'jungle' ? '#585650' : '#625a52', false), x, y + s * 0.15, z, 0, ry, 0));
         if (y > -0.3) this.colliders.push({ x, z, r: s * 0.9 });
       });
     }
@@ -134,13 +150,21 @@ export class Environment {
       place(30, 0.6, 30, 1.2, 1.6, (x, y, z) => {
         const k = rng.next();
         if (k < 0.3 && kit('tb_outpost_kit', 'scrap_heap', x, y - 0.15, z, rng.range(0, 6), rng.range(0.55, 0.85))) this.colliders.push({ x, z, r: 1.4 });
-        else if (k < 0.5) geos.push(paint(xf(new THREE.CylinderGeometry(0.2, 0.26, rng.range(2, 4), 6), x, y + 0.2, z, 0, rng.range(0, 6), Math.PI / 2), '#a89c84', 0.1)); // bleached driftwood log
-        else geos.push(xf(P.deadScrub(rng, rng.range(0.8, 1.4)), x, y, z));
+        else if (k < 0.5) {
+          const len = rng.range(2, 4), ry = rng.range(0, 6);
+          coast('driftwood', x, y - 0.05, z, ry, len / 3.2, () => paint(xf(new THREE.CylinderGeometry(0.2, 0.26, len, 6), x, y + 0.2, z, 0, ry, Math.PI / 2), '#a89c84', 0.1)); // bleached driftwood log
+        } else {
+          const sc = rng.range(0.8, 1.4);
+          coast(rng.next() < 0.7 ? 'scrub_a' : 'scrub_b', x, y - 0.05, z, rng.range(0, 6), sc, () => xf(P.deadScrub(fr(x, z), sc), x, y, z));
+        }
       });
     }
     // dry tufts, sparse
     for (let i = 0; i < isl.r * 0.9; i++) {
-      place(6, 1.0, 30, 1.5, 0.3, (x, y, z) => geos.push(xf(P.grassTuft(rng, rng.next() < 0.5 ? '#7c7258' : '#8a8068'), x, y, z)));
+      place(6, 1.0, 30, 1.5, 0.3, (x, y, z) => {
+        const tint = rng.next() < 0.5 ? '#7c7258' : '#8a8068';
+        coast('grass_tuft', x, y - 0.02, z, rng.range(0, 6), rng.range(0.8, 1.3), () => xf(P.grassTuft(fr(x, z), tint), x, y, z));
+      });
     }
 
     // landmarks
@@ -152,21 +176,21 @@ export class Environment {
       switch (l.type) {
         case 'twin_palms': {
           // the "two sisters": twin dead trunks leaning apart, still the tallest things on the atoll
-          geos.push(xf(P.deadPalm(new RNG(5), 10, 0.0), x - 1.2, y - 0.2, z, 0, 0, 0.22));
-          geos.push(xf(P.deadPalm(new RNG(9), 11, 0.0), x + 1.2, y - 0.2, z, 0, 0, -0.22));
+          coast('dead_palm_d', x - 1.2, y - 0.2, z, 0, 10 / 7, () => xf(P.deadPalm(new RNG(5), 10, 0.0), x - 1.2, y - 0.2, z, 0, 0, 0.22), 0.22);
+          coast('dead_palm_d', x + 1.2, y - 0.2, z, Math.PI, 11 / 7, () => xf(P.deadPalm(new RNG(9), 11, 0.0), x + 1.2, y - 0.2, z, 0, 0, -0.22), -0.22);
           this.colliders.push({ x: x - 1.2, z, r: 0.7 }, { x: x + 1.2, z, r: 0.7 });
           break;
         }
         case 'big_palm':
-          geos.push(xf(P.deadPalm(new RNG(8), 13, 0.35), x, y - 0.2, z));
+          coast('dead_palm_a', x, y - 0.2, z, 0.8, 13 / 7, () => xf(P.deadPalm(new RNG(8), 13, 0.35), x, y - 0.2, z));
           this.colliders.push({ x, z, r: 0.9 });
           break;
         case 'skull_rock':
-          geos.push(xf(P.skullRock(rng), x, y - 0.3, z, 0, Math.atan2(isl.x - x, isl.z - z) + Math.PI, 0));
+          landmark('skull_rock', x, y - 0.3, z, Math.atan2(isl.x - x, isl.z - z) + Math.PI, () => xf(P.skullRock(fr(x, z)), x, y - 0.3, z, 0, Math.atan2(isl.x - x, isl.z - z) + Math.PI, 0));
           this.colliders.push({ x, z, r: 3.4 });
           break;
         case 'lighthouse': {
-          geos.push(xf(P.lighthouse(), x, y - 0.2, z, 0, rot, 0));
+          landmark('lighthouse', x, y - 0.2, z, rot, () => xf(P.lighthouse(), x, y - 0.2, z, 0, rot, 0));
           this.colliders.push({ x, z, r: 2.9 });
           const lamp = new THREE.Mesh(new THREE.SphereGeometry(1.1, 12, 8), new THREE.MeshBasicMaterial({ color: 0xfff1b0, transparent: true, opacity: 0.0 }));
           lamp.position.set(x, y + 17.3, z);
@@ -175,11 +199,11 @@ export class Environment {
           break;
         }
         case 'hut':
-          geos.push(xf(P.hut(), x, y - 0.1, z, 0, rot, 0));
+          landmark('hut', x, y - 0.1, z, rot, () => xf(P.hut(), x, y - 0.1, z, 0, rot, 0));
           this.colliders.push({ x, z, r: 2.6 });
           break;
         case 'wreck': {
-          geos.push(xf(P.brokenWreck(rng), x, y - 0.8, z, 0, rot, 0));
+          landmark('wreck', x, y - 0.8, z, rot, () => xf(P.brokenWreck(fr(x, z)), x, y - 0.8, z, 0, rot, 0));
           // ribs are walkable-around; collide on the hull ends
           const fx = Math.sin(rot), fz = Math.cos(rot);
           for (const k of [-8, -4, 4]) this.colliders.push({ x: x + fx * k + fz * 3.9, z: z + fz * k - fx * 3.9, r: 1.0 });
@@ -187,11 +211,11 @@ export class Environment {
           break;
         }
         case 'arch':
-          geos.push(xf(P.arch(rng), x, y - 0.2, z, 0, rot, 0));
+          landmark('sun_arch', x, y - 0.2, z, rot, () => xf(P.arch(fr(x, z)), x, y - 0.2, z, 0, rot, 0));
           for (const s of [-1, 1]) this.colliders.push({ x: x + Math.cos(rot) * s * 3.2, z: z - Math.sin(rot) * s * 3.2, r: 1.3 });
           break;
         case 'pillars':
-          geos.push(xf(P.pillars(rng), x, y - 0.2, z));
+          landmark('pillar_ring', x, y - 0.2, z, 0, () => xf(P.pillars(fr(x, z)), x, y - 0.2, z));
           for (let i = 0; i < 5; i++) {
             const a = (i / 5) * Math.PI * 2;
             this.colliders.push({ x: x + Math.cos(a) * 4.5, z: z + Math.sin(a) * 4.5, r: 1 });
@@ -199,16 +223,21 @@ export class Environment {
           break;
         case 'waterfall': {
           // fresh water: a spring forced out of an old storm-drain pipe, caught in drums before it can reach the sea
-          geos.push(xf(P.waterfallRocks(rng), x, y - 0.5, z));
-          geos.push(paint(xf(new THREE.CylinderGeometry(0.75, 0.75, 3.2, 10), x, y + 8.6, z - 1.2, Math.PI / 2, 0, 0), '#6b2e14', 0.05));
-          geos.push(paint(xf(new THREE.TorusGeometry(0.78, 0.14, 5, 10), x, y + 8.6, z + 0.4), '#3a4148'));
-          for (let k = 0; k < 4; k++) geos.push(paint(xf(new THREE.CylinderGeometry(0.55, 0.55, 1.3, 9), x - 2.2 + k * 1.3, y + 0.5, z + 4.6), ['#2f6fb0', '#3e8c80', '#2f6fb0', '#a24b21'][k], 0.06));
+          // (the spring node carries the rocks, the culvert pipe and its flange, the pool and the catch drums)
+          landmark('spring', x, y - 0.5, z, 0, () =>
+            merge([
+              xf(P.waterfallRocks(fr(x, z)), x, y - 0.5, z),
+              paint(xf(new THREE.CylinderGeometry(0.75, 0.75, 3.2, 10), x, y + 8.6, z - 1.2, Math.PI / 2, 0, 0), '#6b2e14', 0.05),
+              paint(xf(new THREE.TorusGeometry(0.78, 0.14, 5, 10), x, y + 8.6, z + 0.4), '#3a4148'),
+              ...[0, 1, 2, 3].map((k) => paint(xf(new THREE.CylinderGeometry(0.55, 0.55, 1.3, 9), x - 2.2 + k * 1.3, y + 0.5, z + 4.6), ['#2f6fb0', '#3e8c80', '#2f6fb0', '#a24b21'][k], 0.06)),
+            ])
+          );
           this.colliders.push({ x, z: z - 2, r: 5 });
           this.addWaterfall(x, y, z);
           break;
         }
         case 'boulder':
-          geos.push(xf(P.rock(rng, 3, 0.8), x, y, z));
+          coast('rock_a', x, y - 0.35, z, rot, 3, () => xf(P.rock(fr(x, z), 3, 0.8), x, y, z));
           this.colliders.push({ x, z, r: 2.8 });
           break;
       }
@@ -303,8 +332,8 @@ export class Environment {
       }
     }
     const glows: THREE.BufferGeometry[] = [];
-    const kit = (file: string, node: string, x: number, y: number, z: number, ry = 0, sc = 1) => {
-      const k = kitGeo(file, node, x, y, z, ry, sc);
+    const kit = (file: string, node: string, x: number, y: number, z: number, ry = 0, sc = 1, rz = 0) => {
+      const k = kitGeo(file, node, x, y, z, ry, sc, rz);
       if (k) {
         geos.push(k.geo);
         if (k.glow) glows.push(k.glow);
@@ -317,35 +346,49 @@ export class Environment {
     // mismatched decking: bleached boards, a darker plank, the odd steel plate laid over a hole
     const plank = '#a2927a';
     const plank2 = '#7d6a52';
+    // Driftholm's pier, built from the GITCRAFT coast kit's 4 m pier sections (planks, stringers, braced pilings, a
+    // tyre fender); the code-built planks and pilings below are the fallback if the kit failed to load
+    const pierKit = kitGeo('tb_coast_kit', 'pier_section', 0, deckY, 0) !== null;
+    const fingers = [{ z: 186, dir: -1, len: 16 }, { z: 196, dir: 1, len: 18 }];
+    if (pierKit) {
+      for (let z = pierEnd + 2; z - 2 < pierStart; z += 4) kit('tb_coast_kit', 'pier_section', 0, deckY, z, rng.next() < 0.5 ? 0 : Math.PI);
+      for (const f of fingers) for (let x = 2.5 + 2; x - 2 < f.len; x += 4) kit('tb_coast_kit', 'finger_section', f.dir * x, deckY, f.z, f.dir > 0 ? 0 : Math.PI);
+    }
     // main pier
-    for (let z = pierEnd; z < pierStart; z += 0.9) {
+    for (let z = pierEnd; z < pierStart && !pierKit; z += 0.9) {
       const r = rng.next();
       geos.push(paint(xf(new THREE.BoxGeometry(r > 0.9 ? 3.4 : 5.2, 0.22, 0.82), rng.range(-0.3, 0.3), deckY, z, 0, rng.range(-0.04, 0.04), 0), r > 0.86 ? '#6f7275' : r > 0.45 ? plank : plank2, 0.1));
     }
-    for (let z = pierEnd; z < pierStart; z += 4) {
+    for (let z = pierEnd; z < pierStart && !pierKit; z += 4) {
       // pilings: old pipe, I-beam and tarred timber, whatever was long enough
       for (const sx of [-2.5, 2.5]) geos.push(paint(xf(new THREE.CylinderGeometry(0.28, 0.32, 6, 7), sx, deckY - 2.5, z), rng.pick(['#5a3a28', '#4a4d50', '#6b2e14'])));
       geos.push(paint(xf(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 8), 2.75, deckY - 0.3, z), '#222222')); // tyre fender
     }
     // finger piers
-    const fingers = [{ z: 186, dir: -1, len: 16 }, { z: 196, dir: 1, len: 18 }];
     for (const f of fingers) {
-      for (let x = 2.5; x < f.len; x += 0.9) geos.push(paint(xf(new THREE.BoxGeometry(0.82, 0.22, 3.4), f.dir * x, deckY, f.z), rng.next() > 0.5 ? plank : plank2, 0.08));
-      for (let x = 4; x < f.len; x += 4) for (const sz of [-1.6, 1.6]) geos.push(paint(xf(new THREE.CylinderGeometry(0.25, 0.3, 6, 7), f.dir * x, deckY - 2.5, f.z + sz), '#5e4128'));
+      for (let x = 2.5; x < f.len && !pierKit; x += 0.9) geos.push(paint(xf(new THREE.BoxGeometry(0.82, 0.22, 3.4), f.dir * x, deckY, f.z), rng.next() > 0.5 ? plank : plank2, 0.08));
+      for (let x = 4; x < f.len && !pierKit; x += 4) for (const sz of [-1.6, 1.6]) geos.push(paint(xf(new THREE.CylinderGeometry(0.25, 0.3, 6, 7), f.dir * x, deckY - 2.5, f.z + sz), '#5e4128'));
       this.boatRects.push({ x0: Math.min(0, f.dir * f.len), x1: Math.max(0, f.dir * f.len), z0: f.z - 2, z1: f.z + 2 });
     }
     this.boatRects.push({ x0: -3, x1: 3, z0: pierEnd - 0.5, z1: pierStart });
     this.pierTip.set(5.5, 0, pierEnd + 3);
     // bollards, barrels, crates, lamps on pier
     for (let z = pierEnd + 2; z < pierStart; z += 9) {
-      geos.push(paint(xf(new THREE.CylinderGeometry(0.22, 0.3, 0.6, 8), 2.2, deckY + 0.4, z), '#3b3b3b'));
-      const lamp = new THREE.Group();
-      geos.push(paint(xf(new THREE.CylinderGeometry(0.08, 0.1, 3, 6), -2.2, deckY + 1.6, z + 3), '#2f2f2f'));
-      geos.push(paint(xf(new THREE.BoxGeometry(0.45, 0.6, 0.45), -2.2, deckY + 3.2, z + 3), '#f6d27a'));
-      void lamp;
+      if (!kit('tb_coast_kit', 'bollard', 2.2, deckY + 0.1, z, rng.range(0, 6))) geos.push(paint(xf(new THREE.CylinderGeometry(0.22, 0.3, 0.6, 8), 2.2, deckY + 0.4, z), '#3b3b3b'));
+      // the dock lamp's head hangs out over the deck and glows at night
+      if (!kit('tb_coast_kit', 'pier_lamp', -2.2, deckY + 0.1, z + 3)) {
+        geos.push(paint(xf(new THREE.CylinderGeometry(0.08, 0.1, 3, 6), -2.2, deckY + 1.6, z + 3), '#2f2f2f'));
+        geos.push(paint(xf(new THREE.BoxGeometry(0.45, 0.6, 0.45), -2.2, deckY + 3.2, z + 3), '#f6d27a'));
+      }
     }
-    for (let i = 0; i < 6; i++) geos.push(xf(P.barrel(), rng.range(-1.8, 1.8) + (i % 2 ? 0 : 0), deckY + 0.1, pierStart - 3 - i * 4.5 + rng.range(-1, 1), 0, rng.range(0, 3), 0, 0.8));
-    for (let i = 0; i < 4; i++) geos.push(xf(P.crate(rng.range(0.8, 1.1)), rng.range(-1.5, 1.5), deckY + 0.1, pierStart - 6 - i * 7, 0, rng.range(0, 1), 0));
+    for (let i = 0; i < 6; i++) {
+      const bx = rng.range(-1.8, 1.8), bz = pierStart - 3 - i * 4.5 + rng.range(-1, 1), ry = rng.range(0, 3);
+      if (!kit('tb_coast_kit', 'barrel', bx, deckY + 0.1, bz, ry, 0.8)) geos.push(xf(P.barrel(), bx, deckY + 0.1, bz, 0, ry, 0, 0.8));
+    }
+    for (let i = 0; i < 4; i++) {
+      const sc = rng.range(0.8, 1.1), cx = rng.range(-1.5, 1.5), cz = pierStart - 6 - i * 7, ry = rng.range(0, 1);
+      if (!kit('tb_coast_kit', 'cargo_crate', cx, deckY + 0.1, cz, ry, 1.2 * sc)) geos.push(xf(P.crate(sc), cx, deckY + 0.1, cz, 0, ry, 0));
+    }
 
     // the services live in salvaged containers and patchwork shacks, each with a hand-painted board
     const shops: { x: number; name: string; tint: string; sign: string; kind: 'container' | 'shack' }[] = [
@@ -377,12 +420,17 @@ export class Environment {
     {
       const x = -62, z = shoreZ + 4;
       const y = heightAt(x, z);
-      for (let i = 0; i < 7; i++) {
-        const rib = new THREE.TorusGeometry(2.6 - Math.abs(i - 3) * 0.25, 0.16, 4, 8, Math.PI);
-        geos.push(paint(xf(rib, x, y + 2.8, z - 6 + i * 1.6, 0, 0, Math.PI), i % 3 ? '#8a4a26' : '#6f7275')); // ribs cut from old steel
+      if (!kit('tb_landmark_kit', 'slipway', x, y, z)) {
+        for (let i = 0; i < 7; i++) {
+          const rib = new THREE.TorusGeometry(2.6 - Math.abs(i - 3) * 0.25, 0.16, 4, 8, Math.PI);
+          geos.push(paint(xf(rib, x, y + 2.8, z - 6 + i * 1.6, 0, 0, Math.PI), i % 3 ? '#8a4a26' : '#6f7275')); // ribs cut from old steel
+        }
+        geos.push(paint(xf(new THREE.BoxGeometry(0.4, 0.4, 12), x, y + 0.3, z - 1.2), '#6e4527'));
       }
-      geos.push(paint(xf(new THREE.BoxGeometry(0.4, 0.4, 12), x, y + 0.3, z - 1.2), '#6e4527'));
-      for (let i = 0; i < 4; i++) geos.push(xf(P.crate(0.9), x + 5 + rng.range(-1, 1), y, z - 4 + i * 2.2));
+      for (let i = 0; i < 4; i++) {
+        const cx = x + 5 + rng.range(-1, 1), cz = z - 4 + i * 2.2;
+        if (!kit('tb_coast_kit', 'cargo_crate', cx, y, cz, i * 0.4, 1.08)) geos.push(xf(P.crate(0.9), cx, y, cz));
+      }
     }
     // the shanty climbing the hill: stacked containers, raft shacks hauled ashore, tanks and rain catchers
     const spots: [number, number][] = [];
@@ -420,7 +468,9 @@ export class Environment {
       for (let k = 0; k < 9; k++) {
         const a = (k / 9) * Math.PI * 2;
         const fx = x + Math.cos(a) * 7.5, fz = z + 3 + Math.sin(a) * 7;
-        geos.push(paint(xf(new THREE.BoxGeometry(4.6, 1.6, 0.12), fx, heightAt(fx, fz) + 0.6, fz, 0, -a + Math.PI / 2, rng.range(-0.06, 0.06)), rng.pick(['#7f8a94', '#a24b21', '#3e8c80', '#8e918c', '#6b2e14'])));
+        const tilt = rng.range(-0.06, 0.06), tint = rng.pick(['#7f8a94', '#a24b21', '#3e8c80', '#8e918c', '#6b2e14']);
+        if (!kit('tb_coast_kit', 'fence_panel', fx, heightAt(fx, fz) - 0.2, fz, -a + Math.PI / 2, 1, tilt))
+          geos.push(paint(xf(new THREE.BoxGeometry(4.6, 1.6, 0.12), fx, heightAt(fx, fz) + 0.6, fz, 0, -a + Math.PI / 2, tilt), tint));
       }
       this.colliders.push({ x, z, r: 4 }, { x, z: z + 6.5, r: 3 });
       this.gardenGlow = new THREE.Vector3(x, y + 2, z);
@@ -430,7 +480,7 @@ export class Environment {
       const x = 18, z = shoreZ + 3;
       const y = heightAt(x, z);
       kit('tb_atoll_kit', 'watchtower', x, y - 0.95, z, 0.4, 0.9);
-      geos.push(paint(xf(new THREE.CylinderGeometry(0.08, 0.08, 6, 5), x, y + 14, z), '#3b3b3b'));
+      if (!kit('tb_coast_kit', 'flagpole', x, y + 11, z)) geos.push(paint(xf(new THREE.CylinderGeometry(0.08, 0.08, 6, 5), x, y + 14, z), '#3b3b3b'));
       const flag = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.8, 8, 2), toonMat('#7a3a22', { side: THREE.DoubleSide }));
       flag.position.set(x + 1.5, y + 16, z);
       this.scene.add(flag);

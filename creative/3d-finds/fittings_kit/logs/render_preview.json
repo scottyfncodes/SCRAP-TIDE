@@ -1,0 +1,22 @@
+[
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-finds/fittings_kit/previews/tb_fittings_kit_three_quarter.png",
+  "kind": "preview",
+  "bytes": 119439,
+  "sha256": "fa17a59d8f42ca0b573942c4afd95d8a6ad20753856040e06cb3490f6880df98",
+  "view": "three_quarter",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ },
+ {
+  "path": "/home/user/TIDEBREAKERS/creative/3d-finds/fittings_kit/previews/tb_fittings_kit_front.png",
+  "kind": "preview",
+  "bytes": 115189,
+  "sha256": "3dcfa88d429f0d29a0dda5763d8e9fdb0787f2579cd2d39e2c89852a9c0801e6",
+  "view": "front",
+  "clip": null,
+  "pose": null,
+  "size": 640
+ }
+]
