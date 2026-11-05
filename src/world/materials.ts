@@ -39,6 +39,7 @@ export const swayUniforms = { uTime: { value: 0 } };
 const WEATHER_COMMON = /* glsl */ `
 varying vec3 vWxPos;
 varying vec3 vWxNrm;
+varying float vWxY; // height above the sea, for the tide line
 uniform float uWeather;
 float wxHash(vec3 p) { p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 float wxNoise(vec3 x) {
@@ -69,10 +70,15 @@ const WEATHER_FRAG = /* glsl */ `
   float rust = smoothstep(0.58, 0.82, streak) * (0.35 + 0.65 * metal) * (1.0 - max(vWxNrm.y, 0.0) * 0.6);
   graded = mix(graded, vec3(0.40, 0.17, 0.07) * (0.7 + lum * 0.6), rust * 0.6);
   // tide line: algae-black stain below, a crust of bone-white salt just above
-  float y = P.y;
+  float y = vWxY;
   float algae = (1.0 - smoothstep(-0.2, 0.9, y)) * step(-6.0, y);
   graded = mix(graded, vec3(0.09, 0.12, 0.09), algae * (0.45 + fine * 0.3));
   float salt = smoothstep(0.5, 1.0, y) * (1.0 - smoothstep(1.2, 2.6, y)) * smoothstep(0.45, 0.75, fine);
+  #ifdef WX_LOCAL
+  // no salt crust on moving things: the band is fixed to the sea, so as the boat bobs it would wash up and down over
+  // the deck boards and the crew's bodies (it read as a shiny reflection)
+  salt = 0.0;
+  #endif
   graded = mix(graded, vec3(0.70, 0.67, 0.59), salt * 0.45);
   // sun-bleached tops
   graded = mix(graded, graded * 0.85 + vec3(0.11, 0.105, 0.09), smoothstep(0.75, 1.0, vWxNrm.y) * 0.35);
@@ -109,6 +115,12 @@ export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false
         wxM = modelMatrix * instanceMatrix;
         #endif
         vWxPos = (wxM * vec4(transformed, 1.0)).xyz;
+        vWxY = vWxPos.y;
+        #ifdef WX_LOCAL
+        // things that move (the player's boat, crew, captain): the grime/rust/salt pattern is pinned to the model,
+        // in metres, so it rides along instead of sliding over the boat as it sails through world-space noise
+        vWxPos = transformed * length(wxM[0].xyz);
+        #endif
         vWxNrm = normalize(mat3(wxM) * objectNormal);
       }`
     );

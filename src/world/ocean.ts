@@ -158,6 +158,16 @@ void main() {
   float swell = dt.b;
   vec2 p = vWorld.xz;
   float t = uTime;
+  // inside the player's hull there is no sea: the hull floor sits below the waterline, and the see-through surface
+  // (sky reflection, glitter, foam) was drawn as a sheet across the deck and around the crew's feet. Cut a hull-shaped
+  // hole a little inside the waterline footprint: full-width amidships and at the transom, pointed at the bow.
+  if (uHullSize.x > 0.0) {
+    vec2 hq = p - uHull.xy;
+    float ax = abs(dot(hq, vec2(uHull.w, -uHull.z))) - uHullSize.z;
+    float al = dot(hq, uHull.zw) / uHullSize.x;
+    float hw = uHullSize.y * (al > 0.0 ? 1.0 - al * al : sqrt(max(0.0, 1.0 - al * al)));
+    if (abs(al) < 0.96 && ax < hw - 0.06) discard;
+  }
 
   // wind chop on top of the swell normal: the GITCRAFT FFT tile at two scales, drifting across each other
   // downwind, so the surface never repeats visibly; the fine layer fades with distance (no shimmer at the horizon)
