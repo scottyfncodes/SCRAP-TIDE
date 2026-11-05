@@ -21,6 +21,7 @@ import { ZoomableMap } from './mapView';
 let chartView: { cx: number; cz: number; zoom: number } | null = null;
 import type { Store } from '../state/store';
 import { audio } from '../audio/audio';
+import { SAIL_LABEL, type PointOfSail } from '../game/pointOfSail';
 import { pack } from '../audio/pack';
 
 export interface GameAPI {
@@ -245,7 +246,13 @@ export class UI {
     this.toastsEl = el(`<div class="toasts"></div>`);
     this.wpEl = el(`<div class="waypoint" style="opacity:0"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgba(43,29,20,.55)" stroke="#f4c542" stroke-width="3"/><path d="M22 8 L30 26 L22 22 L14 26 Z" fill="#f4c542"/></svg><div class="wp-dist"></div></div>`);
     this.compassEl = el(`<div class="compass" style="display:none"><svg class="needle" viewBox="0 0 6 46"><path d="M3 0 L6 23 L0 23Z" fill="#c0392b"/><path d="M3 46 L6 23 L0 23Z" fill="#2b1d14"/></svg><div class="cl">X</div></div>`);
-    this.speedEl = el(`<div class="speed"><div class="wind"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="none" stroke="rgba(217,210,191,.35)" stroke-width="1.5"/><path d="M12 3 L17 15 L12 12 L7 15Z" fill="#d9d2bf"/></svg><span>WIND</span></div><div class="kn"><b>0.0</b> kn<small></small></div></div>`);
+    // the wind dial (upwind sailing, #5): camera-relative like the wheel. The red wedge is the no-go cone around where
+    // the wind comes from (its arrow blows in from that side); the boat is your bow. Bow in the red = the sail luffs.
+    this.speedEl = el(`<div class="speed"><div class="wind" role="img" aria-label="Wind dial: keep your bow out of the red wedge"><svg viewBox="-22 -22 44 44">`
+      + `<circle r="20" fill="rgba(13,17,19,.35)" stroke="rgba(217,210,191,.35)" stroke-width="1.5"/>`
+      + `<g class="wd-wind"><path class="wd-nogo" d="M0 0 L-10 -17.32 A20 20 0 0 1 10 -17.32 Z"/><path class="wd-arrow" d="M0 -21 L0 -11 M-3.2 -14.6 L0 -10.6 L3.2 -14.6"/></g>`
+      + `<g class="wd-boat"><path class="wd-bowline" d="M0 -9 L0 -19.5"/><path class="wd-hull" d="M0 -10 C3.6 -5 3.8 3 2.8 8 L-2.8 8 C-3.8 3 -3.6 -5 0 -10Z"/></g>`
+      + `</svg></div><div class="kn"><b>0.0</b> kn</div><small class="pos"></small></div>`);
     this.hitEl = el(`<div class="hit-flash"></div>`);
     this.digEl = el(`<div class="dig-meter" style="opacity:0"><div class="dm-text"></div><div class="dm-bar"><div class="dm-fill"></div></div></div>`);
     this.bannerEl = el(`<div class="region-banner"><div class="rb-inner"><div class="rb-title"></div><div class="rb-sub"></div></div></div>`);
@@ -382,20 +389,30 @@ export class UI {
     this.compassEl.querySelector('.cl')!.textContent = label;
   }
 
-  setSpeed(knots: number | null, windAngle: number, eff: number, motoring = false) {
+  /**
+   * Speed readout and wind dial. `windAngle` is the screen angle the wind blows toward (clockwise from up). With
+   * `sail`, the dial also shows the bow (`heading`, same convention) against the no-go wedge, and the label names the
+   * point of sail; `luff` (0..1) lights the wedge while the sail is luffing.
+   */
+  setSpeed(knots: number | null, windAngle: number, eff: number, motoring = false, sail?: { heading: number; point: PointOfSail; luff: number }) {
     if (knots === null) {
       this.speedEl.style.display = 'none';
       return;
     }
     this.speedEl.style.display = '';
-    (this.speedEl.querySelector('.wind svg') as SVGElement).style.transform = `rotate(${windAngle}rad)`;
+    // the wedge and arrow sit on the side the wind comes from: half a turn from where it blows
+    (this.speedEl.querySelector('.wd-wind') as SVGElement).style.transform = `rotate(${windAngle + Math.PI}rad)`;
+    (this.speedEl.querySelector('.wd-boat') as SVGElement).style.transform = `rotate(${sail ? sail.heading : 0}rad)`;
+    const luffing = !!sail && !motoring && sail.luff > 0.5;
+    this.speedEl.classList.toggle('luffing', luffing);
     const kn = this.speedEl.querySelector('.kn')!;
     kn.querySelector('b')!.textContent = knots.toFixed(1);
-    const sm = kn.querySelector('small')!;
-    const label = motoring ? 'under power' : eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind';
+    const sm = this.speedEl.querySelector('small')!;
+    const pos = sail && !motoring ? SAIL_LABEL[sail.point] : null;
+    const label = motoring ? 'under power' : pos ? pos.label : eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind';
     if (sm.textContent !== label) {
       sm.textContent = label;
-      sm.className = motoring ? 'power' : eff > 0.92 ? 'good' : eff > 0.7 ? '' : 'bad';
+      sm.className = motoring ? 'power' : pos ? pos.cls : eff > 0.92 ? 'good' : eff > 0.7 ? '' : 'bad';
     }
   }
 

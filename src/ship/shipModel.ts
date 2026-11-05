@@ -124,6 +124,8 @@ export function sloopUpgradeFiles(owned: readonly string[]): string[] {
 // the model's base mainsail and its band (the jib, forward of the mast, shares the cloth material)
 const SLOOP_SAIL_CLOTH = 'GC_Cloth_f1e6cc';
 const SLOOP_SAIL_BAND = 'GC_Cloth_c0392b';
+/** every cloth material of the sloop's sails: base mainsail + jib, the mainsail band, the Canvas Mainsail upgrade */
+const SLOOP_CLOTH = [SLOOP_SAIL_CLOTH, SLOOP_SAIL_BAND, 'GC_Cloth_f6ead0'];
 // the model's tiller: on the centreline between the cabin and the transom (rails share the material, far outboard)
 const SLOOP_TILLER_WOOD = 'GC_Wood_9a5a2e';
 const isTiller = (c: THREE.Vector3) => Math.abs(c.x) < 0.15 && c.y > 1.25 && c.y < 2.0 && c.z < -3.25 && c.z > -4.8;
@@ -482,6 +484,8 @@ export function trophyGeometry(id: string): THREE.BufferGeometry {
 export interface ShipParts {
   group: THREE.Group;
   sails: THREE.Mesh[];
+  /** The Trimaran model's own sail cloth, regrouped about the mast so it can shiver when it luffs (null otherwise). */
+  clothPivot: THREE.Object3D | null;
   flag: THREE.Mesh | null;
   anchor: THREE.Object3D;
   rope: THREE.Mesh;
@@ -1078,9 +1082,31 @@ export function buildShip(store: Store): ShipParts {
     crew.push({ id, ...c });
   });
 
+  // the model's sail cloth (its base mainsail and jib, their band, or the Canvas Mainsail upgrade) is baked with the
+  // hull material by material; regroup those meshes under a pivot on the mast so a luffing sail can shake
+  let clothPivot: THREE.Object3D | null = null;
+  if (glb) {
+    group.updateMatrixWorld(true);
+    const cloth: THREE.Mesh[] = [];
+    group.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.isMesh && SLOOP_CLOTH.includes(m.userData.srcMaterial)) cloth.push(m);
+    });
+    if (cloth.length) {
+      const mast = glb.root.getObjectByName('socket_sail')?.getWorldPosition(new THREE.Vector3()) ?? new THREE.Vector3(0, 0, SLOOP_MAST_Z);
+      clothPivot = new THREE.Group();
+      clothPivot.name = 'sail_luff_pivot';
+      clothPivot.position.set(mast.x, 0, mast.z);
+      group.add(clothPivot);
+      clothPivot.updateMatrixWorld(true);
+      for (const m of cloth) clothPivot.attach(m);
+    }
+  }
+
   return {
     group,
     sails,
+    clothPivot,
     flag,
     anchor,
     rope,
@@ -1161,8 +1187,12 @@ function subdivideForBillow(g: THREE.BufferGeometry) {
   g.userData.bb = [minX, minY, maxX - minX || 1, maxY - minY || 1];
 }
 
-/** Billow sails based on wind fill (0..1), flutter flags, spin turbines and radar. */
-export function animateShip(p: ShipParts, t: number, fill: number) {
+/**
+ * Billow sails based on wind fill (0..1), flutter flags, spin turbines and radar. `luff` (0..1) is how hard the sails
+ * are luffing (pointing too close to the wind): the belly collapses and the cloth flogs, worst at the trailing edge.
+ * `windRel` (the wind's direction relative to the bow, radians) streams the flag downwind.
+ */
+export function animateShip(p: ShipParts, t: number, fill: number, luff = 0, windRel = Math.PI) {
   for (const r of p.rotors) r.rotation.z = t * 9;
   if (p.radar?.userData.spin) p.radar.rotation.y = t * 1.6; // the MeshCraft radar's scanner sweeps
   for (const s of p.sails) {
@@ -1176,13 +1206,22 @@ export function animateShip(p: ShipParts, t: number, fill: number) {
       const x = (base[i * 3] - minX) / w;
       const y = (base[i * 3 + 1] - minY) / hgt;
       const belly = Math.sin(x * Math.PI) * Math.sin(Math.min(1, y * 1.2) * Math.PI * 0.9 + 0.1);
-      const luff = (1 - fill) * Math.sin(t * 9 + x * 8 + y * 5) * 0.06;
-      pos.setZ(i, belly * (0.12 + fill * 0.45) * (w * 0.35) + luff);
+      const slack = (1 - fill) * Math.sin(t * 9 + x * 8 + y * 5) * 0.06;
+      // luffing: the belly empties and a ripple runs aft from the mast, the free trailing edge shaking hardest
+      const flog = luff * Math.sin(t * 17 - x * 7 + y * 2.5) * x * (0.5 + 0.5 * y) * w * 0.16;
+      pos.setZ(i, belly * (0.12 + fill * 0.45) * (1 - 0.8 * luff) * (w * 0.35) + slack + flog);
     }
     pos.needsUpdate = true;
     g.computeVertexNormals();
   }
+  if (p.clothPivot) {
+    // the model's sails are rigid meshes: a luffing sail shivers about the mast and its belly empties
+    p.clothPivot.rotation.y = luff * 0.05 * Math.sin(t * 15);
+    p.clothPivot.scale.x = 1 - luff * (0.35 + 0.25 * Math.sin(t * 11));
+  }
   if (p.flag) {
+    // the flag streams downwind from its hoist (+x is the fly; rotation.y = π/2 points it aft)
+    p.flag.rotation.y = windRel - Math.PI / 2;
     const pos = p.flag.geometry.attributes.position;
     const base = p.flag.userData.base as Float32Array;
     for (let i = 0; i < pos.count; i++) {

@@ -323,6 +323,45 @@ const check = (name, ok, detail = '') => {
     await g(() => window.__game.ui.closePanel());
   }
 
+  // ── upwind sailing (#5, Option A): pointing into the wind luffs the sail, the wind dial and label say so and the crew
+  //    speak up; bearing away clears it. Speed follows the unchanged curve (45% dead upwind).
+  {
+    if (await page.$('.reveal')) await dismiss();
+    await teleport({ x: 49, z: 159 }); // open water between Driftholm and the Sunken Tower
+    const UP = -Math.PI * 0.62 + Math.PI;
+    await g((h) => {
+      const G = window.__game;
+      // toasts expire on wall-clock time and headless GL runs game time slowly, so record them as they appear
+      window.__toastLog = [];
+      new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => n.classList?.contains('toast') && window.__toastLog.push(n.textContent))))
+        .observe(document.querySelector('.toasts'), { childList: true });
+      window.__uw = { h };
+      window.__uwPin = setInterval(() => {
+        Object.assign(G.boat, { x: 49, z: 159 }); // hold it in open water; heading and speed evolve normally
+        G.camYaw = window.__uw.h;
+        Object.assign(G.ui.joy, { x: 0, y: 1, active: true });
+      }, 33);
+      G.boat.heading = h;
+    }, UP + 0.08);
+    await playFor(4.5);
+    const up = await g(() => {
+      const G = window.__game, s = document.querySelector('.speed');
+      return { label: s.querySelector('small').textContent, luffing: s.classList.contains('luffing'), speed: G.boat.speed, stat: G.store.stats.speed,
+        toasts: window.__toastLog.splice(0), dial: !!s.querySelector('.wd-nogo') && !!s.querySelector('.wd-hull') };
+    });
+    await page.screenshot({ path: `${out}/upwind_luffing.png` });
+    const want = up.stat * (1 - 0.55 * Math.cos(0.08));
+    check('upwind: 5° off the wind the readout says LUFFING and the wind dial lights its no-go wedge', up.label === 'luffing' && up.luffing && up.dial, JSON.stringify({ label: up.label, luffing: up.luffing }));
+    check('upwind: a crew (or sail) line tells the captain to bear away', up.toasts.some((t) => /left|right/.test(t) && /luff|flogging|pinching|wind/i.test(t)), up.toasts.join(' | '));
+    check('upwind: speed into the wind is unchanged (45% curve, no hard no-go zone)', Math.abs(up.speed - want) / want < 0.08, `${up.speed.toFixed(2)} vs ${want.toFixed(2)} m/s`);
+    await g((h) => { window.__uw.h = h; window.__game.boat.heading = h; }, UP + 1.2);
+    await playFor(2.5);
+    const off = await g(() => ({ label: document.querySelector('.speed small').textContent, luffing: document.querySelector('.speed').classList.contains('luffing'),
+      toasts: window.__toastLog.splice(0) }));
+    check('upwind: bearing away clears the luff and the crew say she is drawing', !off.luffing && off.label === 'beam reach' && off.toasts.some((t) => /draw|fills|full sail|better|moving|quiet|likes/i.test(t)), JSON.stringify(off));
+    await g(() => { clearInterval(window.__uwPin); Object.assign(window.__game.ui.joy, { x: 0, y: 0, active: false }); });
+  }
+
   // ── save & reload
   await g(() => { window.__game.persistShip?.(); window.__game.store.saveNow(); });
   await page.reload();
