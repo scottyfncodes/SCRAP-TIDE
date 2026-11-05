@@ -30,6 +30,7 @@ import { RECIPE_MAP } from '../data/crafting';
 import { CREW_MAP, ROLE_INFO, type CrewRole } from '../data/crew';
 import { pickLine, type LineTrigger } from '../data/characters';
 import { RUMOUR_MAP } from '../data/rumours';
+import { CONTRACT_MAP, MAX_ACTIVE, contractReady, GARDEN_POINTS, gardenStage, freshFood, standingRank, type PortId } from '../data/contracts';
 import { RENOWN, renownTitle, refitStage } from '../data/renown';
 import { sideLead, type Lead } from './leads';
 import { GOALS } from '../data/progress';
@@ -188,6 +189,7 @@ export class Game implements GameAPI {
     this.raiders = new Raiders(this);
     this.placeCastaways();
     this.placeSeaMarks();
+    this.buildGrowth();
     this.foam = new Particles(this.scene, 500, 0.7);
     this.wakeFoam = new Particles(this.scene, 300, WAKE_PUFF);
     this.wakeFoam.fade = 1.6;
@@ -421,7 +423,7 @@ export class Game implements GameAPI {
     const s = this.store;
     const u = UPGRADE_MAP[id];
     if (!u || s.has(id) || (u.requires && !s.has(u.requires))) return;
-    const cost = s.upgradeCost(id);
+    const cost = s.upgradeCost(id, this.dockedSettlement()?.id);
     if (!s.canAfford(cost)) {
       audio.deny();
       return;
@@ -720,6 +722,153 @@ export class Game implements GameAPI {
     this.ui.revealInfo('Old Wren · Driftholm', '“R.F. Redfinch.”', '“So he did come this way.” She turns the lid in her hands for a long time. “He had a trawler once. The Wren. She went down inside the reef ring north of here.”<br><br>Your <b>Captain’s Log</b> now shows two roads: the main goal, and a side lead (the wreck of the Wren). Tap the side lead to follow it. Every part you fit shows on your boat.', 'Fair winds');
   }
 
+  // ───────── contracts, standing and the Green Choice (design bible PR 2.2) ─────────
+  acceptContract(id: string) {
+    const s = this.store.data;
+    const c = CONTRACT_MAP[id];
+    if (!c || s.contracts.done.includes(id) || s.contracts.active.some((a) => a.id === id)) return;
+    if (s.contracts.active.length >= MAX_ACTIVE) return this.ui.toast(`You can carry ${MAX_ACTIVE} jobs at once. Finish one first.`, { color: '#ff6b4a' });
+    s.contracts.active.push({ id, at: this.store.seaNow(), base: s.raidersRepelled });
+    audio.ui();
+    this.ui.toast(`Job taken: ${c.title}`, { color: '#d6a62a', life: 2.5 });
+    this.updateSide(true);
+    this.store.commit();
+  }
+
+  /** Hand in a finished job where it was posted: goods change hands, gold and standing come back. */
+  completeContract(id: string) {
+    const st = this.store;
+    const s = st.data;
+    const c = CONTRACT_MAP[id];
+    const a = s.contracts.active.find((x) => x.id === id);
+    const sett = this.dockedSettlement();
+    if (!c || !a || sett?.id !== c.port || !contractReady(c, a, s, st)) return;
+    if (c.kind === 'deliver') st.consume(c.need.item!, c.need.n ?? 1);
+    s.contracts.active = s.contracts.active.filter((x) => x.id !== id);
+    s.contracts.done.push(id);
+    const r = c.reward;
+    if (r.gold) {
+      s.gold += r.gold;
+      s.stats.goldEarned += r.gold;
+    }
+    for (const m of r.mats ?? []) st.addTo(s.vault, m.id, m.n);
+    if (r.cosmetic && !s.cosmetics.includes(r.cosmetic)) s.cosmetics.push(r.cosmetic);
+    this.addStanding(c.port, r.standing);
+    if (r.growth && !s.flags.includes(`growth_${r.growth}`)) s.flags.push(`growth_${r.growth}`);
+    audio.coins(8);
+    pack.sting('discovery', 0.6);
+    this.crewCheer(300);
+    const got = [r.gold ? `${r.gold} gold` : '', ...(r.mats ?? []).map((m) => `${m.n} ${item(m.id).name}`), r.cosmetic ? COSMETIC_MAP[r.cosmetic].name : ''].filter(Boolean).join(' · ');
+    this.ui.revealInfo(`Job done · ${SETTLEMENT_MAP[c.port].name}`, c.title, `${got ? `<b>${got}</b><br>` : ''}${r.growth ? 'Something new is going up in port. Look for it on your way out.<br>' : ''}Standing here: <b>${standingRank(s.standing[c.port] ?? 0).name}</b>.`, 'Good work');
+    this.buildGrowth();
+    st.commit();
+    this.checkMilestones();
+  }
+
+  private addStanding(port: PortId, n: number) {
+    const s = this.store.data;
+    const before = standingRank(s.standing[port] ?? 0);
+    s.standing[port] = (s.standing[port] ?? 0) + n;
+    const after = standingRank(s.standing[port]!);
+    if (after.name !== before.name) setTimeout(() => this.ui.revealInfo(`Standing · ${SETTLEMENT_MAP[port].name}`, `You are ${after.name}`, after.perk || 'People here know your boat.', 'Earned'), 600);
+  }
+
+  /** The Green Choice: plant something alive in a port garden instead of selling it. */
+  plantGreen(id: string) {
+    const st = this.store;
+    const s = st.data;
+    const sett = this.dockedSettlement();
+    const port = sett?.id as PortId | undefined;
+    if (!port || (port !== 'driftholm' && port !== 'hollow') || !isLiving(id) || !st.consume(id, 1)) return;
+    const pts = GARDEN_POINTS[item(id).rarity];
+    const stage0 = gardenStage(s.garden[port] ?? 0);
+    s.garden[port] = (s.garden[port] ?? 0) + pts;
+    this.addStanding(port, Math.max(1, Math.round(pts / 2)));
+    const stage1 = gardenStage(s.garden[port]!);
+    if (s.trophies.includes(id) && st.countOwned(id) === 0) s.trophies = s.trophies.map((t) => (t === id ? null : t));
+    audio.discover(3);
+    this.crewCheer(300);
+    if (stage1 > stage0) {
+      this.ui.revealInfo(port === 'hollow' ? 'The Roof Garden' : 'The Pier Garden', `It’s growing (${stage1}/3)`, `Green, where there was none. People stop to look at it.<br><br><b>Fresh food:</b> your crew catch and repair ${Math.round((freshFood(s) - 1) * 100)}% better at sea.`, 'Keep it alive');
+      this.buildGrowth();
+    } else this.ui.toast(`Planted: ${item(id).name}. The garden takes it.`, { color: LIVING_GREEN, life: 3 });
+    st.commit();
+    this.rebuildShip();
+  }
+
+  /** Things that grow in port because of you: the gardens, Nori's deck, Dace's second flare. Rebuilt on change. */
+  private growth: THREE.Object3D[] = [];
+  buildGrowth() {
+    for (const o of this.growth) this.scene.remove(o);
+    this.growth = [];
+    const s = this.store.data;
+    const add = (o: THREE.Object3D | null) => {
+      if (!o) return;
+      this.scene.add(o);
+      this.growth.push(o);
+    };
+    const kit = (file: string, node: string, x: number, y: number, z: number, ry = 0, sc = 1) => {
+      const o = model(file, node, { shadows: true });
+      if (o) {
+        o.position.set(x, y, z);
+        o.rotation.y = ry;
+        o.scale.setScalar(sc);
+      }
+      return o;
+    };
+    const planters = (x: number, y: number, z: number, ry: number, stage: number) => {
+      const g = new THREE.Group();
+      g.position.set(x, y, z);
+      g.rotation.y = ry;
+      g.scale.setScalar(1.5); // big enough to read from the water: the point is that people can see it
+      const box = (bx: number, bz: number) => {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.9), new THREE.MeshToonMaterial({ color: 0x6b4a33 }));
+        m.position.set(bx, 0.25, bz);
+        g.add(m);
+        const soil = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.06, 0.75), new THREE.MeshToonMaterial({ color: 0x3a2a1c }));
+        soil.position.set(bx, 0.5, bz);
+        g.add(soil);
+      };
+      const plant = (node: string, px: number, pz: number, sc: number) => {
+        const p = model('tb_flora_kit', node, { shadows: true });
+        if (!p) return;
+        p.position.set(px, 0.5, pz);
+        p.scale.setScalar(sc);
+        g.add(p);
+      };
+      box(-1, 0); box(1, 0);
+      if (stage >= 1) { plant('flora_seedling', -1.3, 0, 1.3); plant('flora_moss', -0.6, 0.1, 1.2); plant('flora_seedling', 0.8, -0.1, 1.2); }
+      if (stage >= 2) { box(-1, 1.3); box(1, 1.3); plant('flora_potted', -1, 1.3, 1.3); plant('flora_flowering', 1, 1.3, 1.3); plant('flora_fruit', 1.4, 0.1, 1.2); }
+      if (stage >= 3) { box(0, -1.3); plant('flora_sapling', 0, -1.3, 1.6); }
+      return g;
+    };
+    // Driftholm: a planter raft off the pier
+    const dh = gardenStage(s.garden.driftholm ?? 0);
+    if (dh > 0) {
+      add(kit('tb_outpost_kit', 'pontoon', 14, 0, 182, 0.2, 1.1));
+      add(planters(14, 0.9, 182, 0.2, dh));
+    }
+    // Rooftop Hollow: up among the forty, on the roof
+    const ho = gardenStage(s.garden.hollow ?? 0);
+    if (ho > 0) add(planters(-238.5, this.drowned.hollowTop - 0.75, -73, 0.5, ho));
+    // Nori's new raft deck, lashed beside the Hollow's dock
+    if (s.flags.includes('growth_hollow_deck')) {
+      add(kit('tb_outpost_kit', 'pontoon', -246, 0, -38, 0.5, 1.2));
+      add(kit('tb_outpost_kit', 'net_tower', -246, 0.6, -38, 0.5, 0.9));
+    }
+    // Dace's second flare: a burning stack on a pontoon off the rig
+    if (s.flags.includes('growth_helios_flare')) {
+      add(kit('tb_outpost_kit', 'pontoon', -566, 0, 196, 0.6, 1.2));
+      const stack = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 11, 8), new THREE.MeshToonMaterial({ color: 0x5c5a54 }));
+      stack.position.set(-566, 6, 196);
+      add(stack);
+      const flame = new THREE.Mesh(new THREE.ConeGeometry(0.9, 3.2, 8), new THREE.MeshBasicMaterial({ color: 0xffa23a }));
+      flame.position.set(-566, 13, 196);
+      add(flame);
+      this.drowned.animators.push((t) => flame.scale.set(1 + Math.sin(t * 9) * 0.12, 1 + Math.sin(t * 6.3) * 0.2, 1 + Math.cos(t * 8) * 0.12));
+    }
+  }
+
   /** Name (or rename) the boat: painted on her stern, and people call her by it. */
   nameShip() {
     const s = this.store;
@@ -904,7 +1053,7 @@ export class Game implements GameAPI {
     if (this.atmo.night > 0.75 && !this.nightSaid) {
       if (this.crewBark('night', { lights: this.store.has('deck_lights') }, { cool: 200 })) this.nightSaid = true;
     } else if (this.atmo.night < 0.3) this.nightSaid = false;
-    if (this.store.hasRole('mechanic') && s.hull < st.hullMax && storm < 0.4) s.hull = Math.min(st.hullMax, s.hull + dt * 0.35);
+    if (this.store.hasRole('mechanic') && s.hull < st.hullMax && storm < 0.4) s.hull = Math.min(st.hullMax, s.hull + dt * 0.35 * freshFood(s)); // the gardens feed the crew
     // Lookout: early warning of a storm cell ahead
     if (this.store.hasRole('lookout')) {
       const ax = b.x + Math.sin(b.heading) * 160, az = b.z + Math.cos(b.heading) * 160;
@@ -919,7 +1068,7 @@ export class Game implements GameAPI {
     // Fishing: rods and/or a Fisher bring in Silverfin while under way
     const rate = st.fishing + (this.store.hasRole('fisher') ? (st.fishing ? 2 : 1) : 0);
     if (rate && b.speed > 1.2) {
-      this.fishTimer += dt * rate;
+      this.fishTimer += dt * rate * freshFood(this.store.data);
       if (this.fishTimer > 40) {
         this.fishTimer = 0;
         const got = this.gain('fish', 1, 'the open sea', { reveal: 'none' });
@@ -1116,7 +1265,18 @@ export class Game implements GameAPI {
     const st = s.stats;
     const g = GOALS[s.data.goal];
     const prev = this.side?.id;
-    this.side = sideLead(s.data, { crossSwell: st.crossSwell, crossStorm: st.crossStorm, heavy: !!st.salvage }, { x: this.boat.x, z: this.boat.z }, g?.target ?? null);
+    const reach = { crossSwell: st.crossSwell, crossStorm: st.crossStorm, heavy: !!st.salvage };
+    const jobs: Lead[] = [];
+    for (const a of s.data.contracts.active) {
+      const c = CONTRACT_MAP[a.id];
+      if (!c) continue;
+      const ready = contractReady(c, a, s.data, s);
+      const home = SETTLEMENT_MAP[c.port];
+      const p = ready || !c.target ? home : c.target;
+      if (!ready && c.target && Math.hypot(c.target.x, c.target.z - 30) > 365 && !reach.crossSwell) continue;
+      jobs.push({ id: c.id, kind: 'contract', label: ready ? `Paid at ${home.name}: ${c.title}` : `Job: ${c.title}`, x: p.x, z: p.z });
+    }
+    this.side = sideLead(s.data, reach, { x: this.boat.x, z: this.boat.z }, g?.target ?? null, jobs);
     if (!this.side && s.data.followSide) s.data.followSide = false;
     if (force || prev !== this.side?.id) this.ui.refreshHUD();
   }
@@ -1248,14 +1408,15 @@ export class Game implements GameAPI {
   buyFuel() {
     const s = this.store, st = s.stats;
     const sett = this.dockedSettlement();
-    const price = sett?.fuelPrice ?? 3;
+    const price = (sett?.fuelPrice ?? 3) * (sett ? s.portDiscount(sett.id) : 1);
     const want = Math.floor(st.fuelCap - s.data.fuel);
     const n = Math.min(want, Math.floor(s.data.gold / price));
     if (n <= 0) return audio.deny();
-    s.data.gold -= n * price;
+    const paid = Math.ceil(n * price);
+    s.data.gold -= paid;
     s.data.fuel += n;
     audio.coins(4);
-    this.ui.toast(`Filled ${n} fuel for ${n * price}g`, { color: '#f2b825' });
+    this.ui.toast(`Filled ${n} fuel for ${paid}g`, { color: '#f2b825' });
     s.commit();
   }
 
@@ -1268,7 +1429,8 @@ export class Game implements GameAPI {
       if (!s.consume('hull_patch', 1)) return audio.deny();
       s.data.hull = Math.min(st.hullMax, s.data.hull + 35);
     } else {
-      const cost = Math.ceil(miss * 0.6);
+      const sett = this.dockedSettlement();
+      const cost = Math.ceil(miss * 0.6 * (sett ? s.portDiscount(sett.id) : 1));
       if (s.data.gold < cost) return audio.deny();
       s.data.gold -= cost;
       s.data.hull = st.hullMax;

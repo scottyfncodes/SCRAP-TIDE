@@ -6,7 +6,7 @@ import { CREW_MAP } from '../data/crew';
 
 export interface Lead {
   id: string;
-  kind: 'rumour' | 'map' | 'castaway' | 'salvage';
+  kind: 'rumour' | 'map' | 'castaway' | 'salvage' | 'contract';
   label: string;
   x: number;
   z: number;
@@ -41,12 +41,14 @@ export function openRumours(d: LeadState, n = 3) {
  * castaway still adrift, then the nearest salvage site never worked. Leads the boat can't reach yet are skipped, and
  * so is anything sitting on the main goal's own marker (`main`), so the two roads always differ.
  */
-export function sideLead(d: LeadState, reach: LeadReach, from: { x: number; z: number }, main?: { x: number; z: number } | null): Lead | null {
+export function sideLead(d: LeadState, reach: LeadReach, from: { x: number; z: number }, main?: { x: number; z: number } | null, jobs: Lead[] = []): Lead | null {
   const clear = (x: number, z: number) => !main || Math.hypot(x - main.x, z - main.z) > 60;
   for (const id of d.pinned) {
     const r = RUMOUR_MAP[id];
     if (r && !rumourDone(r, d) && canReach(r.region, reach) && clear(r.x, r.z)) return { id: r.id, kind: 'rumour', label: r.label, x: r.x, z: r.z };
   }
+  // jobs you took on a settlement board (PR 2.2): where the work is, or home to be paid once it's done
+  for (const j of jobs) if (clear(j.x, j.z)) return j;
   for (const m of TREASURE_MAPS) {
     const isl = ISLAND_MAP[m.island];
     if (d.mapsCompleted.includes(m.id) || !m.fragments.every((f) => d.fragments.includes(f)) || !canReach(isl.region, reach)) continue;

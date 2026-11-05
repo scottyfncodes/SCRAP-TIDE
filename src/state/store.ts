@@ -9,7 +9,7 @@ import { seaAdvance } from './seaClock';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 
 export interface Stack {
   id: string;
@@ -70,6 +70,10 @@ export interface SaveData {
   followSide: boolean; // the waypoint follows the Captain's Log side lead instead of the main goal
   shipName: string; // what you called her ('' until named)
   renown: string; // the highest renown title announced so far (data/renown.ts)
+  // v4: contracts, port standing and gardens (design bible PR 2.2)
+  contracts: { active: { id: string; at: number; base: number }[]; done: string[] };
+  standing: Partial<Record<'driftholm' | 'hollow' | 'helios', number>>;
+  garden: Partial<Record<'driftholm' | 'hollow' | 'helios', number>>;
 }
 
 export function freshSave(): SaveData {
@@ -120,6 +124,9 @@ export function freshSave(): SaveData {
     followSide: false,
     shipName: '',
     renown: 'drifter',
+    contracts: { active: [], done: [] },
+    standing: {},
+    garden: {},
   };
 }
 
@@ -143,6 +150,12 @@ function migrate(raw: any): SaveData {
   if (raw.hull === undefined) merged.hull = VESSELS[merged.vessel].hull;
   merged.pinned = Array.isArray(raw.pinned) ? raw.pinned.filter((x: unknown) => typeof x === 'string') : [];
   merged.followSide = raw.followSide === true;
+  merged.contracts = {
+    active: (raw.contracts?.active ?? []).filter((a: any) => a && typeof a.id === 'string'),
+    done: (raw.contracts?.done ?? []).filter((x: unknown) => typeof x === 'string'),
+  };
+  merged.standing = { ...(raw.standing ?? {}) };
+  merged.garden = { ...(raw.garden ?? {}) };
   merged.shipName = typeof raw.shipName === 'string' ? raw.shipName.slice(0, 24) : '';
   merged.quest = liveStep(merged.quest); // the First Voyage was shortened: retired steps continue from their successor
   merged.goal = Math.max(0, Math.min(GOALS.length - 1, merged.goal | 0));
@@ -390,10 +403,17 @@ export class Store {
     return n - left;
   }
   /** What an upgrade costs you: Marlo's welcome price (PR 2.1, the first-voyage starter part) halves the gold. */
-  upgradeCost(id: string): Cost {
+  upgradeCost(id: string, port?: string | null): Cost {
     const u = UPGRADE_MAP[id];
     if (!u) return { gold: Infinity };
-    return this.data.flags.includes(`welcome_${id}`) ? { ...u.cost, gold: Math.ceil(u.cost.gold / 2) } : u.cost;
+    let gold = this.data.flags.includes(`welcome_${id}`) ? Math.ceil(u.cost.gold / 2) : u.cost.gold;
+    if (port) gold = Math.round(gold * this.portDiscount(port)); // standing with the port that fits it
+    return { ...u.cost, gold };
+  }
+  /** Price multiplier at a port for parts, fuel and repairs, from your standing there (data/contracts.ts). */
+  portDiscount(port: string) {
+    const n = this.data.standing[port as 'driftholm'] ?? 0;
+    return n >= 9 ? 0.8 : n >= 5 ? 0.9 : 1;
   }
   canAfford(c: Cost) {
     if (this.data.gold < c.gold) return false;
