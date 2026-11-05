@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-05T15:44:13.073Z",
-  "commit": "446a03c4cfdaf2170c989ce6e90ae49a59066b3c",
-  "branch": "balance/sea-clock",
+  "generated_at": "2026-11-05T17:03:02.130Z",
+  "commit": "719bce1b9b9b7cc4a7feed143552aefddd65e41e",
+  "branch": "balance/stormwall",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
@@ -650,8 +650,8 @@
         "armor": 0,
         "storm": 0.5,
         "in_stormwall": true,
-        "hull_lost_per_minute": 5.28,
-        "minutes_to_swamp_from_full": 30.3
+        "hull_lost_per_minute": 14.4,
+        "minutes_to_swamp_from_full": 11.11
       },
       {
         "vessel": "ironwake",
@@ -670,8 +670,8 @@
         "armor": 0,
         "storm": 0.7,
         "in_stormwall": true,
-        "hull_lost_per_minute": 15.84,
-        "minutes_to_swamp_from_full": 10.1
+        "hull_lost_per_minute": 43.2,
+        "minutes_to_swamp_from_full": 3.7
       },
       {
         "vessel": "ironwake",
@@ -690,8 +690,8 @@
         "armor": 0,
         "storm": 0.9,
         "in_stormwall": true,
-        "hull_lost_per_minute": 26.4,
-        "minutes_to_swamp_from_full": 6.06
+        "hull_lost_per_minute": 72,
+        "minutes_to_swamp_from_full": 2.22
       },
       {
         "vessel": "ironwake",
@@ -710,8 +710,8 @@
         "armor": 0,
         "storm": 1,
         "in_stormwall": true,
-        "hull_lost_per_minute": 31.68,
-        "minutes_to_swamp_from_full": 5.05
+        "hull_lost_per_minute": 86.4,
+        "minutes_to_swamp_from_full": 1.85
       },
       {
         "vessel": "ironwake",
@@ -750,8 +750,8 @@
         "armor": 0,
         "storm": 0.5,
         "in_stormwall": true,
-        "hull_lost_per_minute": 5.28,
-        "minutes_to_swamp_from_full": 34.09
+        "hull_lost_per_minute": 14.4,
+        "minutes_to_swamp_from_full": 12.5
       },
       {
         "vessel": "ironwake",
@@ -770,8 +770,8 @@
         "armor": 0,
         "storm": 0.7,
         "in_stormwall": true,
-        "hull_lost_per_minute": 15.84,
-        "minutes_to_swamp_from_full": 11.36
+        "hull_lost_per_minute": 43.2,
+        "minutes_to_swamp_from_full": 4.17
       },
       {
         "vessel": "ironwake",
@@ -790,8 +790,8 @@
         "armor": 0,
         "storm": 0.9,
         "in_stormwall": true,
-        "hull_lost_per_minute": 26.4,
-        "minutes_to_swamp_from_full": 6.82
+        "hull_lost_per_minute": 72,
+        "minutes_to_swamp_from_full": 2.5
       },
       {
         "vessel": "ironwake",
@@ -810,8 +810,8 @@
         "armor": 0,
         "storm": 1,
         "in_stormwall": true,
-        "hull_lost_per_minute": 31.68,
-        "minutes_to_swamp_from_full": 5.68
+        "hull_lost_per_minute": 86.4,
+        "minutes_to_swamp_from_full": 2.08
       },
       {
         "vessel": "ironwake",
@@ -850,8 +850,8 @@
         "armor": 0.45,
         "storm": 0.5,
         "in_stormwall": true,
-        "hull_lost_per_minute": 2.9,
-        "minutes_to_swamp_from_full": 75.76
+        "hull_lost_per_minute": 7.92,
+        "minutes_to_swamp_from_full": 27.78
       },
       {
         "vessel": "ironwake",
@@ -870,8 +870,8 @@
         "armor": 0.45,
         "storm": 0.7,
         "in_stormwall": true,
-        "hull_lost_per_minute": 8.71,
-        "minutes_to_swamp_from_full": 25.25
+        "hull_lost_per_minute": 23.76,
+        "minutes_to_swamp_from_full": 9.26
       },
       {
         "vessel": "ironwake",
@@ -890,8 +890,8 @@
         "armor": 0.45,
         "storm": 0.9,
         "in_stormwall": true,
-        "hull_lost_per_minute": 14.52,
-        "minutes_to_swamp_from_full": 15.15
+        "hull_lost_per_minute": 39.6,
+        "minutes_to_swamp_from_full": 5.56
       },
       {
         "vessel": "ironwake",
@@ -910,8 +910,8 @@
         "armor": 0.45,
         "storm": 1,
         "in_stormwall": true,
-        "hull_lost_per_minute": 17.42,
-        "minutes_to_swamp_from_full": 12.63
+        "hull_lost_per_minute": 47.52,
+        "minutes_to_swamp_from_full": 4.63
       }
     ],
     "collisions": [
@@ -960,5 +960,5 @@
       "mechanic_hull_per_minute_calm": 21
     }
   },
-  "result_hash": "4eb1f385"
+  "result_hash": "81c11b04"
 }

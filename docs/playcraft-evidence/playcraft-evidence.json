@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T16:00:46.301Z",
-  "commit": "da5f6ee8e2e00b5a9e7c4a0f715400ce90ef8db4",
+  "generated_at": "2026-11-05T17:27:28.172Z",
+  "commit": "719bce1b9b9b7cc4a7feed143552aefddd65e41e",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {
@@ -78,9 +78,9 @@
     {
       "id": "tb.difficulty.9",
       "category": "difficulty",
-      "status": "partial",
+      "status": "pass",
       "title": "Simulation: the Stormwall as the final barrier",
-      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
+      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 21.0 s inside the wall on average, losing 6.6-29.7% hull (best fit to stock sail). The Trimaran was swamped trying in 3/3 runs.",
       "source": "docs/playcraft-evidence/simulations/voyages.json"
     },
     {
@@ -108,12 +108,6 @@
       "evidence_class": "simulation-measured"
     },
     {
-      "severity": "medium",
-      "title": "The Stormwall barely scratches the Ironwake",
-      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
-      "evidence_class": "simulation-measured"
-    },
-    {
       "severity": "info",
       "title": "No progression dead ends found",
       "detail": "Every one of the 21 upgrades and vessels became affordable and was bought through the game in every seed at every winch skill (hits_1, hits_2, hits_3).",
@@ -123,6 +117,12 @@
       "severity": "info",
       "title": "Captain's Log in the campaign stops at g_raiders",
       "detail": "Completed: g_salvage → g_engine → g_crew → g_trimaran → g_helios → g_meridian. The raider goal needs real-time combat, which the simulation does not play; nothing after it can complete here (purchases are not gated by goals).",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "info",
+      "title": "Stormwall crossing",
+      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 21.0 s inside the wall on average, losing 6.6-29.7% hull (best fit to stock sail). The Trimaran was swamped trying in 3/3 runs.",
       "evidence_class": "simulation-measured"
     },
     {

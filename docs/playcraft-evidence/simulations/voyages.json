@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-05T15:44:13.073Z",
-  "commit": "446a03c4cfdaf2170c989ce6e90ae49a59066b3c",
-  "branch": "balance/sea-clock",
+  "generated_at": "2026-11-05T17:03:02.130Z",
+  "commit": "719bce1b9b9b7cc4a7feed143552aefddd65e41e",
+  "branch": "balance/stormwall",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
@@ -211,16 +211,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.92,
-      "distance_m": 1140.96,
+      "minutes": 1.09,
+      "distance_m": 1140.9,
       "hull": {
         "start": 160,
-        "end": 151.23,
-        "lost": 8.77
+        "end": 133.48,
+        "lost": 26.52
       },
       "fuel_used": 0,
-      "storm_exposure_s": 15,
-      "stormwall_s": 6.5,
+      "storm_exposure_s": 25.43,
+      "stormwall_s": 16.93,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -243,8 +243,12 @@
           -662
         ],
         [
-          -186,
-          -861
+          -184,
+          -850
+        ],
+        [
+          -196,
+          -934
         ]
       ]
     },
@@ -263,16 +267,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.92,
-      "distance_m": 1140.96,
+      "minutes": 1.09,
+      "distance_m": 1140.9,
       "hull": {
         "start": 220,
-        "end": 215.18,
-        "lost": 4.82
+        "end": 205.41,
+        "lost": 14.59
       },
       "fuel_used": 0,
-      "storm_exposure_s": 15,
-      "stormwall_s": 6.5,
+      "storm_exposure_s": 25.43,
+      "stormwall_s": 16.93,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -295,8 +299,12 @@
           -662
         ],
         [
-          -186,
-          -861
+          -184,
+          -850
+        ],
+        [
+          -196,
+          -934
         ]
       ]
     },
@@ -312,16 +320,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 1.11,
-      "distance_m": 1140.85,
+      "minutes": 1.33,
+      "distance_m": 1140.96,
       "hull": {
         "start": 160,
-        "end": 149.08,
-        "lost": 10.92
+        "end": 126.94,
+        "lost": 33.06
       },
       "fuel_used": 0,
-      "storm_exposure_s": 18.13,
-      "stormwall_s": 7.8,
+      "storm_exposure_s": 31.07,
+      "stormwall_s": 20.73,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -348,8 +356,12 @@
           -690
         ],
         [
-          -185,
-          -854
+          -184,
+          -845
+        ],
+        [
+          -193,
+          -917
         ]
       ]
     },
@@ -363,16 +375,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 1.54,
-      "distance_m": 1140.93,
+      "minutes": 1.85,
+      "distance_m": 1140.86,
       "hull": {
         "start": 160,
-        "end": 144.45,
-        "lost": 15.55
+        "end": 112.51,
+        "lost": 47.49
       },
       "fuel_used": 0,
-      "storm_exposure_s": 25,
-      "stormwall_s": 10.73,
+      "storm_exposure_s": 43.57,
+      "stormwall_s": 29.27,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -411,8 +423,16 @@
           -811
         ],
         [
-          -197,
-          -946
+          -189,
+          -881
+        ],
+        [
+          -195,
+          -926
+        ],
+        [
+          -201,
+          -971
         ]
       ]
     },
@@ -746,16 +766,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.92,
-      "distance_m": 1140.96,
+      "minutes": 1.09,
+      "distance_m": 1140.9,
       "hull": {
         "start": 160,
-        "end": 151.23,
-        "lost": 8.77
+        "end": 133.48,
+        "lost": 26.52
       },
       "fuel_used": 0,
-      "storm_exposure_s": 15,
-      "stormwall_s": 6.5,
+      "storm_exposure_s": 25.43,
+      "stormwall_s": 16.93,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -778,8 +798,12 @@
           -662
         ],
         [
-          -186,
-          -861
+          -184,
+          -850
+        ],
+        [
+          -196,
+          -934
         ]
       ]
     },
@@ -798,16 +822,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.92,
-      "distance_m": 1140.96,
+      "minutes": 1.09,
+      "distance_m": 1140.9,
       "hull": {
         "start": 220,
-        "end": 215.18,
-        "lost": 4.82
+        "end": 205.41,
+        "lost": 14.59
       },
       "fuel_used": 0,
-      "storm_exposure_s": 15,
-      "stormwall_s": 6.5,
+      "storm_exposure_s": 25.43,
+      "stormwall_s": 16.93,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -830,8 +854,12 @@
           -662
         ],
         [
-          -186,
-          -861
+          -184,
+          -850
+        ],
+        [
+          -196,
+          -934
         ]
       ]
     },
@@ -847,16 +875,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 1.11,
-      "distance_m": 1140.85,
+      "minutes": 1.33,
+      "distance_m": 1140.96,
       "hull": {
         "start": 160,
-        "end": 149.08,
-        "lost": 10.92
+        "end": 126.94,
+        "lost": 33.06
       },
       "fuel_used": 0,
-      "storm_exposure_s": 18.13,
-      "stormwall_s": 7.8,
+      "storm_exposure_s": 31.07,
+      "stormwall_s": 20.73,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -883,8 +911,12 @@
           -690
         ],
         [
-          -185,
-          -854
+          -184,
+          -845
+        ],
+        [
+          -193,
+          -917
         ]
       ]
     },
@@ -898,16 +930,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 1.54,
-      "distance_m": 1140.93,
+      "minutes": 1.85,
+      "distance_m": 1140.86,
       "hull": {
         "start": 160,
-        "end": 144.45,
-        "lost": 15.55
+        "end": 112.51,
+        "lost": 47.49
       },
       "fuel_used": 0,
-      "storm_exposure_s": 25,
-      "stormwall_s": 10.73,
+      "storm_exposure_s": 43.57,
+      "stormwall_s": 29.27,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -946,8 +978,16 @@
           -811
         ],
         [
-          -197,
-          -946
+          -189,
+          -881
+        ],
+        [
+          -195,
+          -926
+        ],
+        [
+          -201,
+          -971
         ]
       ]
     },
@@ -1281,16 +1321,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.92,
-      "distance_m": 1140.96,
+      "minutes": 1.09,
+      "distance_m": 1140.9,
       "hull": {
         "start": 160,
-        "end": 151.23,
-        "lost": 8.77
+        "end": 133.48,
+        "lost": 26.52
       },
       "fuel_used": 0,
-      "storm_exposure_s": 15,
-      "stormwall_s": 6.5,
+      "storm_exposure_s": 25.43,
+      "stormwall_s": 16.93,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -1313,8 +1353,12 @@
           -662
         ],
         [
-          -186,
-          -861
+          -184,
+          -850
+        ],
+        [
+          -196,
+          -934
         ]
       ]
     },
@@ -1333,16 +1377,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.92,
-      "distance_m": 1140.96,
+      "minutes": 1.09,
+      "distance_m": 1140.9,
       "hull": {
         "start": 220,
-        "end": 215.18,
-        "lost": 4.82
+        "end": 205.41,
+        "lost": 14.59
       },
       "fuel_used": 0,
-      "storm_exposure_s": 15,
-      "stormwall_s": 6.5,
+      "storm_exposure_s": 25.43,
+      "stormwall_s": 16.93,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -1365,8 +1409,12 @@
           -662
         ],
         [
-          -186,
-          -861
+          -184,
+          -850
+        ],
+        [
+          -196,
+          -934
         ]
       ]
     },
@@ -1382,16 +1430,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 1.11,
-      "distance_m": 1140.85,
+      "minutes": 1.33,
+      "distance_m": 1140.96,
       "hull": {
         "start": 160,
-        "end": 149.08,
-        "lost": 10.92
+        "end": 126.94,
+        "lost": 33.06
       },
       "fuel_used": 0,
-      "storm_exposure_s": 18.13,
-      "stormwall_s": 7.8,
+      "storm_exposure_s": 31.07,
+      "stormwall_s": 20.73,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -1418,8 +1466,12 @@
           -690
         ],
         [
-          -185,
-          -854
+          -184,
+          -845
+        ],
+        [
+          -193,
+          -917
         ]
       ]
     },
@@ -1433,16 +1485,16 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 1.54,
-      "distance_m": 1140.93,
+      "minutes": 1.85,
+      "distance_m": 1140.86,
       "hull": {
         "start": 160,
-        "end": 144.45,
-        "lost": 15.55
+        "end": 112.51,
+        "lost": 47.49
       },
       "fuel_used": 0,
-      "storm_exposure_s": 25,
-      "stormwall_s": 10.73,
+      "storm_exposure_s": 43.57,
+      "stormwall_s": 29.27,
       "max_storm": 1,
       "flags": [
         "reached_spire"
@@ -1481,8 +1533,16 @@
           -811
         ],
         [
-          -197,
-          -946
+          -189,
+          -881
+        ],
+        [
+          -195,
+          -926
+        ],
+        [
+          -201,
+          -971
         ]
       ]
     },
@@ -1618,5 +1678,5 @@
       ]
     }
   ],
-  "result_hash": "28308027"
+  "result_hash": "54f4d65d"
 }

@@ -1,6 +1,6 @@
 # TIDEBREAKERS · PLAYCRAFT evidence pack
 
-Generated 2026-11-05T16:00:46.301Z from commit `446a03c` (simulations) / `f59beb6` (playtest bot). Game source unchanged by this pack.
+Generated 2026-11-05T17:27:28.172Z from commit `719bce1` (simulations) / `719bce1` (playtest bot). Game source unchanged by this pack.
 
 **Where this was measured:** headless Chromium with software WebGL (SwiftShader) in a Linux container. Nothing here was observed on a real phone.
 
@@ -15,7 +15,7 @@ Generated 2026-11-05T16:00:46.301Z from commit `446a03c` (simulations) / `f59beb
 
 ## Playtest bot (runtime-observed)
 
-Production build (`dist/`), iPhone-sized viewport, seed 1105, 3 run(s). Reproducible: **yes (identical fingerprints)**. Wall time per run: 46.3s, 41.7s, 41.3s.
+Production build (`dist/`), iPhone-sized viewport, seed 1105, 3 run(s). Reproducible: **yes (identical fingerprints)**. Wall time per run: 46.3s, 42.8s, 41.1s.
 
 | Check | Result | Detail |
 |---|---|---|
@@ -234,9 +234,9 @@ Half throttle: dinghy/outboard 40.6 m per fuel, dinghy/twin 46.3 m per fuel, slo
 | sloop | no plating | 100 | 9.6 | 28.8 | 57.6 | 115.2 | 1.7 |
 | sloop | Copper-Banded Hull | 120 | 9.6 | 28.8 | 57.6 | 115.2 | 2.1 |
 | sloop | Riveted Armour | 160 | 5.3 | 15.8 | 31.7 | 63.4 | 5.0 |
-| ironwake | no plating | 160 | 9.6 | 28.8 | 57.6 | 31.7 | 2.8 |
-| ironwake | Copper-Banded Hull | 180 | 9.6 | 28.8 | 57.6 | 31.7 | 3.1 |
-| ironwake | Riveted Armour | 220 | 5.3 | 15.8 | 31.7 | 17.4 | 6.9 |
+| ironwake | no plating | 160 | 9.6 | 28.8 | 57.6 | 86.4 | 2.8 |
+| ironwake | Copper-Banded Hull | 180 | 9.6 | 28.8 | 57.6 | 86.4 | 3.1 |
+| ironwake | Riveted Armour | 220 | 5.3 | 15.8 | 31.7 | 47.5 | 6.9 |
 
 Values are hull lost per minute. Wreck strikes (Game.damage at speed × 1.4): no plating at 4 m/s −5.6, no plating at 8 m/s −11.2, no plating at 12 m/s −16.8, no plating at 16 m/s −22.4, Riveted Armour at 4 m/s −3.1, Riveted Armour at 8 m/s −6.2, Riveted Armour at 12 m/s −9.2, Riveted Armour at 16 m/s −12.3. A Mechanic repairs 21 hull/min in calm water.
 
@@ -246,24 +246,24 @@ Values are hull lost per minute. Wreck strikes (Game.damage at speed × 1.4): no
 |---|---|---|---|---|---|---|---|---|
 | Driftholm → Rig Helios | 1 | yes | 0.6 | 480 | 0 / 100 | 0 | 0 |  |
 | Driftholm → Rig Helios (Skiff: should be turned back by the swell) | 1 | no (1/3) | 5 | 741 | 0 / 60 | 0 | 0 |  |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 1 | yes | 0.9 | 1141 | 8.8 / 160 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 1 | yes | 0.9 | 1141 | 4.8 / 220 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 1 | yes | 1.1 | 1141 | 10.9 / 160 | 18.1 | 7.8 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, stock sail) | 1 | yes | 1.5 | 1141 | 15.6 / 160 | 25 | 10.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 1 | yes | 1.1 | 1141 | 26.5 / 160 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 1 | yes | 1.1 | 1141 | 14.6 / 220 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 1 | yes | 1.3 | 1141 | 33.1 / 160 | 31.1 | 20.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, stock sail) | 1 | yes | 1.9 | 1141 | 47.5 / 160 | 43.6 | 29.3 | reached_spire |
 | Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall) | 1 | no (2/3) | 4.5 | 1407 | 100 / 100 | 211.2 | 199.0 |  |
 | Driftholm → Rig Helios | 2 | yes | 0.6 | 480 | 0 / 100 | 0 | 0 |  |
 | Driftholm → Rig Helios (Skiff: should be turned back by the swell) | 2 | no (1/3) | 5 | 741 | 0 / 60 | 0 | 0 |  |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 2 | yes | 0.9 | 1141 | 8.8 / 160 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 2 | yes | 0.9 | 1141 | 4.8 / 220 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 2 | yes | 1.1 | 1141 | 10.9 / 160 | 18.1 | 7.8 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, stock sail) | 2 | yes | 1.5 | 1141 | 15.6 / 160 | 25 | 10.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 2 | yes | 1.1 | 1141 | 26.5 / 160 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 2 | yes | 1.1 | 1141 | 14.6 / 220 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 2 | yes | 1.3 | 1141 | 33.1 / 160 | 31.1 | 20.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, stock sail) | 2 | yes | 1.9 | 1141 | 47.5 / 160 | 43.6 | 29.3 | reached_spire |
 | Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall) | 2 | no (2/3) | 4.5 | 1407 | 100 / 100 | 211.2 | 199.0 |  |
 | Driftholm → Rig Helios | 3 | yes | 0.6 | 480 | 0 / 100 | 0 | 0 |  |
 | Driftholm → Rig Helios (Skiff: should be turned back by the swell) | 3 | no (1/3) | 5 | 741 | 0 / 60 | 0 | 0 |  |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 3 | yes | 0.9 | 1141 | 8.8 / 160 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 3 | yes | 0.9 | 1141 | 4.8 / 220 | 15 | 6.5 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 3 | yes | 1.1 | 1141 | 10.9 / 160 | 18.1 | 7.8 | reached_spire |
-| Driftholm → Meridian Spire (Ironwake, stock sail) | 3 | yes | 1.5 | 1141 | 15.6 / 160 | 25 | 10.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig) | 3 | yes | 1.1 | 1141 | 26.5 / 160 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour) | 3 | yes | 1.1 | 1141 | 14.6 / 220 | 25.4 | 16.9 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, Canvas Mainsail) | 3 | yes | 1.3 | 1141 | 33.1 / 160 | 31.1 | 20.7 | reached_spire |
+| Driftholm → Meridian Spire (Ironwake, stock sail) | 3 | yes | 1.9 | 1141 | 47.5 / 160 | 43.6 | 29.3 | reached_spire |
 | Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall) | 3 | no (2/3) | 4.5 | 1407 | 100 / 100 | 211.2 | 199.0 |  |
 
 Every seed produced the same voyage: storm cells start from fixed positions and nothing on these routes is random, so the seeds confirm determinism rather than add samples.
@@ -293,9 +293,9 @@ The Skiff was stopped by the open swell in 3/3 runs and the Trimaran by the Stor
 | Severity | Finding | Evidence | Class |
 |---|---|---|---|
 | medium | Difficulty/pacing spike: commission Scrap Trimaran | 19 sourcing actions for this step vs at most 7 for any earlier step (campaign, winch 2/3). | simulation-measured |
-| medium | The Stormwall barely scratches the Ironwake | Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call. | simulation-measured |
 | info | No progression dead ends found | Every one of the 21 upgrades and vessels became affordable and was bought through the game in every seed at every winch skill (hits_1, hits_2, hits_3). | simulation-measured |
 | info | Captain's Log in the campaign stops at g_raiders | Completed: g_salvage → g_engine → g_crew → g_trimaran → g_helios → g_meridian. The raider goal needs real-time combat, which the simulation does not play; nothing after it can complete here (purchases are not gated by goals). | simulation-measured |
+| info | Stormwall crossing | Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 21.0 s inside the wall on average, losing 6.6-29.7% hull (best fit to stock sail). The Trimaran was swamped trying in 3/3 runs. | simulation-measured |
 | info | Storm damage | A full storm (storm 1.0) costs the stock Skiff 57.6 hull/min (swamped from full in 1.0 min); the Trimaran 57.6 hull/min (1.7 min). Riveted Armour cuts it by 45.0%. Below storm 0.4 there is no damage. | simulation-measured |
 | info | Crafting margins are small | Hull Patch Kit: +2g (20%); Alloy Plate: +2g (11%); Engine Parts: +3g (14%); Strip Wire: +1g (11%). Not worth farming. | simulation-measured |
 | info | Sailing never needs tacking | Stock Skiff: 6.5 m/s on a beam reach, 5.8 downwind, 2.9 dead into the wind (45%). Every boat can sail straight upwind at under half speed; wind shapes speed, not routes. | simulation-measured |
@@ -317,7 +317,7 @@ No gameplay, balance or content was changed to produce any of this. Findings are
 | progression | pass | Simulation: upgrades measurably change play (sail speed, turning, range) |
 | difficulty | pass | Balance is measured: headless simulations of economy, fuel, storms and voyages on the real game systems |
 | difficulty | partial | Simulation: pacing between purchases (difficulty spikes) |
-| difficulty | partial | Simulation: the Stormwall as the final barrier |
+| difficulty | pass | Simulation: the Stormwall as the final barrier |
 | difficulty | pass | Simulation: no economy exploits through crafting, fuel or repair |
 | player_experience | pass | Playtest bot: time from casting off to the first upgrade (game time) |
 

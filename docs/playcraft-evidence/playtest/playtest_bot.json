@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-05T15:29:50.106Z",
-  "commit": "f59beb6f9b5bd575dbbb4c5d0759486f21b05206",
-  "branch": "balance/sea-clock",
+  "generated_at": "2026-11-05T17:22:04.062Z",
+  "commit": "719bce1b9b9b7cc4a7feed143552aefddd65e41e",
+  "branch": "balance/stormwall",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite preview (dist/ production build)",
@@ -97,18 +97,18 @@
         {
           "event": "title → SET SAIL → welcome dismissed; harness takes the clock",
           "game_t": 0,
-          "wall_ms": 6675,
+          "wall_ms": 7297,
           "x": 6,
           "z": 168,
           "speed": 0,
           "gold": 15,
           "docked": true,
-          "boot_ms": 4425
+          "boot_ms": 3936
         },
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 0.3,
-          "wall_ms": 13875,
+          "wall_ms": 15318,
           "x": 6,
           "z": 167.8,
           "speed": 1.07,
@@ -118,7 +118,7 @@
         {
           "event": "beacon in reach: SALVAGE offered",
           "game_t": 32.83,
-          "wall_ms": 18214,
+          "wall_ms": 19337,
           "x": 64.9,
           "z": 135.5,
           "speed": 1.4,
@@ -132,7 +132,7 @@
         {
           "event": "winch opened",
           "game_t": 32.87,
-          "wall_ms": 22861,
+          "wall_ms": 23548,
           "x": 64.9,
           "z": 135.5,
           "speed": 1.36,
@@ -142,7 +142,7 @@
         {
           "event": "winch done; haul in the hold",
           "game_t": 36.6,
-          "wall_ms": 25255,
+          "wall_ms": 25264,
           "x": 65.2,
           "z": 135.6,
           "speed": 0,
@@ -160,7 +160,7 @@
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 37.4,
-          "wall_ms": 25325,
+          "wall_ms": 25334,
           "x": 65.2,
           "z": 135.6,
           "speed": 0,
@@ -170,7 +170,7 @@
         {
           "event": "DOCK offered at the Driftholm pier",
           "game_t": 58.2,
-          "wall_ms": 27447,
+          "wall_ms": 27712,
           "x": 10.5,
           "z": 159.7,
           "speed": 1.75,
@@ -180,7 +180,7 @@
         {
           "event": "docked; hold unloaded to the vault",
           "game_t": 59.53,
-          "wall_ms": 27525,
+          "wall_ms": 27823,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -191,7 +191,7 @@
         {
           "event": "sold the haul to Pip",
           "game_t": 60.63,
-          "wall_ms": 28110,
+          "wall_ms": 28527,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -201,7 +201,7 @@
         {
           "event": "upgrade installed",
           "game_t": 61.57,
-          "wall_ms": 28228,
+          "wall_ms": 28632,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -212,7 +212,7 @@
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 0.3,
-          "wall_ms": 41504,
+          "wall_ms": 41565,
           "x": 6,
           "z": 167.8,
           "speed": 1.49,
@@ -222,7 +222,7 @@
         {
           "event": "sailed the outbound leg again",
           "game_t": 42.7,
-          "wall_ms": 46325,
+          "wall_ms": 46279,
           "x": 73.2,
           "z": 137.9,
           "speed": 1.98,
@@ -251,7 +251,7 @@
     {
       "run": 2,
       "seed": 1105,
-      "wall_s": 41.7,
+      "wall_s": 42.8,
       "checks": [
         {
           "name": "voyage starts docked at Driftholm on the first-voyage quest",
@@ -334,18 +334,18 @@
         {
           "event": "title → SET SAIL → welcome dismissed; harness takes the clock",
           "game_t": 0,
-          "wall_ms": 4581,
+          "wall_ms": 4382,
           "x": 6,
           "z": 168,
           "speed": 0,
           "gold": 15,
           "docked": true,
-          "boot_ms": 2852
+          "boot_ms": 2666
         },
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 0.3,
-          "wall_ms": 11717,
+          "wall_ms": 11392,
           "x": 6,
           "z": 167.8,
           "speed": 1.07,
@@ -355,7 +355,7 @@
         {
           "event": "beacon in reach: SALVAGE offered",
           "game_t": 32.83,
-          "wall_ms": 15462,
+          "wall_ms": 15438,
           "x": 64.9,
           "z": 135.5,
           "speed": 1.4,
@@ -369,7 +369,7 @@
         {
           "event": "winch opened",
           "game_t": 32.87,
-          "wall_ms": 18846,
+          "wall_ms": 19224,
           "x": 64.9,
           "z": 135.5,
           "speed": 1.36,
@@ -379,7 +379,7 @@
         {
           "event": "winch done; haul in the hold",
           "game_t": 36.6,
-          "wall_ms": 19551,
+          "wall_ms": 20707,
           "x": 65.2,
           "z": 135.6,
           "speed": 0,
@@ -397,7 +397,7 @@
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 37.4,
-          "wall_ms": 20722,
+          "wall_ms": 20777,
           "x": 65.2,
           "z": 135.6,
           "speed": 0,
@@ -407,7 +407,7 @@
         {
           "event": "DOCK offered at the Driftholm pier",
           "game_t": 58.2,
-          "wall_ms": 22658,
+          "wall_ms": 23220,
           "x": 10.5,
           "z": 159.7,
           "speed": 1.75,
@@ -417,7 +417,7 @@
         {
           "event": "docked; hold unloaded to the vault",
           "game_t": 59.53,
-          "wall_ms": 22728,
+          "wall_ms": 23298,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -428,7 +428,7 @@
         {
           "event": "sold the haul to Pip",
           "game_t": 60.63,
-          "wall_ms": 22853,
+          "wall_ms": 23447,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -438,7 +438,7 @@
         {
           "event": "upgrade installed",
           "game_t": 61.57,
-          "wall_ms": 22930,
+          "wall_ms": 23558,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -449,7 +449,7 @@
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 0.3,
-          "wall_ms": 36752,
+          "wall_ms": 37906,
           "x": 6,
           "z": 167.8,
           "speed": 1.49,
@@ -459,7 +459,7 @@
         {
           "event": "sailed the outbound leg again",
           "game_t": 42.7,
-          "wall_ms": 41715,
+          "wall_ms": 42755,
           "x": 73.2,
           "z": 137.9,
           "speed": 1.98,
@@ -488,7 +488,7 @@
     {
       "run": 3,
       "seed": 1105,
-      "wall_s": 41.3,
+      "wall_s": 41.1,
       "checks": [
         {
           "name": "voyage starts docked at Driftholm on the first-voyage quest",
@@ -571,18 +571,18 @@
         {
           "event": "title → SET SAIL → welcome dismissed; harness takes the clock",
           "game_t": 0,
-          "wall_ms": 4619,
+          "wall_ms": 4587,
           "x": 6,
           "z": 168,
           "speed": 0,
           "gold": 15,
           "docked": true,
-          "boot_ms": 2839
+          "boot_ms": 2999
         },
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 0.3,
-          "wall_ms": 11155,
+          "wall_ms": 12057,
           "x": 6,
           "z": 167.8,
           "speed": 1.07,
@@ -592,7 +592,7 @@
         {
           "event": "beacon in reach: SALVAGE offered",
           "game_t": 32.83,
-          "wall_ms": 15148,
+          "wall_ms": 15822,
           "x": 64.9,
           "z": 135.5,
           "speed": 1.4,
@@ -606,7 +606,7 @@
         {
           "event": "winch opened",
           "game_t": 32.87,
-          "wall_ms": 18620,
+          "wall_ms": 18957,
           "x": 64.9,
           "z": 135.5,
           "speed": 1.36,
@@ -616,7 +616,7 @@
         {
           "event": "winch done; haul in the hold",
           "game_t": 36.6,
-          "wall_ms": 20365,
+          "wall_ms": 20460,
           "x": 65.2,
           "z": 135.6,
           "speed": 0,
@@ -634,7 +634,7 @@
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 37.4,
-          "wall_ms": 20428,
+          "wall_ms": 20527,
           "x": 65.2,
           "z": 135.6,
           "speed": 0,
@@ -644,7 +644,7 @@
         {
           "event": "DOCK offered at the Driftholm pier",
           "game_t": 58.2,
-          "wall_ms": 22613,
+          "wall_ms": 22531,
           "x": 10.5,
           "z": 159.7,
           "speed": 1.75,
@@ -654,7 +654,7 @@
         {
           "event": "docked; hold unloaded to the vault",
           "game_t": 59.53,
-          "wall_ms": 22697,
+          "wall_ms": 22600,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -665,7 +665,7 @@
         {
           "event": "sold the haul to Pip",
           "game_t": 60.63,
-          "wall_ms": 22832,
+          "wall_ms": 22747,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -675,7 +675,7 @@
         {
           "event": "upgrade installed",
           "game_t": 61.57,
-          "wall_ms": 22940,
+          "wall_ms": 22853,
           "x": 6,
           "z": 168,
           "speed": 0,
@@ -686,7 +686,7 @@
         {
           "event": "cast off (first drag on the wheel)",
           "game_t": 0.3,
-          "wall_ms": 36610,
+          "wall_ms": 36113,
           "x": 6,
           "z": 167.8,
           "speed": 1.49,
@@ -696,7 +696,7 @@
         {
           "event": "sailed the outbound leg again",
           "game_t": 42.7,
-          "wall_ms": 41325,
+          "wall_ms": 41070,
           "x": 73.2,
           "z": 137.9,
           "speed": 1.98,
