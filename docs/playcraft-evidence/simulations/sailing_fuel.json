@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-11-05T12:19:29.868Z",
-  "commit": "c0aab91a0e59c88500459b001f1f99cd13e5fcbe",
+  "generated_at": "2026-11-05T12:52:05.729Z",
+  "commit": "e0502fc7da739ed8f81f99a3ba0a67fcd23dba16",
   "branch": "playcraft/evidence",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
   "seed": 20261105,
-  "quick": true,
-  "boot_ms": 4324,
+  "quick": false,
+  "boot_ms": 0,
   "simulation": "sailing_fuel",
   "evidence_class": "simulation-measured",
   "method": "The real frame loop (Game.update → updateSail) stepped at a fixed 1/30 s, the wheel held toward a heading exactly as the UI sets it, in a clear lane of open water (the boat is put back at the lane start when it reaches the end; distance is the game’s own stats.distance). Storms forced off. Fuel runs go into the wind so the sails add as little as possible.",
@@ -26,12 +26,13 @@
           "seconds_to_empty": 181.83,
           "fuel_used": 40,
           "fuel_per_minute": 13.2,
-          "distance_m": 1623.94,
-          "metres_per_fuel": 40.6,
+          "distance_m": 1623.79,
+          "metres_per_fuel": 40.59,
           "mean_speed": 8.93,
           "collisions": 0
         },
-        "range_into_wind_m": 1623.94
+        "range_into_wind_m": 1623.79,
+        "range_is": "run dry"
       },
       {
         "vessel": "dinghy",
@@ -43,15 +44,16 @@
         "fuel_use_stat_per_s": 0.22,
         "engine_top_speed_stat": 9,
         "measured": {
-          "seconds_to_empty": 363.67,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 19.8,
           "fuel_per_minute": 6.6,
-          "distance_m": 1630.15,
-          "metres_per_fuel": 40.75,
-          "mean_speed": 4.48,
+          "distance_m": 803.65,
+          "metres_per_fuel": 40.59,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 1630.15
+        "range_into_wind_m": 1623.54,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "dinghy",
@@ -71,7 +73,8 @@
           "mean_speed": 8.95,
           "collisions": 0
         },
-        "range_into_wind_m": 2504.89
+        "range_into_wind_m": 2504.89,
+        "range_is": "run dry"
       },
       {
         "vessel": "dinghy",
@@ -83,15 +86,16 @@
         "fuel_use_stat_per_s": 0.14,
         "engine_top_speed_stat": 9,
         "measured": {
-          "seconds_to_empty": 559.47,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 12.87,
           "fuel_per_minute": 4.29,
-          "distance_m": 2511.25,
-          "metres_per_fuel": 62.78,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 62.44,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 2511.25
+        "range_into_wind_m": 2497.75,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "dinghy",
@@ -111,7 +115,8 @@
           "mean_speed": 8.97,
           "collisions": 0
         },
-        "range_into_wind_m": 4078.39
+        "range_into_wind_m": 4078.39,
+        "range_is": "run dry"
       },
       {
         "vessel": "dinghy",
@@ -124,14 +129,15 @@
         "engine_top_speed_stat": 9,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 99,
+          "fuel_used": 19.8,
           "fuel_per_minute": 6.6,
-          "distance_m": 4043.65,
-          "metres_per_fuel": 40.84,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 40.59,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 4043.65
+        "range_into_wind_m": 4058.84,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "dinghy",
@@ -151,7 +157,8 @@
           "mean_speed": 8.98,
           "collisions": 0
         },
-        "range_into_wind_m": 6281.29
+        "range_into_wind_m": 6281.29,
+        "range_is": "run dry"
       },
       {
         "vessel": "dinghy",
@@ -164,14 +171,15 @@
         "engine_top_speed_stat": 9,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 64.35,
+          "fuel_used": 12.87,
           "fuel_per_minute": 4.29,
-          "distance_m": 4043.65,
-          "metres_per_fuel": 62.84,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 62.44,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 4043.65
+        "range_into_wind_m": 6244.37,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "dinghy",
@@ -191,7 +199,8 @@
           "mean_speed": 13.85,
           "collisions": 0
         },
-        "range_into_wind_m": 1846.9
+        "range_into_wind_m": 1846.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "dinghy",
@@ -203,15 +212,16 @@
         "fuel_use_stat_per_s": 0.3,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 266.67,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 27,
           "fuel_per_minute": 9,
-          "distance_m": 1856.78,
-          "metres_per_fuel": 46.42,
-          "mean_speed": 6.96,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 46.3,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 1856.78
+        "range_into_wind_m": 1852.03,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "dinghy",
@@ -231,7 +241,8 @@
           "mean_speed": 13.9,
           "collisions": 0
         },
-        "range_into_wind_m": 2852.1
+        "range_into_wind_m": 2852.1,
+        "range_is": "run dry"
       },
       {
         "vessel": "dinghy",
@@ -243,15 +254,16 @@
         "fuel_use_stat_per_s": 0.2,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 410.27,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 17.55,
           "fuel_per_minute": 5.85,
-          "distance_m": 2861.98,
-          "metres_per_fuel": 71.55,
-          "mean_speed": 6.98,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 71.23,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 2861.98
+        "range_into_wind_m": 2849.28,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "dinghy",
@@ -271,7 +283,8 @@
           "mean_speed": 13.94,
           "collisions": 0
         },
-        "range_into_wind_m": 4646.9
+        "range_into_wind_m": 4646.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "dinghy",
@@ -283,15 +296,16 @@
         "fuel_use_stat_per_s": 0.3,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 666.67,
-          "fuel_used": 100,
+          "seconds_to_empty": null,
+          "fuel_used": 27,
           "fuel_per_minute": 9,
-          "distance_m": 4656.78,
-          "metres_per_fuel": 46.57,
-          "mean_speed": 6.99,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 46.3,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 4656.78
+        "range_into_wind_m": 4630.07,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "dinghy",
@@ -311,7 +325,8 @@
           "mean_speed": 13.96,
           "collisions": 0
         },
-        "range_into_wind_m": 7159.9
+        "range_into_wind_m": 7159.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "dinghy",
@@ -324,14 +339,15 @@
         "engine_top_speed_stat": 14,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 87.75,
+          "fuel_used": 17.55,
           "fuel_per_minute": 5.85,
-          "distance_m": 6290.12,
-          "metres_per_fuel": 71.68,
-          "mean_speed": 6.99,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 71.23,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 6290.12
+        "range_into_wind_m": 7123.19,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "sloop",
@@ -351,7 +367,8 @@
           "mean_speed": 8.93,
           "collisions": 0
         },
-        "range_into_wind_m": 1623.79
+        "range_into_wind_m": 1623.79,
+        "range_is": "run dry"
       },
       {
         "vessel": "sloop",
@@ -363,15 +380,16 @@
         "fuel_use_stat_per_s": 0.22,
         "engine_top_speed_stat": 9,
         "measured": {
-          "seconds_to_empty": 363.67,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 19.8,
           "fuel_per_minute": 6.6,
-          "distance_m": 1630.15,
-          "metres_per_fuel": 40.75,
-          "mean_speed": 4.48,
+          "distance_m": 803.65,
+          "metres_per_fuel": 40.59,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 1630.15
+        "range_into_wind_m": 1623.54,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "sloop",
@@ -391,7 +409,8 @@
           "mean_speed": 8.95,
           "collisions": 0
         },
-        "range_into_wind_m": 2504.89
+        "range_into_wind_m": 2504.89,
+        "range_is": "run dry"
       },
       {
         "vessel": "sloop",
@@ -403,15 +422,16 @@
         "fuel_use_stat_per_s": 0.14,
         "engine_top_speed_stat": 9,
         "measured": {
-          "seconds_to_empty": 559.47,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 12.87,
           "fuel_per_minute": 4.29,
-          "distance_m": 2511.25,
-          "metres_per_fuel": 62.78,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 62.44,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 2511.25
+        "range_into_wind_m": 2497.75,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "sloop",
@@ -431,7 +451,8 @@
           "mean_speed": 8.97,
           "collisions": 0
         },
-        "range_into_wind_m": 4078.39
+        "range_into_wind_m": 4078.39,
+        "range_is": "run dry"
       },
       {
         "vessel": "sloop",
@@ -444,14 +465,15 @@
         "engine_top_speed_stat": 9,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 99,
+          "fuel_used": 19.8,
           "fuel_per_minute": 6.6,
-          "distance_m": 4043.65,
-          "metres_per_fuel": 40.84,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 40.59,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 4043.65
+        "range_into_wind_m": 4058.84,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "sloop",
@@ -471,7 +493,8 @@
           "mean_speed": 8.98,
           "collisions": 0
         },
-        "range_into_wind_m": 6281.29
+        "range_into_wind_m": 6281.29,
+        "range_is": "run dry"
       },
       {
         "vessel": "sloop",
@@ -484,14 +507,15 @@
         "engine_top_speed_stat": 9,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 64.35,
+          "fuel_used": 12.87,
           "fuel_per_minute": 4.29,
-          "distance_m": 4043.65,
-          "metres_per_fuel": 62.84,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 62.44,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 4043.65
+        "range_into_wind_m": 6244.37,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "sloop",
@@ -511,7 +535,8 @@
           "mean_speed": 13.85,
           "collisions": 0
         },
-        "range_into_wind_m": 1846.9
+        "range_into_wind_m": 1846.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "sloop",
@@ -523,15 +548,16 @@
         "fuel_use_stat_per_s": 0.3,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 266.67,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 27,
           "fuel_per_minute": 9,
-          "distance_m": 1856.78,
-          "metres_per_fuel": 46.42,
-          "mean_speed": 6.96,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 46.3,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 1856.78
+        "range_into_wind_m": 1852.03,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "sloop",
@@ -551,7 +577,8 @@
           "mean_speed": 13.9,
           "collisions": 0
         },
-        "range_into_wind_m": 2852.1
+        "range_into_wind_m": 2852.1,
+        "range_is": "run dry"
       },
       {
         "vessel": "sloop",
@@ -563,15 +590,16 @@
         "fuel_use_stat_per_s": 0.2,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 410.27,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 17.55,
           "fuel_per_minute": 5.85,
-          "distance_m": 2861.98,
-          "metres_per_fuel": 71.55,
-          "mean_speed": 6.98,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 71.23,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 2861.98
+        "range_into_wind_m": 2849.28,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "sloop",
@@ -591,7 +619,8 @@
           "mean_speed": 13.94,
           "collisions": 0
         },
-        "range_into_wind_m": 4646.9
+        "range_into_wind_m": 4646.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "sloop",
@@ -603,15 +632,16 @@
         "fuel_use_stat_per_s": 0.3,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 666.67,
-          "fuel_used": 100,
+          "seconds_to_empty": null,
+          "fuel_used": 27,
           "fuel_per_minute": 9,
-          "distance_m": 4656.78,
-          "metres_per_fuel": 46.57,
-          "mean_speed": 6.99,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 46.3,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 4656.78
+        "range_into_wind_m": 4630.07,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "sloop",
@@ -631,7 +661,8 @@
           "mean_speed": 13.96,
           "collisions": 0
         },
-        "range_into_wind_m": 7159.9
+        "range_into_wind_m": 7159.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "sloop",
@@ -644,14 +675,15 @@
         "engine_top_speed_stat": 14,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 87.75,
+          "fuel_used": 17.55,
           "fuel_per_minute": 5.85,
-          "distance_m": 6290.12,
-          "metres_per_fuel": 71.68,
-          "mean_speed": 6.99,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 71.23,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 6290.12
+        "range_into_wind_m": 7123.19,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "ironwake",
@@ -671,7 +703,8 @@
           "mean_speed": 8.93,
           "collisions": 0
         },
-        "range_into_wind_m": 1623.79
+        "range_into_wind_m": 1623.79,
+        "range_is": "run dry"
       },
       {
         "vessel": "ironwake",
@@ -683,15 +716,16 @@
         "fuel_use_stat_per_s": 0.22,
         "engine_top_speed_stat": 9,
         "measured": {
-          "seconds_to_empty": 363.67,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 19.8,
           "fuel_per_minute": 6.6,
-          "distance_m": 1630.15,
-          "metres_per_fuel": 40.75,
-          "mean_speed": 4.48,
+          "distance_m": 803.65,
+          "metres_per_fuel": 40.59,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 1630.15
+        "range_into_wind_m": 1623.54,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "ironwake",
@@ -711,7 +745,8 @@
           "mean_speed": 8.95,
           "collisions": 0
         },
-        "range_into_wind_m": 2504.89
+        "range_into_wind_m": 2504.89,
+        "range_is": "run dry"
       },
       {
         "vessel": "ironwake",
@@ -723,15 +758,16 @@
         "fuel_use_stat_per_s": 0.14,
         "engine_top_speed_stat": 9,
         "measured": {
-          "seconds_to_empty": 559.47,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 12.87,
           "fuel_per_minute": 4.29,
-          "distance_m": 2511.25,
-          "metres_per_fuel": 62.78,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 62.44,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 2511.25
+        "range_into_wind_m": 2497.75,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "ironwake",
@@ -751,7 +787,8 @@
           "mean_speed": 8.97,
           "collisions": 0
         },
-        "range_into_wind_m": 4078.39
+        "range_into_wind_m": 4078.39,
+        "range_is": "run dry"
       },
       {
         "vessel": "ironwake",
@@ -764,14 +801,15 @@
         "engine_top_speed_stat": 9,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 99,
+          "fuel_used": 19.8,
           "fuel_per_minute": 6.6,
-          "distance_m": 4043.65,
-          "metres_per_fuel": 40.84,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 40.59,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 4043.65
+        "range_into_wind_m": 4058.84,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "ironwake",
@@ -791,7 +829,8 @@
           "mean_speed": 8.98,
           "collisions": 0
         },
-        "range_into_wind_m": 6281.29
+        "range_into_wind_m": 6281.29,
+        "range_is": "run dry"
       },
       {
         "vessel": "ironwake",
@@ -804,14 +843,15 @@
         "engine_top_speed_stat": 9,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 64.35,
+          "fuel_used": 12.87,
           "fuel_per_minute": 4.29,
-          "distance_m": 4043.65,
-          "metres_per_fuel": 62.84,
-          "mean_speed": 4.49,
+          "distance_m": 803.65,
+          "metres_per_fuel": 62.44,
+          "mean_speed": 4.46,
           "collisions": 0
         },
-        "range_into_wind_m": 4043.65
+        "range_into_wind_m": 6244.37,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "ironwake",
@@ -831,7 +871,8 @@
           "mean_speed": 13.85,
           "collisions": 0
         },
-        "range_into_wind_m": 1846.9
+        "range_into_wind_m": 1846.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "ironwake",
@@ -843,15 +884,16 @@
         "fuel_use_stat_per_s": 0.3,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 266.67,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 27,
           "fuel_per_minute": 9,
-          "distance_m": 1856.78,
-          "metres_per_fuel": 46.42,
-          "mean_speed": 6.96,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 46.3,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 1856.78
+        "range_into_wind_m": 1852.03,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "ironwake",
@@ -871,7 +913,8 @@
           "mean_speed": 13.9,
           "collisions": 0
         },
-        "range_into_wind_m": 2852.1
+        "range_into_wind_m": 2852.1,
+        "range_is": "run dry"
       },
       {
         "vessel": "ironwake",
@@ -883,15 +926,16 @@
         "fuel_use_stat_per_s": 0.2,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 410.27,
-          "fuel_used": 40,
+          "seconds_to_empty": null,
+          "fuel_used": 17.55,
           "fuel_per_minute": 5.85,
-          "distance_m": 2861.98,
-          "metres_per_fuel": 71.55,
-          "mean_speed": 6.98,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 71.23,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 2861.98
+        "range_into_wind_m": 2849.28,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "ironwake",
@@ -911,7 +955,8 @@
           "mean_speed": 13.94,
           "collisions": 0
         },
-        "range_into_wind_m": 4646.9
+        "range_into_wind_m": 4646.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "ironwake",
@@ -923,15 +968,16 @@
         "fuel_use_stat_per_s": 0.3,
         "engine_top_speed_stat": 14,
         "measured": {
-          "seconds_to_empty": 666.67,
-          "fuel_used": 100,
+          "seconds_to_empty": null,
+          "fuel_used": 27,
           "fuel_per_minute": 9,
-          "distance_m": 4656.78,
-          "metres_per_fuel": 46.57,
-          "mean_speed": 6.99,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 46.3,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 4656.78
+        "range_into_wind_m": 4630.07,
+        "range_is": "tank × measured m/fuel"
       },
       {
         "vessel": "ironwake",
@@ -951,7 +997,8 @@
           "mean_speed": 13.96,
           "collisions": 0
         },
-        "range_into_wind_m": 7159.9
+        "range_into_wind_m": 7159.9,
+        "range_is": "run dry"
       },
       {
         "vessel": "ironwake",
@@ -964,14 +1011,15 @@
         "engine_top_speed_stat": 14,
         "measured": {
           "seconds_to_empty": null,
-          "fuel_used": 87.75,
+          "fuel_used": 17.55,
           "fuel_per_minute": 5.85,
-          "distance_m": 6290.12,
-          "metres_per_fuel": 71.68,
-          "mean_speed": 6.99,
+          "distance_m": 1250.12,
+          "metres_per_fuel": 71.23,
+          "mean_speed": 6.95,
           "collisions": 0
         },
-        "range_into_wind_m": 6290.12
+        "range_into_wind_m": 7123.19,
+        "range_is": "tank × measured m/fuel"
       }
     ],
     "power": [
@@ -1050,7 +1098,7 @@
             "0deg_off_downwind": 0.12,
             "45deg_off_downwind": 6.04,
             "90deg_off_downwind": 0.1,
-            "135deg_off_downwind": 0.47,
+            "135deg_off_downwind": 0.06,
             "180deg_off_downwind": 2.92
           }
         },
@@ -1156,40 +1204,40 @@
           "vessel": "dinghy",
           "rudder": "stock rudder",
           "turn_stat": 1.15,
-          "seconds_to_turn_180": 4.67
+          "seconds_to_turn_180": 4.63
         },
         {
           "vessel": "dinghy",
           "rudder": "Ash-Wood Rudder",
           "turn_stat": 1.67,
-          "seconds_to_turn_180": 3.33
+          "seconds_to_turn_180": 3.3
         },
         {
           "vessel": "sloop",
           "rudder": "stock rudder",
           "turn_stat": 0.95,
-          "seconds_to_turn_180": 5.57
+          "seconds_to_turn_180": 5.5
         },
         {
           "vessel": "sloop",
           "rudder": "Ash-Wood Rudder",
           "turn_stat": 1.38,
-          "seconds_to_turn_180": 3.97
+          "seconds_to_turn_180": 3.93
         },
         {
           "vessel": "ironwake",
           "rudder": "stock rudder",
           "turn_stat": 0.85,
-          "seconds_to_turn_180": 6.13
+          "seconds_to_turn_180": 6.07
         },
         {
           "vessel": "ironwake",
           "rudder": "Ash-Wood Rudder",
           "turn_stat": 1.23,
-          "seconds_to_turn_180": 4.4
+          "seconds_to_turn_180": 4.33
         }
       ]
     }
   },
-  "result_hash": "a9fe109a"
+  "result_hash": "21bcabaf"
 }

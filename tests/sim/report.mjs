@@ -97,6 +97,19 @@ if (vIron.length) {
 for (const e of ex.results.filter((x) => x.exploit)) finding(/clock/.test(e.check) ? 'low' : 'medium', `Exploit: ${e.check}`, e.note ?? JSON.stringify(e), 'simulation-measured');
 const minor = ex.results.filter((x) => !x.exploit && x.margin_pct > 0);
 if (minor.length) finding('info', 'Crafting margins are small', minor.map((m) => `${m.check.replace(/^craft | then sell$/g, '')}: +${m.gain_per_craft}g (${m.margin_pct}%)`).join('; ') + '. Not worth farming.', 'simulation-measured');
+{
+  // winch reward steps: does each extra hit pay? (Salvage.finish: rolls = round(site.rolls × (0.35 + 0.22 × hits)))
+  const flat = [];
+  for (const site of [...new Set(yMin.map((r) => r.site))]) {
+    const g = (h) => yMin.find((r) => r.site === site && r.hits === h && !r.salvager)?.gold_per_haul.mean ?? 0;
+    for (const h of [1, 2]) if (g(h + 1) > 0 && Math.abs(g(h + 1) - g(h)) / g(h + 1) < 0.08) flat.push(`${yMin.find((r) => r.site === site).name}: ${h}/3 → ${f1(g(h))}g vs ${h + 1}/3 → ${f1(g(h + 1))}g`);
+  }
+  if (flat.length) finding('medium', 'An extra winch hit sometimes pays nothing', `${flat.join('; ')}. Loot rolls round to the same number for these hit counts, so landing the extra pull in the green earns no more on average.`, 'simulation-measured');
+}
+{
+  const sp = sf.results.sailing.speed.find((r) => r.vessel === 'dinghy' && r.sail === 'stock')?.measured_speed_by_heading;
+  if (sp) finding('info', 'Sailing never needs tacking', `Stock Skiff: ${f1(sp['90deg_off_downwind'])} m/s on a beam reach, ${f1(sp['0deg_off_downwind'])} downwind, ${f1(sp['180deg_off_downwind'])} dead into the wind (${Math.round((sp['180deg_off_downwind'] / sp['90deg_off_downwind']) * 100)}%). Every boat can sail straight upwind at under half speed; wind shapes speed, not routes.`, 'simulation-measured');
+}
 if (yOverflow.length) finding('low', 'Small holds overflow on good hauls', yOverflow.map((r) => `${r.name} on the ${r.vessel} (${r.hold_slots} slots): ${Math.round((r.hauls_with_overflow / r.hauls) * 100)}% of perfect hauls lose items`).join('; '), 'simulation-measured');
 
 // ─────────────────────────────── PLAYCRAFT evidence items (status from data) ───────────────────────────────
@@ -190,6 +203,11 @@ L.push(`Values are hull lost per minute. Wreck strikes (Game.damage at speed × 
 
 L.push('### Voyages under the real frame loop', '');
 L.push(table(['Voyage', 'Seed', 'Arrived', 'Minutes', 'Distance (m)', 'Hull lost', 'Storm s', 'Stormwall s', 'Flags'], vo.results.map((v) => [v.name, v.seed, v.arrived ? 'yes' : `no (${v.waypoints_reached}/${v.of})`, f1(v.minutes), Math.round(v.distance_m), `${f1(v.hull.lost)} / ${v.hull.start}`, f1(v.storm_exposure_s), f1(v.stormwall_s), v.flags.join(', ')])), '');
+{
+  const byName = {};
+  for (const v of vo.results) (byName[v.name] ??= new Set()).add(JSON.stringify([v.arrived, v.minutes, v.hull.lost]));
+  if (Object.values(byName).every((x) => x.size === 1)) L.push('Every seed produced the same voyage: storm cells start from fixed positions and nothing on these routes is random, so the seeds confirm determinism rather than add samples.', '');
+}
 L.push(`The Skiff was stopped by the open swell in ${vSkiff.filter((v) => !v.arrived).length}/${vSkiff.length} runs and the Trimaran by the Stormwall in ${vSloopWall.filter((v) => !v.arrived).length}/${vSloopWall.length}, as designed. The Trimaran reached Rig Helios in ${vHelios.filter((v) => v.arrived).length}/${vHelios.length}.`, '');
 
 L.push('### Exploit checks', '');

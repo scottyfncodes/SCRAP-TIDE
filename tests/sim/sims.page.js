@@ -498,12 +498,13 @@ export function exploits() {
 }
 
 // ── 5. sailing, fuel and range: the real frame loop (Game.update) ──────────────────────────────────────────
-function clearLane(len = 240) {
+/** A stretch of open water at least `len` m long along heading `h` (no land, reef, swell, wreck or pier). */
+function clearLane(h, len = 240) {
   const cs = G.drowned.colliders;
   for (let r = 60; r < 330; r += 15) {
     for (let a = 0; a < Math.PI * 2; a += Math.PI / 12) {
       const x0 = WORLD.shallowsCenter.x + Math.sin(a) * r, z0 = WORLD.shallowsCenter.z + Math.cos(a) * r;
-      for (let h = 0; h < Math.PI * 2; h += Math.PI / 6) {
+      {
         let ok = true;
         for (let s = -30; s <= len + 30 && ok; s += 4) {
           const x = x0 + Math.sin(h) * s, z = z0 + Math.cos(h) * s;
@@ -515,8 +516,9 @@ function clearLane(len = 240) {
       }
     }
   }
-  throw new Error('no clear lane found');
+  throw new Error(`no clear lane found for heading ${h}`);
 }
+const LANES = new Map();
 let LANE = null;
 
 /** Hold the wheel toward a world heading (camera-relative, exactly as the game reads the wheel). */
@@ -528,7 +530,9 @@ function holdHeading(h, mag = 1) {
 }
 
 function sailRun({ seconds, heading, throttle = 1, engine = false, storm = 0, timeOfDay = 0.5, stopWhenEmpty = false, measureFrom = 0 }) {
-  LANE ??= clearLane();
+  const key = Math.round(((heading % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) * 100);
+  if (!LANES.has(key)) LANES.set(key, clearLane(heading));
+  LANE = LANES.get(key);
   Object.assign(G.boat, { x: LANE.x, z: LANE.z, heading, speed: 0, docked: false, anchored: false, busy: false });
   G.camYaw = heading;
   G.mode = 'sail';
@@ -619,6 +623,7 @@ export function sailingImpact() {
         setState({ vessel, upgrades: ups });
         const r = sailRun({ seconds: 45, heading: WORLD.wind.dir + (off * Math.PI) / 180, measureFrom: 30 });
         byAngle[`${off}deg_off_downwind`] = r.mean_speed;
+        if (r.collisions) byAngle[`${off}deg_collisions`] = r.collisions;
       }
       setState({ vessel, upgrades: ups });
       rows.push({ vessel, sail: label, speed_stat: r2(S.stats.speed), measured_speed_by_heading: byAngle });

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T12:51:39.985Z",
-  "commit": "e0502fc7da739ed8f81f99a3ba0a67fcd23dba16",
+  "generated_at": "2026-11-05T13:02:28.910Z",
+  "commit": "15a16d9f1d2f3ba17b9e3b11512f942ed623a172",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {
@@ -48,7 +48,7 @@
       "category": "progression",
       "status": "pass",
       "title": "Simulation: every upgrade and vessel is reachable; the campaign completes (simulation-measured)",
-      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 255 sourcing actions (60 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
+      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 238 sourcing actions (57 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -56,7 +56,7 @@
       "category": "progression",
       "status": "pass",
       "title": "Simulation: upgrades measurably change play (sail speed, turning, range, hull, winch window)",
-      "detail": "sail speed by tier on the Skiff: stock 0.1 → Canvas Mainsail 0.1 → Cutter Rig 0.2 m/s (beam reach); 180° turn stock rudder 4.7s vs Ash-Wood Rudder 3.3s",
+      "detail": "sail speed by tier on the Skiff: stock 0.1 → Canvas Mainsail 0.1 → Cutter Rig 0.2 m/s (beam reach); 180° turn stock rudder 4.6s vs Ash-Wood Rudder 3.3s",
       "source": "docs/playcraft-evidence/simulations/sailing_fuel.json"
     },
     {
@@ -72,7 +72,7 @@
       "category": "difficulty",
       "status": "partial",
       "title": "Simulation: pacing between purchases (difficulty spikes)",
-      "detail": "commission Scrap Trimaran: 26 actions vs ≤11 before; commission Ironwake Expedition Cat: 61 actions vs ≤26 before",
+      "detail": "commission Scrap Trimaran: 32 actions vs ≤10 before",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -80,7 +80,7 @@
       "category": "difficulty",
       "status": "partial",
       "title": "Simulation: the Stormwall as the final barrier",
-      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 2/2 runs, 6.5 s inside the wall on average, losing 0.7-1.4% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 1/1 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
+      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
       "source": "docs/playcraft-evidence/simulations/voyages.json"
     },
     {
@@ -104,19 +104,13 @@
     {
       "severity": "medium",
       "title": "Difficulty/pacing spike: commission Scrap Trimaran",
-      "detail": "26 sourcing actions for this step vs at most 11 for any earlier step (campaign, winch 2/3).",
-      "evidence_class": "simulation-measured"
-    },
-    {
-      "severity": "medium",
-      "title": "Difficulty/pacing spike: commission Ironwake Expedition Cat",
-      "detail": "61 sourcing actions for this step vs at most 26 for any earlier step (campaign, winch 2/3).",
+      "detail": "32 sourcing actions for this step vs at most 10 for any earlier step (campaign, winch 2/3).",
       "evidence_class": "simulation-measured"
     },
     {
       "severity": "medium",
       "title": "The Stormwall barely scratches the Ironwake",
-      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 2/2 runs, 6.5 s inside the wall on average, losing 0.7-1.4% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 1/1 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
+      "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
       "evidence_class": "simulation-measured"
     },
     {

@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-11-05T12:19:29.868Z",
-  "commit": "c0aab91a0e59c88500459b001f1f99cd13e5fcbe",
+  "generated_at": "2026-11-05T12:52:05.729Z",
+  "commit": "e0502fc7da739ed8f81f99a3ba0a67fcd23dba16",
   "branch": "playcraft/evidence",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
   "seed": 20261105,
-  "quick": true,
-  "boot_ms": 4324,
+  "quick": false,
+  "boot_ms": 0,
   "simulation": "voyages",
   "evidence_class": "simulation-measured",
   "method": "The real frame loop with the wheel held toward each waypoint in turn (the boat sheers off for 4 s when it stalls against something, as a player would). Real wind, swell, Stormwall, storm cells, collisions and hull damage. Arrival flags come from the game’s own updateIslands.",
@@ -24,12 +24,12 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.98,
-      "distance_m": 535.99,
+      "minutes": 0.62,
+      "distance_m": 480.16,
       "hull": {
         "start": 100,
-        "end": 51.99,
-        "lost": 48.01
+        "end": 100,
+        "lost": 0
       },
       "fuel_used": 0,
       "storm_exposure_s": 0,
@@ -48,14 +48,6 @@
         [
           -373,
           158
-        ],
-        [
-          -494,
-          167
-        ],
-        [
-          -495,
-          165
         ]
       ]
     },
@@ -72,7 +64,7 @@
       "waypoints_reached": 1,
       "of": 3,
       "minutes": 5,
-      "distance_m": 740.99,
+      "distance_m": 740.87,
       "hull": {
         "start": 60,
         "end": 60,
@@ -207,7 +199,7 @@
       ]
     },
     {
-      "name": "Driftholm → Meridian Spire",
+      "name": "Driftholm → Meridian Spire (Ironwake, Cutter Rig)",
       "vessel": "ironwake",
       "upgrades": [
         "sail_canvas",
@@ -219,17 +211,17 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.95,
-      "distance_m": 1141,
+      "minutes": 0.92,
+      "distance_m": 1140.96,
       "hull": {
         "start": 160,
-        "end": 157.73,
-        "lost": 2.27
+        "end": 151.23,
+        "lost": 8.77
       },
       "fuel_used": 0,
-      "storm_exposure_s": 5.83,
-      "stormwall_s": 6.53,
-      "max_storm": 0.99,
+      "storm_exposure_s": 15,
+      "stormwall_s": 6.5,
+      "max_storm": 1,
       "flags": [
         "reached_spire"
       ],
@@ -239,25 +231,25 @@
           -31
         ],
         [
-          -50,
-          -231
+          -51,
+          -240
         ],
         [
-          -92,
-          -427
+          -101,
+          -467
         ],
         [
-          -138,
-          -622
+          -148,
+          -662
         ],
         [
-          -180,
-          -818
+          -186,
+          -861
         ]
       ]
     },
     {
-      "name": "Driftholm → Meridian Spire",
+      "name": "Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour)",
       "vessel": "ironwake",
       "upgrades": [
         "sail_canvas",
@@ -271,40 +263,156 @@
       "arrived": true,
       "waypoints_reached": 3,
       "of": 3,
-      "minutes": 0.95,
-      "distance_m": 1141.26,
+      "minutes": 0.92,
+      "distance_m": 1140.96,
       "hull": {
         "start": 220,
-        "end": 218.5,
-        "lost": 1.5
+        "end": 215.18,
+        "lost": 4.82
       },
       "fuel_used": 0,
-      "storm_exposure_s": 6.93,
-      "stormwall_s": 6.53,
-      "max_storm": 0.99,
+      "storm_exposure_s": 15,
+      "stormwall_s": 6.5,
+      "max_storm": 1,
       "flags": [
         "reached_spire"
       ],
       "track": [
         [
-          -21,
-          -38
+          -20,
+          -31
         ],
         [
           -51,
-          -237
+          -240
         ],
         [
-          -93,
-          -433
+          -101,
+          -467
         ],
         [
-          -139,
-          -628
+          -148,
+          -662
         ],
         [
-          -181,
-          -824
+          -186,
+          -861
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, Canvas Mainsail)",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 1,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 1.11,
+      "distance_m": 1140.85,
+      "hull": {
+        "start": 160,
+        "end": 149.08,
+        "lost": 10.92
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 18.13,
+      "stormwall_s": 7.8,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -15,
+          -1
+        ],
+        [
+          -40,
+          -167
+        ],
+        [
+          -77,
+          -363
+        ],
+        [
+          -116,
+          -529
+        ],
+        [
+          -154,
+          -690
+        ],
+        [
+          -185,
+          -854
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, stock sail)",
+      "vessel": "ironwake",
+      "upgrades": [],
+      "crew": [],
+      "seed": 1,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 1.54,
+      "distance_m": 1140.93,
+      "hull": {
+        "start": 160,
+        "end": 144.45,
+        "lost": 15.55
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 25,
+      "stormwall_s": 10.73,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -9,
+          39
+        ],
+        [
+          -27,
+          -78
+        ],
+        [
+          -46,
+          -204
+        ],
+        [
+          -73,
+          -348
+        ],
+        [
+          -101,
+          -466
+        ],
+        [
+          -128,
+          -581
+        ],
+        [
+          -155,
+          -696
+        ],
+        [
+          -179,
+          -811
+        ],
+        [
+          -197,
+          -946
         ]
       ]
     },
@@ -320,46 +428,42 @@
       "arrived": false,
       "waypoints_reached": 2,
       "of": 3,
-      "minutes": 4.85,
-      "distance_m": 1448.93,
+      "minutes": 4.48,
+      "distance_m": 1407.46,
       "hull": {
         "start": 100,
         "end": 0,
         "lost": 100
       },
       "fuel_used": 0,
-      "storm_exposure_s": 219.33,
-      "stormwall_s": 218.93,
-      "max_storm": 0.97,
+      "storm_exposure_s": 211.17,
+      "stormwall_s": 199.03,
+      "max_storm": 1,
       "flags": [],
       "track": [
         [
           -12,
-          17
+          21
         ],
         [
-          -33,
-          -121
+          -32,
+          -117
         ],
         [
-          -54,
-          -259
+          -56,
+          -275
         ],
         [
-          -84,
-          -394
+          -93,
+          -430
         ],
         [
-          -116,
-          -529
+          -125,
+          -565
         ],
         [
-          -148,
-          -664
-        ],
-        [
-          -178,
-          -800
+          -156,
+          -700
         ],
         [
           -182,
@@ -374,6 +478,10 @@
           -834
         ],
         [
+          -180,
+          -835
+        ],
+        [
           -179,
           -834
         ],
@@ -402,6 +510,537 @@
           -835
         ],
         [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -836
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -836
+        ],
+        [
+          -175,
+          -835
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Rig Helios",
+      "vessel": "sloop",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 2,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.62,
+      "distance_m": 480.16,
+      "hull": {
+        "start": 100,
+        "end": 100,
+        "lost": 0
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 0,
+      "stormwall_s": 0,
+      "max_storm": 0,
+      "flags": [],
+      "track": [
+        [
+          -107,
+          125
+        ],
+        [
+          -240,
+          142
+        ],
+        [
+          -373,
+          158
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Rig Helios (Skiff: should be turned back by the swell)",
+      "vessel": "dinghy",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 2,
+      "engine": false,
+      "arrived": false,
+      "waypoints_reached": 1,
+      "of": 3,
+      "minutes": 5,
+      "distance_m": 740.87,
+      "hull": {
+        "start": 60,
+        "end": 60,
+        "lost": 0
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 0,
+      "stormwall_s": 0,
+      "max_storm": 0,
+      "flags": [],
+      "track": [
+        [
+          -64,
+          129
+        ],
+        [
+          -145,
+          130
+        ],
+        [
+          -228,
+          141
+        ],
+        [
+          -310,
+          151
+        ],
+        [
+          -350,
+          155
+        ],
+        [
+          -350,
+          153
+        ],
+        [
+          -350,
+          152
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, Cutter Rig)",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas",
+        "sail_cutter"
+      ],
+      "crew": [],
+      "seed": 2,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.92,
+      "distance_m": 1140.96,
+      "hull": {
+        "start": 160,
+        "end": 151.23,
+        "lost": 8.77
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 15,
+      "stormwall_s": 6.5,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -20,
+          -31
+        ],
+        [
+          -51,
+          -240
+        ],
+        [
+          -101,
+          -467
+        ],
+        [
+          -148,
+          -662
+        ],
+        [
+          -186,
+          -861
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour)",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas",
+        "sail_cutter",
+        "hull_copper",
+        "hull_armor"
+      ],
+      "crew": [],
+      "seed": 2,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.92,
+      "distance_m": 1140.96,
+      "hull": {
+        "start": 220,
+        "end": 215.18,
+        "lost": 4.82
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 15,
+      "stormwall_s": 6.5,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -20,
+          -31
+        ],
+        [
+          -51,
+          -240
+        ],
+        [
+          -101,
+          -467
+        ],
+        [
+          -148,
+          -662
+        ],
+        [
+          -186,
+          -861
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, Canvas Mainsail)",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 2,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 1.11,
+      "distance_m": 1140.85,
+      "hull": {
+        "start": 160,
+        "end": 149.08,
+        "lost": 10.92
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 18.13,
+      "stormwall_s": 7.8,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -15,
+          -1
+        ],
+        [
+          -40,
+          -167
+        ],
+        [
+          -77,
+          -363
+        ],
+        [
+          -116,
+          -529
+        ],
+        [
+          -154,
+          -690
+        ],
+        [
+          -185,
+          -854
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, stock sail)",
+      "vessel": "ironwake",
+      "upgrades": [],
+      "crew": [],
+      "seed": 2,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 1.54,
+      "distance_m": 1140.93,
+      "hull": {
+        "start": 160,
+        "end": 144.45,
+        "lost": 15.55
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 25,
+      "stormwall_s": 10.73,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -9,
+          39
+        ],
+        [
+          -27,
+          -78
+        ],
+        [
+          -46,
+          -204
+        ],
+        [
+          -73,
+          -348
+        ],
+        [
+          -101,
+          -466
+        ],
+        [
+          -128,
+          -581
+        ],
+        [
+          -155,
+          -696
+        ],
+        [
+          -179,
+          -811
+        ],
+        [
+          -197,
+          -946
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall)",
+      "vessel": "sloop",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 2,
+      "engine": false,
+      "arrived": false,
+      "waypoints_reached": 2,
+      "of": 3,
+      "minutes": 4.48,
+      "distance_m": 1407.46,
+      "hull": {
+        "start": 100,
+        "end": 0,
+        "lost": 100
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 211.17,
+      "stormwall_s": 199.03,
+      "max_storm": 1,
+      "flags": [],
+      "track": [
+        [
+          -12,
+          21
+        ],
+        [
+          -32,
+          -117
+        ],
+        [
+          -56,
+          -275
+        ],
+        [
+          -93,
+          -430
+        ],
+        [
+          -125,
+          -565
+        ],
+        [
+          -156,
+          -700
+        ],
+        [
+          -182,
+          -834
+        ],
+        [
+          -181,
+          -834
+        ],
+        [
+          -180,
+          -834
+        ],
+        [
+          -180,
+          -835
+        ],
+        [
+          -179,
+          -834
+        ],
+        [
+          -179,
+          -835
+        ],
+        [
+          -178,
+          -835
+        ],
+        [
+          -178,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
           -177,
           -835
         ],
@@ -415,7 +1054,7 @@
         ],
         [
           -176,
-          -835
+          -836
         ],
         [
           -176,
@@ -432,17 +1071,544 @@
         [
           -176,
           -835
+        ],
+        [
+          -176,
+          -836
         ],
         [
           -175,
           -835
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Rig Helios",
+      "vessel": "sloop",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 3,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.62,
+      "distance_m": 480.16,
+      "hull": {
+        "start": 100,
+        "end": 100,
+        "lost": 0
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 0,
+      "stormwall_s": 0,
+      "max_storm": 0,
+      "flags": [],
+      "track": [
+        [
+          -107,
+          125
         ],
         [
-          -175,
+          -240,
+          142
+        ],
+        [
+          -373,
+          158
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Rig Helios (Skiff: should be turned back by the swell)",
+      "vessel": "dinghy",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 3,
+      "engine": false,
+      "arrived": false,
+      "waypoints_reached": 1,
+      "of": 3,
+      "minutes": 5,
+      "distance_m": 740.87,
+      "hull": {
+        "start": 60,
+        "end": 60,
+        "lost": 0
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 0,
+      "stormwall_s": 0,
+      "max_storm": 0,
+      "flags": [],
+      "track": [
+        [
+          -64,
+          129
+        ],
+        [
+          -145,
+          130
+        ],
+        [
+          -228,
+          141
+        ],
+        [
+          -310,
+          151
+        ],
+        [
+          -350,
+          155
+        ],
+        [
+          -350,
+          153
+        ],
+        [
+          -350,
+          152
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ],
+        [
+          -351,
+          151
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, Cutter Rig)",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas",
+        "sail_cutter"
+      ],
+      "crew": [],
+      "seed": 3,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.92,
+      "distance_m": 1140.96,
+      "hull": {
+        "start": 160,
+        "end": 151.23,
+        "lost": 8.77
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 15,
+      "stormwall_s": 6.5,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -20,
+          -31
+        ],
+        [
+          -51,
+          -240
+        ],
+        [
+          -101,
+          -467
+        ],
+        [
+          -148,
+          -662
+        ],
+        [
+          -186,
+          -861
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, Cutter Rig, Riveted Armour)",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas",
+        "sail_cutter",
+        "hull_copper",
+        "hull_armor"
+      ],
+      "crew": [],
+      "seed": 3,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 0.92,
+      "distance_m": 1140.96,
+      "hull": {
+        "start": 220,
+        "end": 215.18,
+        "lost": 4.82
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 15,
+      "stormwall_s": 6.5,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -20,
+          -31
+        ],
+        [
+          -51,
+          -240
+        ],
+        [
+          -101,
+          -467
+        ],
+        [
+          -148,
+          -662
+        ],
+        [
+          -186,
+          -861
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, Canvas Mainsail)",
+      "vessel": "ironwake",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 3,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 1.11,
+      "distance_m": 1140.85,
+      "hull": {
+        "start": 160,
+        "end": 149.08,
+        "lost": 10.92
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 18.13,
+      "stormwall_s": 7.8,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -15,
+          -1
+        ],
+        [
+          -40,
+          -167
+        ],
+        [
+          -77,
+          -363
+        ],
+        [
+          -116,
+          -529
+        ],
+        [
+          -154,
+          -690
+        ],
+        [
+          -185,
+          -854
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Ironwake, stock sail)",
+      "vessel": "ironwake",
+      "upgrades": [],
+      "crew": [],
+      "seed": 3,
+      "engine": false,
+      "arrived": true,
+      "waypoints_reached": 3,
+      "of": 3,
+      "minutes": 1.54,
+      "distance_m": 1140.93,
+      "hull": {
+        "start": 160,
+        "end": 144.45,
+        "lost": 15.55
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 25,
+      "stormwall_s": 10.73,
+      "max_storm": 1,
+      "flags": [
+        "reached_spire"
+      ],
+      "track": [
+        [
+          -9,
+          39
+        ],
+        [
+          -27,
+          -78
+        ],
+        [
+          -46,
+          -204
+        ],
+        [
+          -73,
+          -348
+        ],
+        [
+          -101,
+          -466
+        ],
+        [
+          -128,
+          -581
+        ],
+        [
+          -155,
+          -696
+        ],
+        [
+          -179,
+          -811
+        ],
+        [
+          -197,
+          -946
+        ]
+      ]
+    },
+    {
+      "name": "Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall)",
+      "vessel": "sloop",
+      "upgrades": [
+        "sail_canvas"
+      ],
+      "crew": [],
+      "seed": 3,
+      "engine": false,
+      "arrived": false,
+      "waypoints_reached": 2,
+      "of": 3,
+      "minutes": 4.48,
+      "distance_m": 1407.46,
+      "hull": {
+        "start": 100,
+        "end": 0,
+        "lost": 100
+      },
+      "fuel_used": 0,
+      "storm_exposure_s": 211.17,
+      "stormwall_s": 199.03,
+      "max_storm": 1,
+      "flags": [],
+      "track": [
+        [
+          -12,
+          21
+        ],
+        [
+          -32,
+          -117
+        ],
+        [
+          -56,
+          -275
+        ],
+        [
+          -93,
+          -430
+        ],
+        [
+          -125,
+          -565
+        ],
+        [
+          -156,
+          -700
+        ],
+        [
+          -182,
+          -834
+        ],
+        [
+          -181,
+          -834
+        ],
+        [
+          -180,
+          -834
+        ],
+        [
+          -180,
           -835
         ],
         [
-          -175,
+          -179,
+          -834
+        ],
+        [
+          -179,
+          -835
+        ],
+        [
+          -178,
+          -835
+        ],
+        [
+          -178,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
+          -177,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -836
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
+          -835
+        ],
+        [
+          -176,
           -836
         ],
         [
@@ -452,5 +1618,5 @@
       ]
     }
   ],
-  "result_hash": "368bb298"
+  "result_hash": "28308027"
 }
