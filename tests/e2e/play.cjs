@@ -42,6 +42,9 @@ const check = (name, ok, detail = '') => {
   }, p);
   const actions = () => g(() => [...document.querySelectorAll('.actions .act')].map((b) => b.textContent));
   const click = async (re) => {
+    // a card that arrived late (renown, milestones: they fire on game time, which runs slowly here) is tapped away
+    // first, as a player would
+    if (await page.$('.reveal')) await dismiss();
     const btns = await page.$$('.actions .act');
     for (const b of btns) if (re.test(await b.textContent())) { await b.click(); return true; }
     return false;
