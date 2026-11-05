@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T17:27:28.172Z",
-  "commit": "719bce1b9b9b7cc4a7feed143552aefddd65e41e",
+  "generated_at": "2026-11-05T17:59:59.939Z",
+  "commit": "2a909e459686ea87e5d4b85549b3d8ef55c03598",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {
@@ -48,7 +48,7 @@
       "category": "progression",
       "status": "pass",
       "title": "Simulation: every upgrade and vessel is reachable; the campaign completes (simulation-measured)",
-      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 221 sourcing actions (38 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
+      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 235 sourcing actions (45 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -72,7 +72,7 @@
       "category": "difficulty",
       "status": "partial",
       "title": "Simulation: pacing between purchases (difficulty spikes)",
-      "detail": "commission Scrap Trimaran: 19 actions vs ≤7 before",
+      "detail": "commission Scrap Trimaran: 21 actions vs ≤8 before",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -104,7 +104,7 @@
     {
       "severity": "medium",
       "title": "Difficulty/pacing spike: commission Scrap Trimaran",
-      "detail": "19 sourcing actions for this step vs at most 7 for any earlier step (campaign, winch 2/3).",
+      "detail": "21 sourcing actions for this step vs at most 8 for any earlier step (campaign, winch 2/3).",
       "evidence_class": "simulation-measured"
     },
     {
