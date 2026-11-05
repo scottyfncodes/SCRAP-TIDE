@@ -46,8 +46,8 @@ html, body {
   overscroll-behavior: none; touch-action: none; user-select: none; -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
-#app { position: fixed; inset: 0; }
-#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#app { position: fixed; inset: 0; touch-action: none; }
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 /* lens grime: a static vignette and grain over the world (no blend modes: cheap on iOS) */
 #app::after {
   content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
