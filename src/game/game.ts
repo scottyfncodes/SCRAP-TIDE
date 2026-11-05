@@ -117,6 +117,7 @@ export class Game implements GameAPI {
   private barkRecent: string[] = [];
   private barkAt = -99;
   private nightSaid = false;
+  private voyageTowerPassed = false;
   private steerTime = 0;
   private shoreCache: { x: number; z: number } | null = null;
   private shoreTimer = 0;
@@ -639,6 +640,11 @@ export class Game implements GameAPI {
       else if (isNew && mode === 'toast') {
         this.ui.toast(isLiving(id) ? `Something alive: ${d.name}!` : `New discovery: ${d.name}!`, { icon: id, color: isLiving(id) ? LIVING_GREEN : '#f0c445', life: 3.2 });
         if (isLiving(id)) setTimeout(() => this.crewBark('green', {}, { cool: 60 }), 2200);
+        if (!s.data.flags.includes('catalog_hint')) {
+          // the First Voyage no longer has a "look at your Catalog" step: teach it here, once
+          s.data.flags.push('catalog_hint');
+          setTimeout(() => this.ui.toast('Logged in your CATALOG. Every find stays on record, even after you trade it away.', { icon: 'map', color: '#c9b48a', life: 4 }), 3600);
+        }
         audio.discover(RARITY_ORDER.indexOf(d.rarity));
       } else if (mode !== 'none') {
         this.ui.toast(`+${got} ${d.name}`, { icon: id, color: '#c9b48a', life: 1.8 });
@@ -1832,7 +1838,7 @@ export class Game implements GameAPI {
     const q = this.store.data.quest;
     if (b.docked) {
       const sett = SETTLEMENT_MAP[b.dockedAt];
-      acts.push({ id: 'harbor', label: `⚓ ${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['sell', 'catalog', 'upgrade', 'return_harbor'].includes(q) });
+      acts.push({ id: 'harbor', label: `⚓ ${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['upgrade', 'return_harbor'].includes(q) });
     } else {
       const pierD = Math.hypot(b.x - this.env.pierTip.x, b.z - this.env.pierTip.z);
       if (pierD < 18) acts.push({ id: 'dock', label: '⚓ DOCK', glow: true });
@@ -1857,10 +1863,10 @@ export class Game implements GameAPI {
       }
       const depth = -heightAt(b.x, b.z);
       if (b.anchored) {
-        if (this.shoreCache) acts.push({ id: 'ashore', label: '\u{1F3DD} GO ASHORE', glow: q === 'ashore' });
+        if (this.shoreCache) acts.push({ id: 'ashore', label: '\u{1F3DD} GO ASHORE', glow: q === 'ashore' && b.anchored });
         acts.push({ id: 'raise', label: 'RAISE ANCHOR' });
       } else if (pierD >= 18 && (this.shoreCache || depth < 10)) {
-        acts.push({ id: 'anchor', label: '⚓ ANCHOR', glow: q === 'anchor' && b.speed < 3.2, disabled: b.speed > 3.2 || depth > 10 });
+        acts.push({ id: 'anchor', label: '⚓ ANCHOR', glow: q === 'ashore' && b.speed < 3.2, disabled: b.speed > 3.2 || depth > 10 });
       }
     }
     this.ui.setActions(acts);
@@ -2119,17 +2125,11 @@ export class Game implements GameAPI {
       const q = s.data.quest;
       let ok = false;
       switch (q) {
-        case 'steer':
-          ok = this.steerTime > 1.2;
-          break;
         case 'leave_dock':
           ok = Math.hypot(this.boat.x - this.env.pierTip.x, this.boat.z - this.env.pierTip.z) > 35;
           break;
         case 'reach_turtle':
           ok = Math.hypot(this.boat.x - turtle.x, this.boat.z - turtle.z) < turtle.r + 60;
-          break;
-        case 'anchor':
-          ok = this.boat.anchored && Math.hypot(this.boat.x - turtle.x, this.boat.z - turtle.z) < turtle.r + 70;
           break;
         case 'ashore':
           ok = this.mode === 'foot' && this.foot.island.id === 'turtle';
@@ -2137,17 +2137,11 @@ export class Game implements GameAPI {
         case 'find_bottle':
           ok = s.data.fragments.includes('turtle_scrap');
           break;
-        case 'read_map':
-          ok = s.data.mapsCompleted.includes('turtle_map');
-          break;
         case 'dig_x':
           ok = s.data.mapsCompleted.includes('turtle_map');
           break;
         case 'return_harbor':
           ok = this.boat.docked && this.mode === 'sail';
-          break;
-        case 'sell':
-          ok = s.data.flags.includes('sold');
           break;
         case 'upgrade':
           ok = s.data.upgrades.length > 0;
@@ -2172,21 +2166,28 @@ export class Game implements GameAPI {
       case 'reach_turtle':
         target = { x: turtle.x, z: turtle.z, y: 10 };
         break;
-      case 'anchor':
-        target = this.boat.anchored ? null : { x: turtle.x + 6, z: turtle.z + turtle.r + 14 };
+      case 'ashore':
+        target = this.mode === 'sail' && !this.boat.anchored ? { x: turtle.x + 6, z: turtle.z + turtle.r + 14 } : null;
         break;
       case 'find_bottle': {
         const b = turtle.finds[0];
         target = this.mode === 'foot' ? { x: turtle.x + b.x, z: turtle.z + b.z, y: 1.5 } : { x: turtle.x, z: turtle.z, y: 10 };
         break;
       }
-      case 'read_map':
       case 'dig_x':
         target = this.mode === 'foot' ? null : { x: turtle.x, z: turtle.z, y: 10 };
         break;
-      case 'return_harbor':
-        target = this.mode === 'foot' ? { x: this.foot.landX, z: this.foot.landZ, y: 1 } : { x: this.env.pierTip.x, z: this.env.pierTip.z, y: 3 };
+      case 'return_harbor': {
+        // home by way of the Sunken Tower: the first SALVAGE is taught on the voyage. Skip past it and the marker
+        // simply moves on to the pier.
+        const tower = SALVAGE_SITES.find((x) => x.id === 'sv_stump')!;
+        if (this.mode === 'foot') target = { x: this.foot.landX, z: this.foot.landZ, y: 1 };
+        else {
+          if (Math.hypot(this.boat.x - tower.x, this.boat.z - tower.z) < 45) this.voyageTowerPassed = true;
+          target = s.data.hauls === 0 && !this.voyageTowerPassed ? { x: tower.x, z: tower.z, y: 8 } : { x: this.env.pierTip.x, z: this.env.pierTip.z, y: 3 };
+        }
         break;
+      }
     }
     if (q === 'free' && !target && this.mode === 'sail') {
       const g = GOALS[s.data.goal];
