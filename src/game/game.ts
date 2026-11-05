@@ -23,7 +23,7 @@ import { pack, VOICE_LINES, type VoiceId } from '../audio/pack';
 import { FlipFX } from './flipfx';
 import { goalTarget } from './goalHelp';
 import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh, plantFindMesh } from './fx';
-import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
+import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, STORMWALL, stormwallLee, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
 import { item, RARITY_ORDER, LIVING_GREEN, isLiving } from '../data/items';
 import { UPGRADE_MAP, VESSELS, COSMETIC_MAP, type VesselId } from '../data/ship';
 import { RECIPE_MAP } from '../data/crafting';
@@ -772,11 +772,16 @@ export class Game implements GameAPI {
     if (b.docked || this.mode !== 'sail') return;
     const storm = this.atmo.storm;
     if (storm > 0.4) {
-      const wallMul = this.atmo.wall > 0.5 ? (st.crossStorm ? 0.55 : 2) : 1;
+      const inWall = this.atmo.wall > 0.5;
+      const lee = inWall && st.crossStorm ? stormwallLee(b.x, b.z) : 0;
+      const wallMul = inWall ? (st.crossStorm ? STORMWALL.hullMul + (STORMWALL.leeMul - STORMWALL.hullMul) * lee : 2) : 1;
       this.damage((storm - 0.4) * 1.6 * wallMul * dt, null);
       if (!this.stormSaid) {
         this.stormSaid = true;
-        this.ui.toast(this.store.hasRole('lookout') ? 'Kai: “Storm on us! Hold her steady, she’ll take a beating.”' : 'Storm! Waves are battering the hull.', { color: '#9aa9b4', life: 3.5 });
+        const msg = inWall && st.crossStorm && lee < 0.5
+          ? 'The Stormwall! A gale holds her back. Push through: the Spire’s lee is calmer.'
+          : this.store.hasRole('lookout') ? 'Kai: “Storm on us! Hold her steady, she’ll take a beating.”' : 'Storm! Waves are battering the hull.';
+        this.ui.toast(msg, { color: '#9aa9b4', life: 3.5 });
         if (this.store.hasRole('lookout')) pack.say('kai_storm', 40);
         audio.discover(0);
       }
@@ -1611,6 +1616,8 @@ export class Game implements GameAPI {
     audio.engine(motoring ? 0.35 + throttle * 0.65 : 0, st.engine > 12);
     // power upgrades trickle fuel back into the tank
     if (st.solar && s.fuel < st.fuelCap) s.fuel = Math.min(st.fuelCap, s.fuel + (st.solar / 60) * dt * (1 - this.atmo.night * 0.6 + this.atmo.storm * 0.5));
+    // the Stormwall's gale: the deeper in, the slower (not in the Spire's lee)
+    if (st.crossStorm && this.atmo.wall > 0) targetSpeed *= 1 - (1 - STORMWALL.speedMul) * this.atmo.wall * (1 - stormwallLee(b.x, b.z));
     const k = targetSpeed > b.speed ? 0.7 : 0.9;
     b.speed += (targetSpeed - b.speed) * (1 - Math.exp(-dt * k));
     if (b.anchored || b.busy) b.speed *= Math.exp(-dt * 4);

@@ -89,6 +89,24 @@ export const WORLD = {
   wind: { dir: -Math.PI * 0.62 }, // radians, direction wind blows toward
 };
 
+/**
+ * What the Stormwall does to a storm-capable hull (the Ironwake): balance pass 1, #4. Crossing it is the most
+ * dangerous water in the game: a gale slows you, and the storm hits harder. In the lee of the Meridian Spire the
+ * water is as it always was, so salvaging there costs what it did.
+ */
+export const STORMWALL = {
+  speedMul: 0.3, // top speed (sail and engine) at the heart of the wall; scales with how deep in the wall you are
+  hullMul: 1.5, // storm damage multiplier inside the wall (was 0.55)
+  leeMul: 0.55, // ...in the Spire's lee (unchanged)
+  lee: { x: -210, z: -1040, r: 55, fade: 25 }, // the Meridian Spire's sheltered water: its whole salvage reach
+};
+
+/** 1 in the Spire's lee, 0 outside it, fading over `lee.fade` metres. */
+export function stormwallLee(x: number, z: number) {
+  const l = STORMWALL.lee;
+  return Math.min(1, Math.max(0, 1 - (Math.hypot(x - l.x, z - l.z) - l.r) / l.fade));
+}
+
 export const ISLANDS: IslandDef[] = [
   {
     id: 'harbor', name: 'Driftholm', region: 'shallows', x: 0, z: 320, r: 112, peak: 13, seed: 11, style: 'harbor',
