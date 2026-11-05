@@ -504,7 +504,7 @@ def coat(p, length=0.52, col="#5A4632", collar=True, open_front=0.55, sleeves=Tr
 def bandolier(p, col="#3B2A1C", shells="#B88A3A", side=1):
     g = p.get("build", 1.0)
     bm_ = mat(col)
-    sh = mat(shells)
+    sh = mat(shells) if shells else None
     pts = []
     for i in range(9):
         t = i / 8
@@ -517,7 +517,7 @@ def bandolier(p, col="#3B2A1C", shells="#B88A3A", side=1):
             y = yk * (0.122 * g if z0 < 1.3 else 0.112 * g) + yk * 0.006
             seg = tube("strap", (x0, y, z0), (x1, y, z1), [0.018, 0.018], bm_, n=4, flat=0.4)
             part("AUTO_TORSO", seg)
-            if front < 0 and i % 2 == 0 and 1 <= i <= 6:
+            if shells and front < 0 and i % 2 == 0 and 1 <= i <= 6:
                 part("AUTO_TORSO", cyl("shell", 0.009, 0.05, ((x0 + x1) / 2, y - 0.012, (z0 + z1) / 2 + 0.02), sh, n=5))
 
 
@@ -648,6 +648,106 @@ def poncho(col="#2F6FB0", length=0.42):
 def backpack(col="#5A4632"):
     part("Spine2", box("pack", (0.22, 0.12, 0.26), (0, 0.17, 1.24), mat(col), bevel=0.02))
     part("Spine2", cyl("bedroll", 0.045, 0.24, (0, 0.17, 1.4), mat("#6E6A5A"), axis="X", n=8))
+
+
+# ------------------------------------------------------------------ scavenged armour (Waterworld x Mad Max pass)
+RUST, STEEL, RUBBER, LEATHER = "#7A3A1E", "#6E7680", "#1E1C1A", "#3B2A1C"
+
+
+def spikes(side, n=3, col="#9AA3AD", z=1.47, r=0.11):
+    """Bolts filed to points, along the top of a shoulder plate."""
+    sx = 1 if side == "Left" else -1
+    for i in range(n):
+        y = (i - (n - 1) / 2) * 0.05
+        part(side + "Shoulder", cyl("spike", 0.012, 0.06, (sx * (0.2 + 0.01 * (i % 2)), y, z + 0.025), mat(col), n=5, r2=0.0005))
+
+
+def tyre_pauldron(side="Left"):
+    """Half a car tyre strapped over the shoulder: tread ridges, a bolt through the top."""
+    sx = 1 if side == "Left" else -1
+    t = kit.torus("tyre", 0.085, 0.04, (sx * 0.2, 0, 1.37), axis="Y", mat=mat(RUBBER), major=14, minor=6)  # noqa: F821
+    bm_del(t, lambda v: v.z < 1.36)
+    part(side + "Shoulder", t)
+    for k in range(-2, 3):
+        a = math.pi / 2 + k * 0.42
+        x, z = sx * 0.2 + math.cos(a) * 0.125, 1.37 + math.sin(a) * 0.125
+        part(side + "Shoulder", box("tread", (0.014, 0.075, 0.012), (x, 0, z), mat("#2E2B28"), rot=(0, -a + math.pi / 2, 0)))
+
+
+def bracer(side, col=RUST, length=0.16):
+    """A forearm guard beaten out of a tin can / pipe, two straps and rivets."""
+    el = Vector(SK[side + "ForeArm"][0])
+    wr = Vector(SK[side + "Hand"][0])
+    d = (wr - el).normalized()
+    a = wr - d * (0.035 + length)
+    b = wr - d * 0.035
+    part(side + "ForeArm", tube("bracer", a, b, [0.066, 0.07, 0.072], mat(col), n=10, flat=0.9))
+    for t in (0.2, 0.8):
+        c = a.lerp(b, t)
+        part(side + "ForeArm", tube("bstrap", c - d * 0.008, c + d * 0.008, [0.075, 0.075], mat(LEATHER), n=10, flat=0.9))
+    part(side + "ForeArm", cyl("rivet", 0.008, 0.008, (a.lerp(b, 0.5).x, -0.068, a.z + 0.0), mat("#9AA3AD"), axis="Y", n=6))
+
+
+def kneepad(side, col=STEEL):
+    """A knee plate cut from a hubcap / road sign, strapped on."""
+    kx = SK[side + "Leg"][0][0]
+    part(side + "Leg", cyl("knee", 0.058, 0.02, (kx, -0.07, 0.52), mat(col), axis="Y", n=12),
+         cyl("kneebolt", 0.012, 0.01, (kx, -0.083, 0.52), mat("#2E2B28"), axis="Y", n=6))
+    part(side + "Leg", tube("kstrap", (kx, 0.0, 0.44), (kx, 0.0, 0.452), [0.075, 0.075], mat(LEATHER), n=10))
+
+
+def harness(p, col=LEATHER):
+    """Crossed leather straps over the chest, a ring where they meet."""
+    bandolier(p, col, None, side=1)
+    bandolier(p, col, None, side=-1)
+    g = p.get("build", 1.0)
+    part("Spine1", kit.torus("hring", 0.022, 0.006, (0, -0.128 * g, 1.21), axis="Y", mat=mat("#9AA3AD"), major=10, minor=4))  # noqa: F821
+
+
+def respirator(col="#3A4148", hanging=False):
+    """A scavenged gas-mask snout and twin filter cans: worn over the mouth, or hanging at the neck."""
+    cz = 1.63
+    z, y, bone = (cz - 0.075, -0.1, "Head") if not hanging else (1.42, -0.115, "Spine2")
+    parts = [cyl("snout", 0.04, 0.05, (0, y - 0.01, z), mat(col), axis="Y", n=12),
+             cyl("valve", 0.022, 0.02, (0, y - 0.04, z - 0.005), mat("#9AA3AD"), axis="Y", n=8)]
+    for s_ in (-1, 1):
+        f = cyl("filter", 0.026, 0.05, (s_ * 0.055, y + 0.005, z - 0.012), mat("#5B6B3A"), axis="X", n=10)
+        parts.append(f)
+    if not hanging:
+        parts.append(tube("mstrap", (-0.1, 0.0, z + 0.01), (0.1, 0.0, z + 0.01), [0.01, 0.01], mat(RUBBER), n=4))
+    part(bone, *parts)
+
+
+def goggles_eyes(col="#3A4148", lens="#B8642E"):
+    """Goggles worn down over the eyes (lookouts, raiders): tinted lenses against glare off the water."""
+    cz = 1.63
+    parts = [tube("gestrap", (-0.106, 0.0, cz + 0.005), (0.106, 0.0, cz + 0.005), [0.012, 0.012], mat(RUBBER), n=4)]
+    for s_ in (-1, 1):
+        parts.append(cyl("egog", 0.026, 0.03, (s_ * 0.036, -0.095, cz + 0.008), mat(col), axis="Y", n=10))
+        parts.append(cyl("elens", 0.02, 0.004, (s_ * 0.036, -0.111, cz + 0.008), mat(lens), axis="Y", n=10))
+    part("Head", *parts)
+
+
+def chain_loop(p, col="#6E7680"):
+    """A length of chain worn as a sash."""
+    g = p.get("build", 1.0)
+    for i in range(10):
+        t = i / 9
+        z = 1.4 - t * 0.42
+        x = (0.13 - t * 0.27) * g
+        part("AUTO_TORSO", kit.torus("link", 0.016, 0.005, (x, -0.13 * g - 0.008, z), axis="Y" if i % 2 else "X", mat=mat(col), major=8, minor=4))  # noqa: F821
+
+
+def tarp_patches(p, cols=("#B8642E", "#2F6FB0", "#8C8270"), n=4):
+    """Stitched-on squares of tarp, sacking and road-sign over whatever they are wearing."""
+    g = p.get("build", 1.0)
+    for i in range(n):
+        z = RNG.uniform(0.95, 1.32)
+        a = RNG.uniform(0.4, 2.7) * RNG.choice((-1, 1))
+        loc = (math.cos(a - math.pi / 2) * 0.2 * g, math.sin(a - math.pi / 2) * 0.14 * g, z)
+        pt = box("tarp", (0.075, 0.006, 0.065), loc, mat(cols[i % len(cols)]))
+        tf(pt, (0, 0, a), loc)
+        part("AUTO_TORSO", pt)
 
 
 # ----------------------------------------------------------------- held items (right hand, T-pose: blade along -Y)
@@ -789,44 +889,61 @@ def rig(body, clips):
 
 # ------------------------------------------------------------------ the cast
 CAST = {
-    # the player: a weathered captain in a patched sailcloth-and-leather duster, tricorn and goggles, a rebar cutlass
-    "captain": dict(p=dict(frame="m", build=1.0, skin="olive", hair="#2A2018", hairstyle="long", beard="short", beard_color="#3E2E22", age=0.4, shirt="#8E8470", pants="#3E3A30",
-                           boots="#2A1F17", scar=True),
-                    wear=lambda p: (coat(p, length=0.5, col="#5A4430"), bandolier(p), scarf(p, "#7E3524"), hat_tricorn("#2B231C"), pouch_belt()),
+    # the player: patched leather-and-sailcloth duster and tricorn (the pirate), welded scrap on top (the wasteland):
+    # a spiked steel pauldron, tin-can bracers, hubcap knee plates and a respirator hung at the throat
+    "captain": dict(p=dict(frame="m", build=1.0, skin="olive", hair="#2A2018", hairstyle="long", beard="short", beard_color="#3E2E22", age=0.4, shirt="#7A7262", pants="#3E3A30",
+                           boots="#2A1F17", scar=True, gloves="#3B2A1C"),
+                    wear=lambda p: (coat(p, length=0.5, col="#5A4430"), bandolier(p), scarf(p, "#7E3524"), hat_tricorn("#2B231C"), pouch_belt(),
+                                    pauldron("Left", "#6E7680", "#7A3A1E"), spikes("Left"), bracer("Left"), bracer("Right", "#6E7680"),
+                                    kneepad("Left"), kneepad("Right", "#7A3A1E"), respirator(hanging=True)),
                     held=None, clips=["Idle", "Walk", "Sit", "Dig", "Cheer", "Interact"]),
     # crew (same files as before: tb_crew_<role>.glb)
-    "crew_mechanic": dict(p=dict(frame="f", build=0.95, skin="tan", hair="#1E1612", hairstyle="ponytail", age=0.3, shirt="#5A6066", pants="#3C4A5C", boots="#2E2620",
-                                 bare_arms=True, gloves="#6E4B2A"),
-                          wear=lambda p: (goggles_forehead(), apron("#6B4E30"), pouch_belt("#3B2A1C")), held="wrench", clips=["Idle", "Walk", "Interact", "Attack"]),
+    "crew_mechanic": dict(p=dict(frame="f", build=0.95, skin="tan", hair="#1E1612", hairstyle="ponytail", age=0.3, shirt="#4E5258", pants="#33404E", boots="#2E2620",
+                                 bare_arms=True, gloves="#4A3420"),
+                          wear=lambda p: (goggles_forehead("#6B2E14"), apron("#4E3A26"), pouch_belt("#3B2A1C"), harness(p), tyre_pauldron("Right"),
+                                          bracer("Left", "#6E7680"), kneepad("Left"), kneepad("Right"), tarp_patches(p, ("#7A3A1E", "#C9A23A"), 2)),
+                          held="wrench", clips=["Idle", "Walk", "Interact", "Attack", "Cheer"]),
     "crew_fisher": dict(p=dict(frame="m", build=1.08, skin="light", hair="#B8B2A4", hairstyle="bald", beard="full", beard_color="#C8C2B4", age=0.8,
-                               shirt="#6E6A5A", pants="#2F3A40", boots="#1F2A30"),
-                        wear=lambda p: (coat(p, length=0.34, col="#B8902E", open_front=0.4, patches=True, flare=0.05), hat_souwester("#B8902E")),
-                        held="gaff", clips=["Idle", "Walk", "Interact", "Attack"]),
-    "crew_lookout": dict(p=dict(frame="m", build=0.86, skin="brown", hair="#1E1612", hairstyle="short", age=0.15, shirt="#7A6E58", pants="#4A463C"),
-                         wear=lambda p: (poncho("#3E5C66", 0.46), hood("#3E5C66"), scarf(p, "#8C8270")), held="binoculars", clips=["Idle", "Walk", "Interact", "Attack"]),
-    "crew_navigator": dict(p=dict(frame="f", build=0.92, skin="dark", hair="#151010", hairstyle="bun", age=0.45, shirt="#C8BDA0", pants="#2E3440"),
-                           wear=lambda p: (coat(p, length=0.55, col="#26344A", open_front=0.6, patches=False), headwrap("#B8642E"), glasses(), backpack("#4E2F1A")),
-                           held="spyglass", clips=["Idle", "Walk", "Interact", "Attack"]),
+                               shirt="#5A5648", pants="#2A3236", boots="#1F2A30", gloves="#3B2A1C"),
+                        wear=lambda p: (coat(p, length=0.34, col="#8C7A34", open_front=0.4, patches=True, flare=0.05), hat_souwester("#8C7A34"),
+                                        chain_loop(p), pauldron("Right", "#7A3A1E", "#6E7680"), bracer("Left", "#6E7680"), kneepad("Right")),
+                        held="gaff", clips=["Idle", "Walk", "Interact", "Attack", "Cheer"]),
+    # Kai: a hooded tarp poncho in faded hazard orange (readable on deck against grey water), glare goggles down, mask up
+    "crew_lookout": dict(p=dict(frame="m", build=0.86, skin="brown", hair="#1E1612", hairstyle="short", age=0.15, shirt="#5A5648", pants="#3A3830", gloves="#3B2A1C"),
+                         wear=lambda p: (poncho("#B8642E", 0.4), hood("#8C4A22"), scarf(p, "#5A5648", mask=True), goggles_eyes(), tarp_patches(p, ("#2F6FB0", "#8C8270", "#C9A23A"), 4),
+                                         bracer("Left"), bracer("Right", "#6E7680"), kneepad("Left"), kneepad("Right")),
+                         held="binoculars", clips=["Idle", "Walk", "Interact", "Attack", "Cheer"]),
+    "crew_navigator": dict(p=dict(frame="f", build=0.92, skin="dark", hair="#151010", hairstyle="bun", age=0.45, shirt="#9C9278", pants="#2A2E36", gloves="#3B2A1C"),
+                           wear=lambda p: (coat(p, length=0.55, col="#34404C", open_front=0.6, patches=True), headwrap("#9C4E26"), glasses(), backpack("#4E2F1A"),
+                                           harness(p), bracer("Left", "#8C6A34"), kneepad("Left"), respirator(hanging=True)),
+                           held="spyglass", clips=["Idle", "Walk", "Interact", "Attack", "Cheer"]),
     "crew_salvager": dict(p=dict(frame="m", build=1.18, skin="pale", hair="#5A3A22", hairstyle="bald", beard="full", age=0.5, shirt="#262A2E", pants="#262A2E",
                                  boots="#1A1612", gloves="#3A4148", rolled=False),
-                          wear=lambda p: (goggles_forehead("#B8642E"), rope_coil(1), pouch_belt("#3A4148"), pauldron("Right", "#7F8A94", "#3A4148")),
-                          held="grapple", clips=["Idle", "Walk", "Interact", "Attack"]),
+                          wear=lambda p: (goggles_forehead("#B8642E"), rope_coil(1), pouch_belt("#3A4148"), pauldron("Right", "#7F8A94", "#3A4148"), spikes("Right"),
+                                          tyre_pauldron("Left"), bracer("Left", "#7A3A1E"), bracer("Right"), kneepad("Left"), kneepad("Right"), chain_loop(p)),
+                          held="grapple", clips=["Idle", "Walk", "Interact", "Attack", "Cheer"]),
     "crew_defender": dict(p=dict(frame="f", build=1.02, skin="olive", hair="#2A1A12", hairstyle="mohawk", age=0.3, shirt="#3A3530", pants="#3A3530", eyepatch=1,
                                  gloves="#2B1D14"),
-                          wear=lambda p: (pauldron("Left", "#C8352A", "#E9E2CC"), chestplate("#8C3A26"), scarf(p, "#2B1D14"), pouch_belt()),
-                          held="harpoon", clips=["Idle", "Walk", "Interact", "Attack"]),
-    # townsfolk
-    "npc_trader": dict(p=dict(frame="f", build=1.1, skin="brown", hair="#151010", hairstyle="short", age=0.55, shirt="#8C6A4A", pants="#4A3A2A"),
-                       wear=lambda p: (headwrap("#3E8C80"), apron("#7A5A3A"), scarf(p, "#C8A040")), held=None, clips=["Idle", "Interact"]),
-    "npc_elder": dict(p=dict(frame="m", build=0.9, skin="light", hair="#D8D2C4", hairstyle="long", beard="full", beard_color="#E0DACC", age=0.9, shirt="#6E6A5A", pants="#4A463C"),
-                      wear=lambda p: (poncho("#7A6448", 0.5), scarf(p, "#5A3A2A")), held="lantern", clips=["Idle", "Interact"]),
-    "npc_dockhand": dict(p=dict(frame="m", build=1.12, skin="tan", hair="#2A1F17", hairstyle="dreads", beard="short", age=0.35, shirt="#7A4A36", pants="#3D4248",
-                                bare_arms=True),
-                         wear=lambda p: (cap_beanie("#3E5C66"), rope_coil(-1), pouch_belt()), held=None, clips=["Idle", "Interact"]),
-    # Rustfang raiders: scrap armour, masks, mohawks, cutlasses
+                          wear=lambda p: (pauldron("Left", "#C8352A", "#E9E2CC"), spikes("Left"), chestplate("#8C3A26"), scarf(p, "#2B1D14"), pouch_belt(),
+                                          tyre_pauldron("Right"), bracer("Left", "#6E7680"), bracer("Right"), kneepad("Left", "#C8352A"), kneepad("Right")),
+                          held="harpoon", clips=["Idle", "Walk", "Interact", "Attack", "Cheer"]),
+    # townsfolk: scavengers too, just less armed
+    "npc_trader": dict(p=dict(frame="f", build=1.1, skin="brown", hair="#151010", hairstyle="short", age=0.55, shirt="#6E5A44", pants="#4A3A2A"),
+                       wear=lambda p: (headwrap("#2E7066"), apron("#5A4430"), scarf(p, "#A8862E"), goggles_forehead("#8C6A34"), harness(p),
+                                       bracer("Left", "#8C6A34"), tarp_patches(p, ("#2F6FB0", "#7A3A1E"), 2)), held=None, clips=["Idle", "Interact"]),
+    "npc_elder": dict(p=dict(frame="m", build=0.9, skin="light", hair="#D8D2C4", hairstyle="long", beard="full", beard_color="#E0DACC", age=0.9, shirt="#5A5648", pants="#4A463C"),
+                      wear=lambda p: (poncho("#6A5640", 0.5), scarf(p, "#5A3A2A"), chain_loop(p, "#8C6A34"), respirator(hanging=True),
+                                      tarp_patches(p, ("#8C8270", "#2F6FB0", "#7A3A1E"), 3)), held="lantern", clips=["Idle", "Interact"]),
+    "npc_dockhand": dict(p=dict(frame="m", build=1.12, skin="tan", hair="#2A1F17", hairstyle="dreads", beard="short", age=0.35, shirt="#6A4030", pants="#33383E",
+                                bare_arms=True, gloves="#3B2A1C"),
+                         wear=lambda p: (cap_beanie("#33505A"), rope_coil(-1), pouch_belt(), tyre_pauldron("Left"), bracer("Right", "#7A3A1E"), bracer("Left"),
+                                         kneepad("Left"), kneepad("Right"), scarf(p, "#5A5648")), held=None, clips=["Idle", "Interact"]),
+    # Rustfang raiders: scrap armour, respirators, mohawks, cutlasses
     "raider": dict(p=dict(frame="m", build=1.05, skin="pale", hair="#B8352A", hairstyle="mohawk", age=0.3, shirt="#2B2620", pants="#2B2620", gloves="#1A1612", bare_arms=True),
-                   wear=lambda p: (pauldron("Left", "#3A4148", "#B8352A"), pauldron("Right", "#6B2E14", "#3A4148"), scarf(p, "#1A1612", mask=True), goggles_forehead("#6B2E14"),
-                                   bandolier(p, "#1A1612", "#9AA3AD", side=-1)), held="cutlass", clips=["Idle", "Attack"]),
+                   wear=lambda p: (pauldron("Left", "#3A4148", "#B8352A"), spikes("Left", 4), pauldron("Right", "#6B2E14", "#3A4148"), spikes("Right", 3, "#6B2E14"),
+                                   respirator("#2E2B28"), goggles_eyes("#2E2B28", "#C8352A"), bandolier(p, "#1A1612", "#9AA3AD", side=-1),
+                                   bracer("Left", "#3A4148"), bracer("Right", "#6B2E14"), kneepad("Left", "#6B2E14"), kneepad("Right", "#3A4148"), chain_loop(p, "#3A4148")),
+                   held="cutlass", clips=["Idle", "Attack"]),
 }
 
 

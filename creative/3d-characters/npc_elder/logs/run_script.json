@@ -1,8 +1,1 @@
-{
- "stdout": "Info: Saved as \"tb_npc_elder.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/npc_elder/source/tb_npc_elder.blend\", \"tris\": 4604, \"clips\": [\"Idle\", \"Interact\"]}\n",
- "objects": [
-  "npc_elder",
-  "npc_elder_mesh",
-  "npc_elder_rig"
- ]
-}
+{"ok": true, "result": {"stdout": "Info: Saved as \"tb_npc_elder.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/npc_elder/source/tb_npc_elder.blend\", \"tris\": 5424, \"clips\": [\"Idle\", \"Interact\"]}\n", "objects": ["npc_elder", "npc_elder_mesh", "npc_elder_rig"]}}

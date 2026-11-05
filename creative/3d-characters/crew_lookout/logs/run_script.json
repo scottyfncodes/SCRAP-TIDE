@@ -1,8 +1,1 @@
-{
- "stdout": "Info: Saved as \"tb_crew_lookout.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/crew_lookout/source/tb_crew_lookout.blend\", \"tris\": 4578, \"clips\": [\"Idle\", \"Walk\", \"Interact\", \"Attack\"]}\n",
- "objects": [
-  "crew_lookout",
-  "crew_lookout_mesh",
-  "crew_lookout_rig"
- ]
-}
+{"ok": true, "result": {"stdout": "Info: Saved as \"tb_crew_lookout.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/crew_lookout/source/tb_crew_lookout.blend\", \"tris\": 5302, \"clips\": [\"Idle\", \"Walk\", \"Interact\", \"Attack\", \"Cheer\"]}\n", "objects": ["crew_lookout", "crew_lookout_mesh", "crew_lookout_rig"]}}

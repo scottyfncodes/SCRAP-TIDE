@@ -39,6 +39,7 @@ const NEEDED: Record<string, string[]> = {
     'socket_steering', 'socket_storage'],
   // the Patchwork Skiff starter boat (creative/3d-skiff): one static body in the dinghy's frame
   tb_patchwork_skiff: ['tb_patchwork_skiff', 'tb_patchwork_skiff_mesh'],
+  tb_sloop_scrap: ['tb_sloop_scrap', 'tb_sloop_scrap_mesh'],
   tb_sloop_outriggers: ['tb_sloop_outriggers', 'outrigger_port', 'outrigger_starboard'],
   tb_upg_canvas_mainsail: ['upgrade_canvas_mainsail'],
   tb_upg_cargo_crates: ['upgrade_lashed_cargo_crates'],

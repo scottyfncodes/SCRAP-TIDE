@@ -1,8 +1,1 @@
-{
- "stdout": "Info: Saved as \"tb_npc_dockhand.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/npc_dockhand/source/tb_npc_dockhand.blend\", \"tris\": 5082, \"clips\": [\"Idle\", \"Interact\"]}\n",
- "objects": [
-  "npc_dockhand",
-  "npc_dockhand_mesh",
-  "npc_dockhand_rig"
- ]
-}
+{"ok": true, "result": {"stdout": "Info: Saved as \"tb_npc_dockhand.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/npc_dockhand/source/tb_npc_dockhand.blend\", \"tris\": 5874, \"clips\": [\"Idle\", \"Interact\"]}\n", "objects": ["npc_dockhand", "npc_dockhand_mesh", "npc_dockhand_rig"]}}

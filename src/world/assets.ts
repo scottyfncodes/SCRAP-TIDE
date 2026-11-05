@@ -35,6 +35,8 @@ export const MODEL_FILES = [
   'tb_coastal_sloop',
   // its outrigger floats and cross-beams (MeshCraft, creative/3d-sloop/outriggers), placed in the sloop's frame
   'tb_sloop_outriggers',
+  // its welded scrap dress (MeshCraft, creative/3d-sloop/scrap): patches, ram, spikes, tyres, chain, in the sloop's frame
+  'tb_sloop_scrap',
   // the sloop's upgrade models (GITCRAFT TIDEBREAKERS 3D package), each mounted on its socket_* node when owned
   'tb_upg_canvas_mainsail',
   'tb_upg_cargo_crates',
