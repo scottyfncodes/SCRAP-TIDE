@@ -431,6 +431,26 @@ export const OUTPOSTS: OutpostDef[] = [
   { id: 'op_sinking', name: 'Going Under', kind: 'sinking', x: -60, z: 40, rot: 0.9, r: 8 },
 ];
 
+/**
+ * Sea marks: small things left on the water by people who are gone, each with one find and one line of lore
+ * (design bible PR 1.3: the empty north-west). Sail up slowly and INVESTIGATE. Built from the GITCRAFT kits.
+ */
+export interface SeaMarkDef { id: string; name: string; kind: 'bell' | 'billboard' | 'shrine'; x: number; z: number; region: RegionId; blurb: string; lore: string; loot: { id: string; n: number }[] }
+export const SEA_MARKS: SeaMarkDef[] = [
+  { id: 'mark_bell', name: 'The Silent Bell', kind: 'bell', x: -280, z: -180, region: 'shallows',
+    blurb: 'A bell buoy that stopped ringing. Bells don’t stop on their own.',
+    lore: 'A rag is wedged in the clapper, tied off with care. Someone didn’t want the bell calling raiders to whatever was moored here. The mooring line is still tied to the cage.',
+    loot: [{ id: 'rope', n: 3 }, { id: 'iron_nails', n: 3 }, { id: 'bottle_letter', n: 1 }] },
+  { id: 'mark_billboard', name: 'The Smiling Family', kind: 'billboard', x: -150, z: -270, region: 'shallows',
+    blurb: 'A billboard sticking out of the swell: a family on a green lawn, smiling.',
+    lore: 'Somebody climbed up and painted one word across the lawn: LIAR. Behind the board, a scavenger’s stash is lashed to the frame.',
+    loot: [{ id: 'plastic', n: 3 }, { id: 'wire', n: 2 }, { id: 'canvas', n: 1 }] },
+  { id: 'mark_shrine', name: 'The Lashed Shrine', kind: 'shrine', x: -490, z: -410, region: 'emerald',
+    blurb: 'Oil drums lashed round a dead tree. Things hang from the branches.',
+    lore: 'Keys, rings, a child’s shoe, a dog tag. A tin sign at the root says TAKE ONE, LEAVE ONE. You take a ring and leave a nail. It seems fair.',
+    loot: [{ id: 'gold_ring', n: 1 }, { id: 'clay_whistle', n: 1 }] },
+];
+
 /** Named points of interest drawn on the chart. */
 export const POIS = [
   { id: 'meridian', name: 'Old Meridian', x: 500, z: -440 },
@@ -439,5 +459,6 @@ export const POIS = [
   { id: 'hollow', name: 'Rooftop Hollow', x: -235, z: -70 },
   { id: 'spire', name: 'The Meridian Spire', x: -210, z: -1040 },
   { id: 'hold', name: 'Rustfang Hold', x: 350, z: 625, blurb: 'A raider atoll of scrap walls and a hull-plate gate. The scorch marks are from the last people who tried.' },
+  ...SEA_MARKS.map((m) => ({ id: m.id, name: m.name, x: m.x, z: m.z, blurb: m.blurb })),
   { id: 'canopy', name: 'The Last Tree', x: -318, z: -312, blurb: 'Green. Actual green, on the hilltop, behind scrap walls. Someone fought to keep it alive.' },
 ] as { id: string; name: string; x: number; z: number; blurb?: string }[];
