@@ -466,6 +466,10 @@ export function buildShip(store: Store): ShipParts {
   // outrigger floats: the MeshCraft model when it loaded, else the kit floats placed further down
   const outriggers = vessel === 'sloop' ? sceneModel(OUTRIGGER_FILE, { shadows: true, side: THREE.DoubleSide }) : null;
   if (outriggers) group.add(outriggers);
+  // the Scrap Trimaran's welded dress: corrugated patches, a spiked bumper ram, gunwale spikes, tyres and chain, modelled
+  // clear of every upgrade body (creative/3d-sloop/scrap), so it rides on the sloop whatever is fitted
+  const scrap = vessel === 'sloop' ? sceneModel('tb_sloop_scrap', { shadows: true }) : null;
+  if (scrap) group.add(scrap);
   // owned upgrades mount on the model's sockets; `fitted` marks the ones whose model loaded (else: code-built part)
   const fitted: Record<string, boolean> = {};
   let container: THREE.Object3D | null = null;

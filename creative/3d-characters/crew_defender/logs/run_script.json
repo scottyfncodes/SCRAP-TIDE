@@ -1,8 +1,1 @@
-{
- "stdout": "Info: Saved as \"tb_crew_defender.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/crew_defender/source/tb_crew_defender.blend\", \"tris\": 4848, \"clips\": [\"Idle\", \"Walk\", \"Interact\", \"Attack\"]}\n",
- "objects": [
-  "crew_defender",
-  "crew_defender_mesh",
-  "crew_defender_rig"
- ]
-}
+{"ok": true, "result": {"stdout": "Info: Saved as \"tb_crew_defender.blend\"\n{\"blend\": \"/home/user/TIDEBREAKERS/creative/3d-characters/crew_defender/source/tb_crew_defender.blend\", \"tris\": 5536, \"clips\": [\"Idle\", \"Walk\", \"Interact\", \"Attack\", \"Cheer\"]}\n", "objects": ["crew_defender", "crew_defender_mesh", "crew_defender_rig"]}}
