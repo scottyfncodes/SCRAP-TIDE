@@ -161,6 +161,8 @@ export const INIT = String.raw`(() => {
     checkpoint(n = 0) { seed = (baseSeed ^ Math.imul(sim.frames + 7919 * (n + 1), 0x85ebca6b)) >>> 0; },
     /** Move the virtual clock without running frames (e.g. a salvage site's respawn timer). */
     advance(ms) { vt += ms; runTimers(); },
+    /** Change only the device clock (Date.now), like a player setting the phone's clock: no real time passes. */
+    jumpWall(ms) { baseD += ms; },
     /** Virtual timers still pending (for waits in scripts). */
     get pendingTimers() { return timers.size; },
     trace: false,

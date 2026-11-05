@@ -41,14 +41,14 @@ export class Salvage {
     const last = this.g.store.data.salvaged[s.id];
     if (!last) return true;
     if (!s.respawn) return false;
-    return Date.now() - last >= s.respawn * 1000;
+    return this.g.store.seaNow() - last >= s.respawn * 1000;
   }
 
   /** Seconds until a site can be hauled again. */
   cooldown(s: SalvageSiteDef) {
     const last = this.g.store.data.salvaged[s.id];
     if (!last) return 0;
-    return Math.max(0, Math.ceil((s.respawn * 1000 - (Date.now() - last)) / 1000));
+    return Math.max(0, Math.ceil((s.respawn * 1000 - (this.g.store.seaNow() - last)) / 1000));
   }
 
   /** Ready now, and this boat can work it (region reachable; heavy sites need the crane). */
@@ -136,7 +136,7 @@ export class Salvage {
     const merged = new Map<string, number>();
     for (const l of loot) merged.set(l.id, (merged.get(l.id) ?? 0) + l.n);
     loot.splice(0, loot.length, ...[...merged].map(([id, n]) => ({ id, n })));
-    s.data.salvaged[site.id] = Date.now();
+    s.data.salvaged[site.id] = s.seaNow();
     s.data.hauls++;
     if (first) s.data.firstHauls.push(site.id);
     s.commit();

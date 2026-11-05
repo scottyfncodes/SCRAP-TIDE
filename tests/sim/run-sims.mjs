@@ -47,8 +47,13 @@ const write = (file, body) => {
 };
 
 console.log('PLAYCRAFT simulations');
-const yieldMin = await run('salvage yield (boat that reaches the site)', 'salvageYield', { n: quick ? 30 : 1000, hold: 'minimal' });
-const yieldLarge = await run('salvage yield (30-slot hold)', 'salvageYield', { n: quick ? 30 : 1000, hold: 'large' });
+// one page per site: each haul plays a sound, and ~80 000 audio graphs in one page crash it
+const SITES = ['sv_stump', 'sv_boxyard', 'sv_hollow_sub', 'sv_meridian_a', 'sv_meridian_b', 'sv_meridian_c', 'sv_rig', 'sv_tanker', 'sv_graveyard', 'sv_spire'];
+const yieldMin = { result: [] }, yieldLarge = { result: [] };
+for (const id of SITES) {
+  yieldMin.result.push(...(await run(`salvage yield ${id} (boat that reaches the site)`, 'salvageYield', { n: quick ? 30 : 1000, hold: 'minimal', only: [id] })).result);
+  yieldLarge.result.push(...(await run(`salvage yield ${id} (30-slot hold)`, 'salvageYield', { n: quick ? 30 : 1000, hold: 'large', only: [id] })).result);
+}
 const winch = await run('winch windows', 'winchWindows', {});
 const goldRank = {};
 for (const r of yieldMin.result) if (r.hits === 2 && !r.salvager) goldRank[r.site] = r.gold_per_haul.mean;

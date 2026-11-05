@@ -1,0 +1,120 @@
+{
+  "evidence_class": "simulation-measured",
+  "clock_checks": {
+    "before_main_ee0506d": [
+      {
+        "check": "salvage respawn: clock set forward a day mid-session",
+        "ready_right_after_haul": false,
+        "ready_after_clock_jump": true,
+        "exploit": true,
+        "note": "Salvage.ready follows the device clock, so changing the phone\u2019s clock skips respawn timers."
+      },
+      {
+        "check": "salvage respawn: clock set back, then one respawn of real time",
+        "ready": false,
+        "exploit": false,
+        "bug": true,
+        "note": "setting the clock back locked the site (it waits for the device clock to catch up)"
+      }
+    ],
+    "after": [
+      {
+        "check": "salvage respawn: clock set forward a day mid-session",
+        "ready_right_after_haul": false,
+        "ready_after_clock_jump": false,
+        "exploit": false,
+        "note": "respawn follows the sea clock (monotonic in a session): the clock change did nothing"
+      },
+      {
+        "check": "salvage respawn: clock set back, then one respawn of real time",
+        "ready": true,
+        "exploit": false,
+        "bug": false,
+        "note": "the site refilled after its respawn of real time"
+      },
+      {
+        "check": "salvage respawn: relaunch after the clock was set forward a day",
+        "credited_minutes": 120,
+        "exploit": false,
+        "note": "between sessions the device clock is the only clock; the credit is capped at 2 h (with 4-15 min respawns that equals having been away that long)"
+      }
+    ]
+  },
+  "ordinary_play": {
+    "campaign": {
+      "hits_1": {
+        "actions_before": [
+          251,
+          249,
+          281
+        ],
+        "actions_after": [
+          251,
+          257,
+          281
+        ],
+        "respawn_wait_h_before": [
+          1.35,
+          1.47,
+          1.09
+        ],
+        "respawn_wait_h_after": [
+          1.35,
+          1.47,
+          1.09
+        ]
+      },
+      "hits_2": {
+        "actions_before": [
+          221,
+          206,
+          198
+        ],
+        "actions_after": [
+          221,
+          206,
+          198
+        ],
+        "respawn_wait_h_before": [
+          1.02,
+          1,
+          0.95
+        ],
+        "respawn_wait_h_after": [
+          1.02,
+          1,
+          0.95
+        ]
+      },
+      "hits_3": {
+        "actions_before": [
+          195,
+          193,
+          179
+        ],
+        "actions_after": [
+          195,
+          193,
+          179
+        ],
+        "respawn_wait_h_before": [
+          0.73,
+          0.78,
+          0.81
+        ],
+        "respawn_wait_h_after": [
+          0.73,
+          0.78,
+          0.81
+        ]
+      }
+    },
+    "affordability_rows_identical_of_21": {
+      "hits_1": 21,
+      "hits_2": 21,
+      "hits_3": 21
+    }
+  },
+  "unit_tests": "tests/sea_clock.test.ts (7 cases)",
+  "not_tested": "whether iOS Safari advances performance.now while the screen is locked (iPhone test)"
+}

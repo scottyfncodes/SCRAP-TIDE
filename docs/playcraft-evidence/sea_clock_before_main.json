@@ -1,0 +1,21 @@
+{
+  "commit": "ee0506d (main, before the sea clock)",
+  "evidence_class": "simulation-measured",
+  "method": "tests/sim/sims.page.js exploits() on the live game; sim.jumpWall moves only Date.now (a player changing the phone clock); sim.advance moves real time",
+  "results": [
+    {
+      "check": "salvage respawn: clock set forward a day mid-session",
+      "ready_right_after_haul": false,
+      "ready_after_clock_jump": true,
+      "exploit": true,
+      "note": "Salvage.ready follows the device clock, so changing the phone\u2019s clock skips respawn timers."
+    },
+    {
+      "check": "salvage respawn: clock set back, then one respawn of real time",
+      "ready": false,
+      "exploit": false,
+      "bug": true,
+      "note": "setting the clock back locked the site (it waits for the device clock to catch up)"
+    }
+  ]
+}
