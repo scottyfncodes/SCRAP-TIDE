@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-05T13:03:31.675Z",
-  "commit": "15a16d9f1d2f3ba17b9e3b11512f942ed623a172",
-  "branch": "playcraft/evidence",
-  "dirty_src": false,
+  "generated_at": "2026-11-05T13:48:43.626Z",
+  "commit": "bed002d27954de854ff63a1a3a19380feb4d729d",
+  "branch": "balance/winch-payouts",
+  "dirty_src": true,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
   "seed": 20261105,
@@ -26,21 +26,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 7.58,
+          "mean": 7.57,
           "p10": 4,
           "p50": 8,
           "p90": 12
         },
-        "items_per_haul": 1.69,
+        "items_per_haul": 1.76,
         "per_haul_mean": {
-          "wire": 0.36,
-          "scrap_metal": 0.72,
-          "fuel_can": 0.13,
-          "rubber_duck": 0.04,
-          "plastic": 0.45
+          "plastic": 0.53,
+          "scrap_metal": 0.78,
+          "wire": 0.3,
+          "rubber_duck": 0.08,
+          "fuel_can": 0.08
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 1.9
+        "gold_per_respawn_minute": 1.89
       },
       {
         "site": "sv_stump",
@@ -55,21 +55,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 15.58,
+          "mean": 15.17,
           "p10": 10,
-          "p50": 16,
-          "p90": 21
+          "p50": 15,
+          "p90": 20
         },
-        "items_per_haul": 3.52,
+        "items_per_haul": 3.39,
         "per_haul_mean": {
+          "scrap_metal": 1.3,
           "fuel_can": 0.23,
-          "scrap_metal": 1.43,
-          "plastic": 1.05,
-          "wire": 0.68,
-          "rubber_duck": 0.14
+          "rubber_duck": 0.13,
+          "plastic": 0.99,
+          "wire": 0.75
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.89
+        "gold_per_respawn_minute": 3.79
       },
       {
         "site": "sv_stump",
@@ -84,24 +84,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 15.36,
-          "p10": 11,
-          "p50": 15,
-          "p90": 21
+          "mean": 22.67,
+          "p10": 16,
+          "p50": 23,
+          "p90": 30
         },
-        "items_per_haul": 3.48,
+        "items_per_haul": 5.02,
         "per_haul_mean": {
-          "plastic": 0.94,
-          "fuel_can": 0.23,
-          "wire": 0.65,
-          "scrap_metal": 1.58,
-          "rubber_duck": 0.1
+          "fuel_can": 0.37,
+          "wire": 1.02,
+          "plastic": 1.46,
+          "scrap_metal": 1.98,
+          "rubber_duck": 0.2
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.84,
+        "gold_per_respawn_minute": 5.67,
         "first_haul": {
           "transistor_radio": 1,
-          "scrap_metal": 7
+          "scrap_metal": 9
         }
       },
       {
@@ -117,21 +117,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 30.48,
-          "p10": 23,
+          "mean": 30.93,
+          "p10": 24,
           "p50": 31,
           "p90": 38
         },
-        "items_per_haul": 6.93,
+        "items_per_haul": 6.88,
         "per_haul_mean": {
-          "wire": 1.49,
-          "scrap_metal": 2.86,
-          "fuel_can": 0.4,
-          "plastic": 1.98,
-          "rubber_duck": 0.22
+          "fuel_can": 0.51,
+          "plastic": 1.84,
+          "wire": 1.43,
+          "scrap_metal": 2.92,
+          "rubber_duck": 0.19
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.62
+        "gold_per_respawn_minute": 7.73
       },
       {
         "site": "sv_stump",
@@ -146,21 +146,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 14.81,
-          "p10": 9,
+          "mean": 15.03,
+          "p10": 10,
           "p50": 15,
           "p90": 20
         },
-        "items_per_haul": 3.3,
+        "items_per_haul": 3.36,
         "per_haul_mean": {
-          "plastic": 0.88,
-          "wire": 0.71,
-          "fuel_can": 0.25,
-          "scrap_metal": 1.39,
-          "rubber_duck": 0.08
+          "scrap_metal": 1.33,
+          "wire": 0.75,
+          "plastic": 0.95,
+          "fuel_can": 0.23,
+          "rubber_duck": 0.11
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.7
+        "gold_per_respawn_minute": 3.76
       },
       {
         "site": "sv_stump",
@@ -175,18 +175,18 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 22.59,
-          "p10": 16,
+          "mean": 22.61,
+          "p10": 17,
           "p50": 23,
           "p90": 29
         },
-        "items_per_haul": 5.12,
+        "items_per_haul": 5.03,
         "per_haul_mean": {
-          "scrap_metal": 2.24,
-          "plastic": 1.45,
-          "wire": 0.94,
-          "fuel_can": 0.33,
-          "rubber_duck": 0.16
+          "scrap_metal": 2,
+          "plastic": 1.38,
+          "rubber_duck": 0.19,
+          "wire": 1.14,
+          "fuel_can": 0.34
         },
         "hauls_with_overflow": 0,
         "gold_per_respawn_minute": 5.65
@@ -204,26 +204,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 22.86,
-          "p10": 17,
-          "p50": 23,
-          "p90": 29
+          "mean": 31.13,
+          "p10": 24,
+          "p50": 31,
+          "p90": 38
         },
-        "items_per_haul": 5.14,
+        "items_per_haul": 6.82,
         "per_haul_mean": {
-          "rubber_duck": 0.16,
-          "fuel_can": 0.32,
-          "scrap_metal": 2.25,
-          "wire": 1.1,
-          "plastic": 1.33
+          "scrap_metal": 2.74,
+          "wire": 1.5,
+          "rubber_duck": 0.24,
+          "plastic": 1.81,
+          "fuel_can": 0.54
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 5.72,
+        "gold_per_respawn_minute": 7.78,
         "first_haul": {
           "transistor_radio": 1,
-          "scrap_metal": 3,
-          "wire": 2,
-          "rubber_duck": 1
+          "scrap_metal": 5,
+          "fuel_can": 1,
+          "plastic": 1,
+          "wire": 2
         }
       },
       {
@@ -239,21 +240,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 38.63,
-          "p10": 31,
-          "p50": 39,
-          "p90": 46
+          "mean": 37.54,
+          "p10": 30,
+          "p50": 38,
+          "p90": 45
         },
-        "items_per_haul": 8.59,
+        "items_per_haul": 8.35,
         "per_haul_mean": {
-          "plastic": 2.26,
           "wire": 1.79,
-          "fuel_can": 0.63,
-          "scrap_metal": 3.68,
-          "rubber_duck": 0.25
+          "rubber_duck": 0.3,
+          "plastic": 2.52,
+          "scrap_metal": 3.13,
+          "fuel_can": 0.62
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.66
+        "gold_per_respawn_minute": 9.39
       },
       {
         "site": "sv_boxyard",
@@ -268,22 +269,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 9.49,
+          "mean": 12.49,
           "p10": 4,
           "p50": 9,
           "p90": 12
         },
-        "items_per_haul": 2.04,
+        "items_per_haul": 1.98,
         "per_haul_mean": {
-          "canvas": 0.48,
-          "rope": 0.37,
-          "plastic": 0.96,
-          "fuel_can": 0.1,
-          "electronics": 0.11,
-          "snow_globe": 0.03
+          "plastic": 0.74,
+          "canvas": 0.42,
+          "rope": 0.51,
+          "snow_globe": 0.08,
+          "electronics": 0.15,
+          "fuel_can": 0.09
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 1.9
+        "gold_per_respawn_minute": 2.5
       },
       {
         "site": "sv_boxyard",
@@ -298,22 +299,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 23.68,
+          "mean": 26.08,
           "p10": 12,
           "p50": 18,
-          "p90": 69
+          "p90": 74
         },
-        "items_per_haul": 4.16,
+        "items_per_haul": 3.95,
         "per_haul_mean": {
-          "canvas": 0.8,
-          "plastic": 2.02,
-          "rope": 0.77,
-          "electronics": 0.26,
-          "snow_globe": 0.12,
-          "fuel_can": 0.21
+          "electronics": 0.28,
+          "canvas": 0.64,
+          "plastic": 1.91,
+          "rope": 0.72,
+          "fuel_can": 0.25,
+          "snow_globe": 0.17
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.74
+        "gold_per_respawn_minute": 5.22
       },
       {
         "site": "sv_boxyard",
@@ -328,26 +329,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 24.75,
-          "p10": 12,
-          "p50": 18,
-          "p90": 71
+          "mean": 37.82,
+          "p10": 19,
+          "p50": 27,
+          "p90": 83
         },
-        "items_per_haul": 3.95,
+        "items_per_haul": 6.03,
         "per_haul_mean": {
-          "canvas": 0.69,
-          "plastic": 1.85,
-          "electronics": 0.27,
-          "rope": 0.81,
-          "fuel_can": 0.19,
-          "snow_globe": 0.15
+          "plastic": 2.81,
+          "snow_globe": 0.23,
+          "electronics": 0.4,
+          "canvas": 0.99,
+          "rope": 1.27,
+          "fuel_can": 0.35
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.95,
+        "gold_per_respawn_minute": 7.56,
         "first_haul": {
-          "electronics": 3,
-          "canvas": 2,
-          "rope": 1
+          "electronics": 2,
+          "canvas": 4,
+          "snow_globe": 1,
+          "rope": 3
         }
       },
       {
@@ -363,22 +365,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 47.63,
+          "mean": 46.86,
           "p10": 27,
           "p50": 35,
-          "p90": 91
+          "p90": 90
         },
-        "items_per_haul": 8.05,
+        "items_per_haul": 7.85,
         "per_haul_mean": {
-          "electronics": 0.47,
-          "plastic": 3.77,
-          "rope": 1.49,
-          "canvas": 1.61,
-          "snow_globe": 0.26,
-          "fuel_can": 0.47
+          "fuel_can": 0.56,
+          "rope": 1.43,
+          "canvas": 1.49,
+          "snow_globe": 0.24,
+          "plastic": 3.63,
+          "electronics": 0.5
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.53
+        "gold_per_respawn_minute": 9.37
       },
       {
         "site": "sv_boxyard",
@@ -393,22 +395,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 23.36,
+          "mean": 26.67,
           "p10": 12,
           "p50": 18,
-          "p90": 69
+          "p90": 74
         },
         "items_per_haul": 4.06,
         "per_haul_mean": {
-          "plastic": 2.02,
-          "canvas": 0.81,
-          "fuel_can": 0.26,
-          "snow_globe": 0.12,
-          "electronics": 0.25,
-          "rope": 0.62
+          "plastic": 2.03,
+          "snow_globe": 0.18,
+          "fuel_can": 0.22,
+          "canvas": 0.73,
+          "rope": 0.67,
+          "electronics": 0.23
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.67
+        "gold_per_respawn_minute": 5.33
       },
       {
         "site": "sv_boxyard",
@@ -423,57 +425,57 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 33.31,
-          "p10": 19,
-          "p50": 27,
-          "p90": 80
-        },
-        "items_per_haul": 6.17,
-        "per_haul_mean": {
-          "plastic": 3.06,
-          "fuel_can": 0.4,
-          "rope": 1,
-          "canvas": 1.22,
-          "electronics": 0.36,
-          "snow_globe": 0.14
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.66
-      },
-      {
-        "site": "sv_boxyard",
-        "name": "The Box Yard",
-        "region": "shallows",
-        "heavy": false,
-        "difficulty": 1,
-        "respawn_s": 300,
-        "vessel": "dinghy",
-        "hold_slots": 6,
-        "salvager": true,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 37.57,
+          "mean": 35.73,
           "p10": 20,
           "p50": 27,
           "p90": 83
         },
-        "items_per_haul": 6.14,
+        "items_per_haul": 6.1,
         "per_haul_mean": {
-          "plastic": 2.94,
-          "canvas": 1.1,
-          "electronics": 0.36,
-          "rope": 1.21,
-          "fuel_can": 0.33,
-          "snow_globe": 0.22
+          "canvas": 1.21,
+          "fuel_can": 0.34,
+          "plastic": 2.96,
+          "electronics": 0.4,
+          "rope": 1.01,
+          "snow_globe": 0.19
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.51,
+        "gold_per_respawn_minute": 7.15
+      },
+      {
+        "site": "sv_boxyard",
+        "name": "The Box Yard",
+        "region": "shallows",
+        "heavy": false,
+        "difficulty": 1,
+        "respawn_s": 300,
+        "vessel": "dinghy",
+        "hold_slots": 6,
+        "salvager": true,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 47.65,
+          "p10": 27,
+          "p50": 35,
+          "p90": 92
+        },
+        "items_per_haul": 7.94,
+        "per_haul_mean": {
+          "plastic": 3.63,
+          "rope": 1.5,
+          "canvas": 1.56,
+          "electronics": 0.49,
+          "snow_globe": 0.26,
+          "fuel_can": 0.51
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 9.53,
         "first_haul": {
           "electronics": 3,
           "canvas": 2,
-          "plastic": 3,
-          "fuel_can": 1
+          "fuel_can": 2,
+          "plastic": 4
         }
       },
       {
@@ -489,22 +491,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 61.87,
+          "mean": 60.33,
           "p10": 35,
-          "p50": 48,
-          "p90": 103
+          "p50": 45,
+          "p90": 104
         },
-        "items_per_haul": 10.19,
+        "items_per_haul": 10.22,
         "per_haul_mean": {
-          "snow_globe": 0.35,
-          "fuel_can": 0.63,
-          "plastic": 5.09,
-          "electronics": 0.56,
-          "canvas": 1.86,
-          "rope": 1.71
+          "snow_globe": 0.33,
+          "canvas": 1.77,
+          "fuel_can": 0.57,
+          "electronics": 0.63,
+          "plastic": 5.16,
+          "rope": 1.77
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 12.37
+        "gold_per_respawn_minute": 12.07
       },
       {
         "site": "sv_hollow_sub",
@@ -519,21 +521,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 13.68,
-          "p10": 4,
+          "mean": 13.17,
+          "p10": 5,
           "p50": 9,
           "p90": 35
         },
-        "items_per_haul": 2.03,
+        "items_per_haul": 2.1,
         "per_haul_mean": {
-          "wire": 0.37,
-          "scrap_metal": 0.63,
-          "iron_nails": 0.89,
-          "vinyl_record": 0.07,
-          "gold_watch": 0.08
+          "scrap_metal": 0.66,
+          "vinyl_record": 0.05,
+          "gold_watch": 0.08,
+          "wire": 0.36,
+          "iron_nails": 0.96
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 2.28
+        "gold_per_respawn_minute": 2.19
       },
       {
         "site": "sv_hollow_sub",
@@ -548,21 +550,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 27.67,
+          "mean": 25.17,
           "p10": 11,
           "p50": 18,
-          "p90": 64
+          "p90": 59
         },
-        "items_per_haul": 4.05,
+        "items_per_haul": 4.09,
         "per_haul_mean": {
-          "wire": 0.68,
-          "scrap_metal": 1.18,
-          "iron_nails": 1.88,
-          "gold_watch": 0.14,
-          "vinyl_record": 0.17
+          "iron_nails": 1.86,
+          "scrap_metal": 1.15,
+          "vinyl_record": 0.12,
+          "wire": 0.85,
+          "gold_watch": 0.12
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.61
+        "gold_per_respawn_minute": 4.2
       },
       {
         "site": "sv_hollow_sub",
@@ -577,23 +579,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 25.81,
-          "p10": 11,
-          "p50": 18,
-          "p90": 61
+          "mean": 39.89,
+          "p10": 19,
+          "p50": 29,
+          "p90": 72
         },
-        "items_per_haul": 4.19,
+        "items_per_haul": 5.92,
         "per_haul_mean": {
-          "iron_nails": 1.86,
-          "gold_watch": 0.14,
-          "scrap_metal": 1.34,
-          "vinyl_record": 0.11,
-          "wire": 0.76
+          "iron_nails": 2.56,
+          "wire": 1.1,
+          "scrap_metal": 1.82,
+          "vinyl_record": 0.25,
+          "gold_watch": 0.2
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.3,
+        "gold_per_respawn_minute": 6.65,
         "first_haul": {
-          "iron_nails": 6
+          "gold_watch": 2,
+          "iron_nails": 4
         }
       },
       {
@@ -609,21 +612,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 55.95,
-          "p10": 27,
-          "p50": 44,
-          "p90": 88
+          "mean": 56.87,
+          "p10": 28,
+          "p50": 53,
+          "p90": 100
         },
-        "items_per_haul": 8,
+        "items_per_haul": 8.03,
         "per_haul_mean": {
-          "scrap_metal": 2.43,
-          "wire": 1.46,
-          "iron_nails": 3.46,
-          "gold_watch": 0.29,
-          "vinyl_record": 0.36
+          "vinyl_record": 0.36,
+          "scrap_metal": 2.48,
+          "iron_nails": 3.48,
+          "wire": 1.41,
+          "gold_watch": 0.31
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.33
+        "gold_per_respawn_minute": 9.48
       },
       {
         "site": "sv_hollow_sub",
@@ -638,21 +641,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 29.5,
-          "p10": 12,
-          "p50": 19,
-          "p90": 64
+          "mean": 27.57,
+          "p10": 13,
+          "p50": 18,
+          "p90": 63
         },
-        "items_per_haul": 3.99,
+        "items_per_haul": 4.13,
         "per_haul_mean": {
-          "iron_nails": 1.67,
-          "vinyl_record": 0.19,
-          "scrap_metal": 1.3,
-          "wire": 0.67,
-          "gold_watch": 0.17
+          "iron_nails": 1.89,
+          "wire": 0.65,
+          "scrap_metal": 1.29,
+          "gold_watch": 0.15,
+          "vinyl_record": 0.15
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.92
+        "gold_per_respawn_minute": 4.59
       },
       {
         "site": "sv_hollow_sub",
@@ -667,21 +670,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 40.67,
-          "p10": 20,
-          "p50": 29,
-          "p90": 72
+          "mean": 43.91,
+          "p10": 21,
+          "p50": 31,
+          "p90": 76
         },
-        "items_per_haul": 6.04,
+        "items_per_haul": 6.05,
         "per_haul_mean": {
-          "wire": 1.15,
-          "gold_watch": 0.24,
-          "scrap_metal": 1.87,
-          "iron_nails": 2.61,
-          "vinyl_record": 0.19
+          "vinyl_record": 0.22,
+          "wire": 1.16,
+          "scrap_metal": 1.74,
+          "iron_nails": 2.65,
+          "gold_watch": 0.28
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.78
+        "gold_per_respawn_minute": 7.32
       },
       {
         "site": "sv_hollow_sub",
@@ -696,25 +699,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 41.61,
-          "p10": 20,
-          "p50": 29,
-          "p90": 75
+          "mean": 54.99,
+          "p10": 29,
+          "p50": 51,
+          "p90": 85
         },
-        "items_per_haul": 6.24,
+        "items_per_haul": 8.44,
         "per_haul_mean": {
-          "wire": 1.06,
-          "iron_nails": 2.81,
-          "scrap_metal": 1.94,
-          "gold_watch": 0.23,
-          "vinyl_record": 0.22
+          "iron_nails": 4.23,
+          "scrap_metal": 2.31,
+          "vinyl_record": 0.28,
+          "gold_watch": 0.3,
+          "wire": 1.32
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.93,
+        "gold_per_respawn_minute": 9.16,
         "first_haul": {
-          "scrap_metal": 2,
-          "wire": 2,
-          "iron_nails": 2
+          "iron_nails": 7,
+          "scrap_metal": 5
         }
       },
       {
@@ -730,21 +732,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 69.5,
+          "mean": 70.16,
           "p10": 37,
-          "p50": 67,
-          "p90": 116
+          "p50": 66,
+          "p90": 115
         },
-        "items_per_haul": 10.34,
+        "items_per_haul": 10.39,
         "per_haul_mean": {
-          "wire": 1.68,
-          "iron_nails": 4.89,
-          "scrap_metal": 3,
-          "vinyl_record": 0.4,
-          "gold_watch": 0.38
+          "vinyl_record": 0.38,
+          "wire": 1.62,
+          "scrap_metal": 3.33,
+          "iron_nails": 4.67,
+          "gold_watch": 0.39
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 11.58
+        "gold_per_respawn_minute": 11.69
       },
       {
         "site": "sv_meridian_a",
@@ -759,22 +761,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 21.46,
+          "mean": 20.2,
           "p10": 8,
           "p50": 15,
           "p90": 55
         },
-        "items_per_haul": 2.19,
+        "items_per_haul": 2.09,
         "per_haul_mean": {
-          "scrap_metal": 1.18,
-          "wire": 0.47,
-          "electronics": 0.34,
-          "street_sign": 0.07,
-          "gold_watch": 0.09,
-          "polaroid": 0.05
+          "scrap_metal": 0.92,
+          "street_sign": 0.09,
+          "wire": 0.63,
+          "polaroid": 0.06,
+          "electronics": 0.36,
+          "gold_watch": 0.05
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.07
+        "gold_per_respawn_minute": 2.89
       },
       {
         "site": "sv_meridian_a",
@@ -789,22 +791,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 38.59,
+          "mean": 38.41,
           "p10": 17,
           "p50": 27,
           "p90": 79
         },
-        "items_per_haul": 4.01,
+        "items_per_haul": 3.97,
         "per_haul_mean": {
-          "scrap_metal": 1.8,
-          "wire": 1.11,
-          "street_sign": 0.1,
-          "polaroid": 0.12,
+          "scrap_metal": 1.63,
+          "wire": 1.25,
+          "polaroid": 0.14,
           "electronics": 0.77,
-          "gold_watch": 0.12
+          "gold_watch": 0.1,
+          "street_sign": 0.09
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 5.51
+        "gold_per_respawn_minute": 5.49
       },
       {
         "site": "sv_meridian_a",
@@ -819,26 +821,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 62.78,
-          "p10": 28,
-          "p50": 62,
-          "p90": 104
+          "mean": 80.61,
+          "p10": 39,
+          "p50": 73,
+          "p90": 139
         },
-        "items_per_haul": 6.01,
+        "items_per_haul": 7.99,
         "per_haul_mean": {
-          "street_sign": 0.26,
-          "electronics": 0.98,
-          "scrap_metal": 2.97,
-          "wire": 1.43,
-          "polaroid": 0.18,
-          "gold_watch": 0.2
+          "scrap_metal": 3.48,
+          "electronics": 1.47,
+          "wire": 2.29,
+          "gold_watch": 0.26,
+          "polaroid": 0.23,
+          "street_sign": 0.27
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 8.97,
+        "gold_per_respawn_minute": 11.52,
         "first_haul": {
           "street_sign": 1,
-          "scrap_metal": 5,
-          "wire": 3
+          "scrap_metal": 4,
+          "electronics": 3,
+          "wire": 2
         }
       },
       {
@@ -854,22 +857,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 101.39,
-          "p10": 55,
-          "p50": 97,
-          "p90": 156
+          "mean": 101.99,
+          "p10": 56,
+          "p50": 99,
+          "p90": 163
         },
-        "items_per_haul": 10.2,
+        "items_per_haul": 10.21,
         "per_haul_mean": {
-          "wire": 2.63,
-          "polaroid": 0.34,
-          "scrap_metal": 4.89,
-          "electronics": 1.75,
-          "street_sign": 0.33,
-          "gold_watch": 0.27
+          "scrap_metal": 5.03,
+          "electronics": 1.79,
+          "wire": 2.46,
+          "polaroid": 0.35,
+          "street_sign": 0.29,
+          "gold_watch": 0.29
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 14.48
+        "gold_per_respawn_minute": 14.57
       },
       {
         "site": "sv_meridian_a",
@@ -884,22 +887,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 39.86,
-          "p10": 18,
-          "p50": 27,
-          "p90": 80
+          "mean": 42.88,
+          "p10": 17,
+          "p50": 31,
+          "p90": 82
         },
-        "items_per_haul": 3.96,
+        "items_per_haul": 4.01,
         "per_haul_mean": {
-          "polaroid": 0.14,
-          "electronics": 0.77,
-          "scrap_metal": 1.68,
-          "wire": 1.17,
-          "street_sign": 0.1,
-          "gold_watch": 0.11
+          "electronics": 0.72,
+          "wire": 0.93,
+          "scrap_metal": 1.96,
+          "polaroid": 0.16,
+          "gold_watch": 0.11,
+          "street_sign": 0.15
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 5.69
+        "gold_per_respawn_minute": 6.13
       },
       {
         "site": "sv_meridian_a",
@@ -914,22 +917,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 61.5,
+          "mean": 62.85,
           "p10": 30,
-          "p50": 48,
-          "p90": 106
+          "p50": 52,
+          "p90": 103
         },
         "items_per_haul": 6.07,
         "per_haul_mean": {
-          "electronics": 1.05,
-          "wire": 1.53,
-          "scrap_metal": 2.91,
-          "polaroid": 0.19,
-          "street_sign": 0.2,
-          "gold_watch": 0.2
+          "gold_watch": 0.21,
+          "wire": 1.45,
+          "street_sign": 0.18,
+          "scrap_metal": 2.96,
+          "polaroid": 0.22,
+          "electronics": 1.07
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 8.79
+        "gold_per_respawn_minute": 8.98
       },
       {
         "site": "sv_meridian_a",
@@ -944,27 +947,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 81.76,
-          "p10": 40,
-          "p50": 79,
-          "p90": 135
+          "mean": 99.56,
+          "p10": 52,
+          "p50": 97,
+          "p90": 157
         },
-        "items_per_haul": 8.08,
+        "items_per_haul": 9.9,
         "per_haul_mean": {
-          "scrap_metal": 3.96,
-          "electronics": 1.41,
-          "wire": 1.96,
-          "polaroid": 0.28,
-          "street_sign": 0.25,
-          "gold_watch": 0.24
+          "street_sign": 0.27,
+          "wire": 2.46,
+          "scrap_metal": 4.64,
+          "polaroid": 0.32,
+          "electronics": 1.9,
+          "gold_watch": 0.31
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 11.68,
+        "gold_per_respawn_minute": 14.22,
         "first_haul": {
-          "street_sign": 1,
-          "scrap_metal": 6,
-          "electronics": 1,
-          "polaroid": 1
+          "street_sign": 2,
+          "electronics": 4,
+          "scrap_metal": 3,
+          "wire": 1
         }
       },
       {
@@ -980,22 +983,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 118.34,
-          "p10": 70,
-          "p50": 115,
-          "p90": 173
+          "mean": 119.44,
+          "p10": 65,
+          "p50": 116,
+          "p90": 177
         },
-        "items_per_haul": 12.06,
+        "items_per_haul": 12.01,
         "per_haul_mean": {
-          "scrap_metal": 5.89,
-          "electronics": 2.37,
-          "wire": 2.74,
-          "gold_watch": 0.36,
-          "polaroid": 0.34,
-          "street_sign": 0.37
+          "wire": 3.08,
+          "electronics": 2.14,
+          "polaroid": 0.39,
+          "scrap_metal": 5.7,
+          "street_sign": 0.38,
+          "gold_watch": 0.32
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 16.91
+        "gold_per_respawn_minute": 17.06
       },
       {
         "site": "sv_meridian_b",
@@ -1010,21 +1013,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 30.19,
+          "mean": 32.26,
           "p10": 10,
-          "p50": 18,
+          "p50": 25,
           "p90": 80
         },
-        "items_per_haul": 2,
+        "items_per_haul": 2.03,
         "per_haul_mean": {
-          "electronics": 0.99,
-          "engine_parts": 0.15,
-          "wire": 0.7,
-          "traffic_light": 0.09,
-          "seed_packet": 0.08
+          "traffic_light": 0.07,
+          "electronics": 0.97,
+          "engine_parts": 0.14,
+          "wire": 0.72,
+          "seed_packet": 0.13
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.77
+        "gold_per_respawn_minute": 4.03
       },
       {
         "site": "sv_meridian_b",
@@ -1039,21 +1042,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 59.8,
+          "mean": 61.51,
           "p10": 28,
           "p50": 43,
-          "p90": 108
+          "p90": 115
         },
-        "items_per_haul": 4.08,
+        "items_per_haul": 4.06,
         "per_haul_mean": {
-          "wire": 1.51,
-          "electronics": 1.98,
-          "engine_parts": 0.28,
-          "traffic_light": 0.2,
-          "seed_packet": 0.12
+          "traffic_light": 0.18,
+          "electronics": 1.87,
+          "wire": 1.57,
+          "seed_packet": 0.18,
+          "engine_parts": 0.27
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.48
+        "gold_per_respawn_minute": 7.69
       },
       {
         "site": "sv_meridian_b",
@@ -1068,146 +1071,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 87.13,
-          "p10": 51,
-          "p50": 68,
-          "p90": 135
+          "mean": 114.62,
+          "p10": 68,
+          "p50": 97,
+          "p90": 162
         },
-        "items_per_haul": 6.27,
+        "items_per_haul": 8.16,
         "per_haul_mean": {
-          "electronics": 3.1,
-          "engine_parts": 0.45,
-          "wire": 2.29,
-          "seed_packet": 0.22,
-          "traffic_light": 0.22
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 10.89,
-        "first_haul": {
-          "traffic_light": 1,
-          "wire": 5,
-          "electronics": 3
-        }
-      },
-      {
-        "site": "sv_meridian_b",
-        "name": "Broadcast Spire",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 480,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": false,
-        "hits": 3,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 146.84,
-          "p10": 88,
-          "p50": 151,
-          "p90": 224
-        },
-        "items_per_haul": 10.18,
-        "per_haul_mean": {
-          "wire": 3.66,
-          "engine_parts": 0.74,
-          "electronics": 5.01,
-          "traffic_light": 0.35,
-          "seed_packet": 0.43
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 18.35
-      },
-      {
-        "site": "sv_meridian_b",
-        "name": "Broadcast Spire",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 480,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
-        "hits": 0,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 60.3,
-          "p10": 28,
-          "p50": 45,
-          "p90": 108
-        },
-        "items_per_haul": 4.09,
-        "per_haul_mean": {
-          "electronics": 2.01,
-          "wire": 1.48,
-          "traffic_light": 0.19,
-          "engine_parts": 0.28,
-          "seed_packet": 0.14
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.54
-      },
-      {
-        "site": "sv_meridian_b",
-        "name": "Broadcast Spire",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 480,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 90.84,
-          "p10": 48,
-          "p50": 72,
-          "p90": 135
-        },
-        "items_per_haul": 6.1,
-        "per_haul_mean": {
-          "electronics": 2.84,
-          "traffic_light": 0.27,
-          "wire": 2.31,
-          "seed_packet": 0.23,
-          "engine_parts": 0.46
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 11.35
-      },
-      {
-        "site": "sv_meridian_b",
-        "name": "Broadcast Spire",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 480,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 116.35,
-          "p10": 61,
-          "p50": 96,
-          "p90": 200
-        },
-        "items_per_haul": 8.32,
-        "per_haul_mean": {
-          "wire": 3.36,
-          "electronics": 3.8,
+          "electronics": 3.81,
+          "engine_parts": 0.62,
+          "wire": 3.17,
           "seed_packet": 0.26,
-          "traffic_light": 0.34,
-          "engine_parts": 0.57
+          "traffic_light": 0.32
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 14.54,
+        "gold_per_respawn_minute": 14.33,
         "first_haul": {
           "traffic_light": 1,
-          "electronics": 2,
-          "wire": 5,
+          "wire": 7,
           "engine_parts": 1
         }
       },
@@ -1220,25 +1101,147 @@
         "respawn_s": 480,
         "vessel": "sloop",
         "hold_slots": 14,
+        "salvager": false,
+        "hits": 3,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 151.6,
+          "p10": 88,
+          "p50": 150,
+          "p90": 238
+        },
+        "items_per_haul": 9.94,
+        "per_haul_mean": {
+          "electronics": 4.64,
+          "traffic_light": 0.42,
+          "seed_packet": 0.43,
+          "engine_parts": 0.81,
+          "wire": 3.64
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 18.95
+      },
+      {
+        "site": "sv_meridian_b",
+        "name": "Broadcast Spire",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 480,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 0,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 61.04,
+          "p10": 28,
+          "p50": 45,
+          "p90": 115
+        },
+        "items_per_haul": 4.04,
+        "per_haul_mean": {
+          "wire": 1.45,
+          "seed_packet": 0.17,
+          "electronics": 1.94,
+          "engine_parts": 0.32,
+          "traffic_light": 0.17
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 7.63
+      },
+      {
+        "site": "sv_meridian_b",
+        "name": "Broadcast Spire",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 480,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 88.49,
+          "p10": 46,
+          "p50": 70,
+          "p90": 142
+        },
+        "items_per_haul": 5.99,
+        "per_haul_mean": {
+          "wire": 2.19,
+          "engine_parts": 0.5,
+          "electronics": 2.84,
+          "traffic_light": 0.23,
+          "seed_packet": 0.24
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 11.06
+      },
+      {
+        "site": "sv_meridian_b",
+        "name": "Broadcast Spire",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 480,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 152.6,
+          "p10": 86,
+          "p50": 155,
+          "p90": 233
+        },
+        "items_per_haul": 10.18,
+        "per_haul_mean": {
+          "electronics": 4.55,
+          "wire": 4.01,
+          "traffic_light": 0.42,
+          "engine_parts": 0.76,
+          "seed_packet": 0.44
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 19.08,
+        "first_haul": {
+          "traffic_light": 1,
+          "engine_parts": 1,
+          "electronics": 8,
+          "seed_packet": 1
+        }
+      },
+      {
+        "site": "sv_meridian_b",
+        "name": "Broadcast Spire",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 480,
+        "vessel": "sloop",
+        "hold_slots": 14,
         "salvager": true,
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 182.19,
-          "p10": 110,
-          "p50": 179,
-          "p90": 264
+          "mean": 178.11,
+          "p10": 108,
+          "p50": 177,
+          "p90": 255
         },
-        "items_per_haul": 12.35,
+        "items_per_haul": 12.24,
         "per_haul_mean": {
-          "traffic_light": 0.47,
-          "engine_parts": 0.87,
-          "electronics": 6.12,
-          "wire": 4.38,
-          "seed_packet": 0.52
+          "electronics": 5.87,
+          "engine_parts": 0.92,
+          "seed_packet": 0.52,
+          "wire": 4.51,
+          "traffic_light": 0.43
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 22.77
+        "gold_per_respawn_minute": 22.26
       },
       {
         "site": "sv_meridian_c",
@@ -1253,21 +1256,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 19.16,
-          "p10": 6,
+          "mean": 24.58,
+          "p10": 8,
           "p50": 9,
-          "p90": 35
+          "p90": 120
         },
-        "items_per_haul": 2.17,
+        "items_per_haul": 2.12,
         "per_haul_mean": {
-          "vinyl_record": 0.18,
-          "scrap_metal": 1.16,
-          "plastic": 0.67,
-          "rubber_duck": 0.13,
-          "diamond_ring": 0.05
+          "plastic": 0.71,
+          "scrap_metal": 1.02,
+          "vinyl_record": 0.15,
+          "diamond_ring": 0.1,
+          "rubber_duck": 0.14
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 2.74
+        "gold_per_respawn_minute": 3.51
       },
       {
         "site": "sv_meridian_c",
@@ -1282,21 +1285,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 43.36,
-          "p10": 14,
+          "mean": 41.72,
+          "p10": 15,
           "p50": 24,
           "p90": 128
         },
-        "items_per_haul": 4.09,
+        "items_per_haul": 4.38,
         "per_haul_mean": {
-          "rubber_duck": 0.37,
-          "plastic": 1.43,
-          "vinyl_record": 0.29,
-          "scrap_metal": 1.85,
-          "diamond_ring": 0.16
+          "plastic": 1.51,
+          "scrap_metal": 2.2,
+          "vinyl_record": 0.36,
+          "rubber_duck": 0.2,
+          "diamond_ring": 0.12
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.19
+        "gold_per_respawn_minute": 5.96
       },
       {
         "site": "sv_meridian_c",
@@ -1311,22 +1314,143 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 39.19,
-          "p10": 15,
-          "p50": 24,
-          "p90": 126
+          "mean": 68.44,
+          "p10": 25,
+          "p50": 49,
+          "p90": 142
         },
-        "items_per_haul": 4.41,
+        "items_per_haul": 6.39,
         "per_haul_mean": {
-          "scrap_metal": 2.22,
-          "plastic": 1.5,
-          "rubber_duck": 0.28,
-          "diamond_ring": 0.11,
-          "vinyl_record": 0.3
+          "rubber_duck": 0.36,
+          "scrap_metal": 3.18,
+          "plastic": 2.13,
+          "diamond_ring": 0.25,
+          "vinyl_record": 0.47
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 5.6,
+        "gold_per_respawn_minute": 9.78,
         "first_haul": {
+          "plastic": 6,
+          "rubber_duck": 1
+        }
+      },
+      {
+        "site": "sv_meridian_c",
+        "name": "The Leaning Block",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": false,
+        "hits": 3,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 81.18,
+          "p10": 34,
+          "p50": 61,
+          "p90": 169
+        },
+        "items_per_haul": 8.62,
+        "per_haul_mean": {
+          "scrap_metal": 4.35,
+          "vinyl_record": 0.63,
+          "plastic": 2.86,
+          "rubber_duck": 0.55,
+          "diamond_ring": 0.24
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 11.6
+      },
+      {
+        "site": "sv_meridian_c",
+        "name": "The Leaning Block",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 0,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 42.95,
+          "p10": 14,
+          "p50": 22,
+          "p90": 128
+        },
+        "items_per_haul": 4.15,
+        "per_haul_mean": {
+          "plastic": 1.57,
+          "rubber_duck": 0.28,
+          "vinyl_record": 0.27,
+          "scrap_metal": 1.88,
+          "diamond_ring": 0.16
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 6.14
+      },
+      {
+        "site": "sv_meridian_c",
+        "name": "The Leaning Block",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 62.81,
+          "p10": 24,
+          "p50": 49,
+          "p90": 144
+        },
+        "items_per_haul": 6.41,
+        "per_haul_mean": {
+          "diamond_ring": 0.19,
+          "rubber_duck": 0.44,
+          "vinyl_record": 0.5,
+          "plastic": 1.96,
+          "scrap_metal": 3.33
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 8.97
+      },
+      {
+        "site": "sv_meridian_c",
+        "name": "The Leaning Block",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 84.49,
+          "p10": 35,
+          "p50": 61,
+          "p90": 169
+        },
+        "items_per_haul": 8.54,
+        "per_haul_mean": {
+          "vinyl_record": 0.55,
+          "plastic": 2.78,
+          "scrap_metal": 4.32,
+          "diamond_ring": 0.29,
+          "rubber_duck": 0.61
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 12.07,
+        "first_haul": {
+          "rubber_duck": 2,
           "diamond_ring": 1,
           "plastic": 3
         }
@@ -1340,146 +1464,25 @@
         "respawn_s": 420,
         "vessel": "sloop",
         "hold_slots": 14,
-        "salvager": false,
-        "hits": 3,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 86.75,
-          "p10": 35,
-          "p50": 65,
-          "p90": 170
-        },
-        "items_per_haul": 8.52,
-        "per_haul_mean": {
-          "rubber_duck": 0.63,
-          "plastic": 2.62,
-          "scrap_metal": 4.39,
-          "vinyl_record": 0.58,
-          "diamond_ring": 0.3
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 12.39
-      },
-      {
-        "site": "sv_meridian_c",
-        "name": "The Leaning Block",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
-        "hits": 0,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 45.68,
-          "p10": 15,
-          "p50": 25,
-          "p90": 128
-        },
-        "items_per_haul": 4.2,
-        "per_haul_mean": {
-          "plastic": 1.37,
-          "scrap_metal": 2.12,
-          "rubber_duck": 0.23,
-          "vinyl_record": 0.31,
-          "diamond_ring": 0.17
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.53
-      },
-      {
-        "site": "sv_meridian_c",
-        "name": "The Leaning Block",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 60.48,
-          "p10": 23,
-          "p50": 49,
-          "p90": 144
-        },
-        "items_per_haul": 6.3,
-        "per_haul_mean": {
-          "scrap_metal": 3.07,
-          "plastic": 2.13,
-          "rubber_duck": 0.45,
-          "vinyl_record": 0.48,
-          "diamond_ring": 0.18
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 8.64
-      },
-      {
-        "site": "sv_meridian_c",
-        "name": "The Leaning Block",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 63.43,
-          "p10": 24,
-          "p50": 49,
-          "p90": 141
-        },
-        "items_per_haul": 6.41,
-        "per_haul_mean": {
-          "scrap_metal": 3.31,
-          "plastic": 2,
-          "vinyl_record": 0.44,
-          "rubber_duck": 0.45,
-          "diamond_ring": 0.21
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.06,
-        "first_haul": {
-          "diamond_ring": 1,
-          "rubber_duck": 1,
-          "vinyl_record": 1
-        }
-      },
-      {
-        "site": "sv_meridian_c",
-        "name": "The Leaning Block",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "sloop",
-        "hold_slots": 14,
         "salvager": true,
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 108.63,
+          "mean": 106.34,
           "p10": 45,
-          "p50": 89,
-          "p90": 188
+          "p50": 77,
+          "p90": 189
         },
-        "items_per_haul": 10.74,
+        "items_per_haul": 10.81,
         "per_haul_mean": {
-          "plastic": 3.49,
+          "scrap_metal": 5.73,
           "diamond_ring": 0.36,
-          "scrap_metal": 5.44,
-          "vinyl_record": 0.8,
-          "rubber_duck": 0.65
+          "plastic": 3.29,
+          "vinyl_record": 0.7,
+          "rubber_duck": 0.74
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 15.52
+        "gold_per_respawn_minute": 15.19
       },
       {
         "site": "sv_rig",
@@ -1494,20 +1497,20 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 15.03,
-          "p10": 6,
+          "mean": 14.26,
+          "p10": 4,
           "p50": 12,
           "p90": 25
         },
-        "items_per_haul": 1.77,
+        "items_per_haul": 1.84,
         "per_haul_mean": {
-          "scrap_metal": 0.61,
-          "crude_oil": 0.89,
-          "engine_parts": 0.2,
-          "rig_badge": 0.08
+          "engine_parts": 0.14,
+          "crude_oil": 0.94,
+          "rig_badge": 0.08,
+          "scrap_metal": 0.68
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 2.5
+        "gold_per_respawn_minute": 2.38
       },
       {
         "site": "sv_rig",
@@ -1522,108 +1525,20 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 25.39,
-          "p10": 12,
-          "p50": 24,
-          "p90": 38
-        },
-        "items_per_haul": 3.57,
-        "per_haul_mean": {
-          "engine_parts": 0.22,
-          "crude_oil": 1.88,
-          "scrap_metal": 1.37,
-          "rig_badge": 0.11
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.23
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": false,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 28.19,
+          "mean": 28.14,
           "p10": 14,
-          "p50": 30,
-          "p90": 42
+          "p50": 26,
+          "p90": 43
         },
         "items_per_haul": 3.56,
         "per_haul_mean": {
-          "crude_oil": 1.87,
-          "scrap_metal": 1.24,
-          "engine_parts": 0.33,
-          "rig_badge": 0.13
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.7,
-        "first_haul": {
-          "rig_badge": 1,
-          "crude_oil": 6
-        }
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": false,
-        "hits": 3,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 55.65,
-          "p10": 34,
-          "p50": 55,
-          "p90": 74
-        },
-        "items_per_haul": 6.81,
-        "per_haul_mean": {
-          "crude_oil": 3.65,
-          "engine_parts": 0.62,
-          "rig_badge": 0.32,
-          "scrap_metal": 2.23
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.27
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
-        "hits": 0,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 28.58,
-          "p10": 14,
-          "p50": 29,
-          "p90": 43
-        },
-        "items_per_haul": 3.6,
-        "per_haul_mean": {
-          "scrap_metal": 1.33,
-          "crude_oil": 1.81,
-          "engine_parts": 0.33,
+          "crude_oil": 1.95,
+          "scrap_metal": 1.16,
+          "engine_parts": 0.31,
           "rig_badge": 0.14
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.76
+        "gold_per_respawn_minute": 4.69
       },
       {
         "site": "sv_rig",
@@ -1634,183 +1549,273 @@
         "respawn_s": 360,
         "vessel": "sloop",
         "hold_slots": 14,
-        "salvager": true,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 41.54,
-          "p10": 24,
-          "p50": 41,
-          "p90": 61
-        },
-        "items_per_haul": 5.23,
-        "per_haul_mean": {
-          "crude_oil": 2.7,
-          "scrap_metal": 1.86,
-          "engine_parts": 0.44,
-          "rig_badge": 0.24
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.92
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
+        "salvager": false,
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 41.43,
-          "p10": 26,
+          "mean": 43.04,
+          "p10": 24,
           "p50": 42,
-          "p90": 61
+          "p90": 63
         },
-        "items_per_haul": 5.54,
+        "items_per_haul": 5.24,
         "per_haul_mean": {
-          "scrap_metal": 2.08,
-          "engine_parts": 0.43,
-          "crude_oil": 2.86,
-          "rig_badge": 0.18
+          "crude_oil": 2.65,
+          "scrap_metal": 1.84,
+          "engine_parts": 0.54,
+          "rig_badge": 0.21
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.91,
+        "gold_per_respawn_minute": 7.17,
         "first_haul": {
           "rig_badge": 1,
-          "crude_oil": 9,
-          "scrap_metal": 3
-        }
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": true,
-        "hits": 3,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 70.19,
-          "p10": 48,
-          "p50": 67,
-          "p90": 92
-        },
-        "items_per_haul": 9.07,
-        "per_haul_mean": {
-          "scrap_metal": 3.29,
-          "crude_oil": 4.7,
-          "engine_parts": 0.74,
-          "rig_badge": 0.35
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 11.7
-      },
-      {
-        "site": "sv_tanker",
-        "name": "Hull of the Meridian Star",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 600,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": false,
-        "hits": 0,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 70.64,
-          "p10": 30,
-          "p50": 40,
-          "p90": 192
-        },
-        "items_per_haul": 5.49,
-        "per_haul_mean": {
-          "crude_oil": 1.9,
-          "engine_parts": 0.39,
-          "alloy_plate": 0.19,
-          "gold_bar": 0.1,
-          "ship_in_bottle": 0.12,
-          "scrap_metal": 2.81
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.06
-      },
-      {
-        "site": "sv_tanker",
-        "name": "Hull of the Meridian Star",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 600,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": false,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 103.26,
-          "p10": 48,
-          "p50": 66,
-          "p90": 216
-        },
-        "items_per_haul": 8.01,
-        "per_haul_mean": {
-          "scrap_metal": 4.08,
-          "crude_oil": 2.59,
-          "gold_bar": 0.18,
-          "ship_in_bottle": 0.13,
-          "alloy_plate": 0.34,
-          "engine_parts": 0.71
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 10.33
-      },
-      {
-        "site": "sv_tanker",
-        "name": "Hull of the Meridian Star",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 600,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": false,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 146.15,
-          "p10": 66,
-          "p50": 100,
-          "p90": 268
-        },
-        "items_per_haul": 10.56,
-        "per_haul_mean": {
-          "crude_oil": 3.62,
-          "scrap_metal": 5.17,
-          "engine_parts": 0.85,
-          "gold_bar": 0.26,
-          "alloy_plate": 0.45,
-          "ship_in_bottle": 0.21
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 14.62,
-        "first_haul": {
-          "ship_in_bottle": 1,
-          "engine_parts": 4,
-          "crude_oil": 5,
+          "crude_oil": 6,
           "scrap_metal": 5
         }
       },
       {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": false,
+        "hits": 3,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 56.56,
+          "p10": 36,
+          "p50": 55,
+          "p90": 79
+        },
+        "items_per_haul": 7.1,
+        "per_haul_mean": {
+          "crude_oil": 3.6,
+          "scrap_metal": 2.57,
+          "engine_parts": 0.62,
+          "rig_badge": 0.31
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 9.43
+      },
+      {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 0,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 27.95,
+          "p10": 12,
+          "p50": 24,
+          "p90": 43
+        },
+        "items_per_haul": 3.53,
+        "per_haul_mean": {
+          "crude_oil": 1.79,
+          "engine_parts": 0.29,
+          "scrap_metal": 1.29,
+          "rig_badge": 0.16
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 4.66
+      },
+      {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 41.91,
+          "p10": 24,
+          "p50": 41,
+          "p90": 66
+        },
+        "items_per_haul": 5.32,
+        "per_haul_mean": {
+          "scrap_metal": 1.92,
+          "crude_oil": 2.73,
+          "rig_badge": 0.22,
+          "engine_parts": 0.45
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 6.99
+      },
+      {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 55.49,
+          "p10": 34,
+          "p50": 54,
+          "p90": 79
+        },
+        "items_per_haul": 7.05,
+        "per_haul_mean": {
+          "scrap_metal": 2.33,
+          "crude_oil": 3.87,
+          "engine_parts": 0.56,
+          "rig_badge": 0.3
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 9.25,
+        "first_haul": {
+          "rig_badge": 1,
+          "crude_oil": 3,
+          "engine_parts": 3,
+          "scrap_metal": 2
+        }
+      },
+      {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": true,
+        "hits": 3,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 70.83,
+          "p10": 46,
+          "p50": 69,
+          "p90": 97
+        },
+        "items_per_haul": 8.71,
+        "per_haul_mean": {
+          "rig_badge": 0.41,
+          "scrap_metal": 3.08,
+          "crude_oil": 4.43,
+          "engine_parts": 0.79
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 11.81
+      },
+      {
+        "site": "sv_tanker",
+        "name": "Hull of the Meridian Star",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 600,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": false,
+        "hits": 0,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 37.02,
+          "p10": 12,
+          "p50": 20,
+          "p90": 140
+        },
+        "items_per_haul": 2.62,
+        "per_haul_mean": {
+          "engine_parts": 0.3,
+          "crude_oil": 0.98,
+          "scrap_metal": 1.14,
+          "alloy_plate": 0.09,
+          "gold_bar": 0.08,
+          "ship_in_bottle": 0.04
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 3.7
+      },
+      {
+        "site": "sv_tanker",
+        "name": "Hull of the Meridian Star",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 600,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": false,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 112.53,
+          "p10": 44,
+          "p50": 65,
+          "p90": 221
+        },
+        "items_per_haul": 7.84,
+        "per_haul_mean": {
+          "alloy_plate": 0.33,
+          "scrap_metal": 3.82,
+          "crude_oil": 2.65,
+          "gold_bar": 0.14,
+          "engine_parts": 0.7,
+          "ship_in_bottle": 0.21
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 11.25
+      },
+      {
+        "site": "sv_tanker",
+        "name": "Hull of the Meridian Star",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 600,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": false,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 176.96,
+          "p10": 84,
+          "p50": 127,
+          "p90": 323
+        },
+        "items_per_haul": 13.23,
+        "per_haul_mean": {
+          "ship_in_bottle": 0.22,
+          "alloy_plate": 0.56,
+          "engine_parts": 1.14,
+          "scrap_metal": 6.7,
+          "crude_oil": 4.3,
+          "gold_bar": 0.33
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 17.7,
+        "first_haul": {
+          "ship_in_bottle": 1,
+          "engine_parts": 5,
+          "gold_bar": 1,
+          "alloy_plate": 2
+        }
+      },
+      {
         "site": "sv_tanker",
         "name": "Hull of the Meridian Star",
         "region": "emerald",
@@ -1823,22 +1828,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 227.89,
-          "p10": 104,
+          "mean": 232.22,
+          "p10": 106,
           "p50": 226,
-          "p90": 400
+          "p90": 393
         },
-        "items_per_haul": 15.68,
+        "items_per_haul": 15.83,
         "per_haul_mean": {
-          "gold_bar": 0.33,
-          "alloy_plate": 0.62,
-          "crude_oil": 5.02,
-          "ship_in_bottle": 0.42,
-          "scrap_metal": 8.01,
-          "engine_parts": 1.29
+          "alloy_plate": 0.64,
+          "crude_oil": 4.8,
+          "engine_parts": 1.61,
+          "scrap_metal": 8.06,
+          "ship_in_bottle": 0.39,
+          "gold_bar": 0.35
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 22.79
+        "gold_per_respawn_minute": 23.22
       },
       {
         "site": "sv_tanker",
@@ -1853,22 +1858,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 105.83,
-          "p10": 48,
-          "p50": 65,
-          "p90": 218
+          "mean": 69.44,
+          "p10": 30,
+          "p50": 40,
+          "p90": 190
         },
-        "items_per_haul": 8.02,
+        "items_per_haul": 5.4,
         "per_haul_mean": {
-          "crude_oil": 2.57,
-          "scrap_metal": 4.1,
-          "alloy_plate": 0.38,
-          "engine_parts": 0.67,
-          "gold_bar": 0.15,
-          "ship_in_bottle": 0.16
+          "crude_oil": 1.82,
+          "scrap_metal": 2.71,
+          "engine_parts": 0.44,
+          "gold_bar": 0.12,
+          "alloy_plate": 0.23,
+          "ship_in_bottle": 0.09
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 10.58
+        "gold_per_respawn_minute": 6.94
       },
       {
         "site": "sv_tanker",
@@ -1883,22 +1888,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 152.76,
-          "p10": 68,
-          "p50": 110,
+          "mean": 141.95,
+          "p10": 66,
+          "p50": 106,
           "p90": 254
         },
-        "items_per_haul": 10.27,
+        "items_per_haul": 10.83,
         "per_haul_mean": {
-          "scrap_metal": 5.15,
-          "alloy_plate": 0.49,
-          "crude_oil": 3.02,
-          "gold_bar": 0.19,
-          "engine_parts": 1.16,
-          "ship_in_bottle": 0.28
+          "engine_parts": 1.06,
+          "scrap_metal": 5.53,
+          "crude_oil": 3.43,
+          "ship_in_bottle": 0.2,
+          "alloy_plate": 0.41,
+          "gold_bar": 0.21
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 15.28
+        "gold_per_respawn_minute": 14.19
       },
       {
         "site": "sv_tanker",
@@ -1913,27 +1918,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 182.65,
-          "p10": 84,
-          "p50": 134,
-          "p90": 366
+          "mean": 227.49,
+          "p10": 105,
+          "p50": 216,
+          "p90": 419
         },
-        "items_per_haul": 13.02,
+        "items_per_haul": 15.8,
         "per_haul_mean": {
-          "scrap_metal": 6.37,
-          "engine_parts": 1.22,
-          "alloy_plate": 0.55,
-          "crude_oil": 4.32,
-          "gold_bar": 0.3,
-          "ship_in_bottle": 0.27
+          "crude_oil": 4.82,
+          "scrap_metal": 8.11,
+          "gold_bar": 0.31,
+          "alloy_plate": 0.69,
+          "engine_parts": 1.47,
+          "ship_in_bottle": 0.41
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 18.26,
+        "gold_per_respawn_minute": 22.75,
         "first_haul": {
-          "ship_in_bottle": 1,
-          "engine_parts": 4,
-          "scrap_metal": 6,
-          "crude_oil": 2
+          "ship_in_bottle": 2,
+          "engine_parts": 3,
+          "scrap_metal": 8,
+          "crude_oil": 5
         }
       },
       {
@@ -1949,22 +1954,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 266.26,
+          "mean": 250.85,
           "p10": 124,
-          "p50": 255,
-          "p90": 447
+          "p50": 249,
+          "p90": 426
         },
-        "items_per_haul": 18.4,
+        "items_per_haul": 18.59,
         "per_haul_mean": {
-          "engine_parts": 1.54,
-          "scrap_metal": 9.41,
-          "ship_in_bottle": 0.45,
-          "crude_oil": 5.75,
-          "gold_bar": 0.42,
-          "alloy_plate": 0.83
+          "crude_oil": 6.49,
+          "alloy_plate": 0.78,
+          "gold_bar": 0.39,
+          "engine_parts": 1.7,
+          "scrap_metal": 8.89,
+          "ship_in_bottle": 0.36
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 26.63
+        "gold_per_respawn_minute": 25.08
       },
       {
         "site": "sv_graveyard",
@@ -1979,50 +1984,50 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 17.81,
-          "p10": 6,
+          "mean": 18.6,
+          "p10": 8,
           "p50": 12,
           "p90": 65
         },
         "items_per_haul": 2.15,
         "per_haul_mean": {
-          "plastic": 0.91,
-          "canvas": 0.45,
-          "electronics": 0.39,
-          "snow_globe": 0.11,
-          "fuel_can": 0.3
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 2.54
-      },
-      {
-        "site": "sv_graveyard",
-        "name": "Graveyard Boxes",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "sloop",
-        "hold_slots": 14,
-        "salvager": false,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 31.07,
-          "p10": 17,
-          "p50": 26,
-          "p90": 73
-        },
-        "items_per_haul": 4.38,
-        "per_haul_mean": {
-          "fuel_can": 0.71,
-          "electronics": 0.85,
-          "plastic": 1.65,
-          "canvas": 1.07,
+          "electronics": 0.41,
+          "fuel_can": 0.34,
+          "plastic": 0.8,
+          "canvas": 0.5,
           "snow_globe": 0.11
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.44
+        "gold_per_respawn_minute": 2.66
+      },
+      {
+        "site": "sv_graveyard",
+        "name": "Graveyard Boxes",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "sloop",
+        "hold_slots": 14,
+        "salvager": false,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 32.85,
+          "p10": 16,
+          "p50": 24,
+          "p90": 75
+        },
+        "items_per_haul": 4.45,
+        "per_haul_mean": {
+          "plastic": 1.97,
+          "fuel_can": 0.64,
+          "canvas": 0.94,
+          "electronics": 0.76,
+          "snow_globe": 0.16
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 4.69
       },
       {
         "site": "sv_graveyard",
@@ -2037,25 +2042,23 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 53.06,
-          "p10": 28,
-          "p50": 40,
-          "p90": 94
+          "mean": 64.44,
+          "p10": 38,
+          "p50": 56,
+          "p90": 106
         },
-        "items_per_haul": 6.65,
+        "items_per_haul": 9.02,
         "per_haul_mean": {
-          "plastic": 2.7,
-          "canvas": 1.52,
-          "fuel_can": 1.05,
-          "electronics": 1.1,
-          "snow_globe": 0.28
+          "plastic": 3.66,
+          "snow_globe": 0.26,
+          "fuel_can": 1.31,
+          "electronics": 1.67,
+          "canvas": 2.13
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.58,
+        "gold_per_respawn_minute": 9.21,
         "first_haul": {
-          "fuel_can": 2,
-          "electronics": 1,
-          "canvas": 2
+          "snow_globe": 4
         }
       },
       {
@@ -2071,21 +2074,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 84.83,
+          "mean": 82.85,
           "p10": 51,
-          "p50": 75,
-          "p90": 126
+          "p50": 73,
+          "p90": 123
         },
-        "items_per_haul": 11.21,
+        "items_per_haul": 10.94,
         "per_haul_mean": {
-          "fuel_can": 1.65,
-          "electronics": 2.31,
-          "plastic": 4.29,
-          "snow_globe": 0.38,
-          "canvas": 2.59
+          "electronics": 2.3,
+          "plastic": 4.04,
+          "fuel_can": 1.67,
+          "canvas": 2.58,
+          "snow_globe": 0.36
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 12.12
+        "gold_per_respawn_minute": 11.84
       },
       {
         "site": "sv_graveyard",
@@ -2100,21 +2103,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 30.31,
-          "p10": 15,
-          "p50": 24,
-          "p90": 73
+          "mean": 31.83,
+          "p10": 17,
+          "p50": 26,
+          "p90": 74
         },
-        "items_per_haul": 4.25,
+        "items_per_haul": 4.62,
         "per_haul_mean": {
-          "plastic": 1.81,
-          "canvas": 0.94,
-          "fuel_can": 0.6,
-          "snow_globe": 0.13,
-          "electronics": 0.79
+          "canvas": 1.02,
+          "plastic": 1.95,
+          "electronics": 0.9,
+          "snow_globe": 0.12,
+          "fuel_can": 0.64
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.33
+        "gold_per_respawn_minute": 4.55
       },
       {
         "site": "sv_graveyard",
@@ -2129,21 +2132,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 49.64,
-          "p10": 26,
-          "p50": 42,
+          "mean": 48.69,
+          "p10": 27,
+          "p50": 40,
           "p90": 87
         },
-        "items_per_haul": 6.65,
+        "items_per_haul": 6.7,
         "per_haul_mean": {
-          "electronics": 1.5,
-          "plastic": 2.45,
-          "canvas": 1.62,
-          "fuel_can": 0.87,
-          "snow_globe": 0.21
+          "electronics": 1.27,
+          "fuel_can": 0.98,
+          "canvas": 1.71,
+          "plastic": 2.54,
+          "snow_globe": 0.2
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.09
+        "gold_per_respawn_minute": 6.96
       },
       {
         "site": "sv_graveyard",
@@ -2158,25 +2161,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 64.38,
-          "p10": 38,
-          "p50": 53,
-          "p90": 107
+          "mean": 82.51,
+          "p10": 52,
+          "p50": 72,
+          "p90": 121
         },
-        "items_per_haul": 8.74,
+        "items_per_haul": 10.96,
         "per_haul_mean": {
-          "plastic": 3.4,
-          "fuel_can": 1.3,
-          "electronics": 1.71,
-          "snow_globe": 0.27,
-          "canvas": 2.07
+          "electronics": 2.04,
+          "plastic": 4.05,
+          "canvas": 2.89,
+          "fuel_can": 1.61,
+          "snow_globe": 0.38
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.2,
+        "gold_per_respawn_minute": 11.79,
         "first_haul": {
-          "plastic": 5,
-          "canvas": 2,
-          "fuel_can": 1
+          "fuel_can": 2,
+          "canvas": 8
         }
       },
       {
@@ -2192,21 +2194,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 96.53,
-          "p10": 61,
-          "p50": 85,
-          "p90": 144
+          "mean": 96.45,
+          "p10": 60,
+          "p50": 87,
+          "p90": 138
         },
-        "items_per_haul": 13.38,
+        "items_per_haul": 13.28,
         "per_haul_mean": {
-          "fuel_can": 1.78,
-          "electronics": 2.48,
-          "canvas": 3.06,
-          "plastic": 5.64,
-          "snow_globe": 0.42
+          "fuel_can": 1.94,
+          "plastic": 4.72,
+          "electronics": 2.65,
+          "snow_globe": 0.38,
+          "canvas": 3.6
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 13.79
+        "gold_per_respawn_minute": 13.78
       },
       {
         "site": "sv_spire",
@@ -2221,22 +2223,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 135.22,
-          "p10": 47,
-          "p50": 138,
-          "p90": 250
+          "mean": 74.54,
+          "p10": 20,
+          "p50": 80,
+          "p90": 140
         },
-        "items_per_haul": 3.48,
+        "items_per_haul": 1.59,
         "per_haul_mean": {
-          "gold_bar": 0.31,
-          "electronics": 1.94,
-          "diamond_ring": 0.23,
-          "seed_packet": 0.27,
-          "alloy_plate": 0.62,
-          "jar_of_soil": 0.12
+          "electronics": 0.72,
+          "gold_bar": 0.15,
+          "diamond_ring": 0.15,
+          "seed_packet": 0.19,
+          "jar_of_soil": 0.07,
+          "alloy_plate": 0.31
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.01
+        "gold_per_respawn_minute": 4.97
       },
       {
         "site": "sv_spire",
@@ -2251,22 +2253,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 208.41,
+          "mean": 209.24,
           "p10": 96,
-          "p50": 200,
-          "p90": 320
+          "p50": 196,
+          "p90": 316
         },
-        "items_per_haul": 5.04,
+        "items_per_haul": 5.26,
         "per_haul_mean": {
-          "alloy_plate": 1.14,
-          "electronics": 2.44,
-          "seed_packet": 0.44,
-          "gold_bar": 0.41,
-          "diamond_ring": 0.39,
-          "jar_of_soil": 0.23
+          "gold_bar": 0.43,
+          "seed_packet": 0.41,
+          "alloy_plate": 0.94,
+          "electronics": 2.86,
+          "diamond_ring": 0.41,
+          "jar_of_soil": 0.21
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 13.89
+        "gold_per_respawn_minute": 13.95
       },
       {
         "site": "sv_spire",
@@ -2281,27 +2283,28 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 280.42,
-          "p10": 161,
-          "p50": 285,
-          "p90": 408
+          "mean": 346.64,
+          "p10": 219,
+          "p50": 338,
+          "p90": 476
         },
-        "items_per_haul": 6.87,
+        "items_per_haul": 8.5,
         "per_haul_mean": {
-          "electronics": 3.64,
-          "alloy_plate": 1.24,
-          "gold_bar": 0.54,
-          "diamond_ring": 0.6,
-          "seed_packet": 0.61,
-          "jar_of_soil": 0.25
+          "seed_packet": 0.65,
+          "alloy_plate": 1.64,
+          "diamond_ring": 0.72,
+          "electronics": 4.46,
+          "gold_bar": 0.72,
+          "jar_of_soil": 0.33
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 18.69,
+        "gold_per_respawn_minute": 23.11,
         "first_haul": {
           "summit_chart": 1,
           "gold_bar": 2,
-          "seed_packet": 2,
-          "alloy_plate": 4
+          "jar_of_soil": 2,
+          "alloy_plate": 3,
+          "electronics": 3
         }
       },
       {
@@ -2317,22 +2320,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 422.11,
-          "p10": 286,
-          "p50": 416,
-          "p90": 585
+          "mean": 416.88,
+          "p10": 278,
+          "p50": 423,
+          "p90": 558
         },
-        "items_per_haul": 10.15,
+        "items_per_haul": 10.14,
         "per_haul_mean": {
-          "gold_bar": 0.9,
-          "electronics": 5.3,
-          "alloy_plate": 1.87,
-          "jar_of_soil": 0.4,
-          "diamond_ring": 0.82,
-          "seed_packet": 0.87
+          "alloy_plate": 1.94,
+          "gold_bar": 0.84,
+          "seed_packet": 0.85,
+          "electronics": 5.27,
+          "diamond_ring": 0.87,
+          "jar_of_soil": 0.38
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 28.14
+        "gold_per_respawn_minute": 27.79
       },
       {
         "site": "sv_spire",
@@ -2347,22 +2350,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 219.1,
-          "p10": 100,
-          "p50": 217,
-          "p90": 330
+          "mean": 139.58,
+          "p10": 54,
+          "p50": 140,
+          "p90": 240
         },
-        "items_per_haul": 4.99,
+        "items_per_haul": 3.55,
         "per_haul_mean": {
-          "alloy_plate": 0.86,
-          "electronics": 2.55,
-          "gold_bar": 0.48,
-          "diamond_ring": 0.46,
-          "seed_packet": 0.48,
-          "jar_of_soil": 0.18
+          "diamond_ring": 0.32,
+          "electronics": 2.02,
+          "seed_packet": 0.28,
+          "alloy_plate": 0.54,
+          "jar_of_soil": 0.17,
+          "gold_bar": 0.23
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 14.61
+        "gold_per_respawn_minute": 9.31
       },
       {
         "site": "sv_spire",
@@ -2377,22 +2380,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 285.15,
-          "p10": 172,
-          "p50": 287,
-          "p90": 390
+          "mean": 281.81,
+          "p10": 163,
+          "p50": 284,
+          "p90": 400
         },
-        "items_per_haul": 6.76,
+        "items_per_haul": 6.56,
         "per_haul_mean": {
-          "alloy_plate": 1.3,
-          "seed_packet": 0.59,
-          "diamond_ring": 0.55,
-          "electronics": 3.45,
-          "gold_bar": 0.62,
-          "jar_of_soil": 0.26
+          "jar_of_soil": 0.28,
+          "diamond_ring": 0.6,
+          "alloy_plate": 1.27,
+          "electronics": 3.24,
+          "gold_bar": 0.52,
+          "seed_packet": 0.65
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 19.01
+        "gold_per_respawn_minute": 18.79
       },
       {
         "site": "sv_spire",
@@ -2407,28 +2410,28 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 336.01,
-          "p10": 196,
-          "p50": 336,
-          "p90": 490
+          "mean": 422.51,
+          "p10": 275,
+          "p50": 420,
+          "p90": 566
         },
-        "items_per_haul": 8.54,
+        "items_per_haul": 10.02,
         "per_haul_mean": {
-          "jar_of_soil": 0.33,
-          "diamond_ring": 0.78,
-          "seed_packet": 0.63,
-          "electronics": 4.45,
-          "alloy_plate": 1.78,
-          "gold_bar": 0.57
+          "electronics": 5.09,
+          "gold_bar": 0.86,
+          "diamond_ring": 0.8,
+          "seed_packet": 0.85,
+          "alloy_plate": 1.93,
+          "jar_of_soil": 0.5
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 22.4,
+        "gold_per_respawn_minute": 28.17,
         "first_haul": {
           "summit_chart": 1,
           "gold_bar": 3,
-          "alloy_plate": 1,
-          "electronics": 7,
-          "seed_packet": 1
+          "electronics": 6,
+          "diamond_ring": 1,
+          "alloy_plate": 2
         }
       },
       {
@@ -2444,22 +2447,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 504.27,
-          "p10": 323,
-          "p50": 508,
-          "p90": 660
+          "mean": 506.39,
+          "p10": 356,
+          "p50": 497,
+          "p90": 657
         },
-        "items_per_haul": 11.71,
+        "items_per_haul": 11.65,
         "per_haul_mean": {
-          "alloy_plate": 2.15,
-          "jar_of_soil": 0.45,
-          "electronics": 5.99,
-          "seed_packet": 0.98,
-          "diamond_ring": 1.04,
-          "gold_bar": 1.11
+          "gold_bar": 1.03,
+          "seed_packet": 0.91,
+          "alloy_plate": 2.25,
+          "electronics": 5.82,
+          "diamond_ring": 1.08,
+          "jar_of_soil": 0.56
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 33.62
+        "gold_per_respawn_minute": 33.76
       }
     ],
     "large_hold": [
@@ -2476,21 +2479,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 7.58,
+          "mean": 7.57,
           "p10": 4,
           "p50": 8,
           "p90": 12
         },
-        "items_per_haul": 1.69,
+        "items_per_haul": 1.76,
         "per_haul_mean": {
-          "wire": 0.36,
-          "scrap_metal": 0.72,
-          "fuel_can": 0.13,
-          "rubber_duck": 0.04,
-          "plastic": 0.45
+          "plastic": 0.53,
+          "scrap_metal": 0.78,
+          "wire": 0.3,
+          "rubber_duck": 0.08,
+          "fuel_can": 0.08
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 1.9
+        "gold_per_respawn_minute": 1.89
       },
       {
         "site": "sv_stump",
@@ -2505,21 +2508,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 15.58,
+          "mean": 15.17,
           "p10": 10,
-          "p50": 16,
-          "p90": 21
+          "p50": 15,
+          "p90": 20
         },
-        "items_per_haul": 3.52,
+        "items_per_haul": 3.39,
         "per_haul_mean": {
+          "scrap_metal": 1.3,
           "fuel_can": 0.23,
-          "scrap_metal": 1.43,
-          "plastic": 1.05,
-          "wire": 0.68,
-          "rubber_duck": 0.14
+          "rubber_duck": 0.13,
+          "plastic": 0.99,
+          "wire": 0.75
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.89
+        "gold_per_respawn_minute": 3.79
       },
       {
         "site": "sv_stump",
@@ -2534,24 +2537,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 15.36,
-          "p10": 11,
-          "p50": 15,
-          "p90": 21
+          "mean": 22.67,
+          "p10": 16,
+          "p50": 23,
+          "p90": 30
         },
-        "items_per_haul": 3.48,
+        "items_per_haul": 5.02,
         "per_haul_mean": {
-          "plastic": 0.94,
-          "fuel_can": 0.23,
-          "wire": 0.65,
-          "scrap_metal": 1.58,
-          "rubber_duck": 0.1
+          "fuel_can": 0.37,
+          "wire": 1.02,
+          "plastic": 1.46,
+          "scrap_metal": 1.98,
+          "rubber_duck": 0.2
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.84,
+        "gold_per_respawn_minute": 5.67,
         "first_haul": {
           "transistor_radio": 1,
-          "scrap_metal": 7
+          "scrap_metal": 9
         }
       },
       {
@@ -2567,21 +2570,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 30.48,
-          "p10": 23,
+          "mean": 30.93,
+          "p10": 24,
           "p50": 31,
           "p90": 38
         },
-        "items_per_haul": 6.93,
+        "items_per_haul": 6.88,
         "per_haul_mean": {
-          "wire": 1.49,
-          "scrap_metal": 2.86,
-          "fuel_can": 0.4,
-          "plastic": 1.98,
-          "rubber_duck": 0.22
+          "fuel_can": 0.51,
+          "plastic": 1.84,
+          "wire": 1.43,
+          "scrap_metal": 2.92,
+          "rubber_duck": 0.19
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.62
+        "gold_per_respawn_minute": 7.73
       },
       {
         "site": "sv_stump",
@@ -2596,21 +2599,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 14.81,
-          "p10": 9,
+          "mean": 15.03,
+          "p10": 10,
           "p50": 15,
           "p90": 20
         },
-        "items_per_haul": 3.3,
+        "items_per_haul": 3.36,
         "per_haul_mean": {
-          "plastic": 0.88,
-          "wire": 0.71,
-          "fuel_can": 0.25,
-          "scrap_metal": 1.39,
-          "rubber_duck": 0.08
+          "scrap_metal": 1.33,
+          "wire": 0.75,
+          "plastic": 0.95,
+          "fuel_can": 0.23,
+          "rubber_duck": 0.11
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.7
+        "gold_per_respawn_minute": 3.76
       },
       {
         "site": "sv_stump",
@@ -2625,18 +2628,18 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 22.59,
-          "p10": 16,
+          "mean": 22.61,
+          "p10": 17,
           "p50": 23,
           "p90": 29
         },
-        "items_per_haul": 5.12,
+        "items_per_haul": 5.03,
         "per_haul_mean": {
-          "scrap_metal": 2.24,
-          "plastic": 1.45,
-          "wire": 0.94,
-          "fuel_can": 0.33,
-          "rubber_duck": 0.16
+          "scrap_metal": 2,
+          "plastic": 1.38,
+          "rubber_duck": 0.19,
+          "wire": 1.14,
+          "fuel_can": 0.34
         },
         "hauls_with_overflow": 0,
         "gold_per_respawn_minute": 5.65
@@ -2654,26 +2657,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 22.86,
-          "p10": 17,
-          "p50": 23,
-          "p90": 29
+          "mean": 31.13,
+          "p10": 24,
+          "p50": 31,
+          "p90": 38
         },
-        "items_per_haul": 5.14,
+        "items_per_haul": 6.82,
         "per_haul_mean": {
-          "rubber_duck": 0.16,
-          "fuel_can": 0.32,
-          "scrap_metal": 2.25,
-          "wire": 1.1,
-          "plastic": 1.33
+          "scrap_metal": 2.74,
+          "wire": 1.5,
+          "rubber_duck": 0.24,
+          "plastic": 1.81,
+          "fuel_can": 0.54
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 5.72,
+        "gold_per_respawn_minute": 7.78,
         "first_haul": {
           "transistor_radio": 1,
-          "scrap_metal": 3,
-          "wire": 2,
-          "rubber_duck": 1
+          "scrap_metal": 5,
+          "fuel_can": 1,
+          "plastic": 1,
+          "wire": 2
         }
       },
       {
@@ -2689,21 +2693,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 38.63,
-          "p10": 31,
-          "p50": 39,
-          "p90": 46
+          "mean": 37.54,
+          "p10": 30,
+          "p50": 38,
+          "p90": 45
         },
-        "items_per_haul": 8.59,
+        "items_per_haul": 8.35,
         "per_haul_mean": {
-          "plastic": 2.26,
           "wire": 1.79,
-          "fuel_can": 0.63,
-          "scrap_metal": 3.68,
-          "rubber_duck": 0.25
+          "rubber_duck": 0.3,
+          "plastic": 2.52,
+          "scrap_metal": 3.13,
+          "fuel_can": 0.62
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.66
+        "gold_per_respawn_minute": 9.39
       },
       {
         "site": "sv_boxyard",
@@ -2718,22 +2722,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 9.49,
+          "mean": 12.49,
           "p10": 4,
           "p50": 9,
           "p90": 12
         },
-        "items_per_haul": 2.04,
+        "items_per_haul": 1.98,
         "per_haul_mean": {
-          "canvas": 0.48,
-          "rope": 0.37,
-          "plastic": 0.96,
-          "fuel_can": 0.1,
-          "electronics": 0.11,
-          "snow_globe": 0.03
+          "plastic": 0.74,
+          "canvas": 0.42,
+          "rope": 0.51,
+          "snow_globe": 0.08,
+          "electronics": 0.15,
+          "fuel_can": 0.09
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 1.9
+        "gold_per_respawn_minute": 2.5
       },
       {
         "site": "sv_boxyard",
@@ -2748,22 +2752,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 23.68,
+          "mean": 26.08,
           "p10": 12,
           "p50": 18,
-          "p90": 69
+          "p90": 74
         },
-        "items_per_haul": 4.16,
+        "items_per_haul": 3.95,
         "per_haul_mean": {
-          "canvas": 0.8,
-          "plastic": 2.02,
-          "rope": 0.77,
-          "electronics": 0.26,
-          "snow_globe": 0.12,
-          "fuel_can": 0.21
+          "electronics": 0.28,
+          "canvas": 0.64,
+          "plastic": 1.91,
+          "rope": 0.72,
+          "fuel_can": 0.25,
+          "snow_globe": 0.17
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.74
+        "gold_per_respawn_minute": 5.22
       },
       {
         "site": "sv_boxyard",
@@ -2778,26 +2782,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 24.75,
-          "p10": 12,
-          "p50": 18,
-          "p90": 71
+          "mean": 37.82,
+          "p10": 19,
+          "p50": 27,
+          "p90": 83
         },
-        "items_per_haul": 3.95,
+        "items_per_haul": 6.03,
         "per_haul_mean": {
-          "canvas": 0.69,
-          "plastic": 1.85,
-          "electronics": 0.27,
-          "rope": 0.81,
-          "fuel_can": 0.19,
-          "snow_globe": 0.15
+          "plastic": 2.81,
+          "snow_globe": 0.23,
+          "electronics": 0.4,
+          "canvas": 0.99,
+          "rope": 1.27,
+          "fuel_can": 0.35
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.95,
+        "gold_per_respawn_minute": 7.56,
         "first_haul": {
-          "electronics": 3,
-          "canvas": 2,
-          "rope": 1
+          "electronics": 2,
+          "canvas": 4,
+          "snow_globe": 1,
+          "rope": 3
         }
       },
       {
@@ -2813,22 +2818,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 47.63,
+          "mean": 46.86,
           "p10": 27,
           "p50": 35,
-          "p90": 91
+          "p90": 90
         },
-        "items_per_haul": 8.05,
+        "items_per_haul": 7.85,
         "per_haul_mean": {
-          "electronics": 0.47,
-          "plastic": 3.77,
-          "rope": 1.49,
-          "canvas": 1.61,
-          "snow_globe": 0.26,
-          "fuel_can": 0.47
+          "fuel_can": 0.56,
+          "rope": 1.43,
+          "canvas": 1.49,
+          "snow_globe": 0.24,
+          "plastic": 3.63,
+          "electronics": 0.5
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.53
+        "gold_per_respawn_minute": 9.37
       },
       {
         "site": "sv_boxyard",
@@ -2843,22 +2848,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 23.36,
+          "mean": 26.67,
           "p10": 12,
           "p50": 18,
-          "p90": 69
+          "p90": 74
         },
         "items_per_haul": 4.06,
         "per_haul_mean": {
-          "plastic": 2.02,
-          "canvas": 0.81,
-          "fuel_can": 0.26,
-          "snow_globe": 0.12,
-          "electronics": 0.25,
-          "rope": 0.62
+          "plastic": 2.03,
+          "snow_globe": 0.18,
+          "fuel_can": 0.22,
+          "canvas": 0.73,
+          "rope": 0.67,
+          "electronics": 0.23
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.67
+        "gold_per_respawn_minute": 5.33
       },
       {
         "site": "sv_boxyard",
@@ -2873,57 +2878,57 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 33.31,
-          "p10": 19,
-          "p50": 27,
-          "p90": 80
-        },
-        "items_per_haul": 6.17,
-        "per_haul_mean": {
-          "plastic": 3.06,
-          "fuel_can": 0.4,
-          "rope": 1,
-          "canvas": 1.22,
-          "electronics": 0.36,
-          "snow_globe": 0.14
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.66
-      },
-      {
-        "site": "sv_boxyard",
-        "name": "The Box Yard",
-        "region": "shallows",
-        "heavy": false,
-        "difficulty": 1,
-        "respawn_s": 300,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 37.57,
+          "mean": 35.73,
           "p10": 20,
           "p50": 27,
           "p90": 83
         },
-        "items_per_haul": 6.14,
+        "items_per_haul": 6.1,
         "per_haul_mean": {
-          "plastic": 2.94,
-          "canvas": 1.1,
-          "electronics": 0.36,
-          "rope": 1.21,
-          "fuel_can": 0.33,
-          "snow_globe": 0.22
+          "canvas": 1.21,
+          "fuel_can": 0.34,
+          "plastic": 2.96,
+          "electronics": 0.4,
+          "rope": 1.01,
+          "snow_globe": 0.19
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.51,
+        "gold_per_respawn_minute": 7.15
+      },
+      {
+        "site": "sv_boxyard",
+        "name": "The Box Yard",
+        "region": "shallows",
+        "heavy": false,
+        "difficulty": 1,
+        "respawn_s": 300,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 47.65,
+          "p10": 27,
+          "p50": 35,
+          "p90": 92
+        },
+        "items_per_haul": 7.94,
+        "per_haul_mean": {
+          "plastic": 3.63,
+          "rope": 1.5,
+          "canvas": 1.56,
+          "electronics": 0.49,
+          "snow_globe": 0.26,
+          "fuel_can": 0.51
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 9.53,
         "first_haul": {
           "electronics": 3,
           "canvas": 2,
-          "plastic": 3,
-          "fuel_can": 1
+          "fuel_can": 2,
+          "plastic": 4
         }
       },
       {
@@ -2939,22 +2944,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 61.87,
+          "mean": 60.33,
           "p10": 35,
-          "p50": 48,
-          "p90": 103
+          "p50": 45,
+          "p90": 104
         },
-        "items_per_haul": 10.19,
+        "items_per_haul": 10.22,
         "per_haul_mean": {
-          "snow_globe": 0.35,
-          "fuel_can": 0.63,
-          "plastic": 5.09,
-          "electronics": 0.56,
-          "canvas": 1.86,
-          "rope": 1.71
+          "snow_globe": 0.33,
+          "canvas": 1.77,
+          "fuel_can": 0.57,
+          "electronics": 0.63,
+          "plastic": 5.16,
+          "rope": 1.77
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 12.37
+        "gold_per_respawn_minute": 12.07
       },
       {
         "site": "sv_hollow_sub",
@@ -2969,21 +2974,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 13.68,
-          "p10": 4,
+          "mean": 13.17,
+          "p10": 5,
           "p50": 9,
           "p90": 35
         },
-        "items_per_haul": 2.03,
+        "items_per_haul": 2.1,
         "per_haul_mean": {
-          "wire": 0.37,
-          "scrap_metal": 0.63,
-          "iron_nails": 0.89,
-          "vinyl_record": 0.07,
-          "gold_watch": 0.08
+          "scrap_metal": 0.66,
+          "vinyl_record": 0.05,
+          "gold_watch": 0.08,
+          "wire": 0.36,
+          "iron_nails": 0.96
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 2.28
+        "gold_per_respawn_minute": 2.19
       },
       {
         "site": "sv_hollow_sub",
@@ -2998,21 +3003,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 27.67,
+          "mean": 25.17,
           "p10": 11,
           "p50": 18,
-          "p90": 64
+          "p90": 59
         },
-        "items_per_haul": 4.05,
+        "items_per_haul": 4.09,
         "per_haul_mean": {
-          "wire": 0.68,
-          "scrap_metal": 1.18,
-          "iron_nails": 1.88,
-          "gold_watch": 0.14,
-          "vinyl_record": 0.17
+          "iron_nails": 1.86,
+          "scrap_metal": 1.15,
+          "vinyl_record": 0.12,
+          "wire": 0.85,
+          "gold_watch": 0.12
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.61
+        "gold_per_respawn_minute": 4.2
       },
       {
         "site": "sv_hollow_sub",
@@ -3027,23 +3032,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 25.81,
-          "p10": 11,
-          "p50": 18,
-          "p90": 61
+          "mean": 39.89,
+          "p10": 19,
+          "p50": 29,
+          "p90": 72
         },
-        "items_per_haul": 4.19,
+        "items_per_haul": 5.92,
         "per_haul_mean": {
-          "iron_nails": 1.86,
-          "gold_watch": 0.14,
-          "scrap_metal": 1.34,
-          "vinyl_record": 0.11,
-          "wire": 0.76
+          "iron_nails": 2.56,
+          "wire": 1.1,
+          "scrap_metal": 1.82,
+          "vinyl_record": 0.25,
+          "gold_watch": 0.2
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.3,
+        "gold_per_respawn_minute": 6.65,
         "first_haul": {
-          "iron_nails": 6
+          "gold_watch": 2,
+          "iron_nails": 4
         }
       },
       {
@@ -3059,21 +3065,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 55.95,
-          "p10": 27,
-          "p50": 44,
-          "p90": 88
+          "mean": 56.87,
+          "p10": 28,
+          "p50": 53,
+          "p90": 100
         },
-        "items_per_haul": 8,
+        "items_per_haul": 8.03,
         "per_haul_mean": {
-          "scrap_metal": 2.43,
-          "wire": 1.46,
-          "iron_nails": 3.46,
-          "gold_watch": 0.29,
-          "vinyl_record": 0.36
+          "vinyl_record": 0.36,
+          "scrap_metal": 2.48,
+          "iron_nails": 3.48,
+          "wire": 1.41,
+          "gold_watch": 0.31
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.33
+        "gold_per_respawn_minute": 9.48
       },
       {
         "site": "sv_hollow_sub",
@@ -3088,21 +3094,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 29.5,
-          "p10": 12,
-          "p50": 19,
-          "p90": 64
+          "mean": 27.57,
+          "p10": 13,
+          "p50": 18,
+          "p90": 63
         },
-        "items_per_haul": 3.99,
+        "items_per_haul": 4.13,
         "per_haul_mean": {
-          "iron_nails": 1.67,
-          "vinyl_record": 0.19,
-          "scrap_metal": 1.3,
-          "wire": 0.67,
-          "gold_watch": 0.17
+          "iron_nails": 1.89,
+          "wire": 0.65,
+          "scrap_metal": 1.29,
+          "gold_watch": 0.15,
+          "vinyl_record": 0.15
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.92
+        "gold_per_respawn_minute": 4.59
       },
       {
         "site": "sv_hollow_sub",
@@ -3117,21 +3123,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 40.67,
-          "p10": 20,
-          "p50": 29,
-          "p90": 72
+          "mean": 43.91,
+          "p10": 21,
+          "p50": 31,
+          "p90": 76
         },
-        "items_per_haul": 6.04,
+        "items_per_haul": 6.05,
         "per_haul_mean": {
-          "wire": 1.15,
-          "gold_watch": 0.24,
-          "scrap_metal": 1.87,
-          "iron_nails": 2.61,
-          "vinyl_record": 0.19
+          "vinyl_record": 0.22,
+          "wire": 1.16,
+          "scrap_metal": 1.74,
+          "iron_nails": 2.65,
+          "gold_watch": 0.28
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.78
+        "gold_per_respawn_minute": 7.32
       },
       {
         "site": "sv_hollow_sub",
@@ -3146,25 +3152,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 41.61,
-          "p10": 20,
-          "p50": 29,
-          "p90": 75
+          "mean": 54.99,
+          "p10": 29,
+          "p50": 51,
+          "p90": 85
         },
-        "items_per_haul": 6.24,
+        "items_per_haul": 8.44,
         "per_haul_mean": {
-          "wire": 1.06,
-          "iron_nails": 2.81,
-          "scrap_metal": 1.94,
-          "gold_watch": 0.23,
-          "vinyl_record": 0.22
+          "iron_nails": 4.23,
+          "scrap_metal": 2.31,
+          "vinyl_record": 0.28,
+          "gold_watch": 0.3,
+          "wire": 1.32
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.93,
+        "gold_per_respawn_minute": 9.16,
         "first_haul": {
-          "scrap_metal": 2,
-          "wire": 2,
-          "iron_nails": 2
+          "iron_nails": 7,
+          "scrap_metal": 5
         }
       },
       {
@@ -3180,21 +3185,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 69.5,
+          "mean": 70.16,
           "p10": 37,
-          "p50": 67,
-          "p90": 116
+          "p50": 66,
+          "p90": 115
         },
-        "items_per_haul": 10.34,
+        "items_per_haul": 10.39,
         "per_haul_mean": {
-          "wire": 1.68,
-          "iron_nails": 4.89,
-          "scrap_metal": 3,
-          "vinyl_record": 0.4,
-          "gold_watch": 0.38
+          "vinyl_record": 0.38,
+          "wire": 1.62,
+          "scrap_metal": 3.33,
+          "iron_nails": 4.67,
+          "gold_watch": 0.39
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 11.58
+        "gold_per_respawn_minute": 11.69
       },
       {
         "site": "sv_meridian_a",
@@ -3209,22 +3214,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 21.46,
+          "mean": 20.2,
           "p10": 8,
           "p50": 15,
           "p90": 55
         },
-        "items_per_haul": 2.19,
+        "items_per_haul": 2.09,
         "per_haul_mean": {
-          "scrap_metal": 1.18,
-          "wire": 0.47,
-          "electronics": 0.34,
-          "street_sign": 0.07,
-          "gold_watch": 0.09,
-          "polaroid": 0.05
+          "scrap_metal": 0.92,
+          "street_sign": 0.09,
+          "wire": 0.63,
+          "polaroid": 0.06,
+          "electronics": 0.36,
+          "gold_watch": 0.05
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.07
+        "gold_per_respawn_minute": 2.89
       },
       {
         "site": "sv_meridian_a",
@@ -3239,22 +3244,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 38.59,
+          "mean": 38.41,
           "p10": 17,
           "p50": 27,
           "p90": 79
         },
-        "items_per_haul": 4.01,
+        "items_per_haul": 3.97,
         "per_haul_mean": {
-          "scrap_metal": 1.8,
-          "wire": 1.11,
-          "street_sign": 0.1,
-          "polaroid": 0.12,
+          "scrap_metal": 1.63,
+          "wire": 1.25,
+          "polaroid": 0.14,
           "electronics": 0.77,
-          "gold_watch": 0.12
+          "gold_watch": 0.1,
+          "street_sign": 0.09
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 5.51
+        "gold_per_respawn_minute": 5.49
       },
       {
         "site": "sv_meridian_a",
@@ -3269,26 +3274,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 62.78,
-          "p10": 28,
-          "p50": 62,
-          "p90": 104
+          "mean": 80.61,
+          "p10": 39,
+          "p50": 73,
+          "p90": 139
         },
-        "items_per_haul": 6.01,
+        "items_per_haul": 7.99,
         "per_haul_mean": {
-          "street_sign": 0.26,
-          "electronics": 0.98,
-          "scrap_metal": 2.97,
-          "wire": 1.43,
-          "polaroid": 0.18,
-          "gold_watch": 0.2
+          "scrap_metal": 3.48,
+          "electronics": 1.47,
+          "wire": 2.29,
+          "gold_watch": 0.26,
+          "polaroid": 0.23,
+          "street_sign": 0.27
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 8.97,
+        "gold_per_respawn_minute": 11.52,
         "first_haul": {
           "street_sign": 1,
-          "scrap_metal": 5,
-          "wire": 3
+          "scrap_metal": 4,
+          "electronics": 3,
+          "wire": 2
         }
       },
       {
@@ -3304,22 +3310,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 101.39,
-          "p10": 55,
-          "p50": 97,
-          "p90": 156
+          "mean": 101.99,
+          "p10": 56,
+          "p50": 99,
+          "p90": 163
         },
-        "items_per_haul": 10.2,
+        "items_per_haul": 10.21,
         "per_haul_mean": {
-          "wire": 2.63,
-          "polaroid": 0.34,
-          "scrap_metal": 4.89,
-          "electronics": 1.75,
-          "street_sign": 0.33,
-          "gold_watch": 0.27
+          "scrap_metal": 5.03,
+          "electronics": 1.79,
+          "wire": 2.46,
+          "polaroid": 0.35,
+          "street_sign": 0.29,
+          "gold_watch": 0.29
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 14.48
+        "gold_per_respawn_minute": 14.57
       },
       {
         "site": "sv_meridian_a",
@@ -3334,22 +3340,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 39.86,
-          "p10": 18,
-          "p50": 27,
-          "p90": 80
+          "mean": 42.88,
+          "p10": 17,
+          "p50": 31,
+          "p90": 82
         },
-        "items_per_haul": 3.96,
+        "items_per_haul": 4.01,
         "per_haul_mean": {
-          "polaroid": 0.14,
-          "electronics": 0.77,
-          "scrap_metal": 1.68,
-          "wire": 1.17,
-          "street_sign": 0.1,
-          "gold_watch": 0.11
+          "electronics": 0.72,
+          "wire": 0.93,
+          "scrap_metal": 1.96,
+          "polaroid": 0.16,
+          "gold_watch": 0.11,
+          "street_sign": 0.15
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 5.69
+        "gold_per_respawn_minute": 6.13
       },
       {
         "site": "sv_meridian_a",
@@ -3364,22 +3370,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 61.5,
+          "mean": 62.85,
           "p10": 30,
-          "p50": 48,
-          "p90": 106
+          "p50": 52,
+          "p90": 103
         },
         "items_per_haul": 6.07,
         "per_haul_mean": {
-          "electronics": 1.05,
-          "wire": 1.53,
-          "scrap_metal": 2.91,
-          "polaroid": 0.19,
-          "street_sign": 0.2,
-          "gold_watch": 0.2
+          "gold_watch": 0.21,
+          "wire": 1.45,
+          "street_sign": 0.18,
+          "scrap_metal": 2.96,
+          "polaroid": 0.22,
+          "electronics": 1.07
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 8.79
+        "gold_per_respawn_minute": 8.98
       },
       {
         "site": "sv_meridian_a",
@@ -3394,27 +3400,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 81.76,
-          "p10": 40,
-          "p50": 79,
-          "p90": 135
+          "mean": 99.56,
+          "p10": 52,
+          "p50": 97,
+          "p90": 157
         },
-        "items_per_haul": 8.08,
+        "items_per_haul": 9.9,
         "per_haul_mean": {
-          "scrap_metal": 3.96,
-          "electronics": 1.41,
-          "wire": 1.96,
-          "polaroid": 0.28,
-          "street_sign": 0.25,
-          "gold_watch": 0.24
+          "street_sign": 0.27,
+          "wire": 2.46,
+          "scrap_metal": 4.64,
+          "polaroid": 0.32,
+          "electronics": 1.9,
+          "gold_watch": 0.31
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 11.68,
+        "gold_per_respawn_minute": 14.22,
         "first_haul": {
-          "street_sign": 1,
-          "scrap_metal": 6,
-          "electronics": 1,
-          "polaroid": 1
+          "street_sign": 2,
+          "electronics": 4,
+          "scrap_metal": 3,
+          "wire": 1
         }
       },
       {
@@ -3430,22 +3436,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 118.34,
-          "p10": 70,
-          "p50": 115,
-          "p90": 173
+          "mean": 119.44,
+          "p10": 65,
+          "p50": 116,
+          "p90": 177
         },
-        "items_per_haul": 12.06,
+        "items_per_haul": 12.01,
         "per_haul_mean": {
-          "scrap_metal": 5.89,
-          "electronics": 2.37,
-          "wire": 2.74,
-          "gold_watch": 0.36,
-          "polaroid": 0.34,
-          "street_sign": 0.37
+          "wire": 3.08,
+          "electronics": 2.14,
+          "polaroid": 0.39,
+          "scrap_metal": 5.7,
+          "street_sign": 0.38,
+          "gold_watch": 0.32
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 16.91
+        "gold_per_respawn_minute": 17.06
       },
       {
         "site": "sv_meridian_b",
@@ -3460,21 +3466,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 30.19,
+          "mean": 32.26,
           "p10": 10,
-          "p50": 18,
+          "p50": 25,
           "p90": 80
         },
-        "items_per_haul": 2,
+        "items_per_haul": 2.03,
         "per_haul_mean": {
-          "electronics": 0.99,
-          "engine_parts": 0.15,
-          "wire": 0.7,
-          "traffic_light": 0.09,
-          "seed_packet": 0.08
+          "traffic_light": 0.07,
+          "electronics": 0.97,
+          "engine_parts": 0.14,
+          "wire": 0.72,
+          "seed_packet": 0.13
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 3.77
+        "gold_per_respawn_minute": 4.03
       },
       {
         "site": "sv_meridian_b",
@@ -3489,21 +3495,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 59.8,
+          "mean": 61.51,
           "p10": 28,
           "p50": 43,
-          "p90": 108
+          "p90": 115
         },
-        "items_per_haul": 4.08,
+        "items_per_haul": 4.06,
         "per_haul_mean": {
-          "wire": 1.51,
-          "electronics": 1.98,
-          "engine_parts": 0.28,
-          "traffic_light": 0.2,
-          "seed_packet": 0.12
+          "traffic_light": 0.18,
+          "electronics": 1.87,
+          "wire": 1.57,
+          "seed_packet": 0.18,
+          "engine_parts": 0.27
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.48
+        "gold_per_respawn_minute": 7.69
       },
       {
         "site": "sv_meridian_b",
@@ -3518,146 +3524,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 87.13,
-          "p10": 51,
-          "p50": 68,
-          "p90": 135
+          "mean": 114.62,
+          "p10": 68,
+          "p50": 97,
+          "p90": 162
         },
-        "items_per_haul": 6.27,
+        "items_per_haul": 8.16,
         "per_haul_mean": {
-          "electronics": 3.1,
-          "engine_parts": 0.45,
-          "wire": 2.29,
-          "seed_packet": 0.22,
-          "traffic_light": 0.22
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 10.89,
-        "first_haul": {
-          "traffic_light": 1,
-          "wire": 5,
-          "electronics": 3
-        }
-      },
-      {
-        "site": "sv_meridian_b",
-        "name": "Broadcast Spire",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 480,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": false,
-        "hits": 3,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 146.84,
-          "p10": 88,
-          "p50": 151,
-          "p90": 224
-        },
-        "items_per_haul": 10.18,
-        "per_haul_mean": {
-          "wire": 3.66,
-          "engine_parts": 0.74,
-          "electronics": 5.01,
-          "traffic_light": 0.35,
-          "seed_packet": 0.43
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 18.35
-      },
-      {
-        "site": "sv_meridian_b",
-        "name": "Broadcast Spire",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 480,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 0,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 60.3,
-          "p10": 28,
-          "p50": 45,
-          "p90": 108
-        },
-        "items_per_haul": 4.09,
-        "per_haul_mean": {
-          "electronics": 2.01,
-          "wire": 1.48,
-          "traffic_light": 0.19,
-          "engine_parts": 0.28,
-          "seed_packet": 0.14
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.54
-      },
-      {
-        "site": "sv_meridian_b",
-        "name": "Broadcast Spire",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 480,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 90.84,
-          "p10": 48,
-          "p50": 72,
-          "p90": 135
-        },
-        "items_per_haul": 6.1,
-        "per_haul_mean": {
-          "electronics": 2.84,
-          "traffic_light": 0.27,
-          "wire": 2.31,
-          "seed_packet": 0.23,
-          "engine_parts": 0.46
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 11.35
-      },
-      {
-        "site": "sv_meridian_b",
-        "name": "Broadcast Spire",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 480,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 116.35,
-          "p10": 61,
-          "p50": 96,
-          "p90": 200
-        },
-        "items_per_haul": 8.32,
-        "per_haul_mean": {
-          "wire": 3.36,
-          "electronics": 3.8,
+          "electronics": 3.81,
+          "engine_parts": 0.62,
+          "wire": 3.17,
           "seed_packet": 0.26,
-          "traffic_light": 0.34,
-          "engine_parts": 0.57
+          "traffic_light": 0.32
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 14.54,
+        "gold_per_respawn_minute": 14.33,
         "first_haul": {
           "traffic_light": 1,
-          "electronics": 2,
-          "wire": 5,
+          "wire": 7,
           "engine_parts": 1
         }
       },
@@ -3670,25 +3554,147 @@
         "respawn_s": 480,
         "vessel": "ironwake",
         "hold_slots": 30,
+        "salvager": false,
+        "hits": 3,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 151.6,
+          "p10": 88,
+          "p50": 150,
+          "p90": 238
+        },
+        "items_per_haul": 9.94,
+        "per_haul_mean": {
+          "electronics": 4.64,
+          "traffic_light": 0.42,
+          "seed_packet": 0.43,
+          "engine_parts": 0.81,
+          "wire": 3.64
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 18.95
+      },
+      {
+        "site": "sv_meridian_b",
+        "name": "Broadcast Spire",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 480,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 0,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 61.04,
+          "p10": 28,
+          "p50": 45,
+          "p90": 115
+        },
+        "items_per_haul": 4.04,
+        "per_haul_mean": {
+          "wire": 1.45,
+          "seed_packet": 0.17,
+          "electronics": 1.94,
+          "engine_parts": 0.32,
+          "traffic_light": 0.17
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 7.63
+      },
+      {
+        "site": "sv_meridian_b",
+        "name": "Broadcast Spire",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 480,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 88.49,
+          "p10": 46,
+          "p50": 70,
+          "p90": 142
+        },
+        "items_per_haul": 5.99,
+        "per_haul_mean": {
+          "wire": 2.19,
+          "engine_parts": 0.5,
+          "electronics": 2.84,
+          "traffic_light": 0.23,
+          "seed_packet": 0.24
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 11.06
+      },
+      {
+        "site": "sv_meridian_b",
+        "name": "Broadcast Spire",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 480,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 152.6,
+          "p10": 86,
+          "p50": 155,
+          "p90": 233
+        },
+        "items_per_haul": 10.18,
+        "per_haul_mean": {
+          "electronics": 4.55,
+          "wire": 4.01,
+          "traffic_light": 0.42,
+          "engine_parts": 0.76,
+          "seed_packet": 0.44
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 19.08,
+        "first_haul": {
+          "traffic_light": 1,
+          "engine_parts": 1,
+          "electronics": 8,
+          "seed_packet": 1
+        }
+      },
+      {
+        "site": "sv_meridian_b",
+        "name": "Broadcast Spire",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 480,
+        "vessel": "ironwake",
+        "hold_slots": 30,
         "salvager": true,
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 182.19,
-          "p10": 110,
-          "p50": 179,
-          "p90": 264
+          "mean": 178.11,
+          "p10": 108,
+          "p50": 177,
+          "p90": 255
         },
-        "items_per_haul": 12.35,
+        "items_per_haul": 12.24,
         "per_haul_mean": {
-          "traffic_light": 0.47,
-          "engine_parts": 0.87,
-          "electronics": 6.12,
-          "wire": 4.38,
-          "seed_packet": 0.52
+          "electronics": 5.87,
+          "engine_parts": 0.92,
+          "seed_packet": 0.52,
+          "wire": 4.51,
+          "traffic_light": 0.43
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 22.77
+        "gold_per_respawn_minute": 22.26
       },
       {
         "site": "sv_meridian_c",
@@ -3703,21 +3709,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 19.16,
-          "p10": 6,
+          "mean": 24.58,
+          "p10": 8,
           "p50": 9,
-          "p90": 35
+          "p90": 120
         },
-        "items_per_haul": 2.17,
+        "items_per_haul": 2.12,
         "per_haul_mean": {
-          "vinyl_record": 0.18,
-          "scrap_metal": 1.16,
-          "plastic": 0.67,
-          "rubber_duck": 0.13,
-          "diamond_ring": 0.05
+          "plastic": 0.71,
+          "scrap_metal": 1.02,
+          "vinyl_record": 0.15,
+          "diamond_ring": 0.1,
+          "rubber_duck": 0.14
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 2.74
+        "gold_per_respawn_minute": 3.51
       },
       {
         "site": "sv_meridian_c",
@@ -3732,21 +3738,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 43.36,
-          "p10": 14,
+          "mean": 41.72,
+          "p10": 15,
           "p50": 24,
           "p90": 128
         },
-        "items_per_haul": 4.09,
+        "items_per_haul": 4.38,
         "per_haul_mean": {
-          "rubber_duck": 0.37,
-          "plastic": 1.43,
-          "vinyl_record": 0.29,
-          "scrap_metal": 1.85,
-          "diamond_ring": 0.16
+          "plastic": 1.51,
+          "scrap_metal": 2.2,
+          "vinyl_record": 0.36,
+          "rubber_duck": 0.2,
+          "diamond_ring": 0.12
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.19
+        "gold_per_respawn_minute": 5.96
       },
       {
         "site": "sv_meridian_c",
@@ -3761,22 +3767,143 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 39.19,
-          "p10": 15,
-          "p50": 24,
-          "p90": 126
+          "mean": 68.44,
+          "p10": 25,
+          "p50": 49,
+          "p90": 142
         },
-        "items_per_haul": 4.41,
+        "items_per_haul": 6.39,
         "per_haul_mean": {
-          "scrap_metal": 2.22,
-          "plastic": 1.5,
-          "rubber_duck": 0.28,
-          "diamond_ring": 0.11,
-          "vinyl_record": 0.3
+          "rubber_duck": 0.36,
+          "scrap_metal": 3.18,
+          "plastic": 2.13,
+          "diamond_ring": 0.25,
+          "vinyl_record": 0.47
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 5.6,
+        "gold_per_respawn_minute": 9.78,
         "first_haul": {
+          "plastic": 6,
+          "rubber_duck": 1
+        }
+      },
+      {
+        "site": "sv_meridian_c",
+        "name": "The Leaning Block",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": false,
+        "hits": 3,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 81.18,
+          "p10": 34,
+          "p50": 61,
+          "p90": 169
+        },
+        "items_per_haul": 8.62,
+        "per_haul_mean": {
+          "scrap_metal": 4.35,
+          "vinyl_record": 0.63,
+          "plastic": 2.86,
+          "rubber_duck": 0.55,
+          "diamond_ring": 0.24
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 11.6
+      },
+      {
+        "site": "sv_meridian_c",
+        "name": "The Leaning Block",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 0,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 42.95,
+          "p10": 14,
+          "p50": 22,
+          "p90": 128
+        },
+        "items_per_haul": 4.15,
+        "per_haul_mean": {
+          "plastic": 1.57,
+          "rubber_duck": 0.28,
+          "vinyl_record": 0.27,
+          "scrap_metal": 1.88,
+          "diamond_ring": 0.16
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 6.14
+      },
+      {
+        "site": "sv_meridian_c",
+        "name": "The Leaning Block",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 62.81,
+          "p10": 24,
+          "p50": 49,
+          "p90": 144
+        },
+        "items_per_haul": 6.41,
+        "per_haul_mean": {
+          "diamond_ring": 0.19,
+          "rubber_duck": 0.44,
+          "vinyl_record": 0.5,
+          "plastic": 1.96,
+          "scrap_metal": 3.33
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 8.97
+      },
+      {
+        "site": "sv_meridian_c",
+        "name": "The Leaning Block",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 84.49,
+          "p10": 35,
+          "p50": 61,
+          "p90": 169
+        },
+        "items_per_haul": 8.54,
+        "per_haul_mean": {
+          "vinyl_record": 0.55,
+          "plastic": 2.78,
+          "scrap_metal": 4.32,
+          "diamond_ring": 0.29,
+          "rubber_duck": 0.61
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 12.07,
+        "first_haul": {
+          "rubber_duck": 2,
           "diamond_ring": 1,
           "plastic": 3
         }
@@ -3790,146 +3917,25 @@
         "respawn_s": 420,
         "vessel": "ironwake",
         "hold_slots": 30,
-        "salvager": false,
-        "hits": 3,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 86.75,
-          "p10": 35,
-          "p50": 65,
-          "p90": 170
-        },
-        "items_per_haul": 8.52,
-        "per_haul_mean": {
-          "rubber_duck": 0.63,
-          "plastic": 2.62,
-          "scrap_metal": 4.39,
-          "vinyl_record": 0.58,
-          "diamond_ring": 0.3
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 12.39
-      },
-      {
-        "site": "sv_meridian_c",
-        "name": "The Leaning Block",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 0,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 45.68,
-          "p10": 15,
-          "p50": 25,
-          "p90": 128
-        },
-        "items_per_haul": 4.2,
-        "per_haul_mean": {
-          "plastic": 1.37,
-          "scrap_metal": 2.12,
-          "rubber_duck": 0.23,
-          "vinyl_record": 0.31,
-          "diamond_ring": 0.17
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.53
-      },
-      {
-        "site": "sv_meridian_c",
-        "name": "The Leaning Block",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 60.48,
-          "p10": 23,
-          "p50": 49,
-          "p90": 144
-        },
-        "items_per_haul": 6.3,
-        "per_haul_mean": {
-          "scrap_metal": 3.07,
-          "plastic": 2.13,
-          "rubber_duck": 0.45,
-          "vinyl_record": 0.48,
-          "diamond_ring": 0.18
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 8.64
-      },
-      {
-        "site": "sv_meridian_c",
-        "name": "The Leaning Block",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 63.43,
-          "p10": 24,
-          "p50": 49,
-          "p90": 141
-        },
-        "items_per_haul": 6.41,
-        "per_haul_mean": {
-          "scrap_metal": 3.31,
-          "plastic": 2,
-          "vinyl_record": 0.44,
-          "rubber_duck": 0.45,
-          "diamond_ring": 0.21
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.06,
-        "first_haul": {
-          "diamond_ring": 1,
-          "rubber_duck": 1,
-          "vinyl_record": 1
-        }
-      },
-      {
-        "site": "sv_meridian_c",
-        "name": "The Leaning Block",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "ironwake",
-        "hold_slots": 30,
         "salvager": true,
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 108.63,
+          "mean": 106.34,
           "p10": 45,
-          "p50": 89,
-          "p90": 188
+          "p50": 77,
+          "p90": 189
         },
-        "items_per_haul": 10.74,
+        "items_per_haul": 10.81,
         "per_haul_mean": {
-          "plastic": 3.49,
+          "scrap_metal": 5.73,
           "diamond_ring": 0.36,
-          "scrap_metal": 5.44,
-          "vinyl_record": 0.8,
-          "rubber_duck": 0.65
+          "plastic": 3.29,
+          "vinyl_record": 0.7,
+          "rubber_duck": 0.74
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 15.52
+        "gold_per_respawn_minute": 15.19
       },
       {
         "site": "sv_rig",
@@ -3944,20 +3950,20 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 15.03,
-          "p10": 6,
+          "mean": 14.26,
+          "p10": 4,
           "p50": 12,
           "p90": 25
         },
-        "items_per_haul": 1.77,
+        "items_per_haul": 1.84,
         "per_haul_mean": {
-          "scrap_metal": 0.61,
-          "crude_oil": 0.89,
-          "engine_parts": 0.2,
-          "rig_badge": 0.08
+          "engine_parts": 0.14,
+          "crude_oil": 0.94,
+          "rig_badge": 0.08,
+          "scrap_metal": 0.68
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 2.5
+        "gold_per_respawn_minute": 2.38
       },
       {
         "site": "sv_rig",
@@ -3972,108 +3978,20 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 25.39,
-          "p10": 12,
-          "p50": 24,
-          "p90": 38
-        },
-        "items_per_haul": 3.57,
-        "per_haul_mean": {
-          "engine_parts": 0.22,
-          "crude_oil": 1.88,
-          "scrap_metal": 1.37,
-          "rig_badge": 0.11
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.23
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": false,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 28.19,
+          "mean": 28.14,
           "p10": 14,
-          "p50": 30,
-          "p90": 42
+          "p50": 26,
+          "p90": 43
         },
         "items_per_haul": 3.56,
         "per_haul_mean": {
-          "crude_oil": 1.87,
-          "scrap_metal": 1.24,
-          "engine_parts": 0.33,
-          "rig_badge": 0.13
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.7,
-        "first_haul": {
-          "rig_badge": 1,
-          "crude_oil": 6
-        }
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": false,
-        "hits": 3,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 55.65,
-          "p10": 34,
-          "p50": 55,
-          "p90": 74
-        },
-        "items_per_haul": 6.81,
-        "per_haul_mean": {
-          "crude_oil": 3.65,
-          "engine_parts": 0.62,
-          "rig_badge": 0.32,
-          "scrap_metal": 2.23
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.27
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 0,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 28.58,
-          "p10": 14,
-          "p50": 29,
-          "p90": 43
-        },
-        "items_per_haul": 3.6,
-        "per_haul_mean": {
-          "scrap_metal": 1.33,
-          "crude_oil": 1.81,
-          "engine_parts": 0.33,
+          "crude_oil": 1.95,
+          "scrap_metal": 1.16,
+          "engine_parts": 0.31,
           "rig_badge": 0.14
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.76
+        "gold_per_respawn_minute": 4.69
       },
       {
         "site": "sv_rig",
@@ -4084,183 +4002,273 @@
         "respawn_s": 360,
         "vessel": "ironwake",
         "hold_slots": 30,
-        "salvager": true,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 41.54,
-          "p10": 24,
-          "p50": 41,
-          "p90": 61
-        },
-        "items_per_haul": 5.23,
-        "per_haul_mean": {
-          "crude_oil": 2.7,
-          "scrap_metal": 1.86,
-          "engine_parts": 0.44,
-          "rig_badge": 0.24
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.92
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
+        "salvager": false,
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 41.43,
-          "p10": 26,
+          "mean": 43.04,
+          "p10": 24,
           "p50": 42,
-          "p90": 61
+          "p90": 63
         },
-        "items_per_haul": 5.54,
+        "items_per_haul": 5.24,
         "per_haul_mean": {
-          "scrap_metal": 2.08,
-          "engine_parts": 0.43,
-          "crude_oil": 2.86,
-          "rig_badge": 0.18
+          "crude_oil": 2.65,
+          "scrap_metal": 1.84,
+          "engine_parts": 0.54,
+          "rig_badge": 0.21
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 6.91,
+        "gold_per_respawn_minute": 7.17,
         "first_haul": {
           "rig_badge": 1,
-          "crude_oil": 9,
-          "scrap_metal": 3
-        }
-      },
-      {
-        "site": "sv_rig",
-        "name": "Helios Lower Deck",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 2,
-        "respawn_s": 360,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": true,
-        "hits": 3,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 70.19,
-          "p10": 48,
-          "p50": 67,
-          "p90": 92
-        },
-        "items_per_haul": 9.07,
-        "per_haul_mean": {
-          "scrap_metal": 3.29,
-          "crude_oil": 4.7,
-          "engine_parts": 0.74,
-          "rig_badge": 0.35
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 11.7
-      },
-      {
-        "site": "sv_tanker",
-        "name": "Hull of the Meridian Star",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 600,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": false,
-        "hits": 0,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 70.64,
-          "p10": 30,
-          "p50": 40,
-          "p90": 192
-        },
-        "items_per_haul": 5.49,
-        "per_haul_mean": {
-          "crude_oil": 1.9,
-          "engine_parts": 0.39,
-          "alloy_plate": 0.19,
-          "gold_bar": 0.1,
-          "ship_in_bottle": 0.12,
-          "scrap_metal": 2.81
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.06
-      },
-      {
-        "site": "sv_tanker",
-        "name": "Hull of the Meridian Star",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 600,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": false,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 103.26,
-          "p10": 48,
-          "p50": 66,
-          "p90": 216
-        },
-        "items_per_haul": 8.01,
-        "per_haul_mean": {
-          "scrap_metal": 4.08,
-          "crude_oil": 2.59,
-          "gold_bar": 0.18,
-          "ship_in_bottle": 0.13,
-          "alloy_plate": 0.34,
-          "engine_parts": 0.71
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 10.33
-      },
-      {
-        "site": "sv_tanker",
-        "name": "Hull of the Meridian Star",
-        "region": "emerald",
-        "heavy": true,
-        "difficulty": 3,
-        "respawn_s": 600,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": false,
-        "hits": 2,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 146.15,
-          "p10": 66,
-          "p50": 100,
-          "p90": 268
-        },
-        "items_per_haul": 10.56,
-        "per_haul_mean": {
-          "crude_oil": 3.62,
-          "scrap_metal": 5.17,
-          "engine_parts": 0.85,
-          "gold_bar": 0.26,
-          "alloy_plate": 0.45,
-          "ship_in_bottle": 0.21
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 14.62,
-        "first_haul": {
-          "ship_in_bottle": 1,
-          "engine_parts": 4,
-          "crude_oil": 5,
+          "crude_oil": 6,
           "scrap_metal": 5
         }
       },
       {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": false,
+        "hits": 3,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 56.56,
+          "p10": 36,
+          "p50": 55,
+          "p90": 79
+        },
+        "items_per_haul": 7.1,
+        "per_haul_mean": {
+          "crude_oil": 3.6,
+          "scrap_metal": 2.57,
+          "engine_parts": 0.62,
+          "rig_badge": 0.31
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 9.43
+      },
+      {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 0,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 27.95,
+          "p10": 12,
+          "p50": 24,
+          "p90": 43
+        },
+        "items_per_haul": 3.53,
+        "per_haul_mean": {
+          "crude_oil": 1.79,
+          "engine_parts": 0.29,
+          "scrap_metal": 1.29,
+          "rig_badge": 0.16
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 4.66
+      },
+      {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 41.91,
+          "p10": 24,
+          "p50": 41,
+          "p90": 66
+        },
+        "items_per_haul": 5.32,
+        "per_haul_mean": {
+          "scrap_metal": 1.92,
+          "crude_oil": 2.73,
+          "rig_badge": 0.22,
+          "engine_parts": 0.45
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 6.99
+      },
+      {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 55.49,
+          "p10": 34,
+          "p50": 54,
+          "p90": 79
+        },
+        "items_per_haul": 7.05,
+        "per_haul_mean": {
+          "scrap_metal": 2.33,
+          "crude_oil": 3.87,
+          "engine_parts": 0.56,
+          "rig_badge": 0.3
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 9.25,
+        "first_haul": {
+          "rig_badge": 1,
+          "crude_oil": 3,
+          "engine_parts": 3,
+          "scrap_metal": 2
+        }
+      },
+      {
+        "site": "sv_rig",
+        "name": "Helios Lower Deck",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 2,
+        "respawn_s": 360,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": true,
+        "hits": 3,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 70.83,
+          "p10": 46,
+          "p50": 69,
+          "p90": 97
+        },
+        "items_per_haul": 8.71,
+        "per_haul_mean": {
+          "rig_badge": 0.41,
+          "scrap_metal": 3.08,
+          "crude_oil": 4.43,
+          "engine_parts": 0.79
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 11.81
+      },
+      {
+        "site": "sv_tanker",
+        "name": "Hull of the Meridian Star",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 600,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": false,
+        "hits": 0,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 37.02,
+          "p10": 12,
+          "p50": 20,
+          "p90": 140
+        },
+        "items_per_haul": 2.62,
+        "per_haul_mean": {
+          "engine_parts": 0.3,
+          "crude_oil": 0.98,
+          "scrap_metal": 1.14,
+          "alloy_plate": 0.09,
+          "gold_bar": 0.08,
+          "ship_in_bottle": 0.04
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 3.7
+      },
+      {
+        "site": "sv_tanker",
+        "name": "Hull of the Meridian Star",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 600,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": false,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 112.53,
+          "p10": 44,
+          "p50": 65,
+          "p90": 221
+        },
+        "items_per_haul": 7.84,
+        "per_haul_mean": {
+          "alloy_plate": 0.33,
+          "scrap_metal": 3.82,
+          "crude_oil": 2.65,
+          "gold_bar": 0.14,
+          "engine_parts": 0.7,
+          "ship_in_bottle": 0.21
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 11.25
+      },
+      {
+        "site": "sv_tanker",
+        "name": "Hull of the Meridian Star",
+        "region": "emerald",
+        "heavy": true,
+        "difficulty": 3,
+        "respawn_s": 600,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": false,
+        "hits": 2,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 176.96,
+          "p10": 84,
+          "p50": 127,
+          "p90": 323
+        },
+        "items_per_haul": 13.23,
+        "per_haul_mean": {
+          "ship_in_bottle": 0.22,
+          "alloy_plate": 0.56,
+          "engine_parts": 1.14,
+          "scrap_metal": 6.7,
+          "crude_oil": 4.3,
+          "gold_bar": 0.33
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 17.7,
+        "first_haul": {
+          "ship_in_bottle": 1,
+          "engine_parts": 5,
+          "gold_bar": 1,
+          "alloy_plate": 2
+        }
+      },
+      {
         "site": "sv_tanker",
         "name": "Hull of the Meridian Star",
         "region": "emerald",
@@ -4273,22 +4281,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 227.89,
-          "p10": 104,
+          "mean": 232.22,
+          "p10": 106,
           "p50": 226,
-          "p90": 400
+          "p90": 393
         },
-        "items_per_haul": 15.68,
+        "items_per_haul": 15.83,
         "per_haul_mean": {
-          "gold_bar": 0.33,
-          "alloy_plate": 0.62,
-          "crude_oil": 5.02,
-          "ship_in_bottle": 0.42,
-          "scrap_metal": 8.01,
-          "engine_parts": 1.29
+          "alloy_plate": 0.64,
+          "crude_oil": 4.8,
+          "engine_parts": 1.61,
+          "scrap_metal": 8.06,
+          "ship_in_bottle": 0.39,
+          "gold_bar": 0.35
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 22.79
+        "gold_per_respawn_minute": 23.22
       },
       {
         "site": "sv_tanker",
@@ -4303,22 +4311,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 105.83,
-          "p10": 48,
-          "p50": 65,
-          "p90": 218
+          "mean": 69.44,
+          "p10": 30,
+          "p50": 40,
+          "p90": 190
         },
-        "items_per_haul": 8.02,
+        "items_per_haul": 5.4,
         "per_haul_mean": {
-          "crude_oil": 2.57,
-          "scrap_metal": 4.1,
-          "alloy_plate": 0.38,
-          "engine_parts": 0.67,
-          "gold_bar": 0.15,
-          "ship_in_bottle": 0.16
+          "crude_oil": 1.82,
+          "scrap_metal": 2.71,
+          "engine_parts": 0.44,
+          "gold_bar": 0.12,
+          "alloy_plate": 0.23,
+          "ship_in_bottle": 0.09
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 10.58
+        "gold_per_respawn_minute": 6.94
       },
       {
         "site": "sv_tanker",
@@ -4333,22 +4341,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 152.76,
-          "p10": 68,
-          "p50": 110,
+          "mean": 141.95,
+          "p10": 66,
+          "p50": 106,
           "p90": 254
         },
-        "items_per_haul": 10.27,
+        "items_per_haul": 10.83,
         "per_haul_mean": {
-          "scrap_metal": 5.15,
-          "alloy_plate": 0.49,
-          "crude_oil": 3.02,
-          "gold_bar": 0.19,
-          "engine_parts": 1.16,
-          "ship_in_bottle": 0.28
+          "engine_parts": 1.06,
+          "scrap_metal": 5.53,
+          "crude_oil": 3.43,
+          "ship_in_bottle": 0.2,
+          "alloy_plate": 0.41,
+          "gold_bar": 0.21
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 15.28
+        "gold_per_respawn_minute": 14.19
       },
       {
         "site": "sv_tanker",
@@ -4363,27 +4371,27 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 182.65,
-          "p10": 84,
-          "p50": 134,
-          "p90": 366
+          "mean": 227.49,
+          "p10": 105,
+          "p50": 216,
+          "p90": 419
         },
-        "items_per_haul": 13.02,
+        "items_per_haul": 15.8,
         "per_haul_mean": {
-          "scrap_metal": 6.37,
-          "engine_parts": 1.22,
-          "alloy_plate": 0.55,
-          "crude_oil": 4.32,
-          "gold_bar": 0.3,
-          "ship_in_bottle": 0.27
+          "crude_oil": 4.82,
+          "scrap_metal": 8.11,
+          "gold_bar": 0.31,
+          "alloy_plate": 0.69,
+          "engine_parts": 1.47,
+          "ship_in_bottle": 0.41
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 18.26,
+        "gold_per_respawn_minute": 22.75,
         "first_haul": {
-          "ship_in_bottle": 1,
-          "engine_parts": 4,
-          "scrap_metal": 6,
-          "crude_oil": 2
+          "ship_in_bottle": 2,
+          "engine_parts": 3,
+          "scrap_metal": 8,
+          "crude_oil": 5
         }
       },
       {
@@ -4399,22 +4407,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 266.26,
+          "mean": 250.85,
           "p10": 124,
-          "p50": 255,
-          "p90": 447
+          "p50": 249,
+          "p90": 426
         },
-        "items_per_haul": 18.4,
+        "items_per_haul": 18.59,
         "per_haul_mean": {
-          "engine_parts": 1.54,
-          "scrap_metal": 9.41,
-          "ship_in_bottle": 0.45,
-          "crude_oil": 5.75,
-          "gold_bar": 0.42,
-          "alloy_plate": 0.83
+          "crude_oil": 6.49,
+          "alloy_plate": 0.78,
+          "gold_bar": 0.39,
+          "engine_parts": 1.7,
+          "scrap_metal": 8.89,
+          "ship_in_bottle": 0.36
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 26.63
+        "gold_per_respawn_minute": 25.08
       },
       {
         "site": "sv_graveyard",
@@ -4429,50 +4437,50 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 17.81,
-          "p10": 6,
+          "mean": 18.6,
+          "p10": 8,
           "p50": 12,
           "p90": 65
         },
         "items_per_haul": 2.15,
         "per_haul_mean": {
-          "plastic": 0.91,
-          "canvas": 0.45,
-          "electronics": 0.39,
-          "snow_globe": 0.11,
-          "fuel_can": 0.3
-        },
-        "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 2.54
-      },
-      {
-        "site": "sv_graveyard",
-        "name": "Graveyard Boxes",
-        "region": "emerald",
-        "heavy": false,
-        "difficulty": 2,
-        "respawn_s": 420,
-        "vessel": "ironwake",
-        "hold_slots": 30,
-        "salvager": false,
-        "hits": 1,
-        "hauls": 200,
-        "gold_per_haul": {
-          "mean": 31.07,
-          "p10": 17,
-          "p50": 26,
-          "p90": 73
-        },
-        "items_per_haul": 4.38,
-        "per_haul_mean": {
-          "fuel_can": 0.71,
-          "electronics": 0.85,
-          "plastic": 1.65,
-          "canvas": 1.07,
+          "electronics": 0.41,
+          "fuel_can": 0.34,
+          "plastic": 0.8,
+          "canvas": 0.5,
           "snow_globe": 0.11
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.44
+        "gold_per_respawn_minute": 2.66
+      },
+      {
+        "site": "sv_graveyard",
+        "name": "Graveyard Boxes",
+        "region": "emerald",
+        "heavy": false,
+        "difficulty": 2,
+        "respawn_s": 420,
+        "vessel": "ironwake",
+        "hold_slots": 30,
+        "salvager": false,
+        "hits": 1,
+        "hauls": 200,
+        "gold_per_haul": {
+          "mean": 32.85,
+          "p10": 16,
+          "p50": 24,
+          "p90": 75
+        },
+        "items_per_haul": 4.45,
+        "per_haul_mean": {
+          "plastic": 1.97,
+          "fuel_can": 0.64,
+          "canvas": 0.94,
+          "electronics": 0.76,
+          "snow_globe": 0.16
+        },
+        "hauls_with_overflow": 0,
+        "gold_per_respawn_minute": 4.69
       },
       {
         "site": "sv_graveyard",
@@ -4487,25 +4495,23 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 53.06,
-          "p10": 28,
-          "p50": 40,
-          "p90": 94
+          "mean": 64.44,
+          "p10": 38,
+          "p50": 56,
+          "p90": 106
         },
-        "items_per_haul": 6.65,
+        "items_per_haul": 9.02,
         "per_haul_mean": {
-          "plastic": 2.7,
-          "canvas": 1.52,
-          "fuel_can": 1.05,
-          "electronics": 1.1,
-          "snow_globe": 0.28
+          "plastic": 3.66,
+          "snow_globe": 0.26,
+          "fuel_can": 1.31,
+          "electronics": 1.67,
+          "canvas": 2.13
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.58,
+        "gold_per_respawn_minute": 9.21,
         "first_haul": {
-          "fuel_can": 2,
-          "electronics": 1,
-          "canvas": 2
+          "snow_globe": 4
         }
       },
       {
@@ -4521,21 +4527,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 84.83,
+          "mean": 82.85,
           "p10": 51,
-          "p50": 75,
-          "p90": 126
+          "p50": 73,
+          "p90": 123
         },
-        "items_per_haul": 11.21,
+        "items_per_haul": 10.94,
         "per_haul_mean": {
-          "fuel_can": 1.65,
-          "electronics": 2.31,
-          "plastic": 4.29,
-          "snow_globe": 0.38,
-          "canvas": 2.59
+          "electronics": 2.3,
+          "plastic": 4.04,
+          "fuel_can": 1.67,
+          "canvas": 2.58,
+          "snow_globe": 0.36
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 12.12
+        "gold_per_respawn_minute": 11.84
       },
       {
         "site": "sv_graveyard",
@@ -4550,21 +4556,21 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 30.31,
-          "p10": 15,
-          "p50": 24,
-          "p90": 73
+          "mean": 31.83,
+          "p10": 17,
+          "p50": 26,
+          "p90": 74
         },
-        "items_per_haul": 4.25,
+        "items_per_haul": 4.62,
         "per_haul_mean": {
-          "plastic": 1.81,
-          "canvas": 0.94,
-          "fuel_can": 0.6,
-          "snow_globe": 0.13,
-          "electronics": 0.79
+          "canvas": 1.02,
+          "plastic": 1.95,
+          "electronics": 0.9,
+          "snow_globe": 0.12,
+          "fuel_can": 0.64
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 4.33
+        "gold_per_respawn_minute": 4.55
       },
       {
         "site": "sv_graveyard",
@@ -4579,21 +4585,21 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 49.64,
-          "p10": 26,
-          "p50": 42,
+          "mean": 48.69,
+          "p10": 27,
+          "p50": 40,
           "p90": 87
         },
-        "items_per_haul": 6.65,
+        "items_per_haul": 6.7,
         "per_haul_mean": {
-          "electronics": 1.5,
-          "plastic": 2.45,
-          "canvas": 1.62,
-          "fuel_can": 0.87,
-          "snow_globe": 0.21
+          "electronics": 1.27,
+          "fuel_can": 0.98,
+          "canvas": 1.71,
+          "plastic": 2.54,
+          "snow_globe": 0.2
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 7.09
+        "gold_per_respawn_minute": 6.96
       },
       {
         "site": "sv_graveyard",
@@ -4608,25 +4614,24 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 64.38,
-          "p10": 38,
-          "p50": 53,
-          "p90": 107
+          "mean": 82.51,
+          "p10": 52,
+          "p50": 72,
+          "p90": 121
         },
-        "items_per_haul": 8.74,
+        "items_per_haul": 10.96,
         "per_haul_mean": {
-          "plastic": 3.4,
-          "fuel_can": 1.3,
-          "electronics": 1.71,
-          "snow_globe": 0.27,
-          "canvas": 2.07
+          "electronics": 2.04,
+          "plastic": 4.05,
+          "canvas": 2.89,
+          "fuel_can": 1.61,
+          "snow_globe": 0.38
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.2,
+        "gold_per_respawn_minute": 11.79,
         "first_haul": {
-          "plastic": 5,
-          "canvas": 2,
-          "fuel_can": 1
+          "fuel_can": 2,
+          "canvas": 8
         }
       },
       {
@@ -4642,21 +4647,21 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 96.53,
-          "p10": 61,
-          "p50": 85,
-          "p90": 144
+          "mean": 96.45,
+          "p10": 60,
+          "p50": 87,
+          "p90": 138
         },
-        "items_per_haul": 13.38,
+        "items_per_haul": 13.28,
         "per_haul_mean": {
-          "fuel_can": 1.78,
-          "electronics": 2.48,
-          "canvas": 3.06,
-          "plastic": 5.64,
-          "snow_globe": 0.42
+          "fuel_can": 1.94,
+          "plastic": 4.72,
+          "electronics": 2.65,
+          "snow_globe": 0.38,
+          "canvas": 3.6
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 13.79
+        "gold_per_respawn_minute": 13.78
       },
       {
         "site": "sv_spire",
@@ -4671,22 +4676,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 135.22,
-          "p10": 47,
-          "p50": 138,
-          "p90": 250
+          "mean": 74.54,
+          "p10": 20,
+          "p50": 80,
+          "p90": 140
         },
-        "items_per_haul": 3.48,
+        "items_per_haul": 1.59,
         "per_haul_mean": {
-          "gold_bar": 0.31,
-          "electronics": 1.94,
-          "diamond_ring": 0.23,
-          "seed_packet": 0.27,
-          "alloy_plate": 0.62,
-          "jar_of_soil": 0.12
+          "electronics": 0.72,
+          "gold_bar": 0.15,
+          "diamond_ring": 0.15,
+          "seed_packet": 0.19,
+          "jar_of_soil": 0.07,
+          "alloy_plate": 0.31
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 9.01
+        "gold_per_respawn_minute": 4.97
       },
       {
         "site": "sv_spire",
@@ -4701,22 +4706,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 208.41,
+          "mean": 209.24,
           "p10": 96,
-          "p50": 200,
-          "p90": 320
+          "p50": 196,
+          "p90": 316
         },
-        "items_per_haul": 5.04,
+        "items_per_haul": 5.26,
         "per_haul_mean": {
-          "alloy_plate": 1.14,
-          "electronics": 2.44,
-          "seed_packet": 0.44,
-          "gold_bar": 0.41,
-          "diamond_ring": 0.39,
-          "jar_of_soil": 0.23
+          "gold_bar": 0.43,
+          "seed_packet": 0.41,
+          "alloy_plate": 0.94,
+          "electronics": 2.86,
+          "diamond_ring": 0.41,
+          "jar_of_soil": 0.21
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 13.89
+        "gold_per_respawn_minute": 13.95
       },
       {
         "site": "sv_spire",
@@ -4731,27 +4736,28 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 280.42,
-          "p10": 161,
-          "p50": 285,
-          "p90": 408
+          "mean": 346.64,
+          "p10": 219,
+          "p50": 338,
+          "p90": 476
         },
-        "items_per_haul": 6.87,
+        "items_per_haul": 8.5,
         "per_haul_mean": {
-          "electronics": 3.64,
-          "alloy_plate": 1.24,
-          "gold_bar": 0.54,
-          "diamond_ring": 0.6,
-          "seed_packet": 0.61,
-          "jar_of_soil": 0.25
+          "seed_packet": 0.65,
+          "alloy_plate": 1.64,
+          "diamond_ring": 0.72,
+          "electronics": 4.46,
+          "gold_bar": 0.72,
+          "jar_of_soil": 0.33
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 18.69,
+        "gold_per_respawn_minute": 23.11,
         "first_haul": {
           "summit_chart": 1,
           "gold_bar": 2,
-          "seed_packet": 2,
-          "alloy_plate": 4
+          "jar_of_soil": 2,
+          "alloy_plate": 3,
+          "electronics": 3
         }
       },
       {
@@ -4767,22 +4773,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 422.11,
-          "p10": 286,
-          "p50": 416,
-          "p90": 585
+          "mean": 416.88,
+          "p10": 278,
+          "p50": 423,
+          "p90": 558
         },
-        "items_per_haul": 10.15,
+        "items_per_haul": 10.14,
         "per_haul_mean": {
-          "gold_bar": 0.9,
-          "electronics": 5.3,
-          "alloy_plate": 1.87,
-          "jar_of_soil": 0.4,
-          "diamond_ring": 0.82,
-          "seed_packet": 0.87
+          "alloy_plate": 1.94,
+          "gold_bar": 0.84,
+          "seed_packet": 0.85,
+          "electronics": 5.27,
+          "diamond_ring": 0.87,
+          "jar_of_soil": 0.38
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 28.14
+        "gold_per_respawn_minute": 27.79
       },
       {
         "site": "sv_spire",
@@ -4797,22 +4803,22 @@
         "hits": 0,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 219.1,
-          "p10": 100,
-          "p50": 217,
-          "p90": 330
+          "mean": 139.58,
+          "p10": 54,
+          "p50": 140,
+          "p90": 240
         },
-        "items_per_haul": 4.99,
+        "items_per_haul": 3.55,
         "per_haul_mean": {
-          "alloy_plate": 0.86,
-          "electronics": 2.55,
-          "gold_bar": 0.48,
-          "diamond_ring": 0.46,
-          "seed_packet": 0.48,
-          "jar_of_soil": 0.18
+          "diamond_ring": 0.32,
+          "electronics": 2.02,
+          "seed_packet": 0.28,
+          "alloy_plate": 0.54,
+          "jar_of_soil": 0.17,
+          "gold_bar": 0.23
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 14.61
+        "gold_per_respawn_minute": 9.31
       },
       {
         "site": "sv_spire",
@@ -4827,22 +4833,22 @@
         "hits": 1,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 285.15,
-          "p10": 172,
-          "p50": 287,
-          "p90": 390
+          "mean": 281.81,
+          "p10": 163,
+          "p50": 284,
+          "p90": 400
         },
-        "items_per_haul": 6.76,
+        "items_per_haul": 6.56,
         "per_haul_mean": {
-          "alloy_plate": 1.3,
-          "seed_packet": 0.59,
-          "diamond_ring": 0.55,
-          "electronics": 3.45,
-          "gold_bar": 0.62,
-          "jar_of_soil": 0.26
+          "jar_of_soil": 0.28,
+          "diamond_ring": 0.6,
+          "alloy_plate": 1.27,
+          "electronics": 3.24,
+          "gold_bar": 0.52,
+          "seed_packet": 0.65
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 19.01
+        "gold_per_respawn_minute": 18.79
       },
       {
         "site": "sv_spire",
@@ -4857,28 +4863,28 @@
         "hits": 2,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 336.01,
-          "p10": 196,
-          "p50": 336,
-          "p90": 490
+          "mean": 422.51,
+          "p10": 275,
+          "p50": 420,
+          "p90": 566
         },
-        "items_per_haul": 8.54,
+        "items_per_haul": 10.02,
         "per_haul_mean": {
-          "jar_of_soil": 0.33,
-          "diamond_ring": 0.78,
-          "seed_packet": 0.63,
-          "electronics": 4.45,
-          "alloy_plate": 1.78,
-          "gold_bar": 0.57
+          "electronics": 5.09,
+          "gold_bar": 0.86,
+          "diamond_ring": 0.8,
+          "seed_packet": 0.85,
+          "alloy_plate": 1.93,
+          "jar_of_soil": 0.5
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 22.4,
+        "gold_per_respawn_minute": 28.17,
         "first_haul": {
           "summit_chart": 1,
           "gold_bar": 3,
-          "alloy_plate": 1,
-          "electronics": 7,
-          "seed_packet": 1
+          "electronics": 6,
+          "diamond_ring": 1,
+          "alloy_plate": 2
         }
       },
       {
@@ -4894,22 +4900,22 @@
         "hits": 3,
         "hauls": 200,
         "gold_per_haul": {
-          "mean": 504.27,
-          "p10": 323,
-          "p50": 508,
-          "p90": 660
+          "mean": 506.39,
+          "p10": 356,
+          "p50": 497,
+          "p90": 657
         },
-        "items_per_haul": 11.71,
+        "items_per_haul": 11.65,
         "per_haul_mean": {
-          "alloy_plate": 2.15,
-          "jar_of_soil": 0.45,
-          "electronics": 5.99,
-          "seed_packet": 0.98,
-          "diamond_ring": 1.04,
-          "gold_bar": 1.11
+          "gold_bar": 1.03,
+          "seed_packet": 0.91,
+          "alloy_plate": 2.25,
+          "electronics": 5.82,
+          "diamond_ring": 1.08,
+          "jar_of_soil": 0.56
         },
         "hauls_with_overflow": 0,
-        "gold_per_respawn_minute": 33.62
+        "gold_per_respawn_minute": 33.76
       }
     ],
     "winch_windows": [
@@ -5185,5 +5191,5 @@
       }
     ]
   },
-  "result_hash": "f44963b5"
+  "result_hash": "b6f670b1"
 }

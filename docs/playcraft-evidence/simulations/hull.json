@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-05T13:03:31.675Z",
-  "commit": "15a16d9f1d2f3ba17b9e3b11512f942ed623a172",
-  "branch": "playcraft/evidence",
-  "dirty_src": false,
+  "generated_at": "2026-11-05T13:48:43.626Z",
+  "commit": "bed002d27954de854ff63a1a3a19380feb4d729d",
+  "branch": "balance/winch-payouts",
+  "dirty_src": true,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
   "seed": 20261105,
