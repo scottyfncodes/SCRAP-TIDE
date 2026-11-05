@@ -713,7 +713,7 @@ export class Game implements GameAPI {
     u.uAmbient.value.setRGB(amb * 0.9, amb * 0.97, amb);
     oceanState.storm = a.storm;
     if (this.ship.lamp) this.ship.lamp.intensity = a.night * 3 + a.storm * 1.2;
-    updateHeroLight(a.sunColor, a.sunIntensity, a.night);
+    updateHeroLight(a.sunColor, a.sunIntensity, a.night, a.sunDir, this.camera);
   }
 
   /** Dusk, night and storms flatten the boat into the dark sea (the sun is low or gone, and the ocean shader lights

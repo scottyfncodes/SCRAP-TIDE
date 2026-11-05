@@ -8,6 +8,8 @@ import { weather } from './materials';
 
 /** Rim colour, driven by the atmosphere each frame (strongest when the sun is low). */
 export const heroRim = { value: new THREE.Color(0, 0, 0) };
+/** The sun's direction in view space, so the rim only lights edges on the sunward side. */
+export const heroSunView = { value: new THREE.Vector3(0, 1, 0) };
 const outlineColor = { value: new THREE.Color('#0e2233') };
 
 const heroCache = new WeakMap<THREE.Material, THREE.Material>();
@@ -23,13 +25,18 @@ function heroMaterial(src: THREE.Material): THREE.Material {
   c.onBeforeCompile = (shader, r) => {
     if (src.userData.weather) inner.call(c, shader, r);
     shader.uniforms.uRim = heroRim;
+    shader.uniforms.uRimSun = heroSunView;
     shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', '#include <common>\nuniform vec3 uRim;')
+      .replace('#include <common>', '#include <common>\nuniform vec3 uRim;\nuniform vec3 uRimSun;')
       .replace(
         '#include <opaque_fragment>',
         `{
-          float fr = 1.0 - clamp(dot(normalize(normal), normalize(vViewPosition)), 0.0, 1.0);
-          outgoingLight += uRim * pow(fr, 2.6);
+          // a thin silhouette line on the sunward edges only: a broad, all-round fresnel read as a glossy grey sheen
+          // (like a reflection) over the crew and hull, worst on their shadow sides at dawn and dusk
+          vec3 rn = normalize(normal);
+          float fr = 1.0 - clamp(dot(rn, normalize(vViewPosition)), 0.0, 1.0);
+          float sunward = smoothstep(-0.1, 0.6, dot(rn, uRimSun));
+          outgoingLight += uRim * smoothstep(0.62, 0.95, fr) * sunward;
         }
         #include <opaque_fragment>`
       );
@@ -145,9 +152,10 @@ export function heroize(root: THREE.Object3D, width = 0.03) {
 }
 
 /** Follow the atmosphere: a warm rim from the sun, strongest at dusk and dawn; a faint cool one at night. */
-export function updateHeroLight(sunColor: THREE.Color, sunIntensity: number, night: number) {
+export function updateHeroLight(sunColor: THREE.Color, sunIntensity: number, night: number, sunDir?: THREE.Vector3, camera?: THREE.Camera) {
   const low = THREE.MathUtils.clamp((2.2 - sunIntensity) / 1.6, 0, 1);
-  heroRim.value.copy(sunColor).multiplyScalar(0.18 + 0.32 * low * (1 - night));
+  heroRim.value.copy(sunColor).multiplyScalar(0.1 + 0.25 * low * (1 - night));
+  if (sunDir && camera) heroSunView.value.copy(sunDir).transformDirection(camera.matrixWorldInverse);
   heroRim.value.lerp(new THREE.Color(0.25, 0.32, 0.45), night * 0.6);
   outlineColor.value.set('#0e2233').multiplyScalar(1 - night * 0.5);
 }
