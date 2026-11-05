@@ -82,9 +82,10 @@ function diff(a, b) {
 }
 
 // ── 1. salvage yield per site (real Salvage.finish) ────────────────────────────────────────────────────────
-export function salvageYield({ n = 150, hold = 'minimal' } = {}) {
+export function salvageYield({ n = 150, hold = 'minimal', only = null } = {}) {
   const rows = [];
   for (const site of SALVAGE_SITES) {
+    if (only && !only.includes(site.id)) continue;
     const vessel = hold === 'large' ? 'ironwake' : REGION_VESSEL[site.region];
     const upgrades = [...(site.heavy ? ['salvage_crane'] : []), ...(hold === 'large' ? ['cargo_crate', 'cargo_net'] : [])];
     for (const salvager of [false, true]) {
@@ -97,6 +98,8 @@ export function salvageYield({ n = 150, hold = 'minimal' } = {}) {
         const gold = [], counts = {}, items = [];
         let overflowHauls = 0;
         for (let i = 0; i < n; i++) {
+          // each haul queues delayed effects (cheers, voice lines) on the virtual clock: let them fire now and then
+          if (i % 50 === 49) sim.advance(10000);
           const d = setState({ vessel, upgrades, crew: salvager ? ['bram'] : [] });
           d.firstHauls = [site.id];
           const before = inventory();

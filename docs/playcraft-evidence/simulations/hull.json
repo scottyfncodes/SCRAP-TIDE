@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-05T13:48:43.626Z",
-  "commit": "bed002d27954de854ff63a1a3a19380feb4d729d",
+  "generated_at": "2026-11-05T14:22:21.417Z",
+  "commit": "18cd5746765d11accb19ad918ca53831090d600e",
   "branch": "balance/winch-payouts",
-  "dirty_src": true,
+  "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
   "server": "vite dev server (src/)",
   "seed": 20261105,

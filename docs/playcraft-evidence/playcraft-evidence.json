@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T14:01:47.893Z",
-  "commit": "34973b1766f0a15e6fb297bbf95ffa571655fb00",
+  "generated_at": "2026-11-05T14:34:30.427Z",
+  "commit": "18cd5746765d11accb19ad918ca53831090d600e",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {
@@ -8,7 +8,7 @@
       "category": "core_gameplay",
       "status": "pass",
       "title": "Playtest bot: the core loop runs end to end on the production build (runtime-observed)",
-      "detail": "3 run(s), seed 1105: dock → wheel → beacon → winch (3/3) → haul → dock → sell → install sail_canvas by game 56.7s; 15/15 checks passed",
+      "detail": "3 run(s), seed 1105: dock → wheel → beacon → winch (3/3) → haul → dock → sell → install sail_canvas by game 61.57s; 15/15 checks passed",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -16,7 +16,7 @@
       "category": "controls",
       "status": "pass",
       "title": "Playtest bot: steering by dragging the wheel and the winch timing reach their targets (runtime-observed)",
-      "detail": "steered from the dock to the Sunken Tower beacon with the wheel: game 32.83s, at (64.9, 135.5); SALVAGE opens the winch: ; the winch was played to the end and the haul came aboard: 3/3 pulls in the green; cargo transistor_radio×1, scrap_metal×7, wire×2; sailed back to the Driftholm pier: game 56.4s",
+      "detail": "steered from the dock to the Sunken Tower beacon with the wheel: game 32.83s, at (64.9, 135.5); SALVAGE opens the winch: ; the winch was played to the end and the haul came aboard: 3/3 pulls in the green; cargo transistor_radio×1, scrap_metal×6, wire×4; sailed back to the Driftholm pier: game 58.2s",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -24,15 +24,15 @@
       "category": "technical",
       "status": "pass",
       "title": "Playtest bot: save → reload → load keeps the upgrade; no page errors (runtime-observed)",
-      "detail": "the save in localStorage has the upgrade: saved upgrades: sail_canvas; after a reload the save loads with the upgrade installed: title button \"Continue Voyage\"; upgrades sail_canvas; gold 33; after a reload the boat is still rebuilt with it: sail 3.1 m after reload (3.12 m after install, 2.4 m stock); no page errors: ",
+      "detail": "the save in localStorage has the upgrade: saved upgrades: sail_canvas; after a reload the save loads with the upgrade installed: title button \"Continue Voyage\"; upgrades sail_canvas; gold 39; after a reload the boat is still rebuilt with it: sail 3.1 m after reload (3.16 m after install, 2.4 m stock); no page errors: ",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
       "id": "tb.technical.3",
       "category": "technical",
-      "status": "fail",
+      "status": "pass",
       "title": "Playtest bot: deterministic and reproducible (same seed → identical run fingerprint)",
-      "detail": "3 runs, fingerprints 5dc21e2b, 9920317a, 5dc21e2b",
+      "detail": "3 runs, fingerprints 1f45f05a, 1f45f05a, 1f45f05a",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -40,7 +40,7 @@
       "category": "presentation",
       "status": "pass",
       "title": "Playtest bot: the installed upgrade is visible on the boat and survives a reload (runtime-observed)",
-      "detail": "sail 2.4 m → 3.12 m tall (top 2.97 → 3.97); parts none; sail 3.1 m after reload (3.12 m after install, 2.4 m stock)",
+      "detail": "sail 2.4 m → 3.16 m tall (top 2.97 → 3.72); parts none; sail 3.1 m after reload (3.16 m after install, 2.4 m stock)",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     },
     {
@@ -48,7 +48,7 @@
       "category": "progression",
       "status": "pass",
       "title": "Simulation: every upgrade and vessel is reachable; the campaign completes (simulation-measured)",
-      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 201 sourcing actions (37 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
+      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 221 sourcing actions (38 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -72,7 +72,7 @@
       "category": "difficulty",
       "status": "partial",
       "title": "Simulation: pacing between purchases (difficulty spikes)",
-      "detail": "commission Ironwake Expedition Cat: 58 actions vs ≤19 before",
+      "detail": "commission Scrap Trimaran: 19 actions vs ≤7 before",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -96,15 +96,15 @@
       "category": "player_experience",
       "status": "pass",
       "title": "Playtest bot: time from casting off to the first upgrade (game time)",
-      "detail": "first salvage beacon at game 32.83s, docked again at 56.7s, first upgrade at 56.7s (bot drives straight; humans will be slower)",
+      "detail": "first salvage beacon at game 32.83s, docked again at 59.53s, first upgrade at 61.57s (bot drives straight; humans will be slower)",
       "source": "docs/playcraft-evidence/playtest/playtest_bot.json"
     }
   ],
   "findings": [
     {
       "severity": "medium",
-      "title": "Difficulty/pacing spike: commission Ironwake Expedition Cat",
-      "detail": "58 sourcing actions for this step vs at most 19 for any earlier step (campaign, winch 2/3).",
+      "title": "Difficulty/pacing spike: commission Scrap Trimaran",
+      "detail": "19 sourcing actions for this step vs at most 7 for any earlier step (campaign, winch 2/3).",
       "evidence_class": "simulation-measured"
     },
     {

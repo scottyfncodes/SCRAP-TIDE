@@ -11,17 +11,17 @@
         30.5
       ],
       "after": [
-        7.6,
+        7.8,
         15.2,
-        22.7,
-        30.9
+        23.0,
+        30.8
       ],
       "gain_per_hit_pct": [
-        100,
-        49,
-        36
+        97,
+        51,
+        34
       ],
-      "perfect_change_pct": 1.5
+      "perfect_change_pct": 1.1
     },
     {
       "site": "sv_stump",
@@ -34,17 +34,17 @@
         38.6
       ],
       "after": [
-        15.0,
-        22.6,
-        31.1,
-        37.5
+        15.4,
+        23.1,
+        30.9,
+        38
       ],
       "gain_per_hit_pct": [
-        50,
-        38,
-        21
+        51,
+        34,
+        23
       ],
-      "perfect_change_pct": -2.8
+      "perfect_change_pct": -1.6
     },
     {
       "site": "sv_boxyard",
@@ -57,17 +57,17 @@
         47.6
       ],
       "after": [
-        12.5,
-        26.1,
-        37.8,
-        46.9
+        11.6,
+        24.2,
+        36.3,
+        47.7
       ],
       "gain_per_hit_pct": [
         109,
-        45,
-        24
+        50,
+        32
       ],
-      "perfect_change_pct": -1.6
+      "perfect_change_pct": 0.2
     },
     {
       "site": "sv_boxyard",
@@ -80,17 +80,17 @@
         61.9
       ],
       "after": [
-        26.7,
-        35.7,
-        47.6,
-        60.3
+        23.6,
+        35.5,
+        50.1,
+        57.9
       ],
       "gain_per_hit_pct": [
-        34,
-        33,
-        27
+        50,
+        41,
+        16
       ],
-      "perfect_change_pct": -2.5
+      "perfect_change_pct": -6.4
     },
     {
       "site": "sv_hollow_sub",
@@ -103,17 +103,17 @@
         56.0
       ],
       "after": [
-        13.2,
-        25.2,
-        39.9,
-        56.9
+        14.0,
+        28.4,
+        42.5,
+        56.5
       ],
       "gain_per_hit_pct": [
-        91,
-        58,
-        43
+        102,
+        50,
+        33
       ],
-      "perfect_change_pct": 1.6
+      "perfect_change_pct": 1.0
     },
     {
       "site": "sv_hollow_sub",
@@ -126,17 +126,17 @@
         69.5
       ],
       "after": [
-        27.6,
-        43.9,
-        55.0,
-        70.2
+        27.2,
+        42.1,
+        55.1,
+        69.7
       ],
       "gain_per_hit_pct": [
-        59,
-        25,
-        28
+        55,
+        31,
+        26
       ],
-      "perfect_change_pct": 0.9
+      "perfect_change_pct": 0.3
     },
     {
       "site": "sv_meridian_a",
@@ -149,17 +149,17 @@
         101.4
       ],
       "after": [
-        20.2,
-        38.4,
-        80.6,
-        102.0
+        20.6,
+        41.1,
+        80.2,
+        100.8
       ],
       "gain_per_hit_pct": [
-        90,
-        110,
-        27
+        99,
+        95,
+        26
       ],
-      "perfect_change_pct": 0.6
+      "perfect_change_pct": -0.6
     },
     {
       "site": "sv_meridian_a",
@@ -172,17 +172,17 @@
         118.3
       ],
       "after": [
-        42.9,
-        62.9,
-        99.6,
-        119.4
+        39.6,
+        61.9,
+        99.0,
+        121.3
       ],
       "gain_per_hit_pct": [
-        47,
-        58,
-        20
+        56,
+        60,
+        23
       ],
-      "perfect_change_pct": 0.9
+      "perfect_change_pct": 2.5
     },
     {
       "site": "sv_meridian_b",
@@ -195,17 +195,17 @@
         146.8
       ],
       "after": [
-        32.3,
-        61.5,
-        114.6,
-        151.6
+        30.2,
+        58.8,
+        118.7,
+        149.3
       ],
       "gain_per_hit_pct": [
-        91,
-        86,
-        32
+        95,
+        102,
+        26
       ],
-      "perfect_change_pct": 3.2
+      "perfect_change_pct": 1.7
     },
     {
       "site": "sv_meridian_b",
@@ -218,17 +218,17 @@
         182.2
       ],
       "after": [
-        61.0,
-        88.5,
-        152.6,
-        178.1
+        59.0,
+        87.0,
+        143.3,
+        181.3
       ],
       "gain_per_hit_pct": [
-        45,
-        72,
-        17
+        48,
+        65,
+        27
       ],
-      "perfect_change_pct": -2.2
+      "perfect_change_pct": -0.5
     },
     {
       "site": "sv_meridian_c",
@@ -241,17 +241,17 @@
         86.8
       ],
       "after": [
-        24.6,
-        41.7,
-        68.4,
-        81.2
+        21.4,
+        42.6,
+        64.2,
+        83.4
       ],
       "gain_per_hit_pct": [
-        70,
-        64,
-        19
+        99,
+        51,
+        30
       ],
-      "perfect_change_pct": -6.4
+      "perfect_change_pct": -3.8
     },
     {
       "site": "sv_meridian_c",
@@ -264,17 +264,17 @@
         108.6
       ],
       "after": [
-        43.0,
-        62.8,
-        84.5,
-        106.3
+        39.7,
+        63.3,
+        85.3,
+        107.0
       ],
       "gain_per_hit_pct": [
-        46,
+        59,
         35,
-        26
+        25
       ],
-      "perfect_change_pct": -2.1
+      "perfect_change_pct": -1.5
     },
     {
       "site": "sv_rig",
@@ -288,16 +288,16 @@
       ],
       "after": [
         14.3,
-        28.1,
-        43.0,
-        56.6
+        28.3,
+        42.1,
+        56.1
       ],
       "gain_per_hit_pct": [
         97,
-        53,
-        31
+        49,
+        33
       ],
-      "perfect_change_pct": 1.6
+      "perfect_change_pct": 0.9
     },
     {
       "site": "sv_rig",
@@ -310,17 +310,17 @@
         70.2
       ],
       "after": [
-        27.9,
-        41.9,
-        55.5,
-        70.8
+        28.1,
+        42.5,
+        57.0,
+        70.0
       ],
       "gain_per_hit_pct": [
-        50,
-        32,
-        28
+        51,
+        34,
+        23
       ],
-      "perfect_change_pct": 0.9
+      "perfect_change_pct": -0.2
     },
     {
       "site": "sv_tanker",
@@ -333,17 +333,17 @@
         227.9
       ],
       "after": [
-        37.0,
-        112.5,
-        177.0,
-        232.2
+        36.0,
+        109.0,
+        179.9,
+        218.1
       ],
       "gain_per_hit_pct": [
-        204,
-        57,
-        31
+        203,
+        65,
+        21
       ],
-      "perfect_change_pct": 1.9
+      "perfect_change_pct": -4.3
     },
     {
       "site": "sv_tanker",
@@ -356,17 +356,17 @@
         266.3
       ],
       "after": [
-        69.4,
-        141.9,
-        227.5,
-        250.8
+        70.2,
+        145.1,
+        221.3,
+        253.6
       ],
       "gain_per_hit_pct": [
-        104,
-        60,
-        10
+        107,
+        53,
+        15
       ],
-      "perfect_change_pct": -5.8
+      "perfect_change_pct": -4.8
     },
     {
       "site": "sv_graveyard",
@@ -379,17 +379,17 @@
         84.8
       ],
       "after": [
-        18.6,
-        32.9,
-        64.4,
-        82.8
+        17.1,
+        33.3,
+        65.2,
+        81.3
       ],
       "gain_per_hit_pct": [
-        77,
+        95,
         96,
-        29
+        25
       ],
-      "perfect_change_pct": -2.3
+      "perfect_change_pct": -4.2
     },
     {
       "site": "sv_graveyard",
@@ -402,17 +402,17 @@
         96.5
       ],
       "after": [
-        31.8,
-        48.7,
-        82.5,
-        96.5
+        32.9,
+        50.7,
+        83.0,
+        100.5
       ],
       "gain_per_hit_pct": [
-        53,
-        69,
-        17
+        54,
+        64,
+        21
       ],
-      "perfect_change_pct": -0.1
+      "perfect_change_pct": 4.1
     },
     {
       "site": "sv_spire",
@@ -425,17 +425,17 @@
         422.1
       ],
       "after": [
-        74.5,
-        209.2,
-        346.6,
-        416.9
+        72.2,
+        213.8,
+        350.8,
+        416.3
       ],
       "gain_per_hit_pct": [
-        181,
-        66,
-        20
+        196,
+        64,
+        19
       ],
-      "perfect_change_pct": -1.2
+      "perfect_change_pct": -1.4
     },
     {
       "site": "sv_spire",
@@ -448,21 +448,21 @@
         504.3
       ],
       "after": [
-        139.6,
-        281.8,
-        422.5,
-        506.4
+        141.4,
+        283.4,
+        425.5,
+        493.3
       ],
       "gain_per_hit_pct": [
-        102,
+        100,
         50,
-        20
+        16
       ],
-      "perfect_change_pct": 0.4
+      "perfect_change_pct": -2.2
     }
   ],
   "checks": {
-    "min_gain_per_hit_pct": 10.3,
+    "min_gain_per_hit_pct": 14.6,
     "max_perfect_change_pct": 6.4,
     "ironwake_actions_hits_1": {
       "before": {
@@ -470,13 +470,13 @@
         "p90": 89
       },
       "after": {
-        "mean": 79.7,
-        "p90": 92
+        "mean": 78.8,
+        "p90": 89
       },
       "hauls_after": {
-        "mean": 25.2,
-        "p90": 39,
-        "max": 39
+        "mean": 23,
+        "p90": 36,
+        "max": 36
       }
     },
     "all_affordable_hits_1": true,
@@ -486,13 +486,13 @@
         "p90": 78
       },
       "after": {
-        "mean": 56.6,
-        "p90": 63
+        "mean": 62.2,
+        "p90": 71
       },
       "hauls_after": {
-        "mean": 19.7,
-        "p90": 28,
-        "max": 28
+        "mean": 18.6,
+        "p90": 31,
+        "max": 31
       }
     },
     "all_affordable_hits_2": true,
@@ -502,13 +502,13 @@
         "p90": 62
       },
       "after": {
-        "mean": 52.6,
+        "mean": 54.3,
         "p90": 66
       },
       "hauls_after": {
-        "mean": 17.7,
-        "p90": 22,
-        "max": 22
+        "mean": 17,
+        "p90": 23,
+        "max": 23
       }
     },
     "all_affordable_hits_3": true,
@@ -519,9 +519,9 @@
         257
       ],
       "total_after": [
-        237,
-        228,
-        262
+        251,
+        249,
+        281
       ],
       "ironwake_step_before": [
         55,
@@ -529,9 +529,9 @@
         64
       ],
       "ironwake_step_after": [
-        71,
-        61,
-        75
+        72,
+        55,
+        100
       ],
       "trimaran_step_before": [
         34,
@@ -539,9 +539,9 @@
         32
       ],
       "trimaran_step_after": [
-        30,
-        23,
-        30
+        26,
+        28,
+        26
       ],
       "all_19_upgrades_3_vessels": true
     },
@@ -552,9 +552,9 @@
         231
       ],
       "total_after": [
-        201,
-        224,
-        208
+        221,
+        206,
+        198
       ],
       "ironwake_step_before": [
         59,
@@ -562,9 +562,9 @@
         70
       ],
       "ironwake_step_after": [
-        58,
-        43,
-        52
+        51,
+        63,
+        47
       ],
       "trimaran_step_before": [
         34,
@@ -572,8 +572,8 @@
         25
       ],
       "trimaran_step_after": [
-        17,
         19,
+        21,
         18
       ],
       "all_19_upgrades_3_vessels": true
@@ -585,9 +585,9 @@
         188
       ],
       "total_after": [
-        242,
-        217,
-        218
+        195,
+        193,
+        179
       ],
       "ironwake_step_before": [
         52,
@@ -595,9 +595,9 @@
         53
       ],
       "ironwake_step_after": [
-        68,
-        56,
-        47
+        57,
+        57,
+        55
       ],
       "trimaran_step_before": [
         15,
@@ -605,9 +605,9 @@
         20
       ],
       "trimaran_step_after": [
+        17,
         16,
-        16,
-        19
+        11
       ],
       "all_19_upgrades_3_vessels": true
     }
