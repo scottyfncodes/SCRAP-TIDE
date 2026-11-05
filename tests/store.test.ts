@@ -35,6 +35,19 @@ describe('Store', () => {
     expect(new Store().data.quest).toBe('leave_dock');
   });
 
+  it('v3 keeps the boat’s name (trimmed to the stern plate) and old saves start unnamed', () => {
+    mem.clear();
+    const seed = new Store();
+    seed.data.shipName = 'A Name Far Too Long For Any Stern Plate';
+    seed.saveNow();
+    expect(new Store().data.shipName).toHaveLength(24);
+    mem.clear();
+    mem.set('tidebreakers.save.v1', JSON.stringify({ version: 2, gold: 40 }));
+    const old = new Store();
+    expect(old.data.shipName).toBe('');
+    expect(old.data.renown).toBe('drifter');
+  });
+
   it('calm effects default off without a reduced-motion preference, and old saves gain the setting', () => {
     expect(new Store().data.settings.calm).toBe(false);
     mem.clear();

@@ -30,6 +30,7 @@ import { RECIPE_MAP } from '../data/crafting';
 import { CREW_MAP, ROLE_INFO, type CrewRole } from '../data/crew';
 import { pickLine, type LineTrigger } from '../data/characters';
 import { RUMOUR_MAP } from '../data/rumours';
+import { RENOWN, renownTitle, refitStage } from '../data/renown';
 import { sideLead, type Lead } from './leads';
 import { GOALS } from '../data/progress';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
@@ -438,6 +439,11 @@ export class Game implements GameAPI {
     this.showcase = true;
     this.sparkle.emit(new THREE.Vector3(this.boat.x, 2, this.boat.z), 50, '#ffd25e', 4, 5, 1.4, 4, 2);
     this.ui.toast(`${u.name} installed!`, { color: '#4f9a95', life: 3 });
+    const stageNow = refitStage(s.data.upgrades.length);
+    if (stageNow.min === s.data.upgrades.length && stageNow.min > 0) {
+      setTimeout(() => this.ui.revealInfo('Her refit', `${s.data.shipName || 'She'} is ${stageNow.name}`, `${stageNow.look} Every part you fit shows on her.`, 'Looks mean'), 1200);
+    }
+    if (s.data.upgrades.length === 1 && !s.data.shipName) setTimeout(() => this.nameShip(), 700);
     if (s.data.quest === 'free' && s.data.upgrades.length === 1) {
       setTimeout(() => this.ui.revealInfo('First upgrade!', 'She looks better already', 'Every part you fit shows up on your boat. Now open your Captain’s Log (top of the screen): salvage the drowned tower, fit an engine, find a crew, and build her into something that can cross the swell.', 'Fair winds'), 900);
     }
@@ -665,7 +671,29 @@ export class Game implements GameAPI {
     return got;
   }
 
+  /** Name (or rename) the boat: painted on her stern, and people call her by it. */
+  nameShip() {
+    const s = this.store;
+    this.ui.promptShipName(s.data.shipName, (name) => {
+      s.data.shipName = name;
+      s.commit();
+      this.rebuildShip();
+      this.crewCheer(200);
+      this.ui.toast(`The ${name}. It suits her.`, { color: '#d6a62a', life: 3 });
+      if (this.ui.panelOpen) this.ui.openPanel('ship');
+    });
+  }
+
   checkMilestones() {
+    // renown: what the Drift calls you, announced once per title
+    const d = this.store.data;
+    const title = renownTitle(d);
+    if (RENOWN.findIndex((r) => r.id === title.id) > RENOWN.findIndex((r) => r.id === d.renown)) {
+      d.renown = title.id;
+      this.store.commit();
+      this.crewCheer(600);
+      this.ui.revealInfo('Renown', `They call you ${title.title}`, `${title.how} The Drift talks. Word travels from raft to raft faster than any boat.`, 'Earned');
+    }
     const done = this.store.checkMilestones();
     for (const m of done) {
       const reward = [m.reward.gold ? `${m.reward.gold} gold` : '', m.reward.cosmetic ? `${COSMETIC_MAP[m.reward.cosmetic].name} (${COSMETIC_MAP[m.reward.cosmetic].slot})` : ''].filter(Boolean).join(' + ');
@@ -2197,6 +2225,7 @@ export class Game implements GameAPI {
         this.ui.banner(REGIONS[region].name, REGIONS[region].blurb);
         setTimeout(() => this.crewBark('region', { [region]: true }, { specificOnly: true, force: true }), 3500);
         s.commit();
+        this.checkMilestones();
       }
     }
     // named places announce themselves the first time
