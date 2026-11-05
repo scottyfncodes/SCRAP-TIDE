@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T13:02:28.910Z",
-  "commit": "15a16d9f1d2f3ba17b9e3b11512f942ed623a172",
+  "generated_at": "2026-11-05T13:14:44.687Z",
+  "commit": "f55a35177d8db72fe94c4cd7cc8e6702b74b2ef8",
   "note": "PLAYCRAFT `evidence` items. Classes: runtime-observed (playtest bot) and simulation-measured (tests/sim). Not real-device.",
   "items": [
     {
@@ -48,15 +48,15 @@
       "category": "progression",
       "status": "pass",
       "title": "Simulation: every upgrade and vessel is reachable; the campaign completes (simulation-measured)",
-      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 238 sourcing actions (57 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
+      "detail": "21 targets × 10 seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: 259 sourcing actions (57 hauls) for all 19 upgrades + 3 vessels at winch 2/3",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
       "id": "tb.progression.6",
       "category": "progression",
       "status": "pass",
-      "title": "Simulation: upgrades measurably change play (sail speed, turning, range, hull, winch window)",
-      "detail": "sail speed by tier on the Skiff: stock 0.1 → Canvas Mainsail 0.1 → Cutter Rig 0.2 m/s (beam reach); 180° turn stock rudder 4.6s vs Ash-Wood Rudder 3.3s",
+      "title": "Simulation: upgrades measurably change play (sail speed, turning, range)",
+      "detail": "sail speed by tier on the Skiff: stock 6.5 → Canvas Mainsail 9.1 → Cutter Rig 11.1 m/s (beam reach); 180° turn stock rudder 2.7s vs Ash-Wood Rudder 1.9s",
       "source": "docs/playcraft-evidence/simulations/sailing_fuel.json"
     },
     {
@@ -72,7 +72,7 @@
       "category": "difficulty",
       "status": "partial",
       "title": "Simulation: pacing between purchases (difficulty spikes)",
-      "detail": "commission Scrap Trimaran: 32 actions vs ≤10 before",
+      "detail": "commission Scrap Trimaran: 34 actions vs ≤11 before",
       "source": "docs/playcraft-evidence/simulations/campaign.json"
     },
     {
@@ -104,13 +104,19 @@
     {
       "severity": "medium",
       "title": "Difficulty/pacing spike: commission Scrap Trimaran",
-      "detail": "32 sourcing actions for this step vs at most 10 for any earlier step (campaign, winch 2/3).",
+      "detail": "34 sourcing actions for this step vs at most 11 for any earlier step (campaign, winch 2/3).",
       "evidence_class": "simulation-measured"
     },
     {
       "severity": "medium",
       "title": "The Stormwall barely scratches the Ironwake",
       "detail": "Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call.",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "medium",
+      "title": "An extra winch hit sometimes pays nothing",
+      "detail": "The Sunken Tower: 1/3 → 15.6g vs 2/3 → 15.4g; The Box Yard: 1/3 → 23.7g vs 2/3 → 24.8g; Hollow Underfloors: 1/3 → 27.7g vs 2/3 → 25.8g. Loot rolls round to the same number for these hit counts, so landing the extra pull in the green earns no more on average.",
       "evidence_class": "simulation-measured"
     },
     {
@@ -141,6 +147,12 @@
       "severity": "info",
       "title": "Crafting margins are small",
       "detail": "Hull Patch Kit: +2g (20%); Alloy Plate: +2g (11%); Engine Parts: +3g (14%); Strip Wire: +1g (11%). Not worth farming.",
+      "evidence_class": "simulation-measured"
+    },
+    {
+      "severity": "info",
+      "title": "Sailing never needs tacking",
+      "detail": "Stock Skiff: 6.5 m/s on a beam reach, 5.8 downwind, 2.9 dead into the wind (45%). Every boat can sail straight upwind at under half speed; wind shapes speed, not routes.",
       "evidence_class": "simulation-measured"
     }
   ]

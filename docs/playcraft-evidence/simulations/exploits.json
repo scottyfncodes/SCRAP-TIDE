@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T12:52:05.729Z",
-  "commit": "e0502fc7da739ed8f81f99a3ba0a67fcd23dba16",
+  "generated_at": "2026-11-05T13:03:31.675Z",
+  "commit": "15a16d9f1d2f3ba17b9e3b11512f942ed623a172",
   "branch": "playcraft/evidence",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",

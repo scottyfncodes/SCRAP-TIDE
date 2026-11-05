@@ -1,6 +1,6 @@
 # TIDEBREAKERS · PLAYCRAFT evidence pack
 
-Generated 2026-11-05T13:02:28.910Z from commit `e0502fc` (simulations) / `a2ce49e` (playtest bot). Game source unchanged by this pack.
+Generated 2026-11-05T13:14:44.687Z from commit `15a16d9` (simulations) / `a2ce49e` (playtest bot). Game source unchanged by this pack.
 
 **Where this was measured:** headless Chromium with software WebGL (SwiftShader) in a Linux container. Nothing here was observed on a real phone.
 
@@ -93,39 +93,39 @@ From the state a player could first buy it in (prerequisites only, 15 gold), 10 
 | Target | Cost | Hauls (winch 1/3) | Hauls (2/3) | Hauls (3/3) | All actions (2/3) mean / p90 | Respawn wait (2/3) | Affordable |
 |---|---|---|---|---|---|---|---|
 | Canvas Mainsail | 60g | 1.7 | 1.7 (p90 2) | 1.4 | 1.7 / 2 | 0 min | 10/10 |
-| Cutter Rig + Jib | 150g +3 canvas +2 rope | 3.5 | 3.6 (p90 5) | 2.5 | 7.5 / 10 | 4.9 min | 10/10 |
+| Cutter Rig + Jib | 150g +3 canvas +2 rope | 3.6 | 3.3 (p90 5) | 2.8 | 6.7 / 9 | 3.8 min | 10/10 |
 | Salvaged Outboard | 90g +4 scrap_metal +2 wire | 2.9 | 2.9 (p90 3) | 2.5 | 2.9 / 3 | 0 min | 10/10 |
-| Twin Diesel Drive | 380g +3 engine_parts +6 scrap_metal +3 wire | 6.8 | 7.9 (p90 10) | 5.3 | 18.7 / 45 | 3.7 min | 10/10 |
-| Copper-Banded Hull | 130g +4 driftwood | 2.6 | 2.7 (p90 3) | 2.2 | 7 / 14 | 6 min | 10/10 |
-| Riveted Armour Plating | 260g +4 alloy_plate +6 iron_nails | 8.1 | 7.3 (p90 10) | 5.3 | 19.8 / 22 | 19.5 min | 10/10 |
-| Lashed Cargo Crate | 40g +3 driftwood | 0.8 | 0.8 (p90 2) | 0.6 | 4.4 / 7 | 4.4 min | 10/10 |
-| Rope Cargo Nets | 85g +3 rope | 1.9 | 1.5 (p90 2) | 1.1 | 6.5 / 9 | 7.2 min | 10/10 |
-| Fuel Drum Rack | 70g +2 scrap_metal +2 rope | 1.7 | 1.5 (p90 2) | 1.2 | 5.1 / 8 | 4 min | 10/10 |
-| Ash-Wood Rudder | 45g +2 driftwood | 1 | 1.5 (p90 2) | 0.8 | 3.4 / 5 | 0.4 min | 10/10 |
+| Twin Diesel Drive | 380g +3 engine_parts +6 scrap_metal +3 wire | 6.8 | 7.6 (p90 10) | 5.3 | 18.1 / 45 | 3.5 min | 10/10 |
+| Copper-Banded Hull | 130g +4 driftwood | 2.6 | 2.4 (p90 3) | 2.2 | 7 / 11 | 5.6 min | 10/10 |
+| Riveted Armour Plating | 260g +4 alloy_plate +6 iron_nails | 8.3 | 8.1 (p90 10) | 5.3 | 19.3 / 22 | 19.3 min | 10/10 |
+| Lashed Cargo Crate | 40g +3 driftwood | 0.6 | 0.8 (p90 1) | 0.9 | 3.8 / 6 | 2.8 min | 10/10 |
+| Rope Cargo Nets | 85g +3 rope | 1.2 | 1.4 (p90 2) | 1 | 6.1 / 10 | 7.2 min | 10/10 |
+| Fuel Drum Rack | 70g +2 scrap_metal +2 rope | 1.5 | 1.6 (p90 2) | 1 | 4.8 / 6 | 3.6 min | 10/10 |
+| Ash-Wood Rudder | 45g +2 driftwood | 1.7 | 1.5 (p90 2) | 0.9 | 4.1 / 8 | 1.6 min | 10/10 |
 | Brass Compass | 90g | 2.3 | 2.3 (p90 3) | 1.6 | 2.3 / 3 | 0 min | 10/10 |
 | Salvage Radar | 240g +4 electronics +3 wire +2 scrap_metal | 5.1 | 5.3 (p90 8) | 3.9 | 7.6 / 13 | 0.9 min | 10/10 |
-| Salvage Crane & Winch | 160g +6 scrap_metal +3 rope +2 wire | 4.4 | 4.2 (p90 5) | 2.8 | 8.5 / 11 | 6.0 min | 10/10 |
-| Harpoon Turret | 220g +5 scrap_metal +1 engine_parts +4 rope | 4 | 3.5 (p90 4) | 2.6 | 11.6 / 21 | 0 min | 10/10 |
-| Solar Array | 120g +3 electronics +2 wire +3 plastic | 8.7 | 8.2 (p90 21) | 5.3 | 8.8 / 21 | 18.6 min | 10/10 |
-| Deck Wind Turbine | 180g +1 engine_parts +3 wire +2 plastic | 7.3 | 7.4 (p90 9) | 3.8 | 7.9 / 10 | 14.3 min | 10/10 |
-| Container Cabin | 200g +6 scrap_metal +4 driftwood +2 plastic | 5.5 | 6.2 (p90 8) | 3.8 | 12.3 / 17 | 11.0 min | 10/10 |
+| Salvage Crane & Winch | 160g +6 scrap_metal +3 rope +2 wire | 4.1 | 4.2 (p90 6) | 2.5 | 8.7 / 14 | 7.4 min | 10/10 |
+| Harpoon Turret | 220g +5 scrap_metal +1 engine_parts +4 rope | 4.1 | 3.4 (p90 4) | 2.6 | 10.4 / 15 | 0 min | 10/10 |
+| Solar Array | 120g +3 electronics +2 wire +3 plastic | 10.6 | 9 (p90 21) | 5.3 | 9.9 / 21 | 21.7 min | 10/10 |
+| Deck Wind Turbine | 180g +1 engine_parts +3 wire +2 plastic | 6.5 | 6.7 (p90 9) | 3.7 | 7.1 / 9 | 11.0 min | 10/10 |
+| Container Cabin | 200g +6 scrap_metal +4 driftwood +2 plastic | 5.2 | 5.1 (p90 8) | 3.7 | 11 / 14 | 8.6 min | 10/10 |
 | String Lights & Spotlight | 50g +2 wire +1 electronics | 2.8 | 2.8 (p90 3) | 2.6 | 2.8 / 3 | 0 min | 10/10 |
-| Trolling Rods | 60g +2 rope +2 driftwood | 1.1 | 1.3 (p90 2) | 0.8 | 6 / 8 | 3.2 min | 10/10 |
-| Scrap Trimaran | 420g +8 driftwood +6 scrap_metal +3 canvas +4 iron_nails | 11.3 | 12 (p90 15) | 8 | 21.1 / 26 | 26.6 min | 10/10 |
-| Ironwake Expedition Cat | 1400g +8 alloy_plate +4 engine_parts +6 electronics +6 canvas | 27.2 | 20.1 (p90 27) | 18.2 | 72.8 / 87 | 12.1 min | 10/10 |
+| Trolling Rods | 60g +2 rope +2 driftwood | 0.8 | 1.2 (p90 2) | 0.7 | 6.1 / 11 | 3.2 min | 10/10 |
+| Scrap Trimaran | 420g +8 driftwood +6 scrap_metal +3 canvas +4 iron_nails | 11.5 | 12.8 (p90 18) | 7.3 | 21.6 / 25 | 27.1 min | 10/10 |
+| Ironwake Expedition Cat | 1400g +8 alloy_plate +4 engine_parts +6 electronics +6 canvas | 29.3 | 21.5 (p90 31) | 17.5 | 70.3 / 78 | 14.8 min | 10/10 |
 
 ### Campaign: the whole game’s purchases in Captain’s Log order
 
 | Winch | Seed | Actions | Hauls | Caches | Flotsam | Crafted | Respawn wait | Upgrades | Vessels | Log reached |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1/3 | 1 | 277 | 59 | 101 | 117 | 18 | 1.34 h | 19/19 | 3 | g_raiders |
-| 1/3 | 2 | 281 | 52 | 114 | 115 | 23 | 1.19 h | 19/19 | 3 | g_raiders |
+| 1/3 | 1 | 257 | 53 | 94 | 110 | 22 | 1.48 h | 19/19 | 3 | g_raiders |
+| 1/3 | 2 | 245 | 55 | 82 | 108 | 23 | 1.25 h | 19/19 | 3 | g_raiders |
 | 1/3 | 3 | 257 | 54 | 89 | 114 | 21 | 1.28 h | 19/19 | 3 | g_raiders |
-| 2/3 | 1 | 238 | 57 | 67 | 114 | 22 | 1.35 h | 19/19 | 3 | g_raiders |
+| 2/3 | 1 | 259 | 57 | 95 | 107 | 19 | 1.51 h | 19/19 | 3 | g_raiders |
 | 2/3 | 2 | 269 | 56 | 94 | 119 | 20 | 1.35 h | 19/19 | 3 | g_raiders |
-| 2/3 | 3 | 267 | 58 | 88 | 121 | 22 | 1.29 h | 19/19 | 3 | g_raiders |
-| 3/3 | 1 | 193 | 30 | 60 | 103 | 20 | 0.98 h | 19/19 | 3 | g_raiders |
-| 3/3 | 2 | 196 | 32 | 62 | 102 | 19 | 0.92 h | 19/19 | 3 | g_raiders |
+| 2/3 | 3 | 231 | 46 | 80 | 105 | 20 | 1.12 h | 19/19 | 3 | g_raiders |
+| 3/3 | 1 | 186 | 35 | 47 | 104 | 22 | 0.84 h | 19/19 | 3 | g_raiders |
+| 3/3 | 2 | 202 | 39 | 61 | 102 | 22 | 0.92 h | 19/19 | 3 | g_raiders |
 | 3/3 | 3 | 188 | 32 | 42 | 114 | 21 | 1 h | 19/19 | 3 | g_raiders |
 
 Steps (winch 2/3, seed 1):
@@ -134,30 +134,30 @@ Steps (winch 2/3, seed 1):
 |---|---|---|---|---|---|---|---|
 | buy Canvas Mainsail | 2 | 2 | 0 | 0 | 0 | 43 | 2 |
 | salvage the Sunken Tower | 0 | 0 | 0 | 0 | 0 | 108 | 3 |
-| buy Salvaged Outboard | 7 | 4 | 0 | 3 | 8.0 | 134 | 10 |
-| rescue Kai (castaway) | 0 | 0 | 0 | 0 | 0 | 174 | 10 |
-| buy Lashed Cargo Crate | 3 | 0 | 0 | 3 | 4 | 141 | 13 |
-| buy Copper-Banded Hull | 5 | 0 | 0 | 5 | 8 | 38 | 18 |
-| buy Ash-Wood Rudder | 2 | 1 | 0 | 1 | 4 | 8 | 20 |
-| buy Salvage Crane & Winch | 10 | 6 | 0 | 4 | 8.0 | 16 | 30 |
-| commission Scrap Trimaran | 32 | 22 | 0 | 10 | 42.1 | 87 | 62 |
-| dock at Rig Helios | 0 | 0 | 0 | 0 | 0 | 207 | 62 |
-| salvage Old Meridian | 0 | 0 | 0 | 0 | 0 | 401 | 63 |
-| buy Harpoon Turret | 7 | 1 | 0 | 6 | 0 | 599 | 70 |
-| buy Riveted Armour Plating | 29 | 3 | 0 | 26 | 4 | 587 | 99 |
-| buy Twin Diesel Drive | 17 | 3 | 5 | 9 | 0 | 660 | 116 |
-| buy Brass Compass | 0 | 0 | 0 | 0 | 0 | 570 | 116 |
-| buy Salvage Radar | 15 | 1 | 14 | 0 | 0 | 501 | 131 |
-| drive off a Rustfang raider _(NOT SIMULATED: raider combat is real-time; the Captain’s Log waits here. Purchases are not gated by it.)_ | 0 | 0 | 0 | 0 | 0 | 501 | 131 |
-| commission Ironwake Expedition Cat | 55 | 9 | 30 | 16 | 3.1 | 53 | 186 |
-| buy Cutter Rig + Jib | 8 | 1 | 0 | 7 | 0 | 1143 | 194 |
-| buy Rope Cargo Nets | 3 | 0 | 0 | 3 | 0 | 1078 | 197 |
-| buy Fuel Drum Rack | 2 | 0 | 0 | 2 | 0 | 1012 | 199 |
-| buy Solar Array | 16 | 1 | 13 | 2 | 0 | 1321 | 215 |
-| buy Deck Wind Turbine | 8 | 1 | 3 | 4 | 0 | 1255 | 223 |
-| buy Container Cabin | 8 | 0 | 1 | 7 | 0 | 1110 | 231 |
-| buy String Lights & Spotlight | 1 | 0 | 1 | 0 | 0 | 1060 | 232 |
-| buy Trolling Rods | 6 | 0 | 0 | 6 | 0 | 1049 | 238 |
+| buy Salvaged Outboard | 11 | 5 | 0 | 6 | 12 | 158 | 14 |
+| rescue Kai (castaway) | 0 | 0 | 0 | 0 | 0 | 198 | 14 |
+| buy Lashed Cargo Crate | 5 | 0 | 0 | 5 | 8 | 188 | 19 |
+| buy Copper-Banded Hull | 3 | 0 | 0 | 3 | 4 | 66 | 22 |
+| buy Ash-Wood Rudder | 1 | 0 | 0 | 1 | 4 | 24 | 23 |
+| buy Salvage Crane & Winch | 9 | 5 | 0 | 4 | 8 | 83 | 32 |
+| commission Scrap Trimaran | 34 | 22 | 0 | 12 | 50.1 | 85 | 66 |
+| dock at Rig Helios | 0 | 0 | 0 | 0 | 0 | 205 | 66 |
+| salvage Old Meridian | 0 | 0 | 0 | 0 | 0 | 374 | 67 |
+| buy Harpoon Turret | 5 | 1 | 0 | 4 | 0 | 552 | 72 |
+| buy Riveted Armour Plating | 17 | 2 | 0 | 15 | 0 | 438 | 89 |
+| buy Twin Diesel Drive | 18 | 2 | 9 | 7 | 0 | 478 | 107 |
+| buy Brass Compass | 0 | 0 | 0 | 0 | 0 | 388 | 107 |
+| buy Salvage Radar | 26 | 1 | 25 | 0 | 0 | 665 | 133 |
+| drive off a Rustfang raider _(NOT SIMULATED: raider combat is real-time; the Captain’s Log waits here. Purchases are not gated by it.)_ | 0 | 0 | 0 | 0 | 0 | 665 | 133 |
+| commission Ironwake Expedition Cat | 59 | 7 | 36 | 16 | 1 | 71 | 192 |
+| buy Cutter Rig + Jib | 10 | 2 | 0 | 8 | 3.5 | 1163 | 202 |
+| buy Rope Cargo Nets | 8 | 0 | 0 | 8 | 0 | 1148 | 210 |
+| buy Fuel Drum Rack | 4 | 1 | 0 | 3 | 0 | 1215 | 214 |
+| buy Solar Array | 15 | 3 | 11 | 1 | 0 | 1478 | 229 |
+| buy Deck Wind Turbine | 12 | 1 | 8 | 3 | 0 | 1682 | 241 |
+| buy Container Cabin | 9 | 0 | 2 | 7 | 0 | 1536 | 250 |
+| buy String Lights & Spotlight | 5 | 1 | 4 | 0 | 0 | 1817 | 255 |
+| buy Trolling Rods | 4 | 0 | 0 | 4 | 0 | 1777 | 259 |
 
 ### Fuel and range (engine, full throttle, into the wind)
 
@@ -205,24 +205,24 @@ Half throttle: dinghy/outboard 40.6 m per fuel, dinghy/twin 46.3 m per fuel, slo
 
 | Boat | Sail | Downwind | 45° | 90° (beam) | 135° | Into the wind |
 |---|---|---|---|---|---|---|
-| dinghy | stock | 0.1 | 6.0 | 0.1 | 0.1 | 2.9 |
-| dinghy | Canvas Mainsail | 0.2 | 8.5 | 0.1 | 0.1 | 4.1 |
-| dinghy | Cutter Rig | 0.2 | 10.3 | 0.2 | 0.1 | 5.0 |
-| sloop | stock | 0.2 | 9.8 | 0.2 | 0.1 | 4.7 |
-| sloop | Canvas Mainsail | 0.3 | 13.7 | 0.2 | 0.1 | 6.6 |
-| sloop | Cutter Rig | 0.3 | 16.6 | 0.3 | 0.2 | 8.0 |
-| ironwake | stock | 0.3 | 11.6 | 0.2 | 0.1 | 5.6 |
-| ironwake | Canvas Mainsail | 0.4 | 16.3 | 0.3 | 0.2 | 7.9 |
-| ironwake | Cutter Rig | 0.5 | 19.8 | 0.3 | 0.2 | 9.6 |
+| dinghy | stock | 5.8 | 6.0 | 6.5 | 4.0 | 2.9 |
+| dinghy | Canvas Mainsail | 8.2 | 8.5 | 9.1 | 5.6 | 4.1 |
+| dinghy | Cutter Rig | 9.9 | 10.3 | 11.1 | 6.8 | 5.0 |
+| sloop | stock | 9.4 | 9.8 | 10.5 | 6.4 | 4.7 |
+| sloop | Canvas Mainsail | 13.2 | 13.7 | 14.7 | 9.0 | 6.6 |
+| sloop | Cutter Rig | 16.1 | 16.6 | 17.9 | 10.9 | 8.0 |
+| ironwake | stock | 11.3 | 11.6 | 12.5 | 7.6 | 5.6 |
+| ironwake | Canvas Mainsail | 15.8 | 16.3 | 17.5 | 10.7 | 7.9 |
+| ironwake | Cutter Rig | 19.1 | 19.8 | 21.3 | 13.0 | 9.6 |
 
 | Boat | Rudder | Seconds to turn 180° |
 |---|---|---|
-| dinghy | stock rudder | 4.6 |
-| dinghy | Ash-Wood Rudder | 3.3 |
-| sloop | stock rudder | 5.5 |
-| sloop | Ash-Wood Rudder | 3.9 |
-| ironwake | stock rudder | 6.1 |
-| ironwake | Ash-Wood Rudder | 4.3 |
+| dinghy | stock rudder | 2.7 |
+| dinghy | Ash-Wood Rudder | 1.9 |
+| sloop | stock rudder | 3.3 |
+| sloop | Ash-Wood Rudder | 2.3 |
+| ironwake | stock rudder | 3.8 |
+| ironwake | Ash-Wood Rudder | 2.5 |
 
 ### Hull: storms, the Stormwall, collisions
 
@@ -266,6 +266,8 @@ Values are hull lost per minute. Wreck strikes (Game.damage at speed × 1.4): no
 | Driftholm → Meridian Spire (Ironwake, stock sail) | 3 | yes | 1.5 | 1141 | 15.6 / 160 | 25 | 10.7 | reached_spire |
 | Driftholm → Meridian Spire (Trimaran: should be turned back by the Stormwall) | 3 | no (2/3) | 4.5 | 1407 | 100 / 100 | 211.2 | 199.0 |  |
 
+Every seed produced the same voyage: storm cells start from fixed positions and nothing on these routes is random, so the seeds confirm determinism rather than add samples.
+
 The Skiff was stopped by the open swell in 3/3 runs and the Trimaran by the Stormwall in 3/3, as designed. The Trimaran reached Rig Helios in 3/3.
 
 ### Exploit checks
@@ -288,13 +290,15 @@ The Skiff was stopped by the open swell in 3/3 runs and the Trimaran by the Stor
 
 | Severity | Finding | Evidence | Class |
 |---|---|---|---|
-| medium | Difficulty/pacing spike: commission Scrap Trimaran | 32 sourcing actions for this step vs at most 10 for any earlier step (campaign, winch 2/3). | simulation-measured |
+| medium | Difficulty/pacing spike: commission Scrap Trimaran | 34 sourcing actions for this step vs at most 11 for any earlier step (campaign, winch 2/3). | simulation-measured |
 | medium | The Stormwall barely scratches the Ironwake | Driftholm → Meridian Spire under the real loop: Ironwake arrived in 12/12 runs, 7.9 s inside the wall on average, losing 2.2-9.7% hull (stock sail to Cutter Rig, with and without armour). The Trimaran was swamped trying in 3/3 runs. For a final barrier the crossing is short and nearly free once you own the right boat; whether that is the intent is a design call. | simulation-measured |
+| medium | An extra winch hit sometimes pays nothing | The Sunken Tower: 1/3 → 15.6g vs 2/3 → 15.4g; The Box Yard: 1/3 → 23.7g vs 2/3 → 24.8g; Hollow Underfloors: 1/3 → 27.7g vs 2/3 → 25.8g. Loot rolls round to the same number for these hit counts, so landing the extra pull in the green earns no more on average. | simulation-measured |
 | low | Exploit: salvage respawn follows the device clock | Salvage.ready compares Date.now() with the saved haul time, so changing the phone’s clock skips respawn timers. Severity is a design call (single-player). | simulation-measured |
 | info | No progression dead ends found | Every one of the 21 upgrades and vessels became affordable and was bought through the game in every seed at every winch skill (hits_1, hits_2, hits_3). | simulation-measured |
 | info | Captain's Log in the campaign stops at g_raiders | Completed: g_salvage → g_engine → g_crew → g_trimaran → g_helios → g_meridian. The raider goal needs real-time combat, which the simulation does not play; nothing after it can complete here (purchases are not gated by goals). | simulation-measured |
 | info | Storm damage | A full storm (storm 1.0) costs the stock Skiff 57.6 hull/min (swamped from full in 1.0 min); the Trimaran 57.6 hull/min (1.7 min). Riveted Armour cuts it by 45.0%. Below storm 0.4 there is no damage. | simulation-measured |
 | info | Crafting margins are small | Hull Patch Kit: +2g (20%); Alloy Plate: +2g (11%); Engine Parts: +3g (14%); Strip Wire: +1g (11%). Not worth farming. | simulation-measured |
+| info | Sailing never needs tacking | Stock Skiff: 6.5 m/s on a beam reach, 5.8 downwind, 2.9 dead into the wind (45%). Every boat can sail straight upwind at under half speed; wind shapes speed, not routes. | simulation-measured |
 
 No gameplay, balance or content was changed to produce any of this. Findings are for the designer to weigh.
 
@@ -310,12 +314,32 @@ No gameplay, balance or content was changed to produce any of this. Findings are
 | technical | pass | Playtest bot: deterministic and reproducible (same seed → identical run fingerprint) |
 | presentation | pass | Playtest bot: the installed upgrade is visible on the boat and survives a reload (runtime-observed) |
 | progression | pass | Simulation: every upgrade and vessel is reachable; the campaign completes (simulation-measured) |
-| progression | pass | Simulation: upgrades measurably change play (sail speed, turning, range, hull, winch window) |
+| progression | pass | Simulation: upgrades measurably change play (sail speed, turning, range) |
 | difficulty | pass | Balance is measured: headless simulations of economy, fuel, storms and voyages on the real game systems |
 | difficulty | partial | Simulation: pacing between purchases (difficulty spikes) |
 | difficulty | partial | Simulation: the Stormwall as the final barrier |
 | difficulty | pass | Simulation: no economy exploits through crafting, fuel or repair |
 | player_experience | pass | Playtest bot: time from casting off to the first upgrade (game time) |
+
+## PLAYCRAFT before / after this evidence
+
+Before: gitcraft-out/playcraft/verify (PLAYCRAFT pass on 546d5f3, no project evidence). After: playcraft_assess with docs/playcraft-evidence/playcraft-evidence.json + the same play report. Same game, same probe: only the evidence changed.
+
+| Category | Score before | Score after | Evidence before (v/o/i/n) | Evidence after (v/o/i/n) |
+|---|---|---|---|---|
+| core_gameplay | 83 | 85 | 2/0/4/0 | 3/0/4/0 |
+| game_feel | 80 | 80 | 0/1/8/0 | 0/1/8/0 |
+| controls | 76 | 80 | 2/0/3/0 | 3/0/3/0 |
+| progression | 70 | 81 | 0/0/7/0 | 2/0/7/0 |
+| difficulty | 70 | 75 | 0/0/5/0 | 4/0/5/0 |
+| player_experience | 71 | 74 | 2/1/7/1 | 3/1/9/1 |
+| replayability | 70 | 70 | 0/0/7/0 | 0/0/7/0 |
+| technical | 92 | 92 | 3/0/2/1 | 5/0/3/1 |
+| presentation | 81 | 83 | 1/1/6/0 | 2/1/6/0 |
+| mobile | 95 | 95 | 6/0/3/1 | 6/0/3/1 |
+| **overall** | 78 (low) | 81 (medium) | strong 0.29 | strong 0.39 |
+
+v = verified, o = observed, i = inferred (source only), n = not tested. Categories with only inferred evidence are capped at 70; that cap is what lifted for progression and difficulty. Game feel, replayability and mobile got no new evidence from this pack.
 
 ## Not covered: needs a human or an iPhone
 

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T12:52:05.729Z",
-  "commit": "e0502fc7da739ed8f81f99a3ba0a67fcd23dba16",
+  "generated_at": "2026-11-05T13:03:31.675Z",
+  "commit": "15a16d9f1d2f3ba17b9e3b11512f942ed623a172",
   "branch": "playcraft/evidence",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
@@ -85,18 +85,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 3.5,
+          "mean": 3.6,
           "p90": 5,
           "max": 5
         },
         "caches": 0,
-        "flotsam": 4,
+        "flotsam": 3.9,
         "crafted": 0,
         "actions": {
           "mean": 7.5,
           "p90": 10
         },
-        "respawn_wait_min": 4.9,
+        "respawn_wait_min": 4.91,
         "failures": []
       },
       {
@@ -253,18 +253,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 8.1,
+          "mean": 8.3,
           "p90": 10,
           "max": 10
         },
         "caches": 0,
-        "flotsam": 11.5,
+        "flotsam": 10.8,
         "crafted": 4,
         "actions": {
-          "mean": 19.6,
+          "mean": 19.1,
           "p90": 26
         },
-        "respawn_wait_min": 19.71,
+        "respawn_wait_min": 19.61,
         "failures": []
       },
       {
@@ -290,18 +290,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 0.8,
-          "p90": 2,
-          "max": 2
+          "mean": 0.6,
+          "p90": 1,
+          "max": 1
         },
         "caches": 0,
-        "flotsam": 4.3,
+        "flotsam": 3.8,
         "crafted": 0,
         "actions": {
-          "mean": 5.1,
+          "mean": 4.4,
           "p90": 8
         },
-        "respawn_wait_min": 5.2,
+        "respawn_wait_min": 4.4,
         "failures": []
       },
       {
@@ -329,18 +329,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1.9,
-          "p90": 3,
-          "max": 3
+          "mean": 1.2,
+          "p90": 2,
+          "max": 2
         },
         "caches": 0,
-        "flotsam": 3.3,
+        "flotsam": 5.2,
         "crafted": 0,
         "actions": {
-          "mean": 5.2,
-          "p90": 6
+          "mean": 6.4,
+          "p90": 8
         },
-        "respawn_wait_min": 4,
+        "respawn_wait_min": 7.6,
         "failures": []
       },
       {
@@ -372,18 +372,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1.7,
+          "mean": 1.5,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 2.8,
+        "flotsam": 3.4,
         "crafted": 0,
         "actions": {
-          "mean": 4.5,
+          "mean": 4.9,
           "p90": 6
         },
-        "respawn_wait_min": 2.4,
+        "respawn_wait_min": 4,
         "failures": []
       },
       {
@@ -409,18 +409,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1,
+          "mean": 1.7,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 2.3,
+        "flotsam": 1.7,
         "crafted": 0,
         "actions": {
-          "mean": 3.3,
+          "mean": 3.4,
           "p90": 5
         },
-        "respawn_wait_min": 2,
+        "respawn_wait_min": 0.8,
         "failures": []
       },
       {
@@ -532,18 +532,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 4.4,
+          "mean": 4.1,
           "p90": 6,
           "max": 6
         },
         "caches": 0,
-        "flotsam": 5,
+        "flotsam": 4.5,
         "crafted": 0.7,
         "actions": {
-          "mean": 9.4,
-          "p90": 13
+          "mean": 8.6,
+          "p90": 11
         },
-        "respawn_wait_min": 8.71,
+        "respawn_wait_min": 6.61,
         "failures": []
       },
       {
@@ -577,16 +577,16 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 4,
-          "p90": 5,
-          "max": 5
+          "mean": 4.1,
+          "p90": 6,
+          "max": 6
         },
-        "caches": 2,
-        "flotsam": 5.2,
+        "caches": 3,
+        "flotsam": 4.5,
         "crafted": 1,
         "actions": {
-          "mean": 11.2,
-          "p90": 18
+          "mean": 11.6,
+          "p90": 22
         },
         "respawn_wait_min": 0,
         "failures": []
@@ -622,18 +622,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 8.7,
+          "mean": 10.6,
           "p90": 21,
           "max": 21
         },
         "caches": 0,
-        "flotsam": 0.9,
-        "crafted": 0.1,
+        "flotsam": 1,
+        "crafted": 0,
         "actions": {
-          "mean": 9.6,
+          "mean": 11.6,
           "p90": 21
         },
-        "respawn_wait_min": 21.31,
+        "respawn_wait_min": 25.92,
         "failures": []
       },
       {
@@ -669,18 +669,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 7.3,
-          "p90": 14,
-          "max": 14
+          "mean": 6.5,
+          "p90": 9,
+          "max": 9
         },
         "caches": 0,
         "flotsam": 0.4,
         "crafted": 2.7,
         "actions": {
-          "mean": 7.7,
-          "p90": 15
+          "mean": 6.9,
+          "p90": 9
         },
-        "respawn_wait_min": 15.11,
+        "respawn_wait_min": 11.01,
         "failures": []
       },
       {
@@ -716,18 +716,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 5.5,
-          "p90": 9,
-          "max": 9
+          "mean": 5.2,
+          "p90": 8,
+          "max": 8
         },
         "caches": 0.3,
-        "flotsam": 4.9,
+        "flotsam": 5.3,
         "crafted": 0,
         "actions": {
-          "mean": 10.7,
-          "p90": 15
+          "mean": 10.8,
+          "p90": 14
         },
-        "respawn_wait_min": 8.51,
+        "respawn_wait_min": 8.91,
         "failures": []
       },
       {
@@ -798,18 +798,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1.1,
+          "mean": 0.8,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 5.6,
+        "flotsam": 5.9,
         "crafted": 0,
         "actions": {
           "mean": 6.7,
-          "p90": 9
+          "p90": 11
         },
-        "respawn_wait_min": 4.4,
+        "respawn_wait_min": 4.8,
         "failures": []
       },
       {
@@ -847,18 +847,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 11.3,
-          "p90": 13,
-          "max": 13
+          "mean": 11.5,
+          "p90": 17,
+          "max": 17
         },
         "caches": 0,
-        "flotsam": 9.7,
+        "flotsam": 8.3,
         "crafted": 0,
         "actions": {
-          "mean": 21,
-          "p90": 25
+          "mean": 19.8,
+          "p90": 24
         },
-        "respawn_wait_min": 26.44,
+        "respawn_wait_min": 24.24,
         "failures": []
       },
       {
@@ -896,18 +896,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 27.2,
-          "p90": 42,
-          "max": 42
+          "mean": 29.3,
+          "p90": 43,
+          "max": 43
         },
-        "caches": 32.7,
-        "flotsam": 15.5,
+        "caches": 31.8,
+        "flotsam": 17.4,
         "crafted": 12.1,
         "actions": {
-          "mean": 75.4,
-          "p90": 80
+          "mean": 78.5,
+          "p90": 89
         },
-        "respawn_wait_min": 19.5,
+        "respawn_wait_min": 22.29,
         "failures": []
       }
     ],
@@ -972,18 +972,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 3.6,
+          "mean": 3.3,
           "p90": 5,
           "max": 5
         },
         "caches": 0,
-        "flotsam": 3.9,
+        "flotsam": 3.4,
         "crafted": 0,
         "actions": {
-          "mean": 7.5,
-          "p90": 10
+          "mean": 6.7,
+          "p90": 9
         },
-        "respawn_wait_min": 4.91,
+        "respawn_wait_min": 3.8,
         "failures": []
       },
       {
@@ -1060,18 +1060,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 7.9,
+          "mean": 7.6,
           "p90": 10,
           "max": 10
         },
-        "caches": 10,
-        "flotsam": 0.8,
+        "caches": 9.6,
+        "flotsam": 0.9,
         "crafted": 4,
         "actions": {
-          "mean": 18.7,
+          "mean": 18.1,
           "p90": 45
         },
-        "respawn_wait_min": 3.69,
+        "respawn_wait_min": 3.5,
         "failures": []
       },
       {
@@ -1097,18 +1097,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 2.7,
+          "mean": 2.4,
           "p90": 3,
           "max": 3
         },
         "caches": 0,
-        "flotsam": 4.3,
+        "flotsam": 4.6,
         "crafted": 0,
         "actions": {
           "mean": 7,
-          "p90": 14
+          "p90": 11
         },
-        "respawn_wait_min": 6,
+        "respawn_wait_min": 5.6,
         "failures": []
       },
       {
@@ -1140,18 +1140,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 7.3,
+          "mean": 8.1,
           "p90": 10,
           "max": 10
         },
         "caches": 0,
-        "flotsam": 12.5,
+        "flotsam": 11.2,
         "crafted": 4,
         "actions": {
-          "mean": 19.8,
+          "mean": 19.3,
           "p90": 22
         },
-        "respawn_wait_min": 19.5,
+        "respawn_wait_min": 19.31,
         "failures": []
       },
       {
@@ -1178,17 +1178,17 @@
         "bought_through_game": 10,
         "hauls": {
           "mean": 0.8,
-          "p90": 2,
-          "max": 2
+          "p90": 1,
+          "max": 1
         },
         "caches": 0,
-        "flotsam": 3.6,
+        "flotsam": 3,
         "crafted": 0,
         "actions": {
-          "mean": 4.4,
-          "p90": 7
+          "mean": 3.8,
+          "p90": 6
         },
-        "respawn_wait_min": 4.4,
+        "respawn_wait_min": 2.8,
         "failures": []
       },
       {
@@ -1216,16 +1216,16 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1.5,
+          "mean": 1.4,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 5,
+        "flotsam": 4.7,
         "crafted": 0,
         "actions": {
-          "mean": 6.5,
-          "p90": 9
+          "mean": 6.1,
+          "p90": 10
         },
         "respawn_wait_min": 7.2,
         "failures": []
@@ -1259,18 +1259,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1.5,
+          "mean": 1.6,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 3.6,
+        "flotsam": 3.2,
         "crafted": 0,
         "actions": {
-          "mean": 5.1,
-          "p90": 8
+          "mean": 4.8,
+          "p90": 6
         },
-        "respawn_wait_min": 4,
+        "respawn_wait_min": 3.6,
         "failures": []
       },
       {
@@ -1301,13 +1301,13 @@
           "max": 2
         },
         "caches": 0,
-        "flotsam": 1.9,
+        "flotsam": 2.6,
         "crafted": 0,
         "actions": {
-          "mean": 3.4,
-          "p90": 5
+          "mean": 4.1,
+          "p90": 8
         },
-        "respawn_wait_min": 0.4,
+        "respawn_wait_min": 1.6,
         "failures": []
       },
       {
@@ -1420,17 +1420,17 @@
         "bought_through_game": 10,
         "hauls": {
           "mean": 4.2,
-          "p90": 5,
-          "max": 5
+          "p90": 6,
+          "max": 6
         },
         "caches": 0,
-        "flotsam": 4.3,
+        "flotsam": 4.5,
         "crafted": 0.7,
         "actions": {
-          "mean": 8.5,
-          "p90": 11
+          "mean": 8.7,
+          "p90": 14
         },
-        "respawn_wait_min": 6.01,
+        "respawn_wait_min": 7.41,
         "failures": []
       },
       {
@@ -1464,16 +1464,16 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 3.5,
+          "mean": 3.4,
           "p90": 4,
           "max": 4
         },
-        "caches": 2,
+        "caches": 0.9,
         "flotsam": 6.1,
         "crafted": 1,
         "actions": {
-          "mean": 11.6,
-          "p90": 21
+          "mean": 10.4,
+          "p90": 15
         },
         "respawn_wait_min": 0,
         "failures": []
@@ -1509,18 +1509,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 8.2,
+          "mean": 9,
           "p90": 21,
           "max": 21
         },
         "caches": 0,
-        "flotsam": 0.6,
+        "flotsam": 0.9,
         "crafted": 0,
         "actions": {
-          "mean": 8.8,
+          "mean": 9.9,
           "p90": 21
         },
-        "respawn_wait_min": 18.61,
+        "respawn_wait_min": 21.71,
         "failures": []
       },
       {
@@ -1556,18 +1556,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 7.4,
+          "mean": 6.7,
           "p90": 9,
           "max": 9
         },
         "caches": 0,
-        "flotsam": 0.5,
+        "flotsam": 0.4,
         "crafted": 2.7,
         "actions": {
-          "mean": 7.9,
-          "p90": 10
+          "mean": 7.1,
+          "p90": 9
         },
-        "respawn_wait_min": 14.32,
+        "respawn_wait_min": 11.02,
         "failures": []
       },
       {
@@ -1603,18 +1603,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 6.2,
+          "mean": 5.1,
           "p90": 8,
           "max": 8
         },
         "caches": 0.3,
-        "flotsam": 5.8,
+        "flotsam": 5.6,
         "crafted": 0,
         "actions": {
-          "mean": 12.3,
-          "p90": 17
+          "mean": 11,
+          "p90": 14
         },
-        "respawn_wait_min": 11.01,
+        "respawn_wait_min": 8.61,
         "failures": []
       },
       {
@@ -1685,16 +1685,16 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1.3,
+          "mean": 1.2,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 4.7,
+        "flotsam": 4.9,
         "crafted": 0,
         "actions": {
-          "mean": 6,
-          "p90": 8
+          "mean": 6.1,
+          "p90": 11
         },
         "respawn_wait_min": 3.2,
         "failures": []
@@ -1734,18 +1734,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 12,
-          "p90": 15,
-          "max": 15
+          "mean": 12.8,
+          "p90": 18,
+          "max": 18
         },
         "caches": 0,
-        "flotsam": 9.1,
+        "flotsam": 8.8,
         "crafted": 0,
         "actions": {
-          "mean": 21.1,
-          "p90": 26
+          "mean": 21.6,
+          "p90": 25
         },
-        "respawn_wait_min": 26.65,
+        "respawn_wait_min": 27.15,
         "failures": []
       },
       {
@@ -1783,18 +1783,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 20.1,
-          "p90": 27,
-          "max": 27
+          "mean": 21.5,
+          "p90": 31,
+          "max": 31
         },
-        "caches": 33.1,
-        "flotsam": 19.6,
+        "caches": 29,
+        "flotsam": 19.8,
         "crafted": 12,
         "actions": {
-          "mean": 72.8,
-          "p90": 87
+          "mean": 70.3,
+          "p90": 78
         },
-        "respawn_wait_min": 12.14,
+        "respawn_wait_min": 14.75,
         "failures": []
       }
     ],
@@ -1859,16 +1859,16 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 2.5,
+          "mean": 2.8,
           "p90": 3,
           "max": 3
         },
         "caches": 0,
-        "flotsam": 2.7,
+        "flotsam": 2.4,
         "crafted": 0.2,
         "actions": {
           "mean": 5.2,
-          "p90": 6
+          "p90": 8
         },
         "respawn_wait_min": 2.5,
         "failures": []
@@ -1905,11 +1905,11 @@
           "max": 3
         },
         "caches": 0,
-        "flotsam": 0.2,
+        "flotsam": 0.1,
         "crafted": 0.5,
         "actions": {
-          "mean": 2.7,
-          "p90": 4
+          "mean": 2.6,
+          "p90": 3
         },
         "respawn_wait_min": 0,
         "failures": []
@@ -1989,13 +1989,13 @@
           "max": 3
         },
         "caches": 0,
-        "flotsam": 3.1,
+        "flotsam": 3.8,
         "crafted": 0,
         "actions": {
-          "mean": 5.3,
-          "p90": 7
+          "mean": 6,
+          "p90": 8
         },
-        "respawn_wait_min": 3.2,
+        "respawn_wait_min": 4.8,
         "failures": []
       },
       {
@@ -2028,17 +2028,17 @@
         "bought_through_game": 10,
         "hauls": {
           "mean": 5.3,
-          "p90": 7,
-          "max": 7
+          "p90": 6,
+          "max": 6
         },
         "caches": 0,
-        "flotsam": 8.5,
+        "flotsam": 7.9,
         "crafted": 4,
         "actions": {
-          "mean": 13.8,
-          "p90": 20
+          "mean": 13.2,
+          "p90": 15
         },
-        "respawn_wait_min": 13.3,
+        "respawn_wait_min": 12,
         "failures": []
       },
       {
@@ -2064,18 +2064,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 0.6,
+          "mean": 0.9,
           "p90": 1,
           "max": 1
         },
         "caches": 0,
-        "flotsam": 3.5,
+        "flotsam": 3.2,
         "crafted": 0,
         "actions": {
           "mean": 4.1,
           "p90": 6
         },
-        "respawn_wait_min": 4,
+        "respawn_wait_min": 3.2,
         "failures": []
       },
       {
@@ -2103,18 +2103,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1.1,
+          "mean": 1,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 4.1,
+        "flotsam": 5.4,
         "crafted": 0,
         "actions": {
-          "mean": 5.2,
-          "p90": 7
+          "mean": 6.4,
+          "p90": 9
         },
-        "respawn_wait_min": 5.6,
+        "respawn_wait_min": 8,
         "failures": []
       },
       {
@@ -2146,18 +2146,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 1.2,
+          "mean": 1,
           "p90": 2,
           "max": 2
         },
         "caches": 0,
-        "flotsam": 2.5,
+        "flotsam": 3.7,
         "crafted": 0,
         "actions": {
-          "mean": 3.7,
-          "p90": 6
+          "mean": 4.7,
+          "p90": 7
         },
-        "respawn_wait_min": 1.2,
+        "respawn_wait_min": 4.4,
         "failures": []
       },
       {
@@ -2183,16 +2183,16 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 0.8,
+          "mean": 0.9,
           "p90": 1,
           "max": 1
         },
         "caches": 0,
-        "flotsam": 2.4,
+        "flotsam": 2.6,
         "crafted": 0,
         "actions": {
-          "mean": 3.2,
-          "p90": 5
+          "mean": 3.5,
+          "p90": 6
         },
         "respawn_wait_min": 2,
         "failures": []
@@ -2306,18 +2306,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 2.8,
-          "p90": 4,
-          "max": 4
+          "mean": 2.5,
+          "p90": 3,
+          "max": 3
         },
         "caches": 0,
-        "flotsam": 2.9,
+        "flotsam": 3.8,
         "crafted": 0.5,
         "actions": {
-          "mean": 5.7,
-          "p90": 9
+          "mean": 6.3,
+          "p90": 10
         },
-        "respawn_wait_min": 3.2,
+        "respawn_wait_min": 5.2,
         "failures": []
       },
       {
@@ -2355,12 +2355,12 @@
           "p90": 4,
           "max": 4
         },
-        "caches": 0,
-        "flotsam": 5.7,
+        "caches": 0.3,
+        "flotsam": 6.1,
         "crafted": 1,
         "actions": {
-          "mean": 8.3,
-          "p90": 12
+          "mean": 9,
+          "p90": 14
         },
         "respawn_wait_min": 0,
         "failures": []
@@ -2443,7 +2443,7 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 3.8,
+          "mean": 3.7,
           "p90": 5,
           "max": 5
         },
@@ -2451,10 +2451,10 @@
         "flotsam": 0.1,
         "crafted": 2.1,
         "actions": {
-          "mean": 3.9,
-          "p90": 6
+          "mean": 3.8,
+          "p90": 5
         },
-        "respawn_wait_min": 2.71,
+        "respawn_wait_min": 2.61,
         "failures": []
       },
       {
@@ -2490,18 +2490,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 3.8,
+          "mean": 3.7,
           "p90": 5,
           "max": 5
         },
         "caches": 0,
-        "flotsam": 5.4,
+        "flotsam": 5.1,
         "crafted": 0,
         "actions": {
-          "mean": 9.2,
+          "mean": 8.8,
           "p90": 12
         },
-        "respawn_wait_min": 8.4,
+        "respawn_wait_min": 7.9,
         "failures": []
       },
       {
@@ -2572,18 +2572,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 0.8,
+          "mean": 0.7,
           "p90": 1,
           "max": 1
         },
         "caches": 0,
-        "flotsam": 5.2,
+        "flotsam": 6,
         "crafted": 0,
         "actions": {
-          "mean": 6,
-          "p90": 9
+          "mean": 6.7,
+          "p90": 12
         },
-        "respawn_wait_min": 4.4,
+        "respawn_wait_min": 5.2,
         "failures": []
       },
       {
@@ -2621,18 +2621,18 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 8,
-          "p90": 9,
-          "max": 9
+          "mean": 7.3,
+          "p90": 10,
+          "max": 10
         },
         "caches": 0,
         "flotsam": 8.7,
         "crafted": 0,
         "actions": {
-          "mean": 16.7,
-          "p90": 19
+          "mean": 16,
+          "p90": 20
         },
-        "respawn_wait_min": 20.42,
+        "respawn_wait_min": 18.92,
         "failures": []
       },
       {
@@ -2670,21 +2670,21 @@
         "affordable_runs": 10,
         "bought_through_game": 10,
         "hauls": {
-          "mean": 18.2,
-          "p90": 23,
-          "max": 23
+          "mean": 17.5,
+          "p90": 24,
+          "max": 24
         },
-        "caches": 13.2,
-        "flotsam": 20.4,
+        "caches": 13.5,
+        "flotsam": 20.9,
         "crafted": 12.2,
         "actions": {
-          "mean": 51.8,
-          "p90": 64
+          "mean": 51.9,
+          "p90": 62
         },
-        "respawn_wait_min": 12.75,
+        "respawn_wait_min": 11.97,
         "failures": []
       }
     ]
   },
-  "result_hash": "be933150"
+  "result_hash": "b2b97b54"
 }

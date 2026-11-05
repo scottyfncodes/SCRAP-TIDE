@@ -125,7 +125,13 @@ ev('presentation', botRun.checks.find((c) => /visible on the boat/.test(c.name))
   'Playtest bot: the installed upgrade is visible on the boat and survives a reload (runtime-observed)', botRun.checks.filter((c) => /visible|rebuilt/.test(c.name)).map((c) => c.detail).join('; '), 'playtest/playtest_bot.json');
 ev('progression', campOk && !affFail.length ? 'pass' : 'fail', 'Simulation: every upgrade and vessel is reachable; the campaign completes (simulation-measured)',
   `${aff.hits_2.length} targets × ${af.seeds.length} seeds × winch 1-3/3, all affordable and bought through Game.buyUpgrade/buyVessel; campaign: ${c2.totals.actions} sourcing actions (${c2.totals.haul} hauls) for all ${c2.owned.of} upgrades + 3 vessels at winch 2/3`, 'simulations/campaign.json');
-ev('progression', 'pass', 'Simulation: upgrades measurably change play (sail speed, turning, range, hull, winch window)',
+const sailUp = ['dinghy', 'sloop', 'ironwake'].every((v) => {
+  const r = sf.results.sailing.speed.filter((x) => x.vessel === v).map((x) => x.measured_speed_by_heading['90deg_off_downwind']);
+  return r[1] > r[0] * 1.1 && r[2] > r[1] * 1.1;
+});
+const rudderUp = sf.results.sailing.turning.every((r, i, a) => r.rudder !== 'Ash-Wood Rudder' || r.seconds_to_turn_180 < a[i - 1].seconds_to_turn_180 * 0.9);
+const tankUp = sf.results.fuel.filter((r) => r.throttle === 1 && r.tank).every((r) => r.measured.distance_m > sf.results.fuel.find((x) => x.throttle === 1 && !x.tank && x.vessel === r.vessel && x.engine === r.engine && x.mechanic === r.mechanic).measured.distance_m * 1.5);
+ev('progression', sailUp && rudderUp && tankUp ? 'pass' : 'partial', 'Simulation: upgrades measurably change play (sail speed, turning, range)',
   `sail speed by tier on the Skiff: ${sf.results.sailing.speed.filter((r) => r.vessel === 'dinghy').map((r) => `${r.sail} ${f1(r.measured_speed_by_heading['90deg_off_downwind'])}`).join(' → ')} m/s (beam reach); 180° turn ${sf.results.sailing.turning.filter((r) => r.vessel === 'dinghy').map((r) => `${r.rudder} ${f1(r.seconds_to_turn_180)}s`).join(' vs ')}`, 'simulations/sailing_fuel.json');
 ev('difficulty', 'pass', 'Balance is measured: headless simulations of economy, fuel, storms and voyages on the real game systems',
   'tests/sim (npm run sim): salvage yield, hauls-to-afford for every upgrade, campaign, fuel range, storm damage, voyages, exploit checks', 'simulations/affordability.json');
@@ -223,6 +229,17 @@ L.push('## PLAYCRAFT evidence items', '');
 L.push('`playcraft-evidence.json` lists these for `playcraft_assess` / `playcraft_verify` (`evidence`). PLAYCRAFT records any project evidence file as **verified**; the titles say which class each really is.', '');
 L.push(table(['Category', 'Status', 'Item'], evidence.map((e) => [e.category, e.status, e.title])), '');
 
+const ba = read('playcraft_before_after.json');
+if (ba) {
+  L.push('## PLAYCRAFT before / after this evidence', '');
+  L.push(`Before: ${ba.before.source}. After: ${ba.after.source}. Same game, same probe: only the evidence changed.`, '');
+  const lv = (l) => (l ? `${l.verified}/${l.observed}/${l.inferred}/${l.not_tested}` : '—');
+  L.push(table(['Category', 'Score before', 'Score after', 'Evidence before (v/o/i/n)', 'Evidence after (v/o/i/n)'], [
+    ...ba.categories.map((c) => [c.category, c.before, c.after, lv(c.levels_before), lv(c.levels_after)]),
+    ['**overall**', `${ba.before.overall.score} (${ba.before.overall.confidence})`, `${ba.after.overall.score} (${ba.after.overall.confidence})`, `strong ${ba.before.overall.strong_evidence_share}`, `strong ${ba.after.overall.strong_evidence_share}`],
+  ]), '');
+  L.push('v = verified, o = observed, i = inferred (source only), n = not tested. Categories with only inferred evidence are capped at 70; that cap is what lifted for progression and difficulty. Game feel, replayability and mobile got no new evidence from this pack.', '');
+}
 L.push('## Not covered: needs a human or an iPhone', '');
 for (const x of [
   'Frame rate, heat and battery on a real iPhone (headless software WebGL runs at 1-2 fps; all timing here is game time).',

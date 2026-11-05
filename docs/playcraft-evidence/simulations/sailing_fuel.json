@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T12:52:05.729Z",
-  "commit": "e0502fc7da739ed8f81f99a3ba0a67fcd23dba16",
+  "generated_at": "2026-11-05T13:03:31.675Z",
+  "commit": "15a16d9f1d2f3ba17b9e3b11512f942ed623a172",
   "branch": "playcraft/evidence",
   "dirty_src": false,
   "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
@@ -1095,10 +1095,10 @@
           "sail": "stock",
           "speed_stat": 6.5,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.12,
+            "0deg_off_downwind": 5.85,
             "45deg_off_downwind": 6.04,
-            "90deg_off_downwind": 0.1,
-            "135deg_off_downwind": 0.06,
+            "90deg_off_downwind": 6.5,
+            "135deg_off_downwind": 3.97,
             "180deg_off_downwind": 2.92
           }
         },
@@ -1107,10 +1107,10 @@
           "sail": "Canvas Mainsail",
           "speed_stat": 9.1,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.17,
+            "0deg_off_downwind": 8.19,
             "45deg_off_downwind": 8.46,
-            "90deg_off_downwind": 0.14,
-            "135deg_off_downwind": 0.08,
+            "90deg_off_downwind": 9.1,
+            "135deg_off_downwind": 5.56,
             "180deg_off_downwind": 4.09
           }
         },
@@ -1119,10 +1119,10 @@
           "sail": "Cutter Rig",
           "speed_stat": 11.05,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.22,
+            "0deg_off_downwind": 9.94,
             "45deg_off_downwind": 10.27,
-            "90deg_off_downwind": 0.17,
-            "135deg_off_downwind": 0.1,
+            "90deg_off_downwind": 11.05,
+            "135deg_off_downwind": 6.75,
             "180deg_off_downwind": 4.97
           }
         },
@@ -1131,10 +1131,10 @@
           "sail": "stock",
           "speed_stat": 10.5,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.19,
+            "0deg_off_downwind": 9.45,
             "45deg_off_downwind": 9.76,
-            "90deg_off_downwind": 0.16,
-            "135deg_off_downwind": 0.1,
+            "90deg_off_downwind": 10.5,
+            "135deg_off_downwind": 6.42,
             "180deg_off_downwind": 4.72
           }
         },
@@ -1143,10 +1143,10 @@
           "sail": "Canvas Mainsail",
           "speed_stat": 14.7,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.28,
+            "0deg_off_downwind": 13.23,
             "45deg_off_downwind": 13.66,
-            "90deg_off_downwind": 0.22,
-            "135deg_off_downwind": 0.14,
+            "90deg_off_downwind": 14.7,
+            "135deg_off_downwind": 8.98,
             "180deg_off_downwind": 6.61
           }
         },
@@ -1155,10 +1155,10 @@
           "sail": "Cutter Rig",
           "speed_stat": 17.85,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.35,
+            "0deg_off_downwind": 16.06,
             "45deg_off_downwind": 16.59,
-            "90deg_off_downwind": 0.27,
-            "135deg_off_downwind": 0.17,
+            "90deg_off_downwind": 17.85,
+            "135deg_off_downwind": 10.91,
             "180deg_off_downwind": 8.03
           }
         },
@@ -1167,10 +1167,10 @@
           "sail": "stock",
           "speed_stat": 12.5,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.25,
+            "0deg_off_downwind": 11.25,
             "45deg_off_downwind": 11.62,
-            "90deg_off_downwind": 0.19,
-            "135deg_off_downwind": 0.12,
+            "90deg_off_downwind": 12.5,
+            "135deg_off_downwind": 7.64,
             "180deg_off_downwind": 5.62
           }
         },
@@ -1179,10 +1179,10 @@
           "sail": "Canvas Mainsail",
           "speed_stat": 17.5,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.37,
+            "0deg_off_downwind": 15.75,
             "45deg_off_downwind": 16.26,
-            "90deg_off_downwind": 0.26,
-            "135deg_off_downwind": 0.16,
+            "90deg_off_downwind": 17.5,
+            "135deg_off_downwind": 10.69,
             "180deg_off_downwind": 7.87
           }
         },
@@ -1191,10 +1191,10 @@
           "sail": "Cutter Rig",
           "speed_stat": 21.25,
           "measured_speed_by_heading": {
-            "0deg_off_downwind": 0.47,
+            "0deg_off_downwind": 19.12,
             "45deg_off_downwind": 19.75,
-            "90deg_off_downwind": 0.32,
-            "135deg_off_downwind": 0.2,
+            "90deg_off_downwind": 21.25,
+            "135deg_off_downwind": 12.99,
             "180deg_off_downwind": 9.56
           }
         }
@@ -1204,40 +1204,40 @@
           "vessel": "dinghy",
           "rudder": "stock rudder",
           "turn_stat": 1.15,
-          "seconds_to_turn_180": 4.63
+          "seconds_to_turn_180": 2.73
         },
         {
           "vessel": "dinghy",
           "rudder": "Ash-Wood Rudder",
           "turn_stat": 1.67,
-          "seconds_to_turn_180": 3.3
+          "seconds_to_turn_180": 1.87
         },
         {
           "vessel": "sloop",
           "rudder": "stock rudder",
           "turn_stat": 0.95,
-          "seconds_to_turn_180": 5.5
+          "seconds_to_turn_180": 3.33
         },
         {
           "vessel": "sloop",
           "rudder": "Ash-Wood Rudder",
           "turn_stat": 1.38,
-          "seconds_to_turn_180": 3.93
+          "seconds_to_turn_180": 2.27
         },
         {
           "vessel": "ironwake",
           "rudder": "stock rudder",
           "turn_stat": 0.85,
-          "seconds_to_turn_180": 6.07
+          "seconds_to_turn_180": 3.77
         },
         {
           "vessel": "ironwake",
           "rudder": "Ash-Wood Rudder",
           "turn_stat": 1.23,
-          "seconds_to_turn_180": 4.33
+          "seconds_to_turn_180": 2.53
         }
       ]
     }
   },
-  "result_hash": "21bcabaf"
+  "result_hash": "f0ede8cb"
 }

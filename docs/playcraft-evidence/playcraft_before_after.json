@@ -1,0 +1,214 @@
+{
+  "before": {
+    "source": "gitcraft-out/playcraft/verify (PLAYCRAFT pass on 546d5f3, no project evidence)",
+    "overall": {
+      "score": 78,
+      "confidence": "low",
+      "coverage": 1.0,
+      "strong_evidence_share": 0.29,
+      "note": "Low confidence: much of this rests on source evidence; record judgements from playing (playcraft_assess judgements) and point `evidence` at the project's own test reports."
+    }
+  },
+  "after": {
+    "source": "playcraft_assess with docs/playcraft-evidence/playcraft-evidence.json + the same play report",
+    "overall": {
+      "score": 81,
+      "confidence": "medium",
+      "coverage": 1.0,
+      "strong_evidence_share": 0.39,
+      "note": null
+    }
+  },
+  "categories": [
+    {
+      "category": "core_gameplay",
+      "before": 83,
+      "after": 85,
+      "levels_before": {
+        "verified": 2,
+        "observed": 0,
+        "inferred": 4,
+        "not_tested": 0
+      },
+      "levels_after": {
+        "verified": 3,
+        "observed": 0,
+        "inferred": 4,
+        "not_tested": 0
+      },
+      "confidence_before": "medium",
+      "confidence_after": "medium"
+    },
+    {
+      "category": "game_feel",
+      "before": 80,
+      "after": 80,
+      "levels_before": {
+        "verified": 0,
+        "observed": 1,
+        "inferred": 8,
+        "not_tested": 0
+      },
+      "levels_after": {
+        "verified": 0,
+        "observed": 1,
+        "inferred": 8,
+        "not_tested": 0
+      },
+      "confidence_before": "low",
+      "confidence_after": "low"
+    },
+    {
+      "category": "controls",
+      "before": 76,
+      "after": 80,
+      "levels_before": {
+        "verified": 2,
+        "observed": 0,
+        "inferred": 3,
+        "not_tested": 0
+      },
+      "levels_after": {
+        "verified": 3,
+        "observed": 0,
+        "inferred": 3,
+        "not_tested": 0
+      },
+      "confidence_before": "medium",
+      "confidence_after": "high"
+    },
+    {
+      "category": "progression",
+      "before": 70,
+      "after": 81,
+      "levels_before": {
+        "verified": 0,
+        "observed": 0,
+        "inferred": 7,
+        "not_tested": 0
+      },
+      "levels_after": {
+        "verified": 2,
+        "observed": 0,
+        "inferred": 7,
+        "not_tested": 0
+      },
+      "confidence_before": "low",
+      "confidence_after": "low"
+    },
+    {
+      "category": "difficulty",
+      "before": 70,
+      "after": 75,
+      "levels_before": {
+        "verified": 0,
+        "observed": 0,
+        "inferred": 5,
+        "not_tested": 0
+      },
+      "levels_after": {
+        "verified": 4,
+        "observed": 0,
+        "inferred": 5,
+        "not_tested": 0
+      },
+      "confidence_before": "low",
+      "confidence_after": "medium"
+    },
+    {
+      "category": "player_experience",
+      "before": 71,
+      "after": 74,
+      "levels_before": {
+        "verified": 2,
+        "observed": 1,
+        "inferred": 7,
+        "not_tested": 1
+      },
+      "levels_after": {
+        "verified": 3,
+        "observed": 1,
+        "inferred": 9,
+        "not_tested": 1
+      },
+      "confidence_before": "medium",
+      "confidence_after": "medium"
+    },
+    {
+      "category": "replayability",
+      "before": 70,
+      "after": 70,
+      "levels_before": {
+        "verified": 0,
+        "observed": 0,
+        "inferred": 7,
+        "not_tested": 0
+      },
+      "levels_after": {
+        "verified": 0,
+        "observed": 0,
+        "inferred": 7,
+        "not_tested": 0
+      },
+      "confidence_before": "low",
+      "confidence_after": "low"
+    },
+    {
+      "category": "technical",
+      "before": 92,
+      "after": 92,
+      "levels_before": {
+        "verified": 3,
+        "observed": 0,
+        "inferred": 2,
+        "not_tested": 1
+      },
+      "levels_after": {
+        "verified": 5,
+        "observed": 0,
+        "inferred": 3,
+        "not_tested": 1
+      },
+      "confidence_before": "high",
+      "confidence_after": "high"
+    },
+    {
+      "category": "presentation",
+      "before": 81,
+      "after": 83,
+      "levels_before": {
+        "verified": 1,
+        "observed": 1,
+        "inferred": 6,
+        "not_tested": 0
+      },
+      "levels_after": {
+        "verified": 2,
+        "observed": 1,
+        "inferred": 6,
+        "not_tested": 0
+      },
+      "confidence_before": "low",
+      "confidence_after": "medium"
+    },
+    {
+      "category": "mobile",
+      "before": 95,
+      "after": 95,
+      "levels_before": {
+        "verified": 6,
+        "observed": 0,
+        "inferred": 3,
+        "not_tested": 1
+      },
+      "levels_after": {
+        "verified": 6,
+        "observed": 0,
+        "inferred": 3,
+        "not_tested": 1
+      },
+      "confidence_before": "high",
+      "confidence_after": "high"
+    }
+  ]
+}
