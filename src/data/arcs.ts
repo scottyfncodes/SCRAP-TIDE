@@ -24,7 +24,7 @@ export interface ArcBeat {
   when: (c: ArcCtx) => boolean;
   title: string;
   text: string;
-  effect?: 'cache_going_under' | 'mara_survey' | 'juno_plate' | 'tidebreaker_colours' | 'museum' | 'vik_choice';
+  effect?: 'cache_going_under' | 'mara_survey' | 'juno_plate' | 'tidebreaker_colours' | 'museum' | 'vik_choice' | 'hold_way' | 'ledger_choice';
 }
 
 const B = (b: ArcBeat) => b;
@@ -63,15 +63,15 @@ export const ARCS: ArcBeat[] = [
     text: 'Bram carves a little boat out of driftwood every night and throws it overboard every morning. “She was called the Gannet. Say it sometimes.”' }),
   B({ id: 'bram_2', who: 'bram', after: 'bram_1', when: (c) => c.aboard('bram') && c.aboard('ines'), title: '“Ferro?”',
     text: 'Bram stops halfway through a knot. “I know that armour. I know that face. You were on the skiff that took my boat.” Ines doesn’t look away. “I left the same night. I’m sorry, Bram.” He finishes the knot.' }),
-  B({ id: 'bram_3', who: 'bram', after: 'bram_2', when: (c) => c.aboard('bram') && c.flags.includes('seen_hold'), title: 'The gate',
-    text: 'Rustfang Hold’s gate is a wall of hull plate. Bram points at one panel, painted over, a G still showing. “That gate’s made from my boat. I’d know those rivets anywhere.”' }),
+  B({ id: 'bram_3', who: 'bram', after: 'bram_1', when: (c) => c.aboard('bram') && c.flags.includes('seen_hold'), title: 'The gate', effect: 'hold_way',
+    text: 'Rustfang Hold’s gate is a wall of hull plate. Bram points at one panel, painted over, a G still showing. “That gate’s made from my boat. And everything they couldn’t use, they dumped under it. I know the back way in, under the chains. Bring a crane.”' }),
   // Ines: a quiet voyage
   B({ id: 'ines_1', who: 'ines', when: (c) => c.aboard('ines'), title: 'A quiet voyage',
     text: 'Ines oils the harpoon every evening whether it was fired or not. “The day you need it is the day you didn’t oil it.”' }),
   B({ id: 'ines_2', who: 'ines', after: 'ines_1', when: (c) => c.aboard('ines') && c.flags.includes('met_raiders'), title: 'One of us',
     text: 'A Rustfang raider yells across the water: “Ferro! You were one of us!” Ines answers by putting a harpoon through his gunwale. “Was. Past tense. Aim higher.”' }),
-  B({ id: 'ines_3', who: 'ines', after: 'ines_2', when: (c) => c.aboard('ines') && c.flags.includes('seen_hold'), title: 'The gaps in the gate',
-    text: '“Don’t look at the gate. Look at the gaps in it.” Ines draws you the Hold from memory: where the skiffs tie up, where the watch sleeps. “If you ever have to go in there, go in at dawn.”' }),
+  B({ id: 'ines_3', who: 'ines', after: 'ines_2', when: (c) => c.aboard('ines') && c.flags.includes('seen_hold'), title: 'The gaps in the gate', effect: 'hold_way',
+    text: '“Don’t look at the gate. Look at the gaps in it.” Ines draws you the Hold from memory: where the skiffs tie up, where the watch sleeps, where they dump what they can’t sell. “Under the gate. Go in at dawn, with a crane.”' }),
   // Pip: the museum
   B({ id: 'pip_1', who: 'pip', when: (c) => c.port === 'driftholm' && c.discoveries >= 10, title: 'A shelf',
     text: '“Ten discoveries!” Pip has built a shelf out of a door. “For the old world. Not for sale. Well. Not for sale to most people.”' }),
@@ -107,6 +107,10 @@ export const ARCS: ArcBeat[] = [
     text: 'Nori stamps on the new deck to show it holds. “Three more winters. Maybe four. I’ll take four.”' }),
   B({ id: 'vik_1', who: 'vik', when: (c) => c.port === 'helios' && (c.flags.includes('twin_at_cost') || c.flags.includes('juno_diesel')), title: 'Proper kit',
     text: 'Vik has hung a photograph above his bench: a harbour tug, and a man with Juno’s jaw at the wheel. “So I remember where proper kit comes from,” he says, to nobody.' }),
+  B({ id: 'bram_4', who: 'bram', after: 'bram_3', when: (c) => c.aboard('bram') && c.items('gannet_bell') > 0, title: 'The Gannet’s Bell',
+    text: 'Bram holds the bell in both hands and rings it once. A low note, lower than the Wren’s. “There she is.” He hangs it on your rail himself. (Mount it as a trophy from the Ship panel.)' }),
+  B({ id: 'dace_2', who: 'dace', when: (c) => c.port === 'helios' && c.items('dace_ledger') > 0, title: 'The ledger', effect: 'ledger_choice',
+    text: 'Fifteen years of payments from Rig Helios to Rustfang Hold, every one signed “D.”. You put the ledger on Dace’s counter. The rig goes quiet around you.' }),
   B({ id: 'dace_1', who: 'dace', when: (c) => c.port === 'helios' && (c.standing.helios ?? 0) >= 5, title: 'Rig rules',
     text: 'Dace shakes your hand on the flare deck where everyone can see. “Rig rules: you’re one of ours now. Anybody gives you trouble on this platform, they give it to me.”' }),
 ];

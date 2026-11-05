@@ -920,12 +920,32 @@ export class Game implements GameAPI {
       case 'tidebreaker_colours':
         if (!d.cosmetics.includes('flag_tidebreaker')) d.cosmetics.push('flag_tidebreaker');
         break;
+      case 'hold_way':
+        if (!d.flags.includes('hold_way')) d.flags.push('hold_way');
+        break;
       case 'museum':
         if (!d.flags.includes('growth_museum')) d.flags.push('growth_museum');
         this.buildGrowth();
         break;
     }
-    if (b.effect === 'vik_choice') {
+    if (b.effect === 'ledger_choice') {
+      this.ui.revealInfo(kicker, b.title, b.text, 'Put it on the table');
+      this.ui.revealChoice('Foreman Dace · Rig Trader', '“Rig rules.”', 'Dace looks at the ledger for a long time. “Fifteen years. They’d have burned the rig without it. You going to tell everyone, or are we going to come to an arrangement?”', [
+        { label: 'Read it out on the flare deck', sub: 'Helios stops paying. The rig arms itself and Rustfang pulls out of Old Meridian. Prices here go up 10%.', pick: () => {
+          d.flags.push('ledger_confront');
+          st.consume('dace_ledger', 1);
+          st.commit();
+          this.ui.toast('The rig goes quiet, then loud. By dusk the Meridian skiffs are gone.', { color: '#d6a62a', life: 4.5 });
+        } },
+        { label: 'Hand it back', sub: 'Dace owes you for life: 15% off everything at Rig Helios, and his trust.', pick: () => {
+          d.flags.push('ledger_secret');
+          st.consume('dace_ledger', 1);
+          d.standing.helios = (d.standing.helios ?? 0) + 3;
+          st.commit();
+          this.ui.toast('Dace pockets the ledger. “Rustfang excepted,” he says, and almost smiles.', { color: '#d6a62a', life: 4.5 });
+        } },
+      ]);
+    } else if (b.effect === 'vik_choice') {
       this.ui.revealInfo(kicker, b.title, b.text, 'Find Vik');
       // the first choice an NPC asks of you: price, or principle
       this.ui.revealChoice('Vik Ashby · Rig Mechanic', '“It was drifting.”', '“It was drifting. It was. I told myself it was.” Vik can’t look at Juno. “Take the diesels at cost. Least I can do.” Juno says nothing at all.', [
@@ -2278,7 +2298,7 @@ export class Game implements GameAPI {
       const site = this.salvage.siteInReach();
       if (site && !b.anchored) {
         const ready = this.salvage.ready(site);
-        const heavyBlocked = site.heavy && !st.salvage;
+        const heavyBlocked = (site.heavy && !st.salvage) || (!!site.requiresFlag && !this.store.data.flags.includes(site.requiresFlag));
         acts.push({ id: 'salvage', label: `\u{1FA9D} SALVAGE ${site.name.toUpperCase()}`, glow: ready && !heavyBlocked && b.speed < 3, disabled: !ready || heavyBlocked || b.speed > 3 });
       }
       for (const cw of CASTAWAYS) {
