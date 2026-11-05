@@ -20,7 +20,10 @@ function heroMaterial(src: THREE.Material): THREE.Material {
   if (!(src as THREE.MeshToonMaterial).isMeshToonMaterial) return src;
   const c = (src as THREE.MeshToonMaterial).clone();
   const amount = (src.userData.weather as { value: number } | undefined)?.value ?? 0;
-  if (src.userData.weather) weather(c, amount);
+  if (src.userData.weather) {
+    weather(c, amount);
+    c.defines = { ...(c.defines ?? {}), WX_LOCAL: '' };
+  }
   const inner = c.onBeforeCompile;
   c.onBeforeCompile = (shader, r) => {
     if (src.userData.weather) inner.call(c, shader, r);
