@@ -131,9 +131,9 @@ export class Raiders {
         if (!g.store.data.flags.includes('met_raiders')) {
           g.store.data.flags.push('met_raiders');
           g.ui.revealInfo('Rustfang Raiders', 'Scrap skiffs, closing fast', 'They ram boats and steal cargo. Outrun them with an engine, or fit a <b>Harpoon Turret</b> at Rig Helios to drive them off.', 'Hold on');
-        } else if (g.store.hasRole('lookout')) {
-          g.ui.toast('Kai: “Rustfang skiffs! Coming in hard!”', { color: '#c8352a' });
-          pack.say('kai_raiders', 30);
+        } else {
+          g.crewBark('raiders', {}, { prefer: 'lookout', force: true, cool: 30 });
+          if (g.store.hasRole('lookout')) pack.say('kai_raiders', 30);
         }
         audio.raiderHorn();
         setTimeout(() => (g.store.hasRole('defender') ? pack.say('ines_raiders', 45) : pack.say('raider_threat', 45)), 2600);
@@ -215,7 +215,7 @@ export class Raiders {
     r.state = 'flee';
     r.timer = 30;
     g.store.data.raidersRepelled++;
-    g.ui.toast(g.store.hasRole('defender') ? 'Ines: “And stay out!” Raider driven off.' : 'Harpoon hit! The raider veers away.', { color: '#4f9a95' });
+    if (!g.crewBark('repelled', {}, { prefer: 'defender', force: true, cool: 10 })) g.ui.toast('Harpoon hit! The raider veers away.', { color: '#4f9a95' });
     if (Math.random() < 0.5) {
       const n = g.gain('scrap_metal', 1 + Math.floor(Math.random() * 2), 'Rustfang flotsam', { reveal: 'none' });
       if (n) g.ui.toast(`+${n} Scrap Metal from the raider’s plating`, { icon: 'scrap_metal', color: '#c9b48a', life: 2 });

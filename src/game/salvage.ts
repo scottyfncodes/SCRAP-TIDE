@@ -150,6 +150,7 @@ export class Salvage {
     pack.sting('salvage', 0.7);
     if (hits >= 2) g.crewCheer(1200);
     if (s.hasRole('salvager')) setTimeout(() => pack.say(first && site.first ? 'bram_story' : 'bram_salvage', first && site.first ? 1e9 : 120), 1800);
+    setTimeout(() => g.crewBark('haul', { first: !!(first && site.first) }, { prefer: 'salvager', cool: 45 }), 2400);
     this.hookAnim = 1;
     const grade = hits === 3 ? 'PERFECT HAUL!' : hits === 2 ? 'Good haul' : hits === 1 ? 'Scraped something up' : 'The line slipped…';
     if (loot.length) g.ui.revealChest(site.name, loot, `${grade}${overflow ? ` · ${overflow} items didn’t fit in the hold` : ''}`);
