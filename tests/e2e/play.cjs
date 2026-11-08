@@ -54,8 +54,9 @@ const check = (name, ok, detail = '') => {
       try {
         await hit.click({ timeout: 5000 });
         return true;
-      } catch {
-        /* intercepted by a late card, or re-rendered: dismiss and try again */
+      } catch (e) {
+        // only a late card or a re-render is retried (from #45); anything else is a real failure
+        if (!/intercepts pointer events|Timeout|detached/.test(String(e))) throw e;
       }
     }
     return false;

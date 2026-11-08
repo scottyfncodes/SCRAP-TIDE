@@ -22,7 +22,7 @@ try {
   process.exit(2);
 }
 
-const SHIPS = ['skiff', 'trimaran', 'ironwake'];
+const SHIPS = ['skiff', 'trimaran', 'brig', 'ironwake'];
 const MAX_HEAD_JERK = 2.0; // rad/s^2 per s on the uneven clock (the bug measured 7-25; fixed ~0.3-0.8)
 const MAX_ROLL_RATIO = 1.6; // roll jerk, uneven clock vs steady 60 Hz (the bug measured 3-5x)
 

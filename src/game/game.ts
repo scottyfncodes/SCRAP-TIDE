@@ -16,6 +16,7 @@ import { Environment } from '../world/environment';
 import { heightAt, isReef, swellFactor, findShore, nearestIsland } from '../world/terrain';
 import { swayUniforms } from '../world/materials';
 import { pagePreviewShip, pagePreviewUpgrades } from '../state/preview';
+import { pageExperiments, pageFresh } from '../state/experiments';
 import { buildShip, animateShip, sloopUpgradeFiles, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
 import { audio } from '../audio/audio';
@@ -59,7 +60,7 @@ const WAKE_PUFF = 0.55;
 const FOOT_MIN = 0.7, FOOT_MAX = 5.0, FOOT_ACCEL = 9, FOOT_DECEL = 14;
 
 export class Game implements GameAPI {
-  store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades() });
+  store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades(), experiments: pageExperiments(), fresh: pageFresh() });
   ui: UI;
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();

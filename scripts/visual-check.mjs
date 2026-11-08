@@ -20,7 +20,7 @@ try {
 }
 
 const MAX_OVER = 0.08; // share of live puffs allowed over the boat
-const SHIPS = ['skiff', 'trimaran', 'ironwake'];
+const SHIPS = ['skiff', 'trimaran', 'brig', 'ironwake'];
 const VIEWS = { behind: 0, side: 0.9 };
 const TIMES = { noon: 0.5, dusk: 0.81, night: 0.95 };
 const out = 'visual-check';
