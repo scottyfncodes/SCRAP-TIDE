@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-11-08T17:22:52.922Z",
+  "commit": "20cb064c258a351e5d123c377ea540d8f10cab24",
+  "branch": "balance/trimaran-step",
+  "dirty_src": false,
+  "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
+  "server": "vite dev server (src/)",
+  "evidence_class": "simulation-measured (what-if: data patched in a throwaway page; not the shipped game)",
+  "winch": "2/3",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "variants": [
+    {
+      "id": "gold_350",
+      "label": "Trimaran 420g → 350g",
+      "campaign": [
+        {
+          "seed": 1,
+          "trimaran_actions": 19,
+          "trimaran_hauls": 11,
+          "trimaran_wait_min": 22.03,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 39,
+          "total_actions": 212,
+          "total_wait_h": 0.98
+        },
+        {
+          "seed": 2,
+          "trimaran_actions": 16,
+          "trimaran_hauls": 9,
+          "trimaran_wait_min": 20.03,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 25,
+          "ironwake_actions": 37,
+          "total_actions": 187,
+          "total_wait_h": 0.9
+        },
+        {
+          "seed": 3,
+          "trimaran_actions": 19,
+          "trimaran_hauls": 12,
+          "trimaran_wait_min": 24.03,
+          "max_earlier_step": 9,
+          "actions_before_trimaran": 26,
+          "ironwake_actions": 42,
+          "total_actions": 212,
+          "total_wait_h": 1
+        },
+        {
+          "seed": 4,
+          "trimaran_actions": 17,
+          "trimaran_hauls": 6,
+          "trimaran_wait_min": 16,
+          "max_earlier_step": 10,
+          "actions_before_trimaran": 27,
+          "ironwake_actions": 52,
+          "total_actions": 187,
+          "total_wait_h": 0.95
+        },
+        {
+          "seed": 5,
+          "trimaran_actions": 15,
+          "trimaran_hauls": 7,
+          "trimaran_wait_min": 16.02,
+          "max_earlier_step": 8,
+          "actions_before_trimaran": 22,
+          "ironwake_actions": 47,
+          "total_actions": 207,
+          "total_wait_h": 0.8
+        }
+      ],
+      "mean": {
+        "trimaran_actions": 17.2,
+        "trimaran_wait_min": 19.6,
+        "max_earlier_step": 9.4,
+        "spike_ratio": 1.83,
+        "actions_before_trimaran": 25.2,
+        "ironwake_actions": 43.4,
+        "total_actions": 201
+      }
+    }
+  ]
+}

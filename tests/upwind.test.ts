@@ -33,8 +33,8 @@ describe('speed is unchanged (no gameplay change)', () => {
   it('no hard no-go zone: every heading still sails at 45% or better', () => {
     for (let d = 0; d < 360; d++) expect(windEff(d * DEG, W)).toBeGreaterThanOrEqual(0.45 - 1e-12);
   });
-  it('guardrails: the Trimaran still costs 420g and the Stormwall constants are untouched by this change', () => {
-    expect(VESSELS.sloop.cost!.gold).toBe(420);
+  it('guardrails: the Trimaran price (350g since balance pass 1, #3) and the Stormwall constants are untouched by this change', () => {
+    expect(VESSELS.sloop.cost!.gold).toBe(350);
     expect(STORMWALL).toEqual({ speedMul: 0.3, hullMul: 1.5, leeMul: 0.55, lee: { x: -210, z: -1040, r: 55, fade: 25 } });
   });
 });
