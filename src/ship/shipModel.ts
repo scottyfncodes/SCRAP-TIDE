@@ -125,6 +125,8 @@ export function sloopUpgradeFiles(owned: readonly string[]): string[] {
 // the model's base mainsail and its band (the jib, forward of the mast, shares the cloth material)
 const SLOOP_SAIL_CLOTH = 'GC_Cloth_f1e6cc';
 const SLOOP_SAIL_BAND = 'GC_Cloth_c0392b';
+/** every cloth material of the sloop's sails: base mainsail + jib, the mainsail band, the Canvas Mainsail upgrade */
+const SLOOP_CLOTH = [SLOOP_SAIL_CLOTH, SLOOP_SAIL_BAND, 'GC_Cloth_f6ead0'];
 // the model's tiller: on the centreline between the cabin and the transom (rails share the material, far outboard)
 const SLOOP_TILLER_WOOD = 'GC_Wood_9a5a2e';
 const isTiller = (c: THREE.Vector3) => Math.abs(c.x) < 0.15 && c.y > 1.25 && c.y < 2.0 && c.z < -3.25 && c.z > -4.8;
@@ -480,9 +482,20 @@ export function trophyGeometry(id: string): THREE.BufferGeometry {
   return merge(parts);
 }
 
+export interface ClothRig {
+  pivot: THREE.Vector3; // the mast foot, in the ship group's frame
+  meshes: { mesh: THREE.Mesh; base: THREE.Matrix4; toParent: THREE.Matrix4 }[]; // world-in-group at rest; group → parent
+}
+
 export interface ShipParts {
   group: THREE.Group;
   sails: THREE.Mesh[];
+  /**
+   * The Trimaran model's own sail cloth, rigged to shiver about the mast when it luffs (null on other boats). The
+   * meshes stay where they are in the model; their matrices are driven directly, so no new Object3D is created (each
+   * one would draw Math.random for its uuid and shift the seeded simulations).
+   */
+  cloth: ClothRig | null;
   flag: THREE.Mesh | null;
   anchor: THREE.Object3D;
   rope: THREE.Mesh;
@@ -1107,9 +1120,28 @@ export function buildShip(store: Store): ShipParts {
     crew.push({ id, ...c });
   });
 
+  // the model's sail cloth (its base mainsail and jib, their band, or the Canvas Mainsail upgrade) is baked with the
+  // hull material by material; rig those meshes to shake about the mast when the sail luffs (see animateShip)
+  let cloth: ClothRig | null = null;
+  if (glb) {
+    group.updateMatrixWorld(true); // the group has no parent yet, so world = the group's own frame
+    const meshes: ClothRig['meshes'] = [];
+    group.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh || !SLOOP_CLOTH.includes(m.userData.srcMaterial) || !m.parent) return;
+      meshes.push({ mesh: m, base: m.matrixWorld.clone(), toParent: m.parent.matrixWorld.clone().invert() });
+    });
+    if (meshes.length) {
+      const mast = glb.root.getObjectByName('socket_sail')?.getWorldPosition(new THREE.Vector3()) ?? new THREE.Vector3(0, 0, SLOOP_MAST_Z);
+      cloth = { pivot: new THREE.Vector3(mast.x, 0, mast.z), meshes };
+      for (const c of meshes) c.mesh.matrixAutoUpdate = false;
+    }
+  }
+
   return {
     group,
     sails,
+    cloth,
     flag,
     anchor,
     rope,
@@ -1190,13 +1222,14 @@ function subdivideForBillow(g: THREE.BufferGeometry) {
   g.userData.bb = [minX, minY, maxX - minX || 1, maxY - minY || 1];
 }
 
-/** Billow sails based on wind fill (0..1), flutter flags, spin turbines and radar. */
+const _rig = new THREE.Matrix4(), _m = new THREE.Matrix4();
+
 /**
- * @param fill how full the sails are (0..1)
- * @param luffing 0..1 when pointing too close to the wind: the canvas goes slack and flutters along its leading
- *   edge (balance pass 1, #5: a cue only; speeds are unchanged)
+ * Billow sails based on wind fill (0..1), flutter flags, spin turbines and radar. `luff` (0..1) is how hard the sails
+ * are luffing (pointing too close to the wind): the belly collapses and the cloth flogs, worst at the trailing edge.
+ * `windRel` (the wind's direction relative to the bow, radians) streams the flag downwind.
  */
-export function animateShip(p: ShipParts, t: number, fill: number, luffing = 0) {
+export function animateShip(p: ShipParts, t: number, fill: number, luff = 0, windRel = Math.PI) {
   for (const r of p.rotors) r.rotation.z = t * 9;
   if (p.radar?.userData.spin) p.radar.rotation.y = t * 1.6; // the MeshCraft radar's scanner sweeps
   for (const s of p.sails) {
@@ -1210,15 +1243,30 @@ export function animateShip(p: ShipParts, t: number, fill: number, luffing = 0) 
       const x = (base[i * 3] - minX) / w;
       const y = (base[i * 3 + 1] - minY) / hgt;
       const belly = Math.sin(x * Math.PI) * Math.sin(Math.min(1, y * 1.2) * Math.PI * 0.9 + 0.1);
-      const luff = (1 - fill) * Math.sin(t * 9 + x * 8 + y * 5) * 0.06;
-      // luffing: a fast ripple running back from the leading edge, and the belly collapses
-      const flutter = luffing * Math.sin(t * 15 + y * 6 - x * 5) * 0.16 * (1 - 0.7 * x);
-      pos.setZ(i, belly * (0.12 + fill * 0.45) * (1 - 0.65 * luffing) * (w * 0.35) + luff + flutter);
+      const slack = (1 - fill) * Math.sin(t * 9 + x * 8 + y * 5) * 0.06;
+      // luffing: the belly empties and a ripple runs aft from the mast, the free trailing edge shaking hardest
+      const flog = luff * Math.sin(t * 17 - x * 7 + y * 2.5) * x * (0.5 + 0.5 * y) * w * 0.16;
+      pos.setZ(i, belly * (0.12 + fill * 0.45) * (1 - 0.8 * luff) * (w * 0.35) + slack + flog);
     }
     pos.needsUpdate = true;
     g.computeVertexNormals();
   }
+  if (p.cloth) {
+    // the model's sails are rigid meshes: a luffing sail shivers about the mast and its belly empties (squashed
+    // toward the centreline). Applied in the ship's frame about the mast foot, then mapped back into each mesh's parent.
+    const { pivot, meshes } = p.cloth;
+    _rig.makeTranslation(pivot.x, pivot.y, pivot.z)
+      .multiply(_m.makeRotationY(luff * 0.05 * Math.sin(t * 15)))
+      .multiply(_m.makeScale(1 - luff * (0.35 + 0.25 * Math.sin(t * 11)), 1, 1))
+      .multiply(_m.makeTranslation(-pivot.x, -pivot.y, -pivot.z));
+    for (const c of meshes) {
+      c.mesh.matrix.multiplyMatrices(c.toParent, _rig).multiply(c.base);
+      c.mesh.matrixWorldNeedsUpdate = true;
+    }
+  }
   if (p.flag) {
+    // the flag streams downwind from its hoist (+x is the fly; rotation.y = π/2 points it aft)
+    p.flag.rotation.y = windRel - Math.PI / 2;
     const pos = p.flag.geometry.attributes.position;
     const base = p.flag.userData.base as Float32Array;
     for (let i = 0; i < pos.count; i++) {

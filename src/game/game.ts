@@ -37,6 +37,8 @@ import { CONTRACT_MAP, MAX_ACTIVE, contractReady, GARDEN_POINTS, gardenStage, fr
 import { RENOWN, renownTitle, refitStage } from '../data/renown';
 import { sideLead, type Lead } from './leads';
 import { GOALS } from '../data/progress';
+import { windEff, offWind, luffAmount, pointOfSail, bearAwaySide, luffLine, drawingLine, LUFF_WARN_AFTER, LUFF_WARN_COOLDOWN, NO_GO } from './pointOfSail';
+import { WindStreaks } from '../world/windStreaks';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
 
 type Mode = 'sail' | 'foot';
@@ -123,10 +125,6 @@ export class Game implements GameAPI {
   private msgCooldown: Record<string, number> = {};
   private barkRecent: string[] = [];
   private barkAt = -99;
-  /** 0..1: how hard the sails are luffing (pointing too close to the wind); a cue only */
-  private luffing = 0;
-  private luffT = 0;
-  private luffSaid = false;
   private nightSaid = false;
   private voyageTowerPassed = false;
   private side: Lead | null = null;
@@ -142,6 +140,13 @@ export class Game implements GameAPI {
   private rng = new RNG(Date.now() & 0xffff);
   private shake = 0;
   private proxTimer = 0;
+  // upwind sailing (#5): presentation only, never read by the physics
+  private luff = 0; // 0..1, how hard the sails are luffing this frame
+  private luffTime = 0; // s the sail has luffed under sail without a break
+  private luffWarned = false; // a luff warning is showing; say so once the sail fills again
+  private luffTips = 0; // warnings shown this session (the first explains the WIND dial)
+  private flapTimer = 0;
+  private windStreaks = new WindStreaks();
   private titleYawSet = false;
 
   constructor(private canvas: HTMLCanvasElement, private progress: (p: number, msg: string) => Promise<void>) {
@@ -202,6 +207,7 @@ export class Game implements GameAPI {
     this.wakeFoam = new Particles(this.scene, 300, WAKE_PUFF);
     this.wakeFoam.fade = 1.6;
     this.flip = new FlipFX(this.scene);
+    this.scene.add(this.windStreaks.mesh);
     this.sky.onStrike = (p) => this.flip.burst('lightning', p.clone().setY(120), 70, 240, 0.9);
     this.resize();
     this.sparkle = new Particles(this.scene, 300, 0.6, true);
@@ -562,7 +568,7 @@ export class Game implements GameAPI {
     return false;
   }
 
-  private say(key: string, text: string, cool = 4, opts: { icon?: string; color?: string } = {}) {
+  private say(key: string, text: string, cool = 4, opts: { icon?: string; color?: string; life?: number } = {}) {
     if ((this.msgCooldown[key] ?? 0) > this.t) return;
     this.msgCooldown[key] = this.t + cool;
     this.ui.toast(text, opts);
@@ -1985,6 +1991,8 @@ export class Game implements GameAPI {
     this.env.update(this.t, dt);
     this.drowned.focus.copy(focus);
     this.drowned.update(this.t, dt, this.atmo.night);
+    // wind you can see: faint streaks drifting downwind round the boat (fainter at night, stronger in a storm)
+    this.windStreaks.update(this.t, pxz.x, pxz.z, WORLD.wind.dir, this.started ? (1 - this.atmo.night * 0.6) * (1 + this.atmo.storm * 0.8) : 0);
     this.salvage.update(dt);
     this.raiders.update(dt);
     for (const c of this.ship.crew) c.mixer.update(dt);
@@ -2060,9 +2068,43 @@ export class Game implements GameAPI {
     }
   }
 
+  /** Sail speed for a heading: unchanged, see pointOfSail.windEff. */
   private windEff(heading: number) {
-    const c = Math.cos(angleDiff(heading, WORLD.wind.dir));
-    return c >= 0 ? 1 - 0.1 * c : 1 - 0.55 * -c;
+    return windEff(heading, WORLD.wind.dir);
+  }
+
+  /**
+   * Upwind sailing, Option A: pointing inside the no-go cone luffs the sails (visual + a flogging sound), and after a
+   * few seconds the crew (or the sail itself, with no crew aboard) says so; bearing away gets a word that she's drawing
+   * again. Reads the boat; changes nothing the physics uses, and uses no Math.random (the bot's seeded run is unchanged).
+   */
+  private updateLuff(dt: number, throttle: number, motoring: boolean) {
+    const b = this.boat;
+    const free = !b.docked && !b.anchored && !b.busy;
+    const off = offWind(b.heading, WORLD.wind.dir);
+    const target = free ? luffAmount(off) : 0;
+    this.luff += (target - this.luff) * (1 - Math.exp(-dt * 5));
+    const underSail = this.started && free && throttle > 0.05 && !motoring && !this.ui.panelOpen;
+    if (underSail && target > 0.5) this.luffTime += dt;
+    else this.luffTime = 0;
+    if (this.luffTime > LUFF_WARN_AFTER && (this.msgCooldown.luff ?? 0) <= this.t) {
+      const line = luffLine(this.store.data.crew, bearAwaySide(b.heading, WORLD.wind.dir), this.luffTips === 0);
+      this.say('luff', line.text, LUFF_WARN_COOLDOWN, { color: line.color, life: this.luffTips === 0 ? 6 : 4 });
+      this.luffTips++;
+      this.luffWarned = true;
+    }
+    if (this.luffWarned && underSail && off > NO_GO + 0.17) {
+      const line = drawingLine(this.store.data.crew);
+      this.say('luff_ok', line.text, 12, { color: line.color, life: 3 });
+      this.luffWarned = false;
+    }
+    if (!free) this.luffWarned = false;
+    // the canvas flogs: short slaps while the sail luffs, quicker the harder it shakes (jitter from game time, not RNG)
+    this.flapTimer -= dt;
+    if (this.started && this.luff > 0.35 && this.flapTimer <= 0) {
+      audio.sailFlap(this.luff);
+      this.flapTimer = 0.42 - this.luff * 0.16 + (Math.sin(this.t * 7.3) * 0.5 + 0.5) * 0.18;
+    }
   }
 
   private updateSail(dt: number) {
@@ -2113,6 +2155,7 @@ export class Game implements GameAPI {
     }
     if (this.engineOn && st.engine <= 0) this.engineOn = false;
     audio.engine(motoring ? 0.35 + throttle * 0.65 : 0, st.engine > 12);
+    this.updateLuff(dt, throttle, motoring);
     // power upgrades trickle fuel back into the tank
     if (st.solar && s.fuel < st.fuelCap) s.fuel = Math.min(st.fuelCap, s.fuel + (st.solar / 60) * dt * (1 - this.atmo.night * 0.6 + this.atmo.storm * 0.5));
     // the Stormwall's gale: the deeper in, the slower (not in the Spire's lee)
@@ -2205,26 +2248,10 @@ export class Game implements GameAPI {
     const rel = angleDiff(b.heading, WORLD.wind.dir);
     const swing = clamp(-Math.sin(rel) * 0.9, -1.0, 1.0);
     const sailEase = 1 - Math.exp(-dt * 3.08); // the old 5 %/frame at 60 fps, in time
-    // a luffing sail flogs: it swings from side to side round the mast (this.luffing is last frame's; it eases)
-    const flog = this.luffing * Math.sin(this.t * 3.4) * 0.32;
+    // a luffing sail flogs: it swings from side to side round the mast, visible from the stern camera (from #47)
+    const flog = this.luff * Math.sin(this.t * 3.4) * 0.32;
     for (const sail of this.ship.sails) sail.rotation.y = lerp(sail.rotation.y, Math.PI / 2 + swing + flog, sailEase);
-    // Upwind cues (balance pass 1, #5, option A: feel only, speeds unchanged). Pointing within ~25-50° of dead
-    // upwind the canvas luffs; held there a while, a crew member says so (or, sailing alone, a one-time tip).
-    const offUpwind = Math.abs(angleDiff(b.heading, WORLD.wind.dir + Math.PI));
-    const underSail = !b.docked && !b.anchored && b.speed > 0.5;
-    const luffTarget = underSail ? clamp((0.87 - offUpwind) / 0.44, 0, 1) : 0; // 50° → 0, 25° → 1
-    this.luffing += (luffTarget - this.luffing) * (1 - Math.exp(-dt * 2.5));
-    if (luffTarget > 0.6 && !motoring) this.luffT += dt;
-    else if (luffTarget < 0.3) (this.luffT = 0), (this.luffSaid = false);
-    if (this.luffT > 6 && !this.luffSaid && this.started) {
-      this.luffSaid = true;
-      if (!this.crewBark('upwind', {}, { prefer: 'navigator', cool: 240 }) && !this.store.data.crew.length && !this.store.data.flags.includes('tip_upwind')) {
-        this.store.data.flags.push('tip_upwind');
-        this.store.commit();
-        this.ui.toast('Sails luffing: she’s pointed into the wind. Bear away 45° or more for speed, or run the engine.', { color: '#9aa9b4', life: 5 });
-      }
-    }
-    animateShip(this.ship, this.t, b.anchored || b.docked ? 0.15 : clamp(b.speed / st.speed, 0, 1) * eff, this.luffing);
+    animateShip(this.ship, this.t, b.anchored || b.docked ? 0.15 : clamp(b.speed / st.speed, 0, 1) * eff, this.luff, rel);
 
     // anchor visuals
     const a = this.ship.anchor;
@@ -2302,7 +2329,11 @@ export class Game implements GameAPI {
     }
     audio.ambience(dt, b.speed, false, Math.max(swellFactor(b.x, b.z), this.atmo.storm), this.currentRegion, this.atmo.storm);
     pack.music(this.currentRegion, this.raiders.danger);
-    this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff, motoring, this.luffing);
+    this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff, motoring, {
+      heading: -angleDiff(this.camYaw, b.heading),
+      point: pointOfSail(offWind(b.heading, WORLD.wind.dir)),
+      luff: this.luff,
+    });
     this.ui.setDigMeter(null);
 
     // contextual actions

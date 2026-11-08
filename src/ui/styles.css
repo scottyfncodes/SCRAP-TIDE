@@ -198,14 +198,26 @@ button { font-family: var(--label); cursor: pointer; border: none; color: inheri
 /* speed / wind instrument */
 .speed {
   position: absolute; left: calc(var(--safe-l) + 14px); bottom: calc(var(--safe-b) + 230px); pointer-events: none;
-  color: var(--bone); background: rgba(13,17,19,.72); border: 1px solid var(--line); border-radius: 3px; padding: 4px 9px 5px;
-  font-family: var(--mono); font-size: 12px; line-height: 1.25; max-width: 112px;
+  color: var(--bone); background: rgba(13,17,19,.72); border: 1px solid var(--line); border-radius: 3px; padding: 4px 8px 4px 5px;
+  font-family: var(--mono); font-size: 12px; line-height: 1.25;
+  display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 6px; /* wind dial | speed, point of sail below */
 }
 .speed .kn b { font-size: 20px; font-weight: 400; color: var(--bone); letter-spacing: .5px; }
-.speed .kn small { display: block; font-family: var(--label); font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--bone-dim); }
-.speed .kn small.good { color: var(--copper); } .speed .kn small.bad { color: #e08a5a; } .speed .kn small.power { color: var(--hazard); }
-.wind { display: flex; align-items: center; gap: 5px; font-family: var(--label); font-weight: 700; font-size: 12px; letter-spacing: 1.5px; color: var(--bone-dim); }
-.wind svg { width: 18px; height: 18px; }
+.speed .pos { grid-column: 1 / -1; display: block; font-family: var(--label); font-size: 12px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: var(--bone-dim); white-space: nowrap; }
+.speed .pos.good { color: var(--copper); } .speed .pos.bad { color: #e08a5a; } .speed .pos.power { color: var(--hazard); }
+.speed .pos.luff { color: #ff7a52; animation: luff-blink .7s ease-in-out infinite alternate; }
+@keyframes luff-blink { from { opacity: 1; } to { opacity: .45; } }
+/* wind dial: the no-go wedge (where the wind comes from), the wind arrow, and your bow */
+.wind { width: 34px; height: 34px; }
+.wind svg { width: 34px; height: 34px; display: block; overflow: visible; }
+.wind .wd-nogo { fill: rgba(224,138,90,.28); stroke: rgba(224,138,90,.75); stroke-width: 1; }
+.wind .wd-arrow { fill: none; stroke: #d9d2bf; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.wind .wd-hull { fill: var(--bone); stroke: rgba(13,17,19,.8); stroke-width: .8; }
+.wind .wd-bowline { stroke: var(--bone); stroke-width: 1.4; stroke-dasharray: 2 1.6; }
+.speed.luffing { border-color: rgba(255,122,82,.8); }
+.speed.luffing .wd-nogo { fill: rgba(255,106,66,.62); stroke: #ff7a52; animation: luff-blink .7s ease-in-out infinite alternate; }
+.speed.luffing .wd-hull { fill: #ff9a76; }
+.speed.luffing .wd-bowline { stroke: #ff9a76; }
 
 .dig-meter { position: absolute; left: 50%; top: calc(var(--safe-t) + 178px); transform: translateX(-50%); pointer-events: none; text-align: center; color: var(--bone); font-family: var(--label); font-weight: 700; font-size: 15px; letter-spacing: .5px; transition: opacity .3s; background: rgba(13,17,19,.85); padding: 7px 14px 9px; border-radius: 3px; border: 1px solid var(--line); white-space: nowrap; }
 .dig-meter .dm-bar { width: 160px; height: 8px; background: #050707; margin: 6px auto 0; overflow: hidden; border: 1px solid var(--line); }
