@@ -2203,7 +2203,9 @@ export class Game implements GameAPI {
     const rel = angleDiff(b.heading, WORLD.wind.dir);
     const swing = clamp(-Math.sin(rel) * 0.9, -1.0, 1.0);
     const sailEase = 1 - Math.exp(-dt * 3.08); // the old 5 %/frame at 60 fps, in time
-    for (const sail of this.ship.sails) sail.rotation.y = lerp(sail.rotation.y, Math.PI / 2 + swing, sailEase);
+    // a luffing sail flogs: it swings from side to side round the mast (this.luffing is last frame's; it eases)
+    const flog = this.luffing * Math.sin(this.t * 3.4) * 0.32;
+    for (const sail of this.ship.sails) sail.rotation.y = lerp(sail.rotation.y, Math.PI / 2 + swing + flog, sailEase);
     // Upwind cues (balance pass 1, #5, option A: feel only, speeds unchanged). Pointing within ~25-50° of dead
     // upwind the canvas luffs; held there a while, a crew member says so (or, sailing alone, a one-time tip).
     const offUpwind = Math.abs(angleDiff(b.heading, WORLD.wind.dir + Math.PI));
