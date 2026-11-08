@@ -1,4 +1,4 @@
-// TIDEBREAKERS core: rendering loop, sailing and motoring, weather and hull, salvage, crew, raiders,
+// SCRAP TIDE core: rendering loop, sailing and motoring, weather and hull, salvage, crew, raiders,
 // settlements, going ashore, digging, treasure, the first voyage and the Captain's Log.
 import { heroize, updateHeroLight } from '../world/hero';
 import * as THREE from 'three';
