@@ -481,11 +481,20 @@ export function trophyGeometry(id: string): THREE.BufferGeometry {
   return merge(parts);
 }
 
+export interface ClothRig {
+  pivot: THREE.Vector3; // the mast foot, in the ship group's frame
+  meshes: { mesh: THREE.Mesh; base: THREE.Matrix4; toParent: THREE.Matrix4 }[]; // world-in-group at rest; group → parent
+}
+
 export interface ShipParts {
   group: THREE.Group;
   sails: THREE.Mesh[];
-  /** The Trimaran model's own sail cloth, regrouped about the mast so it can shiver when it luffs (null otherwise). */
-  clothPivot: THREE.Object3D | null;
+  /**
+   * The Trimaran model's own sail cloth, rigged to shiver about the mast when it luffs (null on other boats). The
+   * meshes stay where they are in the model; their matrices are driven directly, so no new Object3D is created (each
+   * one would draw Math.random for its uuid and shift the seeded simulations).
+   */
+  cloth: ClothRig | null;
   flag: THREE.Mesh | null;
   anchor: THREE.Object3D;
   rope: THREE.Mesh;
@@ -1083,30 +1092,27 @@ export function buildShip(store: Store): ShipParts {
   });
 
   // the model's sail cloth (its base mainsail and jib, their band, or the Canvas Mainsail upgrade) is baked with the
-  // hull material by material; regroup those meshes under a pivot on the mast so a luffing sail can shake
-  let clothPivot: THREE.Object3D | null = null;
+  // hull material by material; rig those meshes to shake about the mast when the sail luffs (see animateShip)
+  let cloth: ClothRig | null = null;
   if (glb) {
-    group.updateMatrixWorld(true);
-    const cloth: THREE.Mesh[] = [];
+    group.updateMatrixWorld(true); // the group has no parent yet, so world = the group's own frame
+    const meshes: ClothRig['meshes'] = [];
     group.traverse((o) => {
       const m = o as THREE.Mesh;
-      if (m.isMesh && SLOOP_CLOTH.includes(m.userData.srcMaterial)) cloth.push(m);
+      if (!m.isMesh || !SLOOP_CLOTH.includes(m.userData.srcMaterial) || !m.parent) return;
+      meshes.push({ mesh: m, base: m.matrixWorld.clone(), toParent: m.parent.matrixWorld.clone().invert() });
     });
-    if (cloth.length) {
+    if (meshes.length) {
       const mast = glb.root.getObjectByName('socket_sail')?.getWorldPosition(new THREE.Vector3()) ?? new THREE.Vector3(0, 0, SLOOP_MAST_Z);
-      clothPivot = new THREE.Group();
-      clothPivot.name = 'sail_luff_pivot';
-      clothPivot.position.set(mast.x, 0, mast.z);
-      group.add(clothPivot);
-      clothPivot.updateMatrixWorld(true);
-      for (const m of cloth) clothPivot.attach(m);
+      cloth = { pivot: new THREE.Vector3(mast.x, 0, mast.z), meshes };
+      for (const c of meshes) c.mesh.matrixAutoUpdate = false;
     }
   }
 
   return {
     group,
     sails,
-    clothPivot,
+    cloth,
     flag,
     anchor,
     rope,
@@ -1187,6 +1193,8 @@ function subdivideForBillow(g: THREE.BufferGeometry) {
   g.userData.bb = [minX, minY, maxX - minX || 1, maxY - minY || 1];
 }
 
+const _rig = new THREE.Matrix4(), _m = new THREE.Matrix4();
+
 /**
  * Billow sails based on wind fill (0..1), flutter flags, spin turbines and radar. `luff` (0..1) is how hard the sails
  * are luffing (pointing too close to the wind): the belly collapses and the cloth flogs, worst at the trailing edge.
@@ -1214,10 +1222,18 @@ export function animateShip(p: ShipParts, t: number, fill: number, luff = 0, win
     pos.needsUpdate = true;
     g.computeVertexNormals();
   }
-  if (p.clothPivot) {
-    // the model's sails are rigid meshes: a luffing sail shivers about the mast and its belly empties
-    p.clothPivot.rotation.y = luff * 0.05 * Math.sin(t * 15);
-    p.clothPivot.scale.x = 1 - luff * (0.35 + 0.25 * Math.sin(t * 11));
+  if (p.cloth) {
+    // the model's sails are rigid meshes: a luffing sail shivers about the mast and its belly empties (squashed
+    // toward the centreline). Applied in the ship's frame about the mast foot, then mapped back into each mesh's parent.
+    const { pivot, meshes } = p.cloth;
+    _rig.makeTranslation(pivot.x, pivot.y, pivot.z)
+      .multiply(_m.makeRotationY(luff * 0.05 * Math.sin(t * 15)))
+      .multiply(_m.makeScale(1 - luff * (0.35 + 0.25 * Math.sin(t * 11)), 1, 1))
+      .multiply(_m.makeTranslation(-pivot.x, -pivot.y, -pivot.z));
+    for (const c of meshes) {
+      c.mesh.matrix.multiplyMatrices(c.toParent, _rig).multiply(c.base);
+      c.mesh.matrixWorldNeedsUpdate = true;
+    }
   }
   if (p.flag) {
     // the flag streams downwind from its hoist (+x is the fly; rotation.y = π/2 points it aft)
