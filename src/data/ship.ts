@@ -2,7 +2,7 @@
 // Every upgrade is visible on the boat: `visual` names a procedural part or a GITCRAFT MeshCraft model node
 // from public/models/tb_boat_kit.glb (see ship/shipModel.ts).
 
-export type VesselId = 'dinghy' | 'sloop' | 'ironwake';
+export type VesselId = 'dinghy' | 'sloop' | 'brig' | 'ironwake';
 export type UpgradeSlot =
   | 'sail'
   | 'engine'
@@ -30,6 +30,7 @@ export interface VesselDef {
   crossSwell: boolean;
   crossStorm: boolean;
   cost?: Cost;
+  builtAt?: string[]; // settlements whose yard can build her (default: Driftholm)
   desc: string;
 }
 
@@ -90,6 +91,13 @@ export const VESSELS: Record<VesselId, VesselDef> = {
     id: 'sloop', name: 'Scrap Trimaran', speed: 10.5, turn: 0.95, cargo: 14, trophySlots: 3, berths: 2, hull: 100, crossSwell: true, crossStorm: false,
     cost: { gold: 420, mats: [{ id: 'driftwood', n: 8 }, { id: 'scrap_metal', n: 6 }, { id: 'canvas', n: 3 }, { id: 'iron_nails', n: 4 }] },
     desc: 'A real deck, a keel, and two outrigger floats welded from fuel tanks. Built to cross the open swell to the Sunken Reach.',
+  },
+  // the missing rung (design bible PR 2.5): a square-rigged brig welded from Rustfang prize steel
+  brig: {
+    id: 'brig', name: 'Salt Brig', speed: 11.5, turn: 0.9, cargo: 18, trophySlots: 3, berths: 3, hull: 130, crossSwell: true, crossStorm: false,
+    cost: { gold: 800, mats: [{ id: 'canvas', n: 6 }, { id: 'rope', n: 6 }, { id: 'alloy_plate', n: 3 }, { id: 'engine_parts', n: 2 }] },
+    builtAt: ['helios'],
+    desc: 'Two masts of square sails cut from billboards, a hull of Rustfang prize plate, harpoon mounts on both rails. The first thing in the Reach that raiders steer around.',
   },
   ironwake: {
     id: 'ironwake', name: 'Ironwake Expedition Cat', speed: 12.5, turn: 0.85, cargo: 22, trophySlots: 4, berths: 4, hull: 160, crossSwell: true, crossStorm: true,

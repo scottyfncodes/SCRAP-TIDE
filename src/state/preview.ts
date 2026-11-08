@@ -9,6 +9,8 @@ const SHIP_ALIASES: Record<string, VesselId> = {
   patchwork: 'dinghy',
   trimaran: 'sloop',
   sloop: 'sloop',
+  brig: 'brig',
+  saltbrig: 'brig',
   ironwake: 'ironwake',
   cat: 'ironwake',
 };
