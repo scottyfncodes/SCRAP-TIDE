@@ -412,7 +412,7 @@ export class UI {
     const label = motoring ? 'under power' : pos ? pos.label : eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind';
     if (sm.textContent !== label) {
       sm.textContent = label;
-      sm.className = motoring ? 'power' : pos ? pos.cls : eff > 0.92 ? 'good' : eff > 0.7 ? '' : 'bad';
+      sm.className = `pos ${motoring ? 'power' : pos ? pos.cls : eff > 0.92 ? 'good' : eff > 0.7 ? '' : 'bad'}`;
     }
   }
 

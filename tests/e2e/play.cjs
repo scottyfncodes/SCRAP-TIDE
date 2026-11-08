@@ -346,12 +346,12 @@ const check = (name, ok, detail = '') => {
     await playFor(4.5);
     const up = await g(() => {
       const G = window.__game, s = document.querySelector('.speed');
-      return { label: s.querySelector('small').textContent, luffing: s.classList.contains('luffing'), speed: G.boat.speed, stat: G.store.stats.speed,
+      return { label: s.querySelector('small').textContent, cls: s.querySelector('small').className, luffing: s.classList.contains('luffing'), speed: G.boat.speed, stat: G.store.stats.speed,
         toasts: window.__toastLog.splice(0), dial: !!s.querySelector('.wd-nogo') && !!s.querySelector('.wd-hull') };
     });
     await page.screenshot({ path: `${out}/upwind_luffing.png` });
     const want = up.stat * (1 - 0.55 * Math.cos(0.08));
-    check('upwind: 5° off the wind the readout says LUFFING and the wind dial lights its no-go wedge', up.label === 'luffing' && up.luffing && up.dial, JSON.stringify({ label: up.label, luffing: up.luffing }));
+    check('upwind: 5° off the wind the readout says LUFFING and the wind dial lights its no-go wedge', up.label === 'luffing' && /\bluff\b/.test(up.cls) && /\bpos\b/.test(up.cls) && up.luffing && up.dial, JSON.stringify({ label: up.label, cls: up.cls, luffing: up.luffing }));
     check('upwind: a crew (or sail) line tells the captain to bear away', up.toasts.some((t) => /left|right/.test(t) && /luff|flogging|pinching|wind/i.test(t)), up.toasts.join(' | '));
     check('upwind: speed into the wind is unchanged (45% curve, no hard no-go zone)', Math.abs(up.speed - want) / want < 0.08, `${up.speed.toFixed(2)} vs ${want.toFixed(2)} m/s`);
     await g((h) => { window.__uw.h = h; window.__game.boat.heading = h; }, UP + 1.2);
