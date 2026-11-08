@@ -1,14 +1,30 @@
 {
   "name": "SCRAP TIDE",
   "short_name": "Scrap Tide",
-  "description": "A treasure-hunting pirate adventure. The ocean is full of secrets.",
+  "description": "SCRAP TIDE — a survival adventure on a drowned Earth. The world drowned. You didn’t.",
   "start_url": "./",
   "display": "fullscreen",
   "orientation": "any",
   "background_color": "#0d1113",
   "theme_color": "#0d1113",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
