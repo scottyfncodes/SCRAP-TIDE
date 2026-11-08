@@ -44,9 +44,20 @@ const check = (name, ok, detail = '') => {
   const click = async (re) => {
     // a card that arrived late (renown, milestones: they fire on game time, which runs slowly here) is tapped away
     // first, as a player would
-    if (await page.$('.reveal')) await dismiss();
-    const btns = await page.$$('.actions .act');
-    for (const b of btns) if (re.test(await b.textContent())) { await b.click(); return true; }
+    // first, as a player would; one can also land between that check and the click, so a blocked click is retried
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (await page.$('.reveal')) await dismiss();
+      const btns = await page.$$('.actions .act');
+      let hit = null;
+      for (const b of btns) if (re.test(await b.textContent())) { hit = b; break; }
+      if (!hit) return false;
+      try {
+        await hit.click({ timeout: 5000 });
+        return true;
+      } catch {
+        /* intercepted by a late card, or re-rendered: dismiss and try again */
+      }
+    }
     return false;
   };
   // headless software GL renders a few fps and the game caps dt, so wait on *game* time, not wall time
@@ -328,7 +339,7 @@ const check = (name, ok, detail = '') => {
   await page.reload();
   await page.waitForSelector('.title-screen .act', { timeout: 180000 });
   const after = await g(() => ({ crew: window.__game.store.data.crew, hauls: window.__game.store.data.hauls, v: window.__game.store.data.version, ups: window.__game.store.data.upgrades.length }));
-  check('progress survives a reload (save v4)', after.v === 4 && after.crew.includes('kai') && after.hauls === 1 && after.ups >= 2, JSON.stringify(after));
+  check('progress survives a reload (save v5)', after.v === 5 && after.crew.includes('kai') && after.hauls === 1 && after.ups >= 2, JSON.stringify(after));
 
   check('no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   const fails = results.filter((r) => !r.ok).length;

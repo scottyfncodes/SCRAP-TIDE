@@ -9,6 +9,7 @@ import { item } from '../data/items';
 export const GOAL_BUILDS: Record<string, { upgrade?: string; vessel?: VesselId }> = {
   g_engine: { upgrade: 'engine_outboard' },
   g_trimaran: { vessel: 'sloop' },
+  g_brig: { vessel: 'brig' },
   g_ironwake: { vessel: 'ironwake' },
 };
 
