@@ -1162,7 +1162,12 @@ function subdivideForBillow(g: THREE.BufferGeometry) {
 }
 
 /** Billow sails based on wind fill (0..1), flutter flags, spin turbines and radar. */
-export function animateShip(p: ShipParts, t: number, fill: number) {
+/**
+ * @param fill how full the sails are (0..1)
+ * @param luffing 0..1 when pointing too close to the wind: the canvas goes slack and flutters along its leading
+ *   edge (balance pass 1, #5: a cue only; speeds are unchanged)
+ */
+export function animateShip(p: ShipParts, t: number, fill: number, luffing = 0) {
   for (const r of p.rotors) r.rotation.z = t * 9;
   if (p.radar?.userData.spin) p.radar.rotation.y = t * 1.6; // the MeshCraft radar's scanner sweeps
   for (const s of p.sails) {
@@ -1177,7 +1182,9 @@ export function animateShip(p: ShipParts, t: number, fill: number) {
       const y = (base[i * 3 + 1] - minY) / hgt;
       const belly = Math.sin(x * Math.PI) * Math.sin(Math.min(1, y * 1.2) * Math.PI * 0.9 + 0.1);
       const luff = (1 - fill) * Math.sin(t * 9 + x * 8 + y * 5) * 0.06;
-      pos.setZ(i, belly * (0.12 + fill * 0.45) * (w * 0.35) + luff);
+      // luffing: a fast ripple running back from the leading edge, and the belly collapses
+      const flutter = luffing * Math.sin(t * 15 + y * 6 - x * 5) * 0.16 * (1 - 0.7 * x);
+      pos.setZ(i, belly * (0.12 + fill * 0.45) * (1 - 0.65 * luffing) * (w * 0.35) + luff + flutter);
     }
     pos.needsUpdate = true;
     g.computeVertexNormals();

@@ -19,7 +19,8 @@ export type LineTrigger =
   | 'fish'
   | 'region' // first time into a region
   | 'poi' // first sight of a named place
-  | 'night';
+  | 'night'
+  | 'upwind'; // the sails are luffing: pointed too close to the wind
 
 export interface CharacterLine {
   trigger: LineTrigger;
@@ -56,6 +57,7 @@ export const CHARACTERS: CharacterDef[] = [
       L('hull', 'She’s taking water! Give me two minutes and a hammer!'),
       L('dock', 'Don’t buy anything off Vik until I’ve looked at it.', 'helios'),
       L('storm', 'Wind’s ripping the canvas. Engine’s fine. Engine’s always fine.'),
+      L('upwind', 'Sails are flapping like washing. Bear away, or let me start the engine.'),
       L('night', 'Hear that knock in the prop shaft? No? Good. Neither do I.'),
     ],
   },
@@ -70,6 +72,7 @@ export const CHARACTERS: CharacterDef[] = [
       L('dock', 'Forty years I looked at the sea from up there. It’s better from down here.', 'hollow'),
       L('green', 'My mother grew beans in a boot. Real beans. I never believed her.'),
       L('storm', 'Rain’s fresh water, Captain. Open your mouth and steer.'),
+      L('upwind', 'You’ll not catch the wind pointing straight at it. Fall off a little.'),
       L('region', 'Swell like this, the fish go deep. So do sensible people.', 'emerald'),
       L('night', 'Fish rise at first light. So do fools. We’re both.'),
     ],
@@ -82,6 +85,7 @@ export const CHARACTERS: CharacterDef[] = [
     lines: [
       L('join', 'Eleven days on that raft. I saw you coming from six miles out.'),
       L('storm', 'Storm ahead, Captain. Go round, or brace.'),
+      L('upwind', 'She’s luffing, Captain. Wind’s right on the nose.'),
       L('storm', 'Storm on us! Hold her steady, she’ll take a beating.'),
       L('raiders', 'Rustfang skiffs! Coming in hard!'),
       L('green', 'Is that… green? Captain, that thing is alive.'),
@@ -103,6 +107,7 @@ export const CHARACTERS: CharacterDef[] = [
       L('poi', 'Third roof left, chalk mark. Mine. Fifteen years old and still right.', 'meridian'),
       L('haul', 'Nearest unworked site, two points off the bow. You’re welcome.'),
       L('storm', 'Barometer’s falling like a stone. I’d turn. You won’t.'),
+      L('upwind', 'Forty-five degrees off the wind and she flies. Nose into it, she crawls.'),
       L('region', 'Open water at last. A sea worth charting.', 'emerald'),
       L('region', 'Nobody has drawn this. Hold her steady and I will.', 'stormwall'),
       L('night', 'Stars are the only chart nobody ever drowned.'),
@@ -118,6 +123,7 @@ export const CHARACTERS: CharacterDef[] = [
       L('haul', 'Easy… easy. There. The sea gave something back.'),
       L('haul', 'Somebody lived down there once. Kept this safe, right till the water came.', 'first'),
       L('raiders', 'Rustfang colours. Don’t let them board. Don’t let them talk.'),
+      L('upwind', 'The Gannet hated a head wind too. Turn her a touch and she’ll fill.'),
       L('poi', 'That gate’s made from my boat. I’d know those rivets anywhere.', 'hold'),
       L('night', 'My boat had a name. The Gannet. Say it sometimes, so it’s still a boat.'),
     ],
@@ -133,6 +139,7 @@ export const CHARACTERS: CharacterDef[] = [
       L('repelled', 'Hooked. Let them swim home and tell the others.'),
       L('repelled', 'And stay out!'),
       L('storm', 'Storms are honest. They don’t pretend they aren’t trying to kill you.'),
+      L('upwind', 'We’re in irons, near enough. Bear off before someone sees us like this.'),
       L('poi', 'Don’t look at the gate. Look at the gaps in it.', 'hold'),
       L('night', 'This. This is what I signed for.'),
     ],

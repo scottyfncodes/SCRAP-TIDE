@@ -122,6 +122,10 @@ export class Game implements GameAPI {
   private msgCooldown: Record<string, number> = {};
   private barkRecent: string[] = [];
   private barkAt = -99;
+  /** 0..1: how hard the sails are luffing (pointing too close to the wind); a cue only */
+  private luffing = 0;
+  private luffT = 0;
+  private luffSaid = false;
   private nightSaid = false;
   private voyageTowerPassed = false;
   private side: Lead | null = null;
@@ -2200,7 +2204,23 @@ export class Game implements GameAPI {
     const swing = clamp(-Math.sin(rel) * 0.9, -1.0, 1.0);
     const sailEase = 1 - Math.exp(-dt * 3.08); // the old 5 %/frame at 60 fps, in time
     for (const sail of this.ship.sails) sail.rotation.y = lerp(sail.rotation.y, Math.PI / 2 + swing, sailEase);
-    animateShip(this.ship, this.t, b.anchored || b.docked ? 0.15 : clamp(b.speed / st.speed, 0, 1) * eff);
+    // Upwind cues (balance pass 1, #5, option A: feel only, speeds unchanged). Pointing within ~25-50° of dead
+    // upwind the canvas luffs; held there a while, a crew member says so (or, sailing alone, a one-time tip).
+    const offUpwind = Math.abs(angleDiff(b.heading, WORLD.wind.dir + Math.PI));
+    const underSail = !b.docked && !b.anchored && b.speed > 0.5;
+    const luffTarget = underSail ? clamp((0.87 - offUpwind) / 0.44, 0, 1) : 0; // 50° → 0, 25° → 1
+    this.luffing += (luffTarget - this.luffing) * (1 - Math.exp(-dt * 2.5));
+    if (luffTarget > 0.6 && !motoring) this.luffT += dt;
+    else if (luffTarget < 0.3) (this.luffT = 0), (this.luffSaid = false);
+    if (this.luffT > 6 && !this.luffSaid && this.started) {
+      this.luffSaid = true;
+      if (!this.crewBark('upwind', {}, { prefer: 'navigator', cool: 240 }) && !this.store.data.crew.length && !this.store.data.flags.includes('tip_upwind')) {
+        this.store.data.flags.push('tip_upwind');
+        this.store.commit();
+        this.ui.toast('Sails luffing: she’s pointed into the wind. Bear away 45° or more for speed, or run the engine.', { color: '#9aa9b4', life: 5 });
+      }
+    }
+    animateShip(this.ship, this.t, b.anchored || b.docked ? 0.15 : clamp(b.speed / st.speed, 0, 1) * eff, this.luffing);
 
     // anchor visuals
     const a = this.ship.anchor;
@@ -2278,7 +2298,7 @@ export class Game implements GameAPI {
     }
     audio.ambience(dt, b.speed, false, Math.max(swellFactor(b.x, b.z), this.atmo.storm), this.currentRegion, this.atmo.storm);
     pack.music(this.currentRegion, this.raiders.danger);
-    this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff, motoring);
+    this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff, motoring, this.luffing);
     this.ui.setDigMeter(null);
 
     // contextual actions

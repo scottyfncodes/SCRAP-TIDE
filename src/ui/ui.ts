@@ -382,7 +382,7 @@ export class UI {
     this.compassEl.querySelector('.cl')!.textContent = label;
   }
 
-  setSpeed(knots: number | null, windAngle: number, eff: number, motoring = false) {
+  setSpeed(knots: number | null, windAngle: number, eff: number, motoring = false, luffing = 0) {
     if (knots === null) {
       this.speedEl.style.display = 'none';
       return;
@@ -392,7 +392,7 @@ export class UI {
     const kn = this.speedEl.querySelector('.kn')!;
     kn.querySelector('b')!.textContent = knots.toFixed(1);
     const sm = kn.querySelector('small')!;
-    const label = motoring ? 'under power' : eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind';
+    const label = motoring ? 'under power' : luffing > 0.5 ? 'luffing: bear away' : eff > 0.92 ? 'good wind' : eff > 0.7 ? 'fair wind' : 'into the wind';
     if (sm.textContent !== label) {
       sm.textContent = label;
       sm.className = motoring ? 'power' : eff > 0.92 ? 'good' : eff > 0.7 ? '' : 'bad';
