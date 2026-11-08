@@ -1,0 +1,1133 @@
+{
+  "generated_at": "2026-11-08T18:19:34.404Z",
+  "commit": "0deb7ce73f01095030fed9ac825ecd0e68dd5dce",
+  "branch": "sim/brig-ironwake",
+  "dirty_src": false,
+  "environment": "headless Chromium (Playwright) with SwiftShader software WebGL on a Linux container. NOT a real device.",
+  "server": "vite dev server (src/)",
+  "simulation": "progression",
+  "evidence_class": "simulation-measured",
+  "winch": "2/3",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "method": "campaign() as in campaign.json, now with the Salt Brig before the Ironwake (the Captain’s Log order); per vessel step: actions, respawn wait, the gold and materials it started with, and which materials were still short at each action. Fixed start: affordability() for the Brig (from the Trimaran) and the Ironwake (from the Brig), 15 gold, nothing carried over.",
+  "summary": {
+    "trimaran": {
+      "mean": 18.3,
+      "min": 15,
+      "max": 21,
+      "sd": 1.8
+    },
+    "brig": {
+      "mean": 28.6,
+      "min": 20,
+      "max": 39,
+      "sd": 6.3
+    },
+    "ironwake": {
+      "mean": 41,
+      "min": 30,
+      "max": 58,
+      "sd": 8.5
+    },
+    "wait_min": {
+      "trimaran": {
+        "mean": 20.8,
+        "min": 16,
+        "max": 26.03,
+        "sd": 3
+      },
+      "brig": {
+        "mean": 2.1,
+        "min": 0,
+        "max": 6.32,
+        "sd": 2
+      },
+      "ironwake": {
+        "mean": 18.7,
+        "min": 10,
+        "max": 30.02,
+        "sd": 5.5
+      }
+    },
+    "ratio_brig_to_trimaran": 1.56,
+    "ratio_ironwake_to_brig": 1.43,
+    "fixed_start": {
+      "brig": {
+        "affordable": "20/20",
+        "actions": {
+          "mean": 25.8,
+          "min": 20,
+          "max": 31,
+          "sd": 3.1
+        },
+        "wait_min": {
+          "mean": 6.8,
+          "min": 3.42,
+          "max": 7.63,
+          "sd": 0.8
+        }
+      },
+      "ironwake": {
+        "affordable": "20/20",
+        "actions": {
+          "mean": 52.6,
+          "min": 44,
+          "max": 87,
+          "sd": 9.2
+        },
+        "wait_min": {
+          "mean": 23.3,
+          "min": 12,
+          "max": 34.03,
+          "sd": 5.4
+        }
+      }
+    },
+    "deterministic": true
+  },
+  "campaign": [
+    {
+      "seed": 1,
+      "total_actions": 241,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 10,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 19,
+        "wait_min": 22.03,
+        "start": {
+          "gold": 63,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+iron_nails+scrap_metal": 1,
+          "driftwood+scrap_metal": 4,
+          "driftwood": 3,
+          "gold only": 8
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 20,
+        "wait_min": 0.5,
+        "start": {
+          "gold": 762,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 12,
+          "alloy_plate+canvas+engine_parts": 4,
+          "alloy_plate+engine_parts": 3,
+          "engine_parts": 1
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 35,
+        "wait_min": 19,
+        "start": {
+          "gold": 292,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 3,
+          "alloy_plate+canvas+engine_parts": 7,
+          "alloy_plate+canvas": 2,
+          "alloy_plate": 16,
+          "gold only": 7
+        }
+      }
+    },
+    {
+      "seed": 2,
+      "total_actions": 228,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 10,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 16,
+        "wait_min": 20.03,
+        "start": {
+          "gold": 34,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+iron_nails+scrap_metal": 1,
+          "driftwood+scrap_metal": 1,
+          "driftwood": 4,
+          "gold only": 7
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 30,
+        "wait_min": 0,
+        "start": {
+          "gold": 780,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 7,
+          "alloy_plate+canvas+engine_parts": 11,
+          "alloy_plate+engine_parts": 9,
+          "engine_parts": 3
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 44,
+        "wait_min": 18.5,
+        "start": {
+          "gold": 409,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 2,
+          "alloy_plate+canvas+engine_parts": 2,
+          "alloy_plate+engine_parts": 18,
+          "alloy_plate": 15,
+          "gold only": 7
+        }
+      }
+    },
+    {
+      "seed": 3,
+      "total_actions": 242,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 9,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 19,
+        "wait_min": 24.03,
+        "start": {
+          "gold": 19,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+scrap_metal": 1,
+          "driftwood": 2,
+          "gold only": 10
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 32,
+        "wait_min": 0.5,
+        "start": {
+          "gold": 464,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 10,
+          "alloy_plate+canvas+engine_parts": 3,
+          "canvas+engine_parts": 2,
+          "engine_parts": 17
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 30,
+        "wait_min": 16.02,
+        "start": {
+          "gold": 302,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 8,
+          "alloy_plate+canvas": 4,
+          "alloy_plate": 8,
+          "gold only": 10
+        }
+      }
+    },
+    {
+      "seed": 4,
+      "total_actions": 208,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 10,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 17,
+        "wait_min": 16,
+        "start": {
+          "gold": 120,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+iron_nails+scrap_metal": 1,
+          "driftwood+scrap_metal": 5,
+          "driftwood": 5,
+          "gold only": 3
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 25,
+        "wait_min": 4,
+        "start": {
+          "gold": 302,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 14,
+          "alloy_plate+canvas+engine_parts": 5,
+          "canvas+engine_parts": 4,
+          "engine_parts": 2
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 38,
+        "wait_min": 17.52,
+        "start": {
+          "gold": 102,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 11,
+          "alloy_plate+electronics+engine_parts": 12,
+          "alloy_plate": 4,
+          "gold only": 11
+        }
+      }
+    },
+    {
+      "seed": 5,
+      "total_actions": 207,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 8,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 15,
+        "wait_min": 16.02,
+        "start": {
+          "gold": 10,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+iron_nails+scrap_metal": 1,
+          "driftwood+scrap_metal": 4,
+          "driftwood": 3,
+          "gold only": 4
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 22,
+        "wait_min": 3,
+        "start": {
+          "gold": 592,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 8,
+          "alloy_plate+canvas+rope": 5,
+          "alloy_plate+canvas": 5,
+          "canvas": 4
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 34,
+        "wait_min": 24.02,
+        "start": {
+          "gold": 63,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 5,
+          "alloy_plate+canvas+electronics": 1,
+          "alloy_plate+electronics": 2,
+          "alloy_plate": 15,
+          "gold only": 11
+        }
+      }
+    },
+    {
+      "seed": 6,
+      "total_actions": 224,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 11,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 18,
+        "wait_min": 20.03,
+        "start": {
+          "gold": 55,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+iron_nails+scrap_metal": 2,
+          "driftwood+scrap_metal": 4,
+          "driftwood": 2,
+          "gold only": 7
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 30,
+        "wait_min": 0.82,
+        "start": {
+          "gold": 326,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 9,
+          "alloy_plate+canvas+engine_parts": 11,
+          "alloy_plate+engine_parts": 6,
+          "engine_parts": 2,
+          "gold only": 2
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 39,
+        "wait_min": 14,
+        "start": {
+          "gold": 72,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 2,
+          "alloy_plate+canvas+engine_parts": 2,
+          "alloy_plate+engine_parts": 17,
+          "alloy_plate": 12,
+          "gold only": 6
+        }
+      }
+    },
+    {
+      "seed": 7,
+      "total_actions": 256,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 7,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 21,
+        "wait_min": 26.03,
+        "start": {
+          "gold": 79,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 4,
+          "driftwood+scrap_metal": 4,
+          "driftwood": 5,
+          "gold only": 8
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 29,
+        "wait_min": 0,
+        "start": {
+          "gold": 1127,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 9,
+          "alloy_plate+canvas+engine_parts": 6,
+          "canvas+engine_parts": 2,
+          "engine_parts": 12
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 58,
+        "wait_min": 10,
+        "start": {
+          "gold": 897,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 6,
+          "alloy_plate+electronics+engine_parts": 43,
+          "alloy_plate": 9
+        }
+      }
+    },
+    {
+      "seed": 8,
+      "total_actions": 253,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 11,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 18,
+        "wait_min": 22.03,
+        "start": {
+          "gold": 59,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+scrap_metal": 2,
+          "driftwood": 2,
+          "gold only": 8
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 21,
+        "wait_min": 2.5,
+        "start": {
+          "gold": 428,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 10,
+          "alloy_plate+canvas+rope": 3,
+          "alloy_plate+canvas": 6,
+          "alloy_plate": 1,
+          "gold only": 1
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 54,
+        "wait_min": 14.5,
+        "start": {
+          "gold": 47,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 6,
+          "alloy_plate+electronics+engine_parts": 30,
+          "alloy_plate+engine_parts": 6,
+          "alloy_plate": 8,
+          "gold only": 4
+        }
+      }
+    },
+    {
+      "seed": 9,
+      "total_actions": 228,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 11,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 21,
+        "wait_min": 22,
+        "start": {
+          "gold": 75,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 3,
+          "driftwood+iron_nails+scrap_metal": 1,
+          "driftwood+scrap_metal": 7,
+          "driftwood": 7,
+          "gold only": 3
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 38,
+        "wait_min": 3.82,
+        "start": {
+          "gold": 217,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 11,
+          "alloy_plate+canvas+engine_parts": 8,
+          "alloy_plate+engine_parts": 2,
+          "engine_parts": 12,
+          "gold only": 5
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 35,
+        "wait_min": 23,
+        "start": {
+          "gold": 83,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 2,
+          "alloy_plate+canvas+engine_parts": 8,
+          "alloy_plate+canvas": 2,
+          "alloy_plate": 19,
+          "gold only": 4
+        }
+      }
+    },
+    {
+      "seed": 10,
+      "total_actions": 224,
+      "goal_stuck_at": "g_raiders",
+      "max_before_trimaran": 8,
+      "sloop": {
+        "ok": true,
+        "bought": true,
+        "actions": 19,
+        "wait_min": 20.02,
+        "start": {
+          "gold": 75,
+          "mats": {
+            "driftwood": 0,
+            "scrap_metal": 0,
+            "canvas": 0,
+            "iron_nails": 0
+          }
+        },
+        "short_of": {
+          "canvas+driftwood+iron_nails+scrap_metal": 4,
+          "driftwood+iron_nails+scrap_metal": 1,
+          "driftwood+scrap_metal": 4,
+          "driftwood": 4,
+          "gold only": 6
+        }
+      },
+      "brig": {
+        "ok": true,
+        "bought": true,
+        "actions": 39,
+        "wait_min": 6.32,
+        "start": {
+          "gold": 35,
+          "mats": {
+            "canvas": 0,
+            "rope": 0,
+            "alloy_plate": 0,
+            "engine_parts": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+engine_parts+rope": 9,
+          "alloy_plate+canvas+engine_parts": 10,
+          "alloy_plate+engine_parts": 5,
+          "engine_parts": 5,
+          "gold only": 10
+        }
+      },
+      "ironwake": {
+        "ok": true,
+        "bought": true,
+        "actions": 43,
+        "wait_min": 30.02,
+        "start": {
+          "gold": 39,
+          "mats": {
+            "alloy_plate": 0,
+            "engine_parts": 0,
+            "electronics": 0,
+            "canvas": 0
+          }
+        },
+        "short_of": {
+          "alloy_plate+canvas+electronics+engine_parts": 11,
+          "alloy_plate+canvas+engine_parts": 1,
+          "alloy_plate+engine_parts": 4,
+          "alloy_plate": 18,
+          "gold only": 9
+        }
+      }
+    }
+  ],
+  "fixed_start": [
+    {
+      "seed": 1,
+      "target": "brig",
+      "ok": true,
+      "actions": 28,
+      "hauls": 12,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 1,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 47,
+      "hauls": 28,
+      "wait_min": 27.55
+    },
+    {
+      "seed": 2,
+      "target": "brig",
+      "ok": true,
+      "actions": 24,
+      "hauls": 10,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 2,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 87,
+      "hauls": 13,
+      "wait_min": 12
+    },
+    {
+      "seed": 3,
+      "target": "brig",
+      "ok": true,
+      "actions": 25,
+      "hauls": 11,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 3,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 51,
+      "hauls": 20,
+      "wait_min": 23.02
+    },
+    {
+      "seed": 4,
+      "target": "brig",
+      "ok": true,
+      "actions": 29,
+      "hauls": 12,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 4,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 49,
+      "hauls": 20,
+      "wait_min": 23.52
+    },
+    {
+      "seed": 5,
+      "target": "brig",
+      "ok": true,
+      "actions": 24,
+      "hauls": 10,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 5,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 57,
+      "hauls": 17,
+      "wait_min": 16.02
+    },
+    {
+      "seed": 6,
+      "target": "brig",
+      "ok": true,
+      "actions": 24,
+      "hauls": 10,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 6,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 51,
+      "hauls": 21,
+      "wait_min": 23.02
+    },
+    {
+      "seed": 7,
+      "target": "brig",
+      "ok": true,
+      "actions": 28,
+      "hauls": 12,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 7,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 49,
+      "hauls": 24,
+      "wait_min": 30.02
+    },
+    {
+      "seed": 8,
+      "target": "brig",
+      "ok": true,
+      "actions": 28,
+      "hauls": 11,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 8,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 46,
+      "hauls": 23,
+      "wait_min": 19.53
+    },
+    {
+      "seed": 9,
+      "target": "brig",
+      "ok": true,
+      "actions": 24,
+      "hauls": 10,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 9,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 62,
+      "hauls": 14,
+      "wait_min": 16
+    },
+    {
+      "seed": 10,
+      "target": "brig",
+      "ok": true,
+      "actions": 27,
+      "hauls": 10,
+      "wait_min": 6.62
+    },
+    {
+      "seed": 10,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 49,
+      "hauls": 25,
+      "wait_min": 34.03
+    },
+    {
+      "seed": 11,
+      "target": "brig",
+      "ok": true,
+      "actions": 29,
+      "hauls": 12,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 11,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 49,
+      "hauls": 27,
+      "wait_min": 29.03
+    },
+    {
+      "seed": 12,
+      "target": "brig",
+      "ok": true,
+      "actions": 25,
+      "hauls": 11,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 12,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 50,
+      "hauls": 26,
+      "wait_min": 24.53
+    },
+    {
+      "seed": 13,
+      "target": "brig",
+      "ok": true,
+      "actions": 31,
+      "hauls": 13,
+      "wait_min": 7.63
+    },
+    {
+      "seed": 13,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 59,
+      "hauls": 20,
+      "wait_min": 22.02
+    },
+    {
+      "seed": 14,
+      "target": "brig",
+      "ok": true,
+      "actions": 22,
+      "hauls": 12,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 14,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 45,
+      "hauls": 15,
+      "wait_min": 20
+    },
+    {
+      "seed": 15,
+      "target": "brig",
+      "ok": true,
+      "actions": 26,
+      "hauls": 12,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 15,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 50,
+      "hauls": 22,
+      "wait_min": 20.03
+    },
+    {
+      "seed": 16,
+      "target": "brig",
+      "ok": true,
+      "actions": 31,
+      "hauls": 10,
+      "wait_min": 6.72
+    },
+    {
+      "seed": 16,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 44,
+      "hauls": 22,
+      "wait_min": 29.52
+    },
+    {
+      "seed": 17,
+      "target": "brig",
+      "ok": true,
+      "actions": 23,
+      "hauls": 7,
+      "wait_min": 3.42
+    },
+    {
+      "seed": 17,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 51,
+      "hauls": 21,
+      "wait_min": 28.52
+    },
+    {
+      "seed": 18,
+      "target": "brig",
+      "ok": true,
+      "actions": 27,
+      "hauls": 10,
+      "wait_min": 6.32
+    },
+    {
+      "seed": 18,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 58,
+      "hauls": 19,
+      "wait_min": 26.52
+    },
+    {
+      "seed": 19,
+      "target": "brig",
+      "ok": true,
+      "actions": 20,
+      "hauls": 10,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 19,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 54,
+      "hauls": 22,
+      "wait_min": 21.53
+    },
+    {
+      "seed": 20,
+      "target": "brig",
+      "ok": true,
+      "actions": 20,
+      "hauls": 12,
+      "wait_min": 7.02
+    },
+    {
+      "seed": 20,
+      "target": "ironwake",
+      "ok": true,
+      "actions": 45,
+      "hauls": 15,
+      "wait_min": 20
+    }
+  ],
+  "result_hash": "22af6609"
+}
