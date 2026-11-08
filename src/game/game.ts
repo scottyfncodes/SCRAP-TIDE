@@ -360,7 +360,7 @@ export class Game implements GameAPI {
     for (const c of this.ship.crew) heroize(c.root, 0.012); // (thinner ink on people than on hulls)
     heroize(this.ship.group, this.store.data.vessel === 'dinghy' ? 0.022 : 0.035);
     this.shipRoot.add(this.ship.group);
-    this.camDist = this.store.data.vessel === 'ironwake' ? 30 : this.store.data.vessel === 'sloop' ? 24 : 15;
+    this.camDist = this.store.data.vessel === 'ironwake' ? 30 : this.store.data.vessel === 'brig' ? 27 : this.store.data.vessel === 'sloop' ? 24 : 15;
     const st = this.store.stats;
     this.store.data.hull = Math.min(this.store.data.hull, st.hullMax);
     this.store.data.fuel = Math.min(this.store.data.fuel, st.fuelCap);
@@ -1655,6 +1655,7 @@ export class Game implements GameAPI {
       g_helios: () => d.flags.includes('docked_helios'),
       g_meridian: () => d.firstHauls.some((h) => h.startsWith('sv_meridian')),
       g_raiders: () => d.raidersRepelled > 0,
+      g_brig: () => d.vesselsOwned.includes('brig') || d.vesselsOwned.includes('ironwake'),
       g_ironwake: () => d.vesselsOwned.includes('ironwake'),
       g_spire: () => d.flags.includes('reached_spire'),
     };
@@ -2123,7 +2124,7 @@ export class Game implements GameAPI {
     const fx = Math.sin(b.heading), fz = Math.cos(b.heading);
     const nx = b.x + fx * b.speed * dt;
     const nz = b.z + fz * b.speed * dt;
-    const draft = this.store.data.vessel === 'sloop' ? 1.2 : 0.65;
+    const draft = this.store.data.vessel === 'sloop' || this.store.data.vessel === 'brig' ? 1.2 : 0.65;
     const blocked = (x: number, z: number): string | null => {
       const h = heightAt(x, z);
       if (isReef(x, z) && h < 0.2) {
@@ -2507,7 +2508,7 @@ export class Game implements GameAPI {
       pitch = 0.26;
     } else if (this.showcase) {
       this.camYaw += dt * 0.22;
-      target.set(this.boat.x, this.store.data.vessel === 'sloop' ? 3 : 1.2, this.boat.z);
+      target.set(this.boat.x, this.store.data.vessel === 'sloop' || this.store.data.vessel === 'brig' ? 3 : 1.2, this.boat.z);
       dist = this.ship.length * 2.1 + 4;
       pitch = 0.36;
       // drop the look-at point so the ship sits above the half-height sheet

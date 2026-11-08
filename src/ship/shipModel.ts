@@ -23,10 +23,11 @@ interface HullSpec {
 const HULLS: Record<VesselId, HullSpec> = {
   dinghy: { L: 4.4, W: 0.92, D: 0.75, sheer: 0.55, bowRise: 0.3, transom: 0.72 },
   sloop: { L: 10, W: 1.9, D: 1.5, sheer: 1.2, bowRise: 0.7, transom: 0.65 },
+  brig: { L: 12, W: 2.15, D: 1.65, sheer: 1.35, bowRise: 0.85, transom: 0.68 }, // the Salt Brig (PR 2.5): code-built
   ironwake: { L: 13, W: 1.15, D: 1.5, sheer: 1.3, bowRise: 0.6, transom: 0.7 }, // per hull; two hulls
 };
 const CAT_OFFSET = 2.7; // Ironwake hull centre offset (x)
-const KIT_SCALE: Record<VesselId, number> = { dinghy: 0.62, sloop: 1, ironwake: 1.25 };
+const KIT_SCALE: Record<VesselId, number> = { dinghy: 0.62, sloop: 1, brig: 1.1, ironwake: 1.25 };
 
 // GITCRAFT TIDEBREAKERS Coastal Sloop (public/models/tb_coastal_sloop.glb). Its hull is lofted from HULLS.sloop, so it
 // shares this file's frame exactly: metres, Y-up, bow +Z, y = 0 at the waterline, scale 1.
@@ -788,7 +789,33 @@ export function buildShip(store: Store): ShipParts {
   const sails: THREE.Mesh[] = [];
   const sc = vessel !== 'dinghy' ? 2.2 : 1;
   // code-built sails: always without the model; on the model only as the canvas mainsail's fallback
-  const codeSail = !glb || (sailTier >= 1 && !fitted.sail_canvas);
+  const brig = vessel === 'brig';
+  const codeSail = !brig && (!glb || (sailTier >= 1 && !fitted.sail_canvas));
+  if (brig) {
+    // the Salt Brig: two masts of square sails cut from billboards, a course and a topsail on each, with yards.
+    // The equipped sail cosmetic paints them; a better sail upgrade means bigger sails.
+    const sailMat = weather(new THREE.MeshToonMaterial({ map: sailTexture(s.equipped.sail, false), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 }), 0.7);
+    const spar = toonMat('#4a3a2a');
+    const foreZ = h.L * 0.28;
+    parts.push(paint(xf(new THREE.CylinderGeometry(0.11, 0.15, mastH * 0.9, 7), 0, mastBase + (mastH * 0.9) / 2, foreZ), woodDark));
+    const grow = sailTier >= 2 ? 1.12 : sailTier >= 1 ? 1.05 : 1;
+    for (const [z, hm] of [[mastZ, mastH], [foreZ, mastH * 0.9]] as const) {
+      for (const [w, ht, y] of [[4.6, 3.0, 0.3], [3.5, 2.3, 0.62]] as const) {
+        const W = w * grow, H = ht * grow;
+        const g = new THREE.PlaneGeometry(W, H, 4, 3);
+        planeUVs(g);
+        subdivideForBillow(g);
+        const m = new THREE.Mesh(g, sailMat);
+        m.position.set(0, mastBase + hm * y + H / 2, z + 0.12);
+        m.castShadow = true;
+        sails.push(m);
+        const yard = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, W + 0.5, 5), spar);
+        yard.rotation.z = Math.PI / 2;
+        yard.position.set(0, H / 2 + 0.05, 0);
+        m.add(yard);
+      }
+    }
+  }
   if (codeSail) {
     const sailMat = weather(new THREE.MeshToonMaterial({ map: sailTexture(s.equipped.sail, sailTier === 0), side: THREE.DoubleSide, transparent: true, alphaTest: 0.5 }), 0.7);
     if (sailTier === 0) {
@@ -944,6 +971,8 @@ export function buildShip(store: Store): ShipParts {
   if (radar && fitted.radar_mast) radar.userData.spin = true;
   const crane = store.has('salvage_crane') ? fit('salvage_crane') ?? kit('salvage_crane', -beam * 0.55, dy, h.L * 0.06, -Math.PI / 2) : null;
   const harpoon = store.has('harpoon_turret') ? fit('harpoon_turret') ?? kit('harpoon_turret', 0, dy + (vessel === 'sloop' ? 0.25 : 0), h.L * 0.36) : null;
+  // the brig's broadside: a harpoon on each rail as well as the bow
+  if (vessel === 'brig' && store.has('harpoon_turret')) for (const side of [-1, 1]) kit('harpoon_turret', side * beam * 0.82, dy, 0.6, side * Math.PI / 2);
   if (store.has('cabin_container') && !fitted.cabin_container) kit('cabin_container', 0, dy, vessel === 'dinghy' ? -0.9 : -2.3, 0, vessel === 'dinghy' ? 0.5 : K);
   const roofY = store.has('cabin_container') ? (container ? CONTAINER_ROOF : dy + 2.0 * (vessel === 'dinghy' ? 0.5 : K)) : glb ? SLOOP_ROOF : dy + 1.35;
   if (store.has('solar_array') && !fit('solar_array')) kit('solar_array', 0, vessel === 'dinghy' ? dy : roofY, vessel === 'dinghy' ? -1.5 : -2.3, Math.PI, vessel === 'dinghy' ? 0.45 : K * 0.9);
@@ -1057,7 +1086,7 @@ export function buildShip(store: Store): ShipParts {
   // crew members ride on deck (MeshCraft deckhand characters, Idle clip)
   const spots = cat
     ? [[-1.8, 2.5], [1.8, 1.0], [-1.2, -1.2], [2.2, -3.6], [-2.4, -4.2], [0.8, 4.4]]
-    : vessel === 'sloop'
+    : vessel === 'sloop' || vessel === 'brig'
       ? [[-0.9, 1.6], [0.9, 0.2], [-0.8, -0.8], [0.9, 2.6]]
       : [[0, 0.6], [0, -0.3]];
   const crew: ShipParts['crew'] = [];

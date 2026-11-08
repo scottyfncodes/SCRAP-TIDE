@@ -98,6 +98,7 @@ export const GOALS: GoalDef[] = [
   { id: 'g_helios', text: 'Reach Rig Helios', hint: 'An oil platform far to the west, past the swell. Engines, radar and harpoons for sale.', reward: 60, target: { x: -540, z: 170 } },
   { id: 'g_meridian', text: 'Salvage Old Meridian', hint: 'The drowned city to the north-east. Its rooftops hold the best old-world finds.', reward: 80, target: { x: 500, z: -440 } },
   { id: 'g_raiders', text: 'Drive off a Rustfang raider', hint: 'They hunt around the tanker graveyard to the south. A Harpoon Turret helps.', reward: 100, target: { x: 270, z: 650 } },
+  { id: 'g_brig', text: 'Commission the Salt Brig', hint: 'Square sails over the Graveyard. Vik builds her at Rig Helios from prize steel: canvas, rope, alloy plate and engine parts.', reward: 100, target: { x: -540, z: 170 } },
   { id: 'g_ironwake', text: 'Build the Ironwake Expedition Cat', hint: 'Alloy plate, engine parts and electronics. The only hull that survives the Stormwall.', reward: 150 },
   { id: 'g_spire', text: 'Pierce the Stormwall: reach the Meridian Spire', hint: 'Due north, through the storm that never ends.', reward: 300, target: { x: -210, z: -1040 } },
   { id: 'g_done', text: 'Find the Last Summit', hint: 'Your chart points beyond the edge of the map. To be continued…', reward: 0 },

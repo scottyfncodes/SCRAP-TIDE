@@ -851,7 +851,7 @@ export class UI {
       reach: s.data.regionsSeen.includes('emerald'),
       bare: s.data.upgrades.length === 0,
       damaged: s.data.hull < st.hullMax * 0.6,
-      sloop: s.data.vessel === 'sloop', ironwake: s.data.vessel === 'ironwake',
+      sloop: s.data.vessel === 'sloop', brig: s.data.vessel === 'brig', ironwake: s.data.vessel === 'ironwake',
       repelled: s.data.raidersRepelled > 0,
       tomas_aboard: s.data.crew.includes('tomas'), juno_aboard: s.data.crew.includes('juno'),
       named: !!s.data.shipName,
@@ -1073,8 +1073,9 @@ export class UI {
       for (const v of Object.values(VESSELS)) {
         const owned = s.data.vesselsOwned.includes(v.id);
         const current = s.data.vessel === v.id;
-        const canBuild = sett.id === 'driftholm';
-        const row = el(`<div class="row ${owned ? 'owned' : ''}"><div class="r-main"><div class="r-title">${v.name}${current ? ' (aboard)' : ''}</div><div class="r-sub">${v.desc}<br>Sail ${v.speed} · Cargo ${v.cargo} · Hull ${v.hull} · Crew ${v.berths} · Trophies ${v.trophySlots}${v.crossSwell ? ' · crosses the open swell' : ''}${v.crossStorm ? ' · survives the Stormwall' : ''}</div>${!owned && v.cost ? costHTML(s, v.cost) : ''}${!owned && !canBuild ? '<div class="r-sub"><b>Built at Driftholm</b></div>' : ''}</div>
+        const yards = [...(v.builtAt ?? ['driftholm']), ...(v.id === 'brig' && s.data.flags.includes('juno_diesel') ? ['driftholm'] : [])]; // Juno builds her own
+        const canBuild = yards.includes(sett.id);
+        const row = el(`<div class="row ${owned ? 'owned' : ''}"><div class="r-main"><div class="r-title">${v.name}${current ? ' (aboard)' : ''}</div><div class="r-sub">${v.desc}<br>Sail ${v.speed} · Cargo ${v.cargo} · Hull ${v.hull} · Crew ${v.berths} · Trophies ${v.trophySlots}${v.crossSwell ? ' · crosses the open swell' : ''}${v.crossStorm ? ' · survives the Stormwall' : ''}</div>${!owned && v.cost ? costHTML(s, v.cost) : ''}${!owned && !canBuild ? `<div class="r-sub"><b>Built at ${yards.map((y) => SETTLEMENT_MAP[y]?.name).join(' or ')}</b></div>` : ''}</div>
           ${current ? '<span class="rar" style="background:#4f9a95">Yours</span>' : owned ? '<button class="btn ghost">Switch</button>' : `<button class="btn" ${!canBuild || (v.cost && !s.canAfford(v.cost)) ? 'disabled' : ''}>Commission</button>`}</div>`);
         row.querySelector('button')?.addEventListener('click', () => {
           this.game.buyVessel(v.id);

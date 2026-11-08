@@ -6,7 +6,7 @@ import { UPGRADES, UPGRADE_MAP, VESSELS, type VesselId } from '../src/data/ship'
 import { SALVAGE_SITES, CACHE_POOL, SETTLEMENT_MAP, type RegionId } from '../src/data/world';
 import { RECIPES } from '../src/data/crafting';
 
-const REACH: Record<VesselId, RegionId[]> = { dinghy: ['shallows'], sloop: ['shallows', 'emerald'], ironwake: ['shallows', 'emerald', 'stormwall'] };
+const REACH: Record<VesselId, RegionId[]> = { dinghy: ['shallows'], sloop: ['shallows', 'emerald'], brig: ['shallows', 'emerald'], ironwake: ['shallows', 'emerald', 'stormwall'] };
 // game.ts updateCaches: what flotsam can give (every piece of it sits in reachable water)
 const FLOTSAM = ['crude_oil', 'scrap_metal', 'rope', 'plastic', 'fish', 'driftwood', 'iron_nails', 'canvas', 'algae_mat', 'sea_lettuce'];
 
@@ -41,7 +41,7 @@ describe('progression sources (data)', () => {
   });
 
   it('each vessel can be built from what the previous vessel can reach', () => {
-    const prev: Record<string, VesselId> = { sloop: 'dinghy', ironwake: 'sloop' };
+    const prev: Record<string, VesselId> = { sloop: 'dinghy', brig: 'sloop', ironwake: 'sloop' };
     for (const [id, v] of Object.entries(VESSELS)) {
       if (!v.cost) continue;
       const have = sources(prev[id], true);

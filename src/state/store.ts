@@ -9,7 +9,7 @@ import { seaAdvance } from './seaClock';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 
 export interface Stack {
   id: string;
@@ -161,6 +161,8 @@ function migrate(raw: any): SaveData {
   merged.beats = Array.isArray(raw.beats) ? raw.beats.filter((x: unknown) => typeof x === 'string') : [];
   merged.shipName = typeof raw.shipName === 'string' ? raw.shipName.slice(0, 24) : '';
   merged.quest = liveStep(merged.quest); // the First Voyage was shortened: retired steps continue from their successor
+  // v5 put the Salt Brig into the Captain's Log before the Ironwake: older saves past that point move up one
+  if ((raw.version ?? 1) < 5 && (raw.goal | 0) >= GOALS.findIndex((g) => g.id === 'g_brig')) merged.goal = (raw.goal | 0) + 1;
   merged.goal = Math.max(0, Math.min(GOALS.length - 1, merged.goal | 0));
   if (!Number.isFinite(merged.seaClock)) merged.seaClock = base.seaClock;
   if (!Number.isFinite(merged.seaWall)) merged.seaWall = base.seaWall;
@@ -335,7 +337,7 @@ export class Store {
       hullMax: v.hull + (hull.hull ?? 0),
       armor: hull.armor ?? 0,
       salvage: b('salvage').salvage ?? 0,
-      harpoon: b('defense').harpoon ?? 0,
+      harpoon: (b('defense').harpoon ?? 0) * (this.data.vessel === 'brig' ? 1.3 : 1), // the brig's broadside mounts
       radar: nav.radar ?? 0,
       berths: v.berths + (b('quarters').berths ?? 0),
       light: b('lighting').light ?? 0,
