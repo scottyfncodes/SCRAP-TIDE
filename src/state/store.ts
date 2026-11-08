@@ -6,6 +6,7 @@ import { GOALS } from '../data/progress';
 import { MILESTONES, FIRST_VOYAGE, liveStep, type QuestStepId } from '../data/progress';
 import { WORLD } from '../data/world';
 import { seaAdvance } from './seaClock';
+import type { ExperimentId } from './experiments';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
@@ -189,16 +190,37 @@ export class Store {
   /** Upgrades a `upgrades=` preview link fitted for this visit (null outside such a preview). */
   readonly previewUpgrades: string[] | null;
 
+  /** Phase 3 experiments this visit turned on with `?exp=` (src/state/experiments.ts). Empty in normal play. */
+  readonly experiments: ExperimentId[];
+
+  /**
+   * A sandbox visit (a `?ship=` preview or any `?exp=` experiment) runs on an in-memory copy of the save and never
+   * writes to, or clears, localStorage: the real saved game is untouched whatever happens in it.
+   */
+  readonly sandbox: boolean;
+
   /** performance.now() at the last sea-clock sync in this session (null before the first). */
   private perfAt: number | null = null;
 
-  constructor(opts: { preview?: VesselId | null; upgrades?: string[] | null } = {}) {
+  constructor(opts: { preview?: VesselId | null; upgrades?: string[] | null; experiments?: ExperimentId[]; fresh?: boolean } = {}) {
+    this.experiments = opts.experiments ?? [];
     this.data = this.load();
+    // `&fresh=1` on an experiment link: a brand-new game, held in memory only
+    if (this.experiments.length && opts.fresh) {
+      this.data = freshSave();
+      this.isNew = true;
+    }
     this.seaNow(); // credit the time away since the last save (capped)
     this.previewUpgrades = opts.upgrades?.length ? opts.upgrades : null;
     // an upgrades-only link previews the save's own boat
     this.preview = opts.preview ?? (this.previewUpgrades ? this.data.vessel : null);
     if (this.preview) this.applyPreview(this.data);
+    this.sandbox = !!this.preview || this.experiments.length > 0;
+  }
+
+  /** Is this Phase 3 experiment on for this visit? (Always false in normal play.) */
+  exp(id: ExperimentId) {
+    return this.experiments.includes(id);
   }
 
   /** Fit the preview's vessel and upgrades to (an in-memory copy of) the save. */
@@ -248,7 +270,7 @@ export class Store {
   saveNow() {
     this.seaNow();
     this.data.updated = Date.now();
-    if (this.preview) return; // preview visits are never saved
+    if (this.sandbox) return; // preview and experiment visits are never saved
     try {
       const prev = localStorage.getItem(KEY);
       if (prev) localStorage.setItem(BACKUP_KEY, prev);
@@ -269,10 +291,10 @@ export class Store {
   }
 
   reset() {
-    if (this.preview) {
-      // in a preview, "new game" only restarts this visit; the real save stays as it is
+    if (this.sandbox) {
+      // in a preview or experiment, "new game" only restarts this visit; the real save stays as it is
       this.data = freshSave();
-      this.applyPreview(this.data);
+      if (this.preview) this.applyPreview(this.data);
       this.data.hull = this.stats.hullMax;
       this.isNew = true;
       this.emit();

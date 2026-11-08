@@ -1357,7 +1357,7 @@ export class UI {
       // mark seen
       list.forEach((d) => s.data.discoveries[d.id] && this.seenCatalog.add(d.id));
       try {
-        if (!s.preview) localStorage.setItem('tidebreakers.seen', JSON.stringify([...this.seenCatalog]));
+        if (!s.sandbox) localStorage.setItem('tidebreakers.seen', JSON.stringify([...this.seenCatalog]));
       } catch {
         /* ignore */
       }
