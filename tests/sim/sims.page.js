@@ -307,14 +307,16 @@ function act(cost, hits, goldRank) {
 
 /** Keep sourcing (and selling surplus) until `cost` is affordable. */
 function grind(cost, { hits = 2, goldRank = {}, maxActions = 900 } = {}) {
-  const tally = { haul: 0, cache: 0, flotsam: 0, crafted: 0, wait_s: 0, sold_gold: 0, sites: {} };
+  const tally = { haul: 0, cache: 0, flotsam: 0, crafted: 0, wait_s: 0, sold_gold: 0, sites: {}, short_of: {} };
   const t0 = Date.now();
   const MAX_WAIT_S = 7 * 24 * 3600; // a week of in-game respawn waiting is a dead end for any player
   for (let acts = 0; acts < maxActions && tally.wait_s < MAX_WAIT_S; ) {
     tally.crafted += craftToward(cost);
     tally.sold_gold += dockAndSell(keepFor(cost));
     if (S.canAfford(cost)) return { ok: true, ...tally, virtual_min: r2((Date.now() - t0) / 60000) };
+    const short = Object.keys(missingMats(cost)).sort().join('+') || 'gold only';
     const a = act(cost, hits, goldRank);
+    if (a.kind !== 'wait' && a.kind !== 'stuck') tally.short_of[short] = (tally.short_of[short] ?? 0) + 1;
     if (a.kind === 'stuck') return { ok: false, reason: 'no source can produce the missing materials', missing: missingMats(cost), ...tally };
     if (a.kind === 'wait') tally.wait_s += a.s;
     else {
@@ -338,7 +340,8 @@ export function affordability({ seeds = [1, 2, 3, 4, 5, 6, 7, 8], hits = 2, gold
   const targets = [
     ...UPGRADES.map((u) => ({ kind: 'upgrade', id: u.id, name: u.name, cost: u.cost, vessel: vesselToBuy(u), prereq: chain(u.id).slice(0, -1) })),
     { kind: 'vessel', id: 'sloop', name: VESSELS.sloop.name, cost: VESSELS.sloop.cost, vessel: 'dinghy', prereq: [] },
-    { kind: 'vessel', id: 'ironwake', name: VESSELS.ironwake.name, cost: VESSELS.ironwake.cost, vessel: 'sloop', prereq: [] },
+    { kind: 'vessel', id: 'brig', name: VESSELS.brig.name, cost: VESSELS.brig.cost, vessel: 'sloop', prereq: [] },
+    { kind: 'vessel', id: 'ironwake', name: VESSELS.ironwake.name, cost: VESSELS.ironwake.cost, vessel: 'brig', prereq: [] },
   ];
   const rows = [];
   for (const t of targets) {
@@ -406,9 +409,11 @@ export function campaign({ seed = 1, hits = 2, goldRank = {} } = {}) {
     record(`buy ${u.name}`, r, { bought: S.has(id) });
   };
   const vessel = (id) => {
+    const inv = inventory();
+    const start = { gold: S.data.gold, mats: Object.fromEntries((VESSELS[id].cost.mats ?? []).map((m) => [m.id, inv[m.id] ?? 0])) };
     const r = grind(VESSELS[id].cost, { hits, goldRank });
     if (r.ok) G.buyVessel(id);
-    record(`commission ${VESSELS[id].name}`, r, { bought: S.data.vesselsOwned.includes(id) });
+    record(`commission ${VESSELS[id].name}`, r, { bought: S.data.vesselsOwned.includes(id), start, short_of: r.short_of });
   };
   // first voyage ends with the Canvas Mainsail
   buy('sail_canvas');
@@ -436,6 +441,7 @@ export function campaign({ seed = 1, hits = 2, goldRank = {} } = {}) {
   record('salvage Old Meridian', null);
   for (const id of ['harpoon_turret', 'hull_armor', 'engine_twin', 'compass_brass', 'radar_mast']) buy(id);
   record('drive off a Rustfang raider', null, { note: 'NOT SIMULATED: raider combat is real-time; the Captain’s Log waits here. Purchases are not gated by it.' });
+  vessel('brig');
   vessel('ironwake');
   // everything else still for sale
   for (const u of UPGRADES) if (!S.has(u.id)) buy(u.id);
