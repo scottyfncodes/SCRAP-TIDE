@@ -21,6 +21,7 @@ const ALL = [
   { id: 'baseline', label: 'current game (winch #2 + sea clock #1 merged)', patch: '' },
   { id: 'gold_380', label: 'Trimaran 420g → 380g', patch: 'D.ship.VESSELS.sloop.cost.gold = 380;' },
   { id: 'gold_340', label: 'Trimaran 420g → 340g', patch: 'D.ship.VESSELS.sloop.cost.gold = 340;' },
+  { id: 'gold_350', label: 'Trimaran 420g → 350g', patch: 'D.ship.VESSELS.sloop.cost.gold = 350;' },
   { id: 'gold_320', label: 'Trimaran 420g → 320g', patch: 'D.ship.VESSELS.sloop.cost.gold = 320;' },
   { id: 'gold_300', label: 'Trimaran 420g → 300g', patch: 'D.ship.VESSELS.sloop.cost.gold = 300;' },
   { id: 'gold_340_respawn', label: 'Trimaran 340g + Drift respawns −25%', patch: 'D.ship.VESSELS.sloop.cost.gold = 340; ' + RESPAWN_25 },
