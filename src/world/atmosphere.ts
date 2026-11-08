@@ -19,21 +19,22 @@ interface Key {
 }
 
 // 0 = midnight, 0.25 = sunrise, 0.5 = noon, 0.75 = sunset
-// Drowned-world palette: storm-grey overcast days with a dirty-teal haze, sour amber dawns, rust and burnt-sienna
-// sunsets, oil-black nights under a cold moon. Strong contrast, never pastel.
+// BEAUTIFUL RUIN (SCRAP TIDE art direction): warm sunlight against a cool sea. Clear abyss-blue skies over a pale,
+// sun-bleached horizon haze by day; Sun Gold mornings and afternoons; Oxide Rust sunsets; deep Abyss Blue nights under
+// a cold moon. The haze is warm sand, not grey: the world is breathtaking at distance and weathered up close.
 const KEYS: Key[] = [
-  { t: 0.0, top: '#070b0d', hor: '#18232a', fog: '#141d22', sun: '#86a4ab', sunI: 0.6, hemiSky: '#3f565d', hemiGnd: '#14120f', hemiI: 0.95 },
-  { t: 0.2, top: '#0d1418', hor: '#2a3433', fog: '#232c2c', sun: '#93a29d', sunI: 0.55, hemiSky: '#4c5d5d', hemiGnd: '#201c17', hemiI: 1.0 },
-  { t: 0.26, top: '#344046', hor: '#b5764a', fog: '#866a55', sun: '#e39b5d', sunI: 1.5, hemiSky: '#a09283', hemiGnd: '#5c4535', hemiI: 1.15 },
-  { t: 0.33, top: '#5b7480', hor: '#b4b4a6', fog: '#a3a69a', sun: '#f2dcb4', sunI: 2.3, hemiSky: '#bcc3ba', hemiGnd: '#7c6b53', hemiI: 1.35 },
-  { t: 0.5, top: '#6a8794', hor: '#c9c6b4', fog: '#b4b5a8', sun: '#fff1d6', sunI: 2.75, hemiSky: '#c8cdc4', hemiGnd: '#8a7458', hemiI: 1.4 },
-  { t: 0.66, top: '#475558', hor: '#bb976b', fog: '#a08a6f', sun: '#ebba7a', sunI: 2.05, hemiSky: '#bdb09a', hemiGnd: '#7d6147', hemiI: 1.35 },
-  { t: 0.74, top: '#36383b', hor: '#c45a2b', fog: '#874a31', sun: '#ea7a3c', sunI: 1.65, hemiSky: '#ab7d68', hemiGnd: '#5c3626', hemiI: 1.15 },
-  { t: 0.8, top: '#1a1c20', hor: '#57392f', fog: '#3a2c28', sun: '#a06e5c', sunI: 0.75, hemiSky: '#5c5452', hemiGnd: '#2b211d', hemiI: 0.95 },
-  { t: 0.88, top: '#090d10', hor: '#1d272c', fog: '#172024', sun: '#86a4ab', sunI: 0.6, hemiSky: '#3f565d', hemiGnd: '#14120f', hemiI: 0.95 },
-  { t: 1.0, top: '#070b0d', hor: '#18232a', fog: '#141d22', sun: '#86a4ab', sunI: 0.6, hemiSky: '#3f565d', hemiGnd: '#14120f', hemiI: 0.95 },
+  { t: 0.0, top: '#04111a', hor: '#123342', fog: '#0f2b38', sun: '#8fb6c6', sunI: 0.62, hemiSky: '#365f70', hemiGnd: '#0f1513', hemiI: 0.95 },
+  { t: 0.2, top: '#08192a', hor: '#24434c', fog: '#1f3c45', sun: '#98aeb0', sunI: 0.55, hemiSky: '#47636a', hemiGnd: '#1d1b16', hemiI: 1.0 },
+  { t: 0.26, top: '#2c5068', hor: '#e2a062', fog: '#a98364', sun: '#f2a85c', sunI: 1.55, hemiSky: '#a69684', hemiGnd: '#5e4634', hemiI: 1.15 },
+  { t: 0.33, top: '#3b7a9c', hor: '#d8cfaa', fog: '#b4c0b2', sun: '#f6dca6', sunI: 2.35, hemiSky: '#b4c8c6', hemiGnd: '#80704f', hemiI: 1.35 },
+  { t: 0.5, top: '#2b77a2', hor: '#d6d3b8', fog: '#b2c5c0', sun: '#fff0cc', sunI: 2.8, hemiSky: '#b8d0d2', hemiGnd: '#8e7754', hemiI: 1.4 },
+  { t: 0.66, top: '#336f8e', hor: '#dfbd80', fog: '#bfad88', sun: '#f3c86c', sunI: 2.15, hemiSky: '#c2bba2', hemiGnd: '#80634a', hemiI: 1.35 },
+  { t: 0.74, top: '#294b60', hor: '#d76a3a', fog: '#995638', sun: '#f08c40', sunI: 1.7, hemiSky: '#b08a72', hemiGnd: '#5e3828', hemiI: 1.15 },
+  { t: 0.8, top: '#0f2232', hor: '#5d3c37', fog: '#392d31', sun: '#a6705c', sunI: 0.75, hemiSky: '#55565c', hemiGnd: '#2b211d', hemiI: 0.95 },
+  { t: 0.88, top: '#05121c', hor: '#173643', fog: '#132f3b', sun: '#8fb6c6', sunI: 0.62, hemiSky: '#365f70', hemiGnd: '#0f1513', hemiI: 0.95 },
+  { t: 1.0, top: '#04111a', hor: '#123342', fog: '#0f2b38', sun: '#8fb6c6', sunI: 0.62, hemiSky: '#365f70', hemiGnd: '#0f1513', hemiI: 0.95 },
 ];
-const STORM = { top: new THREE.Color('#22282a'), hor: new THREE.Color('#465050'), fog: new THREE.Color('#414a49'), hemiSky: new THREE.Color('#77827e') };
+const STORM = { top: new THREE.Color('#1c272d'), hor: new THREE.Color('#435158'), fog: new THREE.Color('#3c4a50'), hemiSky: new THREE.Color('#74838a') };
 
 export interface StormCell {
   x: number;
@@ -134,8 +135,8 @@ export class Atmosphere {
     this.hemiSky.lerp(STORM.hemiSky, st * 0.6);
     this.sunIntensity *= 1 - st * 0.7;
     // a permanent sea haze: the horizon is always a little lost
-    this.fogNear = 150 - st * 100 - this.night * 40;
-    this.fogFar = 860 - st * 520 - this.night * 200;
+    this.fogNear = 165 - st * 115 - this.night * 45;
+    this.fogFar = 900 - st * 560 - this.night * 220;
 
     // lightning
     this.lightning = Math.max(0, this.lightning - dt * 4);

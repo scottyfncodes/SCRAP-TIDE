@@ -186,34 +186,34 @@ void main() {
   vec3 Nsky = normalize(vN + vec3(slope.x, 0.0, slope.y) * 0.35);
   vec3 Nflat = normalize(vN);
 
-  // depth colour: silted shore → dirty teal shelf → grey-green open water → deep → oil-black abyss
-  // murky silted turquoise in the shallows -> desaturated blue-green -> dark navy open water (never Caribbean)
-  vec3 cShore = vec3(0.22, 0.29, 0.26);
-  vec3 cShelf = vec3(0.055, 0.215, 0.225);
-  vec3 cOpen = vec3(0.028, 0.11, 0.145);
-  vec3 cDeep = vec3(0.011, 0.043, 0.075);
-  vec3 cAbyss = vec3(0.005, 0.017, 0.036);
+  // depth colour (SCRAP TIDE, BEAUTIFUL RUIN): sandy shallows -> luminous Sea Glass shelf -> Abyss Blue open water ->
+  // ink-blue deep. Beautiful from a distance; the silt, oil and scum below keep it weathered up close.
+  vec3 cShore = vec3(0.20, 0.29, 0.25);
+  vec3 cShelf = vec3(0.012, 0.19, 0.215);
+  vec3 cOpen = vec3(0.010, 0.082, 0.125);
+  vec3 cDeep = vec3(0.006, 0.040, 0.072);
+  vec3 cAbyss = vec3(0.003, 0.017, 0.036);
   vec3 col = mix(cShore, cShelf, smoothstep(0.0, 1.8, depth));
   col = mix(col, cOpen, smoothstep(1.8, 7.0, depth));
   col = mix(col, cDeep, smoothstep(7.0, 16.0, depth));
-  col = mix(col, cAbyss, smoothstep(15.0, 22.0, depth) * 0.85 + swell * 0.35);
+  col = mix(col, cAbyss, smoothstep(15.0, 22.0, depth) * 0.8 + swell * 0.3);
   col = mix(col, col * vec3(0.62, 0.64, 0.62), uStorm * 0.6);
   // suspended silt churns the shallows
-  col = mix(col, vec3(0.22, 0.21, 0.15), (1.0 - smoothstep(0.0, 4.0, depth)) * noise(p * 0.08 + t * 0.03) * 0.35);
+  col = mix(col, vec3(0.24, 0.22, 0.15), (1.0 - smoothstep(0.0, 4.0, depth)) * noise(p * 0.08 + t * 0.03) * 0.25);
 
   float cs = caustic(p, t) * (1.0 - smoothstep(0.5, 6.0, depth));
-  col += cs * vec3(0.10, 0.13, 0.10) * (1.0 - uNight * 0.8);
+  col += cs * vec3(0.08, 0.16, 0.14) * (1.0 - uNight * 0.8);
 
   // oil slicks: slow-drifting patches that flatten the chop and shimmer with a thin-film sheen
   float oilN = noise(p * 0.016 + vec2(t * 0.004, -t * 0.003)) * 0.75 + noise(p * 0.06 - t * 0.01) * 0.25;
-  float oil = smoothstep(0.66, 0.74, oilN) * smoothstep(1.0, 4.0, depth);
+  float oil = smoothstep(0.68, 0.76, oilN) * smoothstep(1.0, 4.0, depth);
   col *= uAmbient;
   N = normalize(mix(N, Nflat, oil * 0.8));
 
   vec3 V = normalize(cameraPosition - vWorld);
-  // subsurface: murky light through the back of the crests
+  // subsurface: Sea Glass light through the back of the crests
   float sss = pow(max(0.0, dot(V, -uSunDir) + 0.3), 2.0) * max(0.0, vWave) * (1.0 - uNight);
-  col += vec3(0.04, 0.16, 0.16) * sss * 0.8;
+  col += vec3(0.02, 0.20, 0.21) * sss * 0.85;
   // the slick itself: a tarry darkening with an iridescent film that shifts with view angle
   float film = noise(p * 0.21 + t * 0.02) * 2.0 + dot(N, V) * 3.0;
   vec3 sheen = 0.5 + 0.5 * cos(6.2831 * (vec3(0.0, 0.33, 0.67) + film));
@@ -222,8 +222,8 @@ void main() {
   // reflections
   float fres = 0.04 + 0.96 * pow(1.0 - max(dot(Nsky, V), 0.0), 5.0);
   vec3 R = reflect(-V, Nsky);
-  vec3 sky = mix(uSkyColor, uSkyTop, smoothstep(0.0, 0.6, R.y));
-  col = mix(col, sky * vec3(0.82, 0.86, 0.84), clamp(fres * 0.62, 0.0, 0.7));
+  vec3 sky = mix(uSkyColor, uSkyTop, smoothstep(0.0, 0.45, R.y));
+  col = mix(col, sky * vec3(0.84, 0.88, 0.88), clamp(fres * 0.62, 0.0, 0.7));
   vec3 H = normalize(uSunDir + V);
   float ndh = max(dot(N, H), 0.0);
   float spec = pow(ndh, mix(1400.0, 200.0, uStorm)) * 0.6 + pow(ndh, 90.0) * 0.03 + pow(ndh, 600.0) * oil * 0.8;

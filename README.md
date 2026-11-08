@@ -2,6 +2,9 @@
 
 *The world drowned. You didn't.*
 
+Art direction: **BEAUTIFUL RUIN**: beautiful water, broken civilization, built from scraps. Palette, wordmark and
+rules in `docs/brand/SCRAP-TIDE-brand.md`.
+
 (Formerly TIDEBREAKERS. Older reports, asset logs and the GITCRAFT creative package in `creative/` and `docs/` keep the old name as history.)
 
 A mobile-first, stylized 3D survival adventure on a flooded Earth, built for iPhone Safari and Home Screen install.

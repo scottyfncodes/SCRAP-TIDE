@@ -23,6 +23,7 @@ import type { Store } from '../state/store';
 import { audio } from '../audio/audio';
 import { SAIL_LABEL, type PointOfSail } from '../game/pointOfSail';
 import { pack } from '../audio/pack';
+import { wordmarkSVG } from './brand';
 
 export interface GameAPI {
   store: Store;
@@ -82,9 +83,9 @@ const ICON = {
 
 // a ship's wheel cut from scrap steel: rust-scabbed rim, mismatched spokes, a welded hazard band
 const WHEEL_SVG = `<svg class="wheel" viewBox="0 0 150 150"><circle cx="75" cy="75" r="62" fill="rgba(10,13,14,.35)"/><g fill="none" stroke-linecap="butt">
-${Array.from({ length: 8 }, (_, i) => { const a = (i / 8) * Math.PI * 2; return `<line x1="${75 + Math.cos(a) * 18}" y1="${75 + Math.sin(a) * 18}" x2="${75 + Math.cos(a) * 71}" y2="${75 + Math.sin(a) * 71}" stroke="${i % 3 ? '#3b4246' : '#5c3420'}" stroke-width="${i % 2 ? 7 : 9}"/><rect x="${75 + Math.cos(a) * 68 - 4}" y="${75 + Math.sin(a) * 68 - 4}" width="8" height="8" fill="#2a3033" transform="rotate(${(i / 8) * 360} ${75 + Math.cos(a) * 68} ${75 + Math.sin(a) * 68})"/>`; }).join('')}
-<circle cx="75" cy="75" r="56" stroke-width="13" stroke="#2c3336"/><circle cx="75" cy="75" r="56" stroke-width="13" stroke="#7a3818" stroke-dasharray="18 26 6 40 30 22" opacity=".85"/>
-<circle cx="75" cy="75" r="56" stroke-width="5" stroke="#d6a62a" stroke-dasharray="46 306" opacity=".8" transform="rotate(-112 75 75)" pathLength="352"/>
+${Array.from({ length: 8 }, (_, i) => { const a = (i / 8) * Math.PI * 2; return `<line x1="${75 + Math.cos(a) * 18}" y1="${75 + Math.sin(a) * 18}" x2="${75 + Math.cos(a) * 71}" y2="${75 + Math.sin(a) * 71}" stroke="${i % 3 ? '#2a5363' : '#7a3a22'}" stroke-width="${i % 2 ? 7 : 9}"/><rect x="${75 + Math.cos(a) * 68 - 4}" y="${75 + Math.sin(a) * 68 - 4}" width="8" height="8" fill="#173b4a" transform="rotate(${(i / 8) * 360} ${75 + Math.cos(a) * 68} ${75 + Math.sin(a) * 68})"/>`; }).join('')}
+<circle cx="75" cy="75" r="56" stroke-width="13" stroke="#173b4a"/><circle cx="75" cy="75" r="56" stroke-width="13" stroke="#a04d30" stroke-dasharray="18 26 6 40 30 22" opacity=".85"/>
+<circle cx="75" cy="75" r="56" stroke-width="5" stroke="#e5c65e" stroke-dasharray="46 306" opacity=".8" transform="rotate(-112 75 75)" pathLength="352"/>
 <circle cx="75" cy="75" r="62.5" stroke-width="1.5" stroke="rgba(217,210,191,.25)"/><circle cx="75" cy="75" r="49.5" stroke-width="1.5" stroke="rgba(0,0,0,.6)"/></g></svg>`;
 
 const el = (html: string) => {
@@ -94,7 +95,7 @@ const el = (html: string) => {
 };
 
 function costHTML(store: Store, c: Cost) {
-  const parts = !c.gold ? [] : [`<span class="${store.data.gold < c.gold ? 'lack' : ''}"><span class="pill-coin" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f4c542;border:1px solid #b8860b"></span>${c.gold}</span>`];
+  const parts = !c.gold ? [] : [`<span class="${store.data.gold < c.gold ? 'lack' : ''}"><span class="pill-coin" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#e5c65e;border:1px solid #9a7a26"></span>${c.gold}</span>`];
   for (const m of c.mats ?? []) {
     const have = store.countOwned(m.id);
     parts.push(`<span class="${have < m.n ? 'lack' : ''}">${iconSVG(m.id, { size: 16 })}${have}/${m.n} ${item(m.id).name}</span>`);
@@ -244,7 +245,7 @@ export class UI {
 
     this.actionsEl = el(`<div class="actions"></div>`);
     this.toastsEl = el(`<div class="toasts"></div>`);
-    this.wpEl = el(`<div class="waypoint" style="opacity:0"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgba(43,29,20,.55)" stroke="#f4c542" stroke-width="3"/><path d="M22 8 L30 26 L22 22 L14 26 Z" fill="#f4c542"/></svg><div class="wp-dist"></div></div>`);
+    this.wpEl = el(`<div class="waypoint" style="opacity:0"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgba(8,28,38,.6)" stroke="#e5c65e" stroke-width="3"/><path d="M22 8 L30 26 L22 22 L14 26 Z" fill="#e5c65e"/></svg><div class="wp-dist"></div></div>`);
     this.compassEl = el(`<div class="compass" style="display:none"><svg class="needle" viewBox="0 0 6 46"><path d="M3 0 L6 23 L0 23Z" fill="#c0392b"/><path d="M3 46 L6 23 L0 23Z" fill="#2b1d14"/></svg><div class="cl">X</div></div>`);
     // the wind dial (upwind sailing, #5): camera-relative like the wheel. The red wedge is the no-go cone around where
     // the wind comes from (its arrow blows in from that side); the boat is your bow. Bow in the red = the sail luffs.
@@ -563,7 +564,7 @@ export class UI {
         audio.reel(ok);
         if (navigator.vibrate && this.store.data.settings.haptics) navigator.vibrate(ok ? 25 : [10, 30, 10]);
         msg.textContent = ok ? ['Got a bite of steel!', 'It’s coming up!', 'Heavy… heavy… YES!'][hits - 1] ?? 'Hauled!' : 'Line slipped!';
-        msg.style.color = ok ? '#2c7a6f' : '#c8352a';
+        msg.style.color = ok ? '#0e6670' : '#c8352a';
         lock = true;
         setTimeout(() => {
           lock = false;
@@ -761,8 +762,7 @@ export class UI {
     this.setHUDVisible(false);
     const node = el(`<div class="title-screen"><div class="ts-inner">
       <div class="ts-kicker">Year 61 · After the Water</div>
-      <div class="ts-logo">SCRAP TIDE</div>
-      <div class="ts-rule"></div>
+      <h1 class="ts-logo">${wordmarkSVG()}</h1>
       <div class="ts-sub">The world drowned. You didn’t.</div>
       <button class="act glow">${isNew ? 'Set Sail' : 'Continue Voyage'}</button>
       <div class="ts-small">${isNew ? 'Best with sound on · Add to Home Screen for full-screen' : `${this.store.discoveryCount} discoveries · ${this.store.data.gold} gold · ${VESSELS[this.store.data.vessel].name}`}</div>
@@ -1078,7 +1078,7 @@ export class UI {
           const welcome = s.data.flags.includes(`welcome_${u.id}`);
           const where = (u.where ?? ['driftholm']).map((w) => SETTLEMENT_MAP[w]?.name).join(' or ');
           const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked || !sold ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : !sold ? `<div class="r-sub"><b>Fitted at ${where}</b></div>` : `${welcome ? '<div class="r-sub"><b>Marlo’s welcome price: half the gold</b></div>' : ''}${costHTML(s, cost)}`}</div>
-            ${owned ? '<span class="rar" style="background:#4f9a95">Installed</span>' : `<button class="btn" ${!afford || locked || !sold ? 'disabled' : ''}>Install</button>`}</div>`);
+            ${owned ? '<span class="rar" style="background:#168d9c">Installed</span>' : `<button class="btn" ${!afford || locked || !sold ? 'disabled' : ''}>Install</button>`}</div>`);
           row.querySelector('button')?.addEventListener('click', () => {
             this.game.buyUpgrade(u.id);
             render();
@@ -1093,7 +1093,7 @@ export class UI {
         const yards = [...(v.builtAt ?? ['driftholm']), ...(v.id === 'brig' && s.data.flags.includes('juno_diesel') ? ['driftholm'] : [])]; // Juno builds her own
         const canBuild = yards.includes(sett.id);
         const row = el(`<div class="row ${owned ? 'owned' : ''}"><div class="r-main"><div class="r-title">${v.name}${current ? ' (aboard)' : ''}</div><div class="r-sub">${v.desc}<br>Sail ${v.speed} · Cargo ${v.cargo} · Hull ${v.hull} · Crew ${v.berths} · Trophies ${v.trophySlots}${v.crossSwell ? ' · crosses the open swell' : ''}${v.crossStorm ? ' · survives the Stormwall' : ''}</div>${!owned && v.cost ? costHTML(s, v.cost) : ''}${!owned && !canBuild ? `<div class="r-sub"><b>Built at ${yards.map((y) => SETTLEMENT_MAP[y]?.name).join(' or ')}</b></div>` : ''}</div>
-          ${current ? '<span class="rar" style="background:#4f9a95">Yours</span>' : owned ? '<button class="btn ghost">Switch</button>' : `<button class="btn" ${!canBuild || (v.cost && !s.canAfford(v.cost)) ? 'disabled' : ''}>Commission</button>`}</div>`);
+          ${current ? '<span class="rar" style="background:#168d9c">Yours</span>' : owned ? '<button class="btn ghost">Switch</button>' : `<button class="btn" ${!canBuild || (v.cost && !s.canAfford(v.cost)) ? 'disabled' : ''}>Commission</button>`}</div>`);
         row.querySelector('button')?.addEventListener('click', () => {
           this.game.buyVessel(v.id);
           render();

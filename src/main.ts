@@ -1,4 +1,8 @@
 import './ui/styles.css';
+import { wordmarkSVG } from './ui/brand';
+
+const loadTitle = document.querySelector('.load-title');
+if (loadTitle) loadTitle.innerHTML = wordmarkSVG();
 
 const fill = document.getElementById('loadFill')!;
 const msg = document.getElementById('loadMsg')!;
