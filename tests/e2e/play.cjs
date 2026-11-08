@@ -44,9 +44,25 @@ const check = (name, ok, detail = '') => {
   const click = async (re) => {
     // a card that arrived late (renown, milestones: they fire on game time, which runs slowly here) is tapped away
     // first, as a player would
-    if (await page.$('.reveal')) await dismiss();
-    const btns = await page.$$('.actions .act');
-    for (const b of btns) if (re.test(await b.textContent())) { await b.click(); return true; }
+    // A card can also land between that and the tap (on slow CI runners it does): if one covers the button, tap it
+    // away and try again, instead of waiting 30 s on a click that can't land.
+    for (let attempt = 0; attempt < 5; attempt++) {
+      if (await page.$('.reveal')) await dismiss();
+      const btns = await page.$$('.actions .act');
+      let found = false;
+      for (const b of btns) {
+        if (!re.test(await b.textContent())) continue;
+        found = true;
+        try {
+          await b.click({ timeout: 4000 });
+          return true;
+        } catch (e) {
+          if (!/intercepts pointer events|Timeout|detached/.test(String(e))) throw e;
+        }
+        break;
+      }
+      if (!found) return false;
+    }
     return false;
   };
   // headless software GL renders a few fps and the game caps dt, so wait on *game* time, not wall time
