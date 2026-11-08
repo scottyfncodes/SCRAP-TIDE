@@ -761,7 +761,7 @@ export class UI {
     this.setHUDVisible(false);
     const node = el(`<div class="title-screen"><div class="ts-inner">
       <div class="ts-kicker">Year 61 · After the Water</div>
-      <div class="ts-logo">TIDEBREAKERS</div>
+      <div class="ts-logo">SCRAP TIDE</div>
       <div class="ts-rule"></div>
       <div class="ts-sub">The world drowned. You didn’t.</div>
       <button class="act glow">${isNew ? 'Set Sail' : 'Continue Voyage'}</button>

@@ -1,4 +1,4 @@
-// PLAYCRAFT simulation suite: measures TIDEBREAKERS' economy, fuel, hull and progression by running the game's real
+// PLAYCRAFT simulation suite: measures SCRAP TIDE's economy, fuel, hull and progression by running the game's real
 // systems in headless Chromium (see harness.mjs and sims.page.js).
 //
 //   npm run sim              full suite → docs/playcraft-evidence/simulations/

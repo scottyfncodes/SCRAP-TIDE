@@ -147,7 +147,7 @@ ev('player_experience', tUpgrade && tUpgrade < 180 ? 'pass' : 'partial', 'Playte
 
 // ─────────────────────────────── EVIDENCE.md ───────────────────────────────
 const P = provenance();
-L.push(`# TIDEBREAKERS · PLAYCRAFT evidence pack`, '');
+L.push(`# SCRAP TIDE · PLAYCRAFT evidence pack`, '');
 L.push(`Generated ${P.generated_at} from commit \`${(sy.commit ?? '').slice(0, 7)}\` (simulations) / \`${(bot.commit ?? '').slice(0, 7)}\` (playtest bot). Game source unchanged by this pack.`, '');
 L.push('**Where this was measured:** headless Chromium with software WebGL (SwiftShader) in a Linux container. Nothing here was observed on a real phone.', '');
 L.push('## Evidence classes', '');

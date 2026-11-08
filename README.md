@@ -1,6 +1,8 @@
-# TIDEBREAKERS
+# SCRAP TIDE
 
 *The world drowned. You didn't.*
+
+(Formerly TIDEBREAKERS. Older reports, asset logs and the GITCRAFT creative package in `creative/` and `docs/` keep the old name as history.)
 
 A mobile-first, stylized 3D survival adventure on a flooded Earth, built for iPhone Safari and Home Screen install.
 The look is Waterworld-inspired ocean survival: everything salvaged, patched and fought over, scrap atolls and outposts
@@ -84,7 +86,7 @@ icons in `src/ui/iconsLiving.ts`.
 ## Tech
 
 - Vite + TypeScript + Three.js. Static output, no backend.
-- Persistence: `localStorage` (`tidebreakers.save.v1`) with a backup slot and forward migration.
+- Persistence: `localStorage` (`tidebreakers.save.v1`) with a backup slot and forward migration. The key keeps the game's former name on purpose so existing saves still load.
 - Deployed on Vercel (`vercel.json`).
 
 ```bash

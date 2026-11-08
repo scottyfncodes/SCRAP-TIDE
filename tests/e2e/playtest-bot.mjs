@@ -1,4 +1,4 @@
-// PLAYCRAFT scripted playtest bot: plays the first money loop of TIDEBREAKERS on the PRODUCTION BUILD the way a
+// PLAYCRAFT scripted playtest bot: plays the first money loop of SCRAP TIDE on the PRODUCTION BUILD the way a
 // player does, through the real UI.
 //
 //   1. start a voyage (title → SET SAIL → welcome card)

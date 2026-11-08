@@ -20,7 +20,7 @@ async function boot() {
   const canvas = document.getElementById('scene') as HTMLCanvasElement;
   const gl = canvas.getContext('webgl2');
   if (!gl) {
-    msg.textContent = 'TIDEBREAKERS needs WebGL2. Please update your browser.';
+    msg.textContent = 'SCRAP TIDE needs WebGL2. Please update your browser.';
     return;
   }
   // The engine (three.js + the game, most of the download) is its own chunk: this small entry paints the loading
