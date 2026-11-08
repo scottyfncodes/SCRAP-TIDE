@@ -2,7 +2,7 @@
 // winch mini-game; gear (Salvage Crane) and crew (Salvager) widen the window and add loot rolls.
 import * as THREE from 'three';
 import type { Game } from './game';
-import { SALVAGE_SITES, CACHE_POOL, type SalvageSiteDef, type LootRoll, type RegionId } from '../data/world';
+import { SALVAGE_SITES, CACHE_POOL, FRAGMENT_MAP, TREASURE_MAP_MAP, type SalvageSiteDef, type LootRoll, type RegionId } from '../data/world';
 import { item } from '../data/items';
 import { audio } from '../audio/audio';
 import { pack } from '../audio/pack';
@@ -57,6 +57,7 @@ export class Salvage {
     if (!this.ready(s)) return false;
     if (s.region === 'emerald' && !st.crossSwell) return false;
     if (s.region === 'stormwall' && !st.crossStorm) return false;
+    if (s.requiresFlag && !this.g.store.data.flags.includes(s.requiresFlag)) return false;
     return !(s.heavy && !st.salvage);
   }
 
@@ -85,6 +86,10 @@ export class Salvage {
     if (site.heavy && !st.salvage) {
       audio.deny();
       return g.ui.toast('Too heavy to lift by hand. Fit a Salvage Crane & Winch.', { color: '#ff6b4a', life: 3 });
+    }
+    if (site.requiresFlag && !g.store.data.flags.includes(site.requiresFlag)) {
+      audio.deny();
+      return g.ui.toast(site.lockedText ?? 'You can’t get at it. Not yet.', { color: '#ff6b4a', life: 4 });
     }
     if (g.boat.speed > 3) return g.ui.toast('Slow down to drop the hook.');
     // a full hold would throw the whole haul overboard and still put the site on cooldown
@@ -139,6 +144,14 @@ export class Salvage {
     s.data.salvaged[site.id] = s.seaNow();
     s.data.hauls++;
     if (first) s.data.firstHauls.push(site.id);
+    if (first && site.fragment && !s.data.fragments.includes(site.fragment)) {
+      // a page of the Redfinch Line comes up with the haul
+      s.data.fragments.push(site.fragment);
+      const frag = FRAGMENT_MAP[site.fragment];
+      const m = TREASURE_MAP_MAP[frag.mapId];
+      if (m.fragments.every((f) => s.data.fragments.includes(f))) s.data.activeMap = m.id;
+      setTimeout(() => g.ui.revealFragment(frag.id, m.fragments.every((f) => s.data.fragments.includes(f))), 600);
+    }
     s.commit();
     g.checkMilestones();
     // feedback: the haul breaks the surface

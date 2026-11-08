@@ -97,6 +97,11 @@ export class Raiders {
     const px = g.mode === 'sail' ? b.x : g.foot.x, pz = g.mode === 'sail' ? b.z : g.foot.z;
     for (const z of RAIDER_ZONES) {
       const d = Math.hypot(px - z.x, pz - z.z);
+      // the ledger read out on the flare deck: Rustfang pulls its skiffs out of Old Meridian (PR 2.4)
+      if (z.id === 'rz_meridian' && g.store.data.flags.includes('ledger_confront')) {
+        if (this.spawned.has(z.id)) this.despawn(z);
+        continue;
+      }
       if (!this.spawned.has(z.id) && d < z.r + 260) this.spawn(z);
       else if (this.spawned.has(z.id) && d > z.r + 650) this.despawn(z);
     }

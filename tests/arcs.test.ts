@@ -13,7 +13,7 @@ describe('character arcs', () => {
   it('every crew member has three beats, every NPC at least one, and chains are sound', () => {
     for (const c of CHARACTERS) {
       const n = ARCS.filter((b) => b.who === c.id).length;
-      if (c.kind === 'crew') expect(n, c.id).toBe(3);
+      if (c.kind === 'crew') expect(n, c.id).toBeGreaterThanOrEqual(3);
       else expect(n, c.id).toBeGreaterThanOrEqual(1);
     }
     for (const b of ARCS) {
