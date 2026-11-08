@@ -403,7 +403,8 @@ export class Audio {
     o.stop(when + dur + 0.05);
   }
 
-  private noiseBurst(when: number, dur: number, freq: number, vol: number, type: BiquadFilterType = 'bandpass') {
+  /** `offset` (s into the noise loop) defaults to a random spot; pass one to keep a sound free of Math.random. */
+  private noiseBurst(when: number, dur: number, freq: number, vol: number, type: BiquadFilterType = 'bandpass', offset?: number) {
     const ctx = this.ctx!;
     const s = ctx.createBufferSource();
     s.buffer = this.noiseBuf;
@@ -414,7 +415,7 @@ export class Audio {
     const g = ctx.createGain();
     this.env(g, when, 0.005, vol, dur);
     s.connect(f).connect(g).connect(this.sfxBus);
-    s.start(when, Math.random() * 2);
+    s.start(when, offset ?? Math.random() * 2);
     s.stop(when + dur + 0.05);
   }
 
@@ -454,6 +455,17 @@ export class Audio {
     o.connect(f).connect(g).connect(this.sfxBus);
     o.start(t);
     o.stop(t + 0.6);
+  }
+
+  /** One slap of a luffing sail (upwind sailing, #5): a soft low thwap and a cloth crack. `amount` 0..1. Pitch varies
+   *  with the audio clock, not Math.random, so the seeded playtest run is untouched. */
+  sailFlap(amount: number) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const v = 0.05 + 0.1 * Math.min(1, amount);
+    const j = Math.sin(t * 13.7) * 0.5 + 0.5;
+    this.noiseBurst(t, 0.09, 420 + j * 260, v * 1.4, 'lowpass', j * 1.9);
+    this.noiseBurst(t + 0.035, 0.05, 1900 + j * 700, v * 0.55, 'bandpass', 1.9 - j * 1.9);
   }
 
   splash(big = false) {
