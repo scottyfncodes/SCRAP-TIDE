@@ -1,0 +1,19 @@
+{
+  "base": "http://127.0.0.1:42249/",
+  "scenes": {
+    "hud_trip-desktop": "ok",
+    "squall-desktop": "ok",
+    "harpoon-desktop": "ok",
+    "hud_trip-phone": "ok",
+    "squall-phone": "ok",
+    "harpoon-phone": "ok"
+  },
+  "console": {
+    "desktop": [],
+    "phone": []
+  },
+  "fps": {
+    "desktop": 1.3,
+    "phone": 3.24
+  }
+}

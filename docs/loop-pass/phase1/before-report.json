@@ -1,0 +1,19 @@
+{
+  "base": "https://tidebreakers.vercel.app/",
+  "scenes": {
+    "hud_trip-desktop": "ok",
+    "squall-desktop": "ok",
+    "winch-desktop": "ok",
+    "hud_trip-phone": "ok",
+    "squall-phone": "ok",
+    "winch-phone": "ok"
+  },
+  "console": {
+    "desktop": [],
+    "phone": []
+  },
+  "fps": {
+    "desktop": 1.48,
+    "phone": 3.16
+  }
+}
