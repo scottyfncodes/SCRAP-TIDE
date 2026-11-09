@@ -610,6 +610,7 @@ const check = (name, ok, detail = '') => {
     await click(/GO UP/);
     await page.waitForTimeout(300);
     await g(() => { const G = window.__game, v = G.vehicles; v.alt = 20; const w = G.wrecks.spawnAt(v.bx + 3, v.bz + 3, 'rare', { name: 'Heavy Wreck in the Shallows' }); window.__h = G.store.data.hauls; });
+    await page.waitForTimeout(600);
     const wa = await actions();
     await click(/WINCH LIFT/);
     await page.waitForTimeout(300);
