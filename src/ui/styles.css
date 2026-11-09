@@ -558,7 +558,7 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 .crew-card { display: flex; gap: 10px; align-items: center; }
 .crew-face { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex: none; border: 2px solid rgba(0,0,0,.35); filter: saturate(.6); }
 .svc { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 12px; }
-.svc .btn { width: 100%; }
+.svc .btn { width: 100%; min-width: 0; white-space: normal; line-height: 1.1; } /* labels wrap on 320 px phones instead of running out of the column */
 
 /* ───────── landscape phones: nothing may collide ───────── */
 @media (max-height: 460px) {
