@@ -75,6 +75,31 @@ the towns have dark ink and darker, unclipped values against the pale hill and s
 - HUD: the radar's opaque black disc is now abyss-blue glass; on a portrait phone it sits on the horizon, so the
   skyline stays visible through it. Nothing else in the HUD moved.
 
+## Measured (same frames)
+
+`docs/brand/cohesion/<viewport>-<view>_before-after.jpg`: before left, after right. `perf.json` holds the raw numbers.
+
+| frame | draw calls | triangles | ms/frame (SwiftShader, relative only) |
+|---|---|---|---|
+| phone/driftholm | 93 → 99 | 377k → 469k | 613.3 → 668.8 |
+| phone/driftholm-golden | 99 → 104 | 378k → 470k | 561.8 → 661.8 |
+| phone/rafts-close | 88 → 87 | 378k → 466k | 423.1 → 646.2 |
+| phone/gullstep | 100 → 111 | 374k → 397k | 543.8 → 720.4 |
+| phone/hollow | 127 → 130 | 473k → 508k | 542.6 → 570.7 |
+| phone/helios | 85 → 85 | 227k → 238k | 421.8 → 440.8 |
+| phone/boat-side | 80 → 82 | 364k → 376k | 536.4 → 415.2 |
+| desktop/driftholm | 130 → 135 | 403k → 509k | 540.3 → 776.4 |
+| desktop/driftholm-golden | 128 → 134 | 403k → 509k | 663.3 → 699.6 |
+| desktop/rafts-close | 101 → 102 | 438k → 536k | 610.3 → 737.5 |
+| desktop/gullstep | 114 → 129 | 435k → 547k | 732.4 → 695.6 |
+| desktop/hollow | 153 → 158 | 512k → 549k | 611.5 → 654.7 |
+| desktop/helios | 94 → 94 | 327k → 338k | 443.5 → 517.2 |
+| desktop/boat-side | 134 → 145 | 379k → 401k | 510.4 → 477.1 |
+
+Draw calls rise by up to 16 (the outline shells). Triangles rise by 3–30%: a few thousand for the salvage houses, the
+rest for the outline shells. Software-GL frame times are noisy (±15% between identical runs) and mostly track the
+added triangles.
+
 ## Limitations
 
 - No real-device GPU numbers: frame times in `docs/brand/cohesion/perf.json` are SwiftShader (CPU) and only useful
@@ -82,4 +107,6 @@ the towns have dark ink and darker, unclipped values against the pale hill and s
   inked batch/structure.
 - The GLB kits themselves (walls, watchtowers, containers, rigs, towers) were not remodelled; they gain ink and the new
   light response but keep their geometry.
+- The rafts-close and hollow frames differ slightly in boat bob/quest marker between runs (live game state); camera,
+  clock and boat position are pinned.
 - Island terrain and foliage are not outlined.
