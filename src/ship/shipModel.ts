@@ -1,6 +1,7 @@
 // Modular vessel construction. Every functional upgrade and cosmetic maps to visible parts.
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat, toonMat, canvasTex, weather } from '../world/materials';
+import { buntingGeometry, pennantCount } from './bunting';
 import { COSMETIC_MAP, type VesselId } from '../data/ship';
 import { item } from '../data/items';
 import type { Store } from '../state/store';
@@ -1064,6 +1065,19 @@ export function buildShip(store: Store): ShipParts {
     lan.y = P(0.9, 1).y + lift;
     kitSolid.push(paint(xf(new THREE.CylinderGeometry(0.04, 0.04, 0.9 * sk, 4), lan.x, lan.y + 0.45 * sk, lan.z), '#2b2f36'));
     kitGlow.push(paint(xf(new THREE.BoxGeometry(0.2 * sk, 0.26 * sk, 0.2 * sk), lan.x, lan.y + 0.95 * sk, lan.z), '#ffc46b'));
+  }
+  // journey bunting dressed from the masthead to both stern quarters (so it frames her from the chase camera): one
+  // pennant per two discoveries, split between the lines, and festoon bulbs once she's refitted
+  {
+    const top = glb ? new THREE.Vector3(glb.flag.x, glb.flag.y - 0.3 * sc, glb.flag.z) : new THREE.Vector3(0, mastBase + mastH - 0.25, mastZ);
+    const n = pennantCount(store.discoveryCount);
+    for (const side of [-1, 1]) {
+      const q = rail(0.1, side);
+      q.y += (vessel === 'dinghy' ? 0.5 : 0.8) * sk;
+      const bunt = buntingGeometry(top, q, side < 0 ? Math.ceil(n / 2) : Math.floor(n / 2), sk, stage.id !== 'stripped');
+      if (bunt.solid) kitSolid.push(bunt.solid);
+      if (bunt.glow) kitGlow.push(bunt.glow);
+    }
   }
   // her name, painted on a scrap plate across the stern
   if (s.shipName) {
