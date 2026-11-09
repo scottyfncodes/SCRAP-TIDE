@@ -477,6 +477,7 @@ const check = (name, ok, detail = '') => {
     await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
     await page.waitForTimeout(600);
     await click(/^⚓ DOCK$/);
+    await page.waitForFunction(() => window.__game.boat.docked, null, { timeout: 60000, polling: 100 }).catch(() => {}); // docking runs behind a fade
     await page.waitForTimeout(1800);
     await dismiss();
     const job = await g(() => { const d = window.__game.store.data; return { paid: d.gold > window.__job.gold, done: d.jobs.done, fresh: d.jobs.board[0].id !== window.__job.id, n: d.jobs.board.length }; });
