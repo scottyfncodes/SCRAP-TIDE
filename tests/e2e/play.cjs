@@ -514,17 +514,16 @@ const check = (name, ok, detail = '') => {
     // Daily Tide: same wrecks twice for the same date, end card with score, share text and streak
     const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
     const dailyRun = async () => {
-      await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
-      await page.waitForTimeout(600); // let the action column refresh
-      await click(/^⚓ DOCK$/);
-      // docking runs behind a fade on a timer: wait until she is actually alongside before using the harbour
-      await page.waitForFunction(() => window.__game.boat.docked, null, { timeout: 60000, polling: 100 }).catch(() => {});
-      await page.waitForTimeout(1500);
+      // docking itself is checked above; here the boat is simply put alongside so the Daily Tide test can't be
+      // tripped by the dock fade's timing on a slow renderer
+      await g(() => { const G = window.__game; G.ui.closePanel(); G.events.clear(); G.dockPose(); G.store.data.trip.on = false; });
       await dismiss();
       await g(() => window.__game.ui.openPanel('harbor'));
       await page.waitForSelector('.daily-btn', { timeout: 5000 });
       await page.click('.daily-btn');
       await page.waitForTimeout(500);
+      const st = await g(() => ({ active: window.__game.store.data.daily.active, docked: window.__game.boat.docked }));
+      if (!st.active) console.log('daily did not start:', JSON.stringify(st));
       return g(() => window.__game.wrecks.list.map((w) => `${w.tier}@${w.site.x.toFixed(1)},${w.site.z.toFixed(1)}`).join(' '));
     };
     const a = await dailyRun();
