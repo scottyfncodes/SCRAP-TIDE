@@ -63,6 +63,7 @@ const WAKE_PUFF = 0.55;
 const FOOT_MIN = 0.7, FOOT_MAX = 5.0, FOOT_ACCEL = 9, FOOT_DECEL = 14;
 
 const _white = new THREE.Color(1, 1, 1);
+const _shade = new THREE.Color();
 
 export class Game implements GameAPI {
   store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades(), experiments: pageExperiments(), fresh: pageFresh() });
@@ -1078,7 +1079,10 @@ export class Game implements GameAPI {
     // shared light response (materials.ts): sun-warm lit faces, sky-cool shade; eased off at night and in storms
     const lumOf = (c: THREE.Color) => Math.max(0.05, c.r * 0.3 + c.g * 0.55 + c.b * 0.15);
     gradeUniforms.uLightTint.value.copy(a.sunColor).multiplyScalar(1 / lumOf(a.sunColor)).lerp(_white, 0.78);
-    gradeUniforms.uShadeTint.value.copy(a.skyTop).multiplyScalar(0.92 / lumOf(a.skyTop)).lerp(_white, 0.84);
+    // shade takes the sky fill's hue: cool blue by day, warm at golden hour and sunset (not the zenith, which stays
+    // blue at sunset and turned backlit towns cold grey)
+    _shade.copy(a.skyTop).lerp(a.hemiSky, 0.65);
+    gradeUniforms.uShadeTint.value.copy(_shade).multiplyScalar(0.94 / lumOf(_shade)).lerp(_white, 0.8);
     gradeUniforms.uShadeK.value = (1 - a.night * 0.7) * (1 - a.storm * 0.5);
     const fog = this.scene.fog as THREE.Fog;
     fog.color.copy(a.fogColor);
