@@ -23,7 +23,7 @@ dependencies, no new assets to download, no new lights or render passes.
 
 `before/` and `after/`: iPhone 17 viewport (402×874) in headless Chromium with SwiftShader, not a real device.
 `foot-*` = on foot at Turtle Atoll, `sail-*` = the skiff off Driftholm; noon (0.5), dusk (0.78), night (0.95).
-`hud-*` = the HUD at sea, the open Menu tray and the 320 px narrow phone. `dials.png` = the four helm wheels (Skiff, Trimaran, Brig, Ironwake).
+`hud-*` = the HUD at sea, the open Menu tray and the 320 px narrow phone. `dials.png` = the four helm wheels (Skiff, Trimaran, Brig, Ironwake). `before-after.png` = all six scenes, before (top) and after (bottom).
 
 ## Tradeoffs
 
