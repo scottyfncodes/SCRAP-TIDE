@@ -454,7 +454,12 @@ const check = (name, ok, detail = '') => {
       await page.dispatchEvent('.w-reel', 'pointerdown');
       await page.waitForTimeout(600);
     }
-    await page.waitForSelector('.reveal .lchip', { timeout: 8000 }).catch(() => {});
+    // another card (a new discovery, a set) may be queued in front of the haul card: tap those away until it shows
+    for (let k = 0; k < 8 && !(await page.$('.reveal .lchip')); k++) {
+      await page.waitForTimeout(700);
+      const other = await page.$('.reveal:not(:has(.lchip)) .r-ok');
+      if (other) await other.click().catch(() => {});
+    }
     const rev = await g(() => ({ chips: [...document.querySelectorAll('.reveal .lchip em')].map((e) => e.textContent), stamp: document.querySelector('.reveal .tier-stamp')?.textContent ?? '', tiers: window.__game.store.data.tiers, gone: window.__game.wrecks.byId(window.__wr)?.hauled }));
     await page.screenshot({ path: `${out}/loop_loot_reveal.png` });
     check('hauling it reveals each find with its tier; the wreck is used up', rev.chips.length > 0 && rev.chips.every((c) => /Junk|Common|Rare|Legendary/.test(c)) && rev.gone === true, JSON.stringify(rev));
