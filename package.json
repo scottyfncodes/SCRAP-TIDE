@@ -13,7 +13,8 @@
     "sim": "node tests/sim/run-sims.mjs",
     "bot": "node tests/e2e/playtest-bot.mjs",
     "evidence:report": "node tests/sim/report.mjs",
-    "evidence": "npm run build && npm run sim && npm run bot && npm run evidence:report"
+    "evidence": "npm run build && npm run sim && npm run bot && npm run evidence:report",
+    "check:hud": "node scripts/hud-shots.mjs dist hud-check"
   },
   "dependencies": {
     "three": "^0.170.0"

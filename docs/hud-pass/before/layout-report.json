@@ -1,0 +1,66 @@
+{
+  "iphone17": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 158,
+    "controlsTop": 601,
+    "clearWorldPx": 443,
+    "vh": 874
+  },
+  "iphone13": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 158,
+    "controlsTop": 571,
+    "clearWorldPx": 413,
+    "vh": 844
+  },
+  "narrow": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 158,
+    "controlsTop": 295,
+    "clearWorldPx": 137,
+    "vh": 568
+  },
+  "tall": {
+    "overlaps": [
+      ".engine-btn × .stick"
+    ],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 176,
+    "controlsTop": 643,
+    "clearWorldPx": 467,
+    "vh": 932
+  },
+  "landscape": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 110,
+    "controlsTop": 195,
+    "clearWorldPx": 85,
+    "vh": 390
+  },
+  "desktop": {
+    "overlaps": [
+      ".engine-btn × .stick"
+    ],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 176,
+    "controlsTop": 431,
+    "clearWorldPx": 255,
+    "vh": 720
+  }
+}

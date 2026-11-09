@@ -143,6 +143,7 @@ export class UI {
   private digEl!: HTMLElement;
   private bannerEl!: HTMLElement;
   private fadeEl!: HTMLElement;
+  private closeTray: () => void = () => {};
   private sheet: HTMLElement | null = null;
   private revealQueue: (() => HTMLElement)[] = [];
   private revealOpen = false;
@@ -171,16 +172,29 @@ export class UI {
   // ───────── HUD ─────────
   private buildHUD() {
     this.hud = el(`<div class="hud" style="position:absolute;inset:0;pointer-events:none"></div>`);
+    // Top HUD: one status plate (gold, hold, time, hull/fuel) and the objective on the left; navigation on the right
+    // (Maps one tap away, everything else in the Menu tray), with the radar and treasure compass under it.
+    const NAV = [
+      { p: 'maps', icon: ICON.maps, label: 'Maps' },
+      { p: 'ship', icon: ICON.ship, label: 'Ship' },
+      { p: 'cargo', icon: ICON.cargo, label: 'Cargo' },
+      { p: 'catalog', icon: ICON.catalog, label: 'Catalog' },
+      { p: 'settings', icon: ICON.settings, label: 'Settings' },
+    ];
     const top = el(`<div class="hud-top">
-      <div class="stats"><div class="pill gold-pill"><span class="coin"></span><span class="gold">0</span></div><div class="pill cargo-pill">⛵ <span class="cargo">0/6</span></div>
-        <div class="status"><div class="gauge fuel"><i></i><span>FUEL</span></div><div class="gauge hull"><i></i><span>HULL</span></div><div class="clock"></div></div></div>
-      <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div><button class="q-side"></button></div>
-      <div class="menu-btns">
-        <button class="icon-btn" data-p="catalog">${ICON.catalog}<span>CATALOG</span></button>
-        <button class="icon-btn" data-p="maps">${ICON.maps}<span>MAPS</span></button>
-        <button class="icon-btn" data-p="ship">${ICON.ship}<span>SHIP</span></button>
-        <button class="icon-btn" data-p="cargo">${ICON.cargo}<span>CARGO</span></button>
-        <button class="icon-btn" data-p="settings">${ICON.settings}<span>MENU</span></button>
+      <div class="hud-left">
+        <div class="status-plate">
+          <div class="sp-row"><span class="chip gold-pill" title="Gold"><span class="coin"></span><span class="gold">0</span></span><button class="chip cargo-pill" data-p="cargo" aria-label="Hold: open cargo">⛵ <span class="cargo">0/6</span></button><span class="clock"></span></div>
+          <div class="status"><div class="gauge hull"><i></i><span>HULL</span></div><div class="gauge fuel"><i></i><span>FUEL</span></div></div>
+        </div>
+        <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div><button class="q-side"></button></div>
+      </div>
+      <div class="hud-right">
+        <div class="nav-btns">
+          <button class="icon-btn" data-p="maps" aria-label="Maps">${ICON.maps}<span>MAPS</span></button>
+          <button class="icon-btn nav-toggle" aria-label="Menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>MENU</span></button>
+        </div>
+        <div class="nav-tray" role="menu">${NAV.map((n) => `<button class="tray-btn" role="menuitem" data-p="${n.p}">${n.icon}<span>${n.label}</span></button>`).join('')}</div>
       </div>
     </div>`);
     this.goldEl = top.querySelector('.gold')!;
@@ -193,9 +207,28 @@ export class UI {
       this.game.toggleFollowSide();
       this.refreshHUD();
     });
-    top.querySelectorAll<HTMLElement>('.icon-btn').forEach((b) =>
-      b.addEventListener('click', () => {
+    const tray = top.querySelector('.nav-tray') as HTMLElement;
+    const toggle = top.querySelector('.nav-toggle') as HTMLElement;
+    const setTray = (open: boolean) => {
+      tray.classList.toggle('open', open);
+      toggle.classList.toggle('on', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    this.closeTray = () => setTray(false);
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      audio.ui();
+      setTray(!tray.classList.contains('open'));
+    });
+    // a tap anywhere else folds the tray away
+    window.addEventListener('pointerdown', (e) => {
+      if (tray.classList.contains('open') && !tray.contains(e.target as Node) && !toggle.contains(e.target as Node)) setTray(false);
+    });
+    top.querySelectorAll<HTMLElement>('[data-p]').forEach((b) =>
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
         audio.ui();
+        setTray(false);
         this.openPanel(b.dataset.p!);
       })
     );
@@ -241,7 +274,6 @@ export class UI {
     };
     stick.addEventListener('pointerup', end);
     stick.addEventListener('pointercancel', end);
-    this.hud.append(stick);
 
     this.actionsEl = el(`<div class="actions"></div>`);
     this.toastsEl = el(`<div class="toasts"></div>`);
@@ -264,8 +296,32 @@ export class UI {
       audio.unlock();
       this.game.toggleEngine();
     });
-    this.radarEl = el(`<div class="radar"><canvas width="208" height="208"></canvas><div class="rl">RADAR</div></div>`);
-    this.hud.append(this.hitEl, this.actionsEl, this.toastsEl, this.wpEl, this.compassEl, this.speedEl, this.digEl, this.bannerEl, this.engineEl, this.radarEl);
+    // the radar: a small scope by default, tap to enlarge (remembered on this device only; never in the save)
+    // (the range label sits outside the button so text-matching test helpers never mistake "LOOKOUT" for a button)
+    this.radarEl = el(`<div class="radar-box"><button class="radar" aria-label="Radar: tap to enlarge"><canvas width="208" height="208"></canvas></button><span class="rl">RADAR</span></div>`);
+    const scope = this.radarEl.querySelector('.radar') as HTMLElement;
+    try {
+      if (localStorage.getItem('scraptide.radarBig') === '1') scope.classList.add('big');
+    } catch {
+      /* ignore */
+    }
+    scope.addEventListener('click', (e) => {
+      e.stopPropagation();
+      audio.ui();
+      const big = scope.classList.toggle('big');
+      scope.setAttribute('aria-label', big ? 'Radar: tap to shrink' : 'Radar: tap to enlarge');
+      try {
+        localStorage.setItem('scraptide.radarBig', big ? '1' : '0');
+      } catch {
+        /* ignore */
+      }
+    });
+    top.querySelector('.hud-right')!.append(this.radarEl, this.compassEl);
+    // the helm: one bottom-left cluster (wind dial + speed and the engine toggle above the wheel); actions bottom-right
+    const helm = el(`<div class="helm"><div class="helm-row"></div></div>`);
+    helm.firstElementChild!.append(this.speedEl, this.engineEl);
+    helm.append(stick);
+    this.hud.append(this.hitEl, helm, this.actionsEl, this.toastsEl, this.wpEl, this.digEl, this.bannerEl);
     this.root.append(this.hud, this.fadeEl);
 
     // keyboard for desktop testing
@@ -288,7 +344,10 @@ export class UI {
         const b = this.actionsEl.querySelector<HTMLElement>('.act:not(.secondary)');
         b?.click();
       }
-      if (k === 'escape') this.closePanel();
+      if (k === 'escape') {
+        this.closeTray();
+        this.closePanel();
+      }
       if (k === 'q') this.game.toggleEngine();
     });
     window.addEventListener('keyup', (e) => {
