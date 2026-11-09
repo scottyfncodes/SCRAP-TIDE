@@ -1,5 +1,6 @@
 /* SCRAP TIDE interface: a scavenger's navigation kit.
-   HUD = recovered instruments on abyss-blue enamelled steel; actions = stamped Sun Gold plates; panels =
+   HUD = survivor-built instrumentation (art-direction pass): riveted, scratched steel plates with faded hazard
+   marks and stencilled labels, bolted together from whatever floated; actions = stamped Sun Gold plates; panels =
    bleached-sand expedition journal pages under a steel header strip. Stencil for names, condensed grotesk for labels,
    mono for readouts. Palette (docs/brand/SCRAP-TIDE-brand.md): Abyss Blue #10384A, Sea Glass #168D9C,
    Bleached Sand #D7B87B, Oxide Rust #A04D30, Sun Gold #E5C65E. */
@@ -45,6 +46,16 @@
   --plate: linear-gradient(180deg, rgba(23,59,74,.93), rgba(11,34,45,.94));
   --scrim: rgba(8,28,38,.72);
   --chamfer: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  /* survivor instrumentation: scratched steel, corner rivets, a faded hazard edge (cheap: gradients only) */
+  --scratches: repeating-linear-gradient(97deg, rgba(236,224,194,.035) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(-12deg, rgba(0,0,0,.08) 0 1px, transparent 1px 11px);
+  --rivet: radial-gradient(circle, #9aa4a6 0 1.3px, #3a4448 1.6px 2.3px, transparent 2.6px);
+  --rivets: var(--rivet) 5px 5px / 6px 6px no-repeat, var(--rivet) calc(100% - 5px) 5px / 6px 6px no-repeat,
+    var(--rivet) 5px calc(100% - 5px) / 6px 6px no-repeat, var(--rivet) calc(100% - 5px) calc(100% - 5px) / 6px 6px no-repeat;
+  --rivets-top: var(--rivet) 4px 4px / 6px 6px no-repeat, var(--rivet) calc(100% - 4px) 4px / 6px 6px no-repeat;
+  --hazard-stripe: repeating-linear-gradient(-45deg, rgba(217,182,72,.85) 0 5px, rgba(20,17,10,.9) 5px 10px);
+  --plate-edge: rgba(150,160,158,.42);
+  --plate-metal: linear-gradient(180deg, rgba(31,52,60,.94), rgba(14,28,34,.95));
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -96,9 +107,12 @@ button { font-family: var(--label); cursor: pointer; border: none; color: inheri
 .hud-right { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; position: relative; pointer-events: none; }
 .hud-left > *, .hud-right > *, .nav-btns > * { pointer-events: auto; }
 .status-plate {
-  background: linear-gradient(180deg, rgba(236,224,194,.08), rgba(236,224,194,0) 40%), var(--plate); color: var(--bone); border-radius: 12px; padding: 6px 9px 7px; border: 1px solid rgba(22,141,156,.45);
-  box-shadow: 0 4px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(236,224,194,.14); display: flex; flex-direction: column; gap: 5px; max-width: 100%;
+  position: relative; color: var(--bone); border-radius: 4px; padding: 7px 12px 8px 15px; border: 1px solid var(--plate-edge);
+  background: var(--rivets), linear-gradient(180deg, rgba(236,224,194,.07), rgba(236,224,194,0) 40%), var(--scratches), var(--plate-metal);
+  box-shadow: 0 4px 12px rgba(0,0,0,.34), inset 0 1px 0 rgba(236,224,194,.12), inset 0 -2px 0 rgba(0,0,0,.3); display: flex; flex-direction: column; gap: 6px; max-width: 100%;
 }
+/* a faded hazard strip down the plate's left edge, like a painted equipment bracket */
+.status-plate::before { content: ''; position: absolute; left: 4px; top: 7px; bottom: 7px; width: 4px; border-radius: 1px; background: var(--hazard-stripe); opacity: .7; }
 .sp-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
 .chip { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 15px; line-height: 1; color: var(--bone); background: none; padding: 0; }
 .pill .coin, .chip .coin { width: 13px; height: 13px; border-radius: 50%; flex: none; background: radial-gradient(circle at 35% 30%, #e8cf8a, #a37a2a 55%, #5a4012); box-shadow: inset 0 -1px 0 rgba(0,0,0,.4), 0 0 0 1px rgba(0,0,0,.4); }
@@ -109,17 +123,19 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 
 .quest {
   position: relative; max-width: min(100%, 360px);
-  background: linear-gradient(180deg, var(--paper), var(--paper-2));
-  border-radius: 10px; padding: 5px 10px 6px; border: 1px solid var(--paper-edge);
-  box-shadow: 0 4px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.45); font-family: var(--label); font-size: 15px; font-weight: 700; color: var(--ink);
+  /* the objective: a sun-bleached painted tag (sheet aluminium, a strip of tape for the label), not a parchment slip */
+  background: var(--scratches), linear-gradient(180deg, #e3dccb, #c9c1ab);
+  border-radius: 3px; padding: 5px 11px 6px 12px; border: 1px solid #6f6a5c; border-left: 4px solid var(--oxide);
+  box-shadow: 0 4px 12px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 0 rgba(0,0,0,.12); font-family: var(--label); font-size: 15px; font-weight: 700; color: var(--ink);
   text-align: left; line-height: 1.15; cursor: pointer;
 }
-.quest .q-label { font-family: var(--label); font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--rust); text-transform: uppercase; line-height: 1.2; }
-.quest .q-need { font-family: var(--mono); font-size: 12px; letter-spacing: .2px; color: var(--rust); margin-top: 2px; line-height: 1.3; }
+.quest .q-label { display: inline-block; font-family: var(--label); font-size: 12px; font-weight: 700; letter-spacing: 1.2px; color: #6a2a16; text-transform: uppercase; line-height: 1.2;
+  background: rgba(160,77,48,.13); padding: 0 5px; margin-left: -5px; border-radius: 1px; }
+.quest .q-need { font-family: var(--mono); font-size: 12px; letter-spacing: .2px; color: #7a3018; margin-top: 2px; line-height: 1.3; }
 .quest .q-hint { font-family: var(--body); font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-top: 3px; display: none; }
 .quest.open .q-hint { display: block; }
 .quest .q-side {
-  display: block; width: 100%; margin-top: 4px; min-height: 30px; padding: 3px 8px; border: 1px dashed var(--paper-edge); border-radius: 7px;
+  display: block; width: 100%; margin-top: 4px; min-height: 30px; padding: 3px 8px; border: 1px dashed #6f6a5c; border-radius: 2px;
   background: rgba(255,255,255,.22); font-family: var(--mono); font-size: 12px; letter-spacing: 0; line-height: 1.2; color: var(--ink-soft); text-align: left;
 }
 .quest .q-side.on { border-style: solid; border-color: var(--hazard-dk); background: rgba(229,198,94,.28); color: var(--ink); }
@@ -129,22 +145,22 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 
 .nav-btns { display: flex; gap: 6px; pointer-events: none; }
 .icon-btn {
-  width: 50px; height: 50px; border-radius: 13px; position: relative;
-  background: linear-gradient(180deg, rgba(236,224,194,.1), rgba(236,224,194,0) 45%), var(--plate); border: 1px solid rgba(22,141,156,.45);
-  box-shadow: 0 3px 0 #06161e, 0 5px 10px rgba(0,0,0,.3);
+  width: 50px; height: 50px; border-radius: 5px; position: relative;
+  background: var(--rivets-top), linear-gradient(180deg, rgba(236,224,194,.09), rgba(236,224,194,0) 45%), var(--scratches), var(--plate-metal); border: 1px solid var(--plate-edge);
+  box-shadow: 0 3px 0 #050e12, 0 5px 10px rgba(0,0,0,.32), inset 0 1px 0 rgba(236,224,194,.1);
   display: flex; align-items: center; justify-content: center; color: var(--bone);
   font-family: var(--label); font-size: 12px; font-weight: 700; flex-direction: column; gap: 2px; letter-spacing: .5px;
   transition: transform .08s, background .08s;
 }
 .icon-btn svg { width: 22px; height: 22px; }
-.icon-btn:active, .icon-btn.on { background: #0b2430; color: var(--hazard); border-color: rgba(229,198,94,.6); }
+.icon-btn:active, .icon-btn.on { background: var(--rivets-top), var(--scratches), linear-gradient(180deg, #0f252e, #08161c); color: var(--hazard); border-color: rgba(229,198,94,.6); }
 .icon-btn:active { transform: translateY(1px); }
 .icon-btn .badge { position: absolute; top: -5px; right: -5px; background: var(--red); color: #fff; border-radius: 2px; min-width: 18px; height: 18px; font-family: var(--mono); font-size: 11px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border: 1px solid #000; }
 /* the Menu tray: every panel, labelled, one tap from anywhere */
 .nav-tray {
   position: absolute; top: 56px; right: 0; z-index: 6; display: none; flex-direction: column; min-width: 172px; padding: 4px;
-  background: linear-gradient(180deg, var(--steel-2), var(--steel)); border: 1px solid rgba(22,141,156,.45); border-top: 2px solid var(--sun-gold);
-  border-radius: 12px; box-shadow: 0 10px 28px rgba(0,0,0,.5); animation: fadein .15s;
+  padding-top: 9px; background: var(--hazard-stripe) top / 100% 5px no-repeat, var(--scratches), var(--plate-metal); border: 1px solid var(--plate-edge);
+  border-radius: 5px; box-shadow: 0 10px 28px rgba(0,0,0,.5); animation: fadein .15s;
 }
 .nav-tray.open { display: flex; }
 .tray-btn { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 14px 0 10px; border-radius: 9px; background: none; color: var(--bone);
@@ -174,15 +190,20 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 }
 .stick .wheel { position: absolute; inset: 0; transition: transform .05s; filter: drop-shadow(0 4px 6px rgba(0,0,0,.5)); }
 .stick .knob {
-  position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #e2c27a, #a57a2c 45%, #5b3f12 100%);
-  box-shadow: 0 3px 10px rgba(0,0,0,.55), inset 0 -3px 0 rgba(0,0,0,.35), inset 0 0 0 2px rgba(40,25,5,.5);
+  /* a machined thumb cap: knurled steel collar round a rubber grip, with a worn hazard dot (art-direction pass) */
+  position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%;
+  --cap: #8e3b22;
+  background:
+    radial-gradient(circle closest-side, #d9b648 0 3.5px, #14110a 4px 5px, transparent 5.5px),
+    radial-gradient(circle closest-side, #444e52 0, #20282b 50%, #0d1214 76%, transparent 78%),
+    repeating-conic-gradient(from 0deg, #a7afb0 0 6deg, #5d676a 6deg 12deg);
+  box-shadow: 0 3px 10px rgba(0,0,0,.6), 0 0 0 3px var(--cap), 0 0 0 4.5px rgba(10,14,16,.85), inset 0 -2px 0 rgba(0,0,0,.4);
 }
-.stick[data-vessel="sloop"] .knob { background: radial-gradient(circle at 38% 32%, #e8c88a, #a8783e 45%, #4a2c14 100%); }
-.stick[data-vessel="brig"] .knob { background: radial-gradient(circle at 38% 32%, #f0d77e, #b0882e 45%, #3a240f 100%); }
-.stick[data-vessel="ironwake"] .knob { background: radial-gradient(circle at 38% 32%, #b9c6cc, #5f6e76 45%, #1a2328 100%); }
-.stick .knob::after { content: ''; position: absolute; inset: 17px; border-radius: 50%; border: 2px solid rgba(40,25,5,.45); }
-.stick .stick-label { position: absolute; bottom: -17px; width: 100%; text-align: center; font-family: var(--label); font-size: 12px; font-weight: 700; color: var(--bone-dim); letter-spacing: 3px; text-shadow: 0 1px 3px #000; }
+.stick[data-vessel="sloop"] .knob { --cap: #4a7d70; }
+.stick[data-vessel="brig"] .knob { --cap: #8a9194; }
+.stick[data-vessel="ironwake"] .knob { --cap: #168d9c; }
+.stick .knob::after { content: ''; position: absolute; inset: 12px; border-radius: 50%; border: 1px solid rgba(236,224,194,.14); }
+.stick .stick-label { position: absolute; bottom: -17px; width: 100%; text-align: center; font-family: var(--display); font-size: 12px; font-weight: 400; color: var(--bone-2); letter-spacing: 3px; text-shadow: 0 1px 3px #000, 0 0 6px rgba(0,0,0,.7); }
 
 /* action plates: Sun Gold enamel on a brass bezel (HUD facelift: no hazard stripes) */
 .actions {
@@ -192,12 +213,13 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 }
 .act {
   position: relative; min-width: 124px; max-width: 100%; min-height: 56px; padding: 8px 20px;
-  border-radius: 14px; border: 1px solid #6e5719;
+  border-radius: 5px; border: 1px solid #6e5719;
   background:
     radial-gradient(circle at 10px 50%, #8a6a24 0 2.2px, rgba(255,240,190,.55) 2.6px 3.2px, transparent 3.6px),
     radial-gradient(circle at calc(100% - 10px) 50%, #8a6a24 0 2.2px, rgba(255,240,190,.55) 2.6px 3.2px, transparent 3.6px),
-    linear-gradient(180deg, rgba(255,250,225,.5), rgba(255,250,225,0) 46%),
-    linear-gradient(180deg, #f2da86, var(--sun-gold) 48%, #c8a23e);
+    linear-gradient(180deg, rgba(255,250,225,.45), rgba(255,250,225,0) 46%),
+    repeating-linear-gradient(100deg, rgba(90,60,10,.07) 0 1px, transparent 1px 9px),
+    linear-gradient(180deg, #f0d982, var(--sun-gold) 48%, #c49e3a);
   color: #1b170c; font-family: var(--label); font-weight: 800; font-size: 17px; letter-spacing: 1.1px; text-transform: uppercase;
   line-height: 1.05; text-align: center;
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -208,7 +230,7 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
   background:
     linear-gradient(180deg, rgba(236,224,194,.14), rgba(236,224,194,0) 50%),
     linear-gradient(180deg, rgba(27,70,88,.95), rgba(10,34,45,.96));
-  border-color: rgba(22,141,156,.7); color: var(--bone); min-width: 108px; min-height: 46px; font-size: 15px; padding: 6px 16px;
+  border-color: var(--plate-edge); color: var(--bone); min-width: 108px; min-height: 46px; font-size: 15px; padding: 6px 16px;
   box-shadow: 0 3px 0 #06161e, 0 6px 12px rgba(0,0,0,.35), inset 0 1px 0 rgba(236,224,194,.18);
 }
 .act:active { transform: translateY(3px); box-shadow: 0 1px 0 #6e5719, 0 3px 8px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.5); filter: brightness(.94); }
@@ -231,7 +253,7 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 /* speed / wind instrument */
 .speed {
   position: relative; pointer-events: none; min-width: 100px;
-  color: var(--bone); background: linear-gradient(180deg, rgba(236,224,194,.08), rgba(236,224,194,0) 45%), var(--scrim); border: 1px solid rgba(22,141,156,.4); border-radius: 12px; padding: 5px 9px 5px 6px; box-shadow: 0 4px 10px rgba(0,0,0,.28);
+  color: var(--bone); background: var(--rivets-top), linear-gradient(180deg, rgba(236,224,194,.07), rgba(236,224,194,0) 45%), var(--scratches), var(--plate-metal); border: 1px solid var(--plate-edge); border-radius: 4px; padding: 6px 10px 6px 8px; box-shadow: 0 4px 10px rgba(0,0,0,.3), inset 0 -2px 0 rgba(0,0,0,.3);
   font-family: var(--mono); font-size: 12px; line-height: 1.25;
   display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 6px; /* wind dial | speed, point of sail below */
 }
@@ -457,6 +479,15 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
   .act { min-width: 104px; font-size: 15px; padding-right: 12px; }
   .actions { max-width: calc(100vw - var(--safe-l) - var(--safe-r) - 168px); }
 }
+/* the narrowest phones upright (320 px): the helm row (instruments + dial) used to run into the action plate; trim
+   the dial and instruments and reserve the helm's real width for the action column */
+@media (max-width: 360px) and (orientation: portrait) {
+  .stick { width: 112px; height: 112px; }
+  .speed { width: 66px; }
+  .helm { gap: 8px; }
+  .act { min-width: 96px; padding: 8px 10px; }
+  .actions { max-width: calc(100vw - var(--safe-l) - var(--safe-r) - 214px); }
+}
 /* wide screens (landscape phones, tablets, desktop): the objective joins the top row, centred */
 @media (min-width: 700px) {
   .hud-left { flex-direction: row; align-items: flex-start; gap: 8px; }
@@ -470,7 +501,7 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 
 /* ───────── Drowned World HUD ───────── */
 .status { display: flex; gap: 6px; pointer-events: none; }
-.gauge { flex: 1 1 0; min-width: 96px; height: 17px; border-radius: 6px; background: #061923; border: 1px solid var(--line); position: relative; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+.gauge { flex: 1 1 0; min-width: 96px; height: 17px; border-radius: 2px; background: #071216; border: 1px solid var(--line); position: relative; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
 .gauge > i { position: absolute; inset: 1px auto 1px 1px; width: 50%; transition: width .3s, background .3s;
   -webkit-mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 9px); mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 9px); }
 .gauge > span { position: relative; z-index: 1; display: block; padding-left: 6px; font-family: var(--mono); font-size: 12px; color: var(--bone); line-height: 15px; letter-spacing: 0; text-shadow: 0 0 3px #000, 0 1px 1px #000; }
@@ -480,8 +511,8 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 @keyframes pulse-low { 50% { opacity: .45; } }
 .clock { font-family: var(--mono); font-size: 12px; color: var(--bone-2); letter-spacing: .2px; white-space: nowrap; }
 .engine-btn { position: relative; flex: none; width: 50px; height: 50px; border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #24495a, #0b2430); color: var(--bone-dim); font-family: var(--label); font-weight: 700; font-size: 12px; letter-spacing: .5px;
-  border: 2px solid #5e4a2a; box-shadow: 0 3px 10px rgba(0,0,0,.5), inset 0 0 0 3px rgba(0,0,0,.4); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; }
+  background: radial-gradient(circle at 40% 35%, #34444a, #121c20); color: var(--bone-dim); font-family: var(--label); font-weight: 700; font-size: 12px; letter-spacing: .5px;
+  border: 2px solid #6b7477; box-shadow: 0 3px 10px rgba(0,0,0,.5), inset 0 0 0 3px rgba(0,0,0,.4); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; }
 .engine-btn b { font-size: 17px; line-height: 1; }
 .engine-btn::after { content: ''; position: absolute; top: 6px; right: 9px; width: 6px; height: 6px; border-radius: 50%; background: #3a1a12; box-shadow: inset 0 0 0 1px rgba(0,0,0,.5); }
 .engine-btn.on { color: var(--hazard); border-color: var(--hazard); animation: eng 0.16s infinite alternate; }
@@ -493,12 +524,13 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 .radar-box { position: relative; flex: none; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
 .radar { position: relative; flex: none; width: 66px; height: 66px; pointer-events: auto; padding: 0; border-radius: 50%; cursor: pointer;
   /* abyss-blue glass rather than an opaque black disc, so the horizon stays visible through it */
-  background: radial-gradient(circle, rgba(16,56,74,.5), rgba(8,28,38,.74) 75%); border: 2px solid #1d4150; box-shadow: inset 0 0 12px rgba(0,0,0,.8), 0 0 0 1px rgba(236,224,194,.18);
+  background: radial-gradient(circle, rgba(16,56,74,.5), rgba(8,28,38,.74) 75%); border: 3px solid #4f5a5e;
+  box-shadow: inset 0 0 12px rgba(0,0,0,.8), 0 0 0 1px #0b1214, 0 0 0 4px rgba(142,59,34,.55), 0 0 0 5px rgba(10,14,16,.8), 0 3px 8px rgba(0,0,0,.4);
   transition: width .2s ease, height .2s ease; }
 .radar.big { width: 116px; height: 116px; }
 .radar canvas { display: block; width: 100%; height: 100%; border-radius: 50%; }
 .radar::after { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.14) 0 1px, transparent 1px 3px); }
-.radar-box .rl { margin-top: 1px; white-space: nowrap; font-family: var(--label); font-weight: 700; font-size: 12px; color: #e5c65e; text-shadow: 0 1px 2px #000, 0 0 4px #000; letter-spacing: .8px; pointer-events: none; }
+.radar-box .rl { margin-top: 6px; white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 12px; color: #e5c65e; text-shadow: 0 1px 2px #000, 0 0 4px #000; letter-spacing: 1.4px; pointer-events: none; }
 .radar:active { box-shadow: inset 0 0 12px rgba(0,0,0,.8), 0 0 0 2px rgba(229,198,94,.6); }
 
 /* salvage winch */

@@ -86,7 +86,7 @@ export const ITEMS: ItemDef[] = [
     desc: 'Engraved “GANNET”. Bram’s boat, before Rustfang made a gate of her. It rings a note lower than the Wren’s.' },
   { id: 'dace_ledger', name: 'Rustfang Tribute Ledger', category: 'history', rarity: 'rare', value: 60, icon: 'page', colors: ['#d9c79a', '#5c260f'], stack: 1,
     desc: 'Fifteen years of payments from Rig Helios to Rustfang Hold, every one signed “D.” Rig rules: nobody steals. Rustfang excepted.' },
-  { id: 'tattered_flag', name: 'Tattered Jolly Flag', category: 'history', rarity: 'rare', value: 80, icon: 'flag', colors: ['#1c1c22', '#efe6d2'], stack: 1, displayable: true,
+  { id: 'tattered_flag', name: 'Tattered Trawler Flag', category: 'history', rarity: 'rare', value: 80, icon: 'flag', colors: ['#1c1c22', '#efe6d2'], stack: 1, displayable: true,
     desc: 'The flag of the trawler Wren, Captain Redfinch’s salvage boat. More hole than flag, but unmistakable.' },
 
   // ── Ocean finds ──
