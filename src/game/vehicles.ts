@@ -412,7 +412,8 @@ export class Vehicles {
     if (this.active === 'runner') return { x: this.rx, y: 0.8 + this.rY * 0.6, z: this.rz, dist: 7 * this.g.zoom, pitch: 0.26 };
     if (this.active === 'balloon') {
       const high = clamp((this.alt - 25) / 60, 0, 1);
-      return { x: this.bx, y: this.alt * 0.6, z: this.bz, dist: (22 + high * 200) * this.g.zoom, pitch: 0.45 + high * 0.85 };
+      // low down: frame the basket (and anything on the winch under it); high up: pull far overhead over the sea
+      return { x: this.bx, y: (this.alt - 3) * (1 - high) + this.alt * 0.6 * high, z: this.bz, dist: (24 + high * 200) * this.g.zoom, pitch: 0.3 + high * 1.0 };
     }
     return null;
   }
