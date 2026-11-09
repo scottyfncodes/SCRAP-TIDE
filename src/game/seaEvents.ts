@@ -44,7 +44,7 @@ export class SeaEvents {
   seen: SeaEventKind[] = [];
   beaten = 0;
   /** extra event kinds available (Phase 4 adds 'raiders') */
-  pool: SeaEventKind[] = ['rogue_wave', 'surfacing_wreck', 'rival', 'creature'];
+  pool: SeaEventKind[] = ['rogue_wave', 'surfacing_wreck', 'rival', 'creature', 'raiders'];
   private next = 0;
 
   constructor(private g: Game) {}
@@ -116,7 +116,8 @@ export class SeaEvents {
         break;
       }
       case 'raiders':
-        g.raiderEvent?.(a);
+        g.raiderRun.start();
+        a.data = { riders: g.raiderRun.riders };
         break;
     }
     this.active.push(a);
@@ -153,6 +154,7 @@ export class SeaEvents {
     if (a.data.wall) s.remove(a.data.wall);
     if (a.data.boat) s.remove(a.data.boat);
     if (a.data.body) s.remove(a.data.body);
+    if (a.kind === 'raiders' && !a.done) this.g.raiderRun.clear();
   }
 
   /** A wreck went under (sunk or taken): resolve whichever event owned it. */
@@ -180,6 +182,10 @@ export class SeaEvents {
       else if (a.kind === 'rival') this.updateRival(a, dt);
       else if (a.kind === 'creature') this.updateCreature(a, dt);
       else if (a.kind === 'surfacing_wreck' && a.t > 40) this.finish(a, false);
+      else if (a.kind === 'raiders') {
+        const r = g.raiderRun.update(dt);
+        if (r) this.finish(a, r === 'won');
+      }
     }
     this.active = this.active.filter((a) => !a.done);
   }
@@ -205,6 +211,7 @@ export class SeaEvents {
     }
     if (a.data.dist <= 4 && !a.data.hit) {
       a.data.hit = true;
+      if (g.vehicles.active === 'runner' && Math.hypot(g.vehicles.rx - b.x, g.vehicles.rz - b.z) < 40) g.vehicles.crash('A rogue wave took you');
       if (rideWave(b.heading, a.data.from, b.speed)) {
         g.jump?.(1.2);
         g.ui.stamp('RODE IT!', 'Bow into the wave', '#e9fbf6');

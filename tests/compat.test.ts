@@ -20,7 +20,7 @@ describe('save compatibility', () => {
   it('a v1 save mid-way through the old 13-step voyage loads at the current version with every new field defaulted', () => {
     const d = load({ version: 1, gold: 80, quest: 'sell', upgrades: ['sail_canvas'], flags: ['sold'] });
     expect(d.version).toBe(SAVE_VERSION);
-    expect(SAVE_VERSION).toBe(8);
+    expect(SAVE_VERSION).toBe(9);
     expect(d.quest).toBe('upgrade'); // retired step continues from its successor (PR 1.2)
     expect(d.gold).toBe(80);
     expect(d.upgrades).toEqual(['sail_canvas']);

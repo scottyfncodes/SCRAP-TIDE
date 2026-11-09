@@ -212,6 +212,51 @@ export class Salvage {
     else g.ui.toast(`${grade} Nothing worth keeping.`);
   }
 
+  // ── the vehicles (loop pass Phase 4) ──
+  /** A wreck beside the Wave Runner (any drifting wreck, including the sinking ones). */
+  runnerSite(): SalvageSiteDef | null {
+    const v = this.g.vehicles;
+    if (v.active !== 'runner' || v.thrown > 0) return null;
+    return this.g.wrecks.sites.find((s) => Math.hypot(s.x - v.rx, s.z - v.rz) < s.r + 4) ?? null;
+  }
+  /** The runner grabs what it can carry from a wreck: one quick pull, its best finds as loads. */
+  runnerHaul() {
+    const g = this.g, v = g.vehicles;
+    const site = this.runnerSite();
+    if (!site || v.room() <= 0 || g.boat.busy) return;
+    g.boat.busy = true;
+    g.ui.openWinch({ title: site.name, sub: 'One pull from the runner: grab the best and go.', window: 0.3, speed: 0.9, pulls: 1 }).then((hits) => {
+      g.boat.busy = false;
+      if (hits < 0) return;
+      const rolls = 1 + hits * 2 + (g.ui.lastPerfects ? 1 : 0);
+      const got: { id: string; n: number }[] = [];
+      for (let i = 0; i < rolls; i++) {
+        const r = roll(Math.random, site.loot);
+        got.push({ id: r.id, n: r.n[0] });
+      }
+      got.sort((a, b) => item(b.id).value * b.n - item(a.id).value * a.n);
+      const loads = got.slice(0, v.room());
+      for (const l of loads) {
+        v.take(l);
+        g.store.discover(l.id, site.name, l.n);
+      }
+      g.wrecks.hauled(site.id);
+      g.events.wreckHauled(site.id);
+      g.store.data.hauls++;
+      g.store.data.trip.hauls++;
+      audio.haulUp(false);
+      g.haptic([30, 30, 60]);
+      g.ui.revealChest(site.name, loads, `On the runner · ${v.carried.length}/${v.runner.cargo} loads · RETURN to the boat to unload`, bestTier(loads.map((l) => l.id)));
+      g.store.commit();
+    });
+  }
+  /** A wreck lifted by the balloon's winch comes down on deck: a clean three-pull haul, a heavy-lift bonus roll. */
+  haulLifted(site: SalvageSiteDef, tier: string) {
+    void tier;
+    this.finish({ ...site, rolls: site.rolls + 1 }, 3, 1);
+    this.g.ui.stamp('LANDED ON DECK', 'The winch did what the crane couldn’t', '#f0c445');
+  }
+
   /** A floating supply cache was hooked aboard. */
   openCache(region: RegionId, bonus = 0) {
     const g = this.g;

@@ -1,0 +1,354 @@
+{
+ "frame": "gltf",
+ "parts": [
+  {
+   "name": "boom",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Wood_9a5a2e"
+   ],
+   "min": [
+    -0.2,
+    2.0,
+    -99
+   ],
+   "max": [
+    0.2,
+    99,
+    99
+   ]
+  },
+  {
+   "name": "mast",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Wood_9a5a2e",
+    "GC_Wood_5e331b"
+   ],
+   "min": [
+    -0.25,
+    1.3,
+    0.7
+   ],
+   "max": [
+    0.25,
+    99,
+    1.3
+   ]
+  },
+  {
+   "name": "jib",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Cloth_f1e6cc"
+   ],
+   "min": [
+    -99,
+    -99,
+    1.0
+   ]
+  },
+  {
+   "name": "lantern",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
+   "materials": [
+    "GC_Plain_ff9f2e_e2"
+   ],
+   "transform": {
+    "location": [
+     1.25,
+     -0.69,
+     -0.1
+    ]
+   }
+  },
+  {
+   "name": "beams_port",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_sloop_outriggers.glb",
+   "materials": [
+    "GC_Wood_9a5a2e",
+    "GC_Wood_5e331b",
+    "GC_Cloth_c9a46b"
+   ],
+   "min": [
+    -99,
+    1.12,
+    -99
+   ],
+   "max": [
+    -1.95,
+    99,
+    99
+   ]
+  },
+  {
+   "name": "beams_starboard",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_sloop_outriggers.glb",
+   "materials": [
+    "GC_Wood_9a5a2e",
+    "GC_Wood_5e331b",
+    "GC_Cloth_c9a46b"
+   ],
+   "min": [
+    1.95,
+    1.12,
+    -99
+   ]
+  },
+  {
+   "name": "crates",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_cargo_crates.glb",
+   "transform": {
+    "location": [
+     0.5,
+     1.0503,
+     -0.5
+    ]
+   }
+  },
+  {
+   "name": "compass",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_brass_compass.glb",
+   "transform": {
+    "location": [
+     0,
+     1.0503,
+     -1.1800000000000002
+    ]
+   }
+  },
+  {
+   "name": "wheel",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_wheel_rudder.glb",
+   "transform": {
+    "location": [
+     0,
+     1.0503,
+     -4.8
+    ]
+   }
+  },
+  {
+   "name": "captain",
+   "cylinder": {
+    "radius": 0.24,
+    "height": 1.85
+   },
+   "transform": {
+    "location": [
+     -0.98,
+     1.1,
+     -4.55
+    ]
+   }
+  },
+  {
+   "name": "turbine",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_deck_turbine.glb"
+  },
+  {
+   "name": "fishing",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_fishing_rig.glb"
+  },
+  {
+   "name": "harpoon",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_harpoon_turret.glb"
+  },
+  {
+   "name": "crane",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_salvage_crane.glb"
+  },
+  {
+   "name": "drums",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_fuel_drums.glb"
+  },
+  {
+   "name": "nets",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_cargo_nets.glb"
+  },
+  {
+   "name": "armour",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_armour_plating.glb"
+  },
+  {
+   "name": "lights",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_deck_lights.glb",
+   "node": "deck_lights_strings"
+  },
+  {
+   "name": "solar",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_solar_array.glb",
+   "transform": {
+    "location": [
+     0,
+     0.21999999999999975,
+     0
+    ]
+   }
+  },
+  {
+   "name": "radar",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_radar_mast.glb",
+   "transform": {
+    "location": [
+     0,
+     0.21999999999999975,
+     0
+    ]
+   }
+  },
+  {
+   "name": "spotlight",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_deck_lights.glb",
+   "node": "deck_spotlight",
+   "transform": {
+    "location": [
+     0,
+     0.21999999999999975,
+     0
+    ]
+   }
+  },
+  {
+   "name": "canvas_sail",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_canvas_mainsail.glb",
+   "transform": {
+    "location": [
+     0,
+     2.4503,
+     1.0
+    ]
+   }
+  },
+  {
+   "name": "container",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_container_cabin.glb"
+  },
+  {
+   "name": "twin_diesel",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_twin_diesel.glb"
+  },
+  {
+   "name": "runner",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_waverunner.glb",
+   "node": "tb_waverunner_mesh",
+   "transform": {
+    "location": [
+     -5.25,
+     0.15,
+     -0.39
+    ]
+   }
+  },
+  {
+   "name": "runner_bars",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_waverunner.glb",
+   "node": "waverunner_bars",
+   "transform": {
+    "location": [
+     -5.25,
+     0.15,
+     -0.39
+    ]
+   }
+  },
+  {
+   "name": "balloon_basket",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_balloon.glb",
+   "node": "balloon_basket",
+   "transform": {
+    "location": [
+     4.375,
+     1.06,
+     -0.75
+    ],
+    "scale": 0.8
+   }
+  },
+  {
+   "name": "balloon_roll",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_balloon.glb",
+   "node": "balloon_stowed",
+   "transform": {
+    "location": [
+     4.375,
+     1.06,
+     -0.75
+    ],
+    "scale": 0.8
+   }
+  }
+ ],
+ "motion": [
+  {
+   "part": "crane",
+   "node": "salvage_crane",
+   "axis": "y",
+   "from": -124.37746770784939,
+   "to": -55.62253229215061,
+   "steps": 3
+  },
+  {
+   "part": "harpoon",
+   "node": "harpoon_mount",
+   "axis": "y",
+   "from": 0,
+   "to": 330,
+   "steps": 12
+  },
+  {
+   "part": "turbine",
+   "node": "deck_turbine_rotor",
+   "axis": "z",
+   "from": 0,
+   "to": 60,
+   "steps": 2
+  },
+  {
+   "part": "radar",
+   "node": "radar_scanner",
+   "axis": "y",
+   "from": 0,
+   "to": 135,
+   "steps": 4
+  }
+ ],
+ "contacts": [
+  [
+   "solar",
+   "container"
+  ],
+  [
+   "radar",
+   "container"
+  ],
+  [
+   "spotlight",
+   "container"
+  ],
+  [
+   "canvas_sail",
+   "boom"
+  ],
+  [
+   "canvas_sail",
+   "mast"
+  ],
+  [
+   "harpoon",
+   "beams_starboard"
+  ],
+  [
+   "boom",
+   "mast"
+  ],
+  [
+   "runner_bars",
+   "runner"
+  ],
+  [
+   "balloon_roll",
+   "balloon_basket"
+  ]
+ ]
+}

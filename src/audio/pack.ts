@@ -151,6 +151,50 @@ class AudioPack {
     this.load(`sfx/${list[Math.floor(Math.random() * list.length)]}`).then((b) => b && this.play(b, audio.sfxBus, vol, 0.92 + Math.random() * 0.16));
   }
 
+  /** A StudioCraft one-shot from public/audio/sfx (the vehicles, loop pass Phase 4). Returns false if it isn't loaded
+   * yet, so the caller can play its procedural stand-in. */
+  oneShot(name: string, vol = 0.7, rate = 1) {
+    if (!this.ready() || audio.sfxVol <= 0) return false;
+    const p = this.load(`sfx/${name}`);
+    let played = false;
+    p.then((b) => {
+      if (b) {
+        this.play(b, audio.sfxBus, vol, rate);
+        played = true;
+      }
+    });
+    return played || this.cache.has(`sfx/${name}`);
+  }
+
+  private loops = new Map<string, { gain: GainNode | null; want: number }>();
+  /** A seamless StudioCraft loop (burner, high wind) held at a gain; 0 silences it. Loaded on first use. */
+  loopGain(name: string, k: number) {
+    const ctx = this.ready();
+    if (!ctx) return;
+    let l = this.loops.get(name);
+    if (!l) {
+      l = { gain: null, want: k };
+      this.loops.set(name, l);
+      const rec = l;
+      this.load(`sfx/${name}`).then((b) => {
+        if (!b) return;
+        const s = ctx.createBufferSource();
+        s.buffer = b;
+        s.loop = true;
+        rec.gain = ctx.createGain();
+        rec.gain.gain.value = rec.want;
+        s.connect(rec.gain).connect(audio.sfxBus);
+        s.start();
+      });
+    }
+    l.want = k;
+    if (l.gain) l.gain.gain.setTargetAtTime(k, ctx.currentTime, 0.08);
+  }
+  /** Is a loop playing (loaded)? Until it is, the synth stands in. */
+  loopReady(name: string) {
+    return !!this.loops.get(name)?.gain;
+  }
+
   /** Warm the cache for the short one-shots once the game is running (a few KB each). */
   prefetch() {
     if (!this.ready()) return;

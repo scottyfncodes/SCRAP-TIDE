@@ -543,6 +543,13 @@ export class UI {
     });
   }
 
+  /** The balloon spotted something: a short ping toast (loop pass Phase 4). */
+  markPing(kind: string) {
+    const label: Record<string, string> = { wreck: 'Wreck', wreck_rare: 'Rare wreck', wreck_legendary: 'LEGENDARY wreck', storm: 'Storm edge', wave: 'Rogue wave', rival: 'Rival' };
+    this.toast(`Marked: ${label[kind] ?? kind}`, { color: kind === 'wreck_legendary' ? '#f0c445' : kind === 'wreck_rare' ? '#4f9ad8' : '#d9cfb4', life: 1.6 });
+    audio.ui();
+  }
+
   /** A big, short banner in the middle of the screen (banking a hold, a perfect haul). */
   stamp(title: string, sub = '', color = '#f0c445') {
     const n = el(`<div class="stamp" style="--sc:${color}"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>`);
@@ -619,7 +626,7 @@ export class UI {
       }
     }
     const cos = Math.cos(camYaw), sin = Math.sin(camYaw);
-    const col: Record<string, string> = { site: '#e8b83a', site_done: 'rgba(232,184,58,.32)', town: '#9fd0c8', cache: '#d9c8a0', raider: '#ff5a2a', castaway: '#f2ede0', plant: LIVING_GREEN, wreck: '#d9cfb4', wreck_rare: '#4f9ad8', wreck_legendary: '#f0c445', mark: '#ffffff', mark_storm: '#9aa9b4', mark_wave: '#e9fbf6', mark_rival: '#ff7a5c' };
+    const col: Record<string, string> = { site: '#e8b83a', site_done: 'rgba(232,184,58,.32)', town: '#9fd0c8', cache: '#d9c8a0', raider: '#ff5a2a', castaway: '#f2ede0', plant: LIVING_GREEN, wreck: '#d9cfb4', wreck_rare: '#4f9ad8', wreck_legendary: '#f0c445', boat: '#ffffff', mark: '#ffffff', mark_storm: '#9aa9b4', mark_wave: '#e9fbf6', mark_rival: '#ff7a5c' };
     for (const b of blips) {
       // world → screen: camera forward is up
       const fx = b.x * sin + b.z * cos; // forward component

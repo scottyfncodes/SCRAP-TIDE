@@ -68,6 +68,9 @@ export const MODEL_FILES = [
   // the Ironwake Expedition Cat (MeshCraft, creative/3d-ironwake): twin hulls, bridge deck, wheelhouse and mast in
   // shipModel.ts's own frame; loaded lazily like the upgrades, only when the save sails it
   'tb_ironwake',
+  // the vehicles (loop pass Phase 4, MeshCraft, creative/3d-vehicles): lazy, fetched only when owned or previewed
+  'tb_waverunner',
+  'tb_balloon',
 ] as const;
 export type ModelFile = (typeof MODEL_FILES)[number];
 /**
@@ -77,7 +80,9 @@ export type ModelFile = (typeof MODEL_FILES)[number];
 export const UPGRADE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => f.startsWith('tb_upg_'));
 /** Vessel models that load lazily too: only a save that sails the vessel fetches it. */
 export const VESSEL_MODEL_FILES: readonly string[] = ['tb_ironwake'];
-const lazyFile = (f: string) => UPGRADE_MODEL_FILES.includes(f) || VESSEL_MODEL_FILES.includes(f);
+/** Vehicle models (the Wave Runner, the balloon): lazy too, only for a save that owns them (or a ?vehicle= preview). */
+export const VEHICLE_MODEL_FILES: readonly string[] = ['tb_waverunner', 'tb_balloon'];
+const lazyFile = (f: string) => UPGRADE_MODEL_FILES.includes(f) || VESSEL_MODEL_FILES.includes(f) || VEHICLE_MODEL_FILES.includes(f);
 const CORE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => !lazyFile(f));
 
 export const CREW_FILES = ['mechanic', 'navigator', 'salvager', 'fisher', 'lookout', 'defender'] as const;

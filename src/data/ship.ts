@@ -16,7 +16,9 @@ export type UpgradeSlot =
   | 'power'
   | 'quarters'
   | 'lighting'
-  | 'fishing';
+  | 'fishing'
+  | 'runner'
+  | 'balloon';
 
 export interface VesselDef {
   id: VesselId;
@@ -159,6 +161,19 @@ export const UPGRADES: UpgradeDef[] = [
   // Lighting
   { id: 'deck_lights', slot: 'lighting', tier: 1, name: 'String Lights & Spotlight', cost: { gold: 50, mats: [{ id: 'wire', n: 2 }, { id: 'electronics', n: 1 }] },
     effects: { light: 1 }, visual: 'spotlight', desc: 'Warm bulbs along the rail and a spotlight on the bow. Your boat glows at night and caches glint in the dark.' },
+  // Vehicles (loop pass Phase 4): each is its own slot, add-ons included, so none replaces another
+  { id: 'wr_runner', slot: 'runner', tier: 1, name: 'Wave Runner', cost: { gold: 240, mats: [{ id: 'scrap_metal', n: 6 }, { id: 'engine_parts', n: 1 }, { id: 'wire', n: 2 }] },
+    effects: {}, visual: 'waverunner', desc: 'A scrap jet ski on a cradle over the port float. Launch it and race for what the boat can’t reach.' },
+  { id: 'wr_tank', slot: 'runner', tier: 2, name: 'Runner Long-Range Tank', requires: 'wr_runner', cost: { gold: 90, mats: [{ id: 'scrap_metal', n: 3 }, { id: 'fuel_can', n: 2 }] },
+    effects: {}, visual: 'waverunner', desc: 'A welded tank under the saddle. The Wave Runner ranges much further from the boat.' },
+  { id: 'wr_sled', slot: 'runner', tier: 3, name: 'Runner Tow Sled', requires: 'wr_runner', cost: { gold: 70, mats: [{ id: 'driftwood', n: 4 }, { id: 'rope', n: 2 }] },
+    effects: {}, visual: 'waverunner', desc: 'A plank sled on a short towline. One more load home per run.' },
+  { id: 'wr_boost', slot: 'runner', tier: 4, name: 'Runner Nitro Boost', requires: 'wr_runner', where: ['helios'], cost: { gold: 160, mats: [{ id: 'engine_parts', n: 2 }, { id: 'crude_oil', n: 2 }] },
+    effects: {}, visual: 'waverunner', desc: 'A bottle of something Vik won’t name. Hold BOOST for a burst of speed.' },
+  { id: 'bl_balloon', slot: 'balloon', tier: 1, name: 'Hot Air Balloon', requires: 'radar_mast', where: ['helios', 'driftholm'], cost: { gold: 520, mats: [{ id: 'canvas', n: 8 }, { id: 'rope', n: 6 }, { id: 'crude_oil', n: 3 }] },
+    effects: {}, visual: 'balloon', desc: 'Patched fabric and a drum for a basket, stowed on the starboard float. Go up and see the whole sea.' },
+  { id: 'bl_winch', slot: 'balloon', tier: 2, name: 'Balloon Winch', requires: 'bl_balloon', where: ['helios'], cost: { gold: 300, mats: [{ id: 'engine_parts', n: 2 }, { id: 'wire', n: 4 }, { id: 'alloy_plate', n: 2 }] },
+    effects: {}, visual: 'balloon', desc: 'A drum winch under the basket. Lift a wreck the crane can’t reach and fly it home.' },
   // Fishing
   { id: 'fishing_rig', slot: 'fishing', tier: 1, name: 'Trolling Rods', where: ['hollow', 'driftholm'], cost: { gold: 60, mats: [{ id: 'rope', n: 2 }, { id: 'driftwood', n: 2 }] },
     effects: { fishing: 1 }, visual: 'fishing_rig', desc: 'Two rods off the stern. Catch Silverfin while you sail. A Fisher on the crew triples the catch.' },
@@ -206,6 +221,8 @@ export const SLOT_LABEL: Record<UpgradeSlot, string> = {
   quarters: 'Living Quarters',
   lighting: 'Lighting',
   fishing: 'Fishing',
+  runner: 'Wave Runner',
+  balloon: 'Hot Air Balloon',
 };
 export const SLOT_ORDER = Object.keys(SLOT_LABEL) as UpgradeSlot[];
 
@@ -235,4 +252,21 @@ export const PLAY_EFFECT: Record<string, string> = {
   cabin_container: '+2 crew berths',
   deck_lights: 'Night trips: without lights the dark runs the squall clock 1.5× faster',
   fishing_rig: 'Catch Silverfin while under way',
+  wr_runner: 'LAUNCH a fast jet ski: 1 load, grab sinking wrecks, reach the shallows',
+  wr_tank: 'Wave Runner range 260 m → 480 m',
+  wr_sled: 'Wave Runner carries 2 loads',
+  wr_boost: 'Hold BOOST: 1.6× speed for 2.5 s',
+  bl_balloon: 'Go UP: see the whole sea, mark wrecks, storms, waves and rivals on your radar',
+  bl_winch: 'Lift a heavy wreck from the shallows and fly it home',
 };
+
+/** Wave Runner stats from what you own (loop pass Phase 4). */
+export function runnerStats(has: (id: string) => boolean) {
+  return {
+    owned: has('wr_runner'),
+    range: has('wr_tank') ? 480 : 260,
+    cargo: has('wr_sled') ? 2 : 1,
+    boost: has('wr_boost'),
+    speed: 21,
+  };
+}
