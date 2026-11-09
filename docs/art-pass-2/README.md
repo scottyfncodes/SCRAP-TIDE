@@ -35,7 +35,7 @@ What stays the same:
 The vitest cast checks and the end-to-end run, which loads the rigged captain, townsfolk and raiders, both pass.
 
 Screens: `cast-before-after.png` (top row before, bottom row after; for each character a full-body view and a head
-close-up), rendered from the shipped GLBs in three.js.
+close-up), rendered from the shipped GLBs in three.js. `captain-ingame.png`: the captain on foot in the game. Left: the old tricorn at noon. Middle and right: the helmet at noon and at dusk, from the normal play camera.
 
 ## 2. Full-screen panels
 
@@ -88,9 +88,9 @@ fittings), the HUD, the panels and the boats' refit stages read as post-apocalyp
 
 - `npm test`: 468/468 pass, including the cast checks (one skinned primitive, all clips, smooth normals).
 - `npm run build`: passes.
-- `tests/e2e/play.cjs` (mobile Chromium, built game): see the PR for the run result.
-- `npm run check:visual` and `npm run check:turn`: see the PR.
-- HUD layout check (`scripts/hud-shots.mjs`) at iPhone 17, iPhone 13, narrow, tall, landscape and desktop: see the PR.
+- `tests/e2e/play.cjs` (mobile Chromium, built game): 60/60 pass.
+- `npm run check:visual` and `npm run check:turn`: pass.
+- HUD layout check (`scripts/hud-shots.mjs`) at iPhone 17, iPhone 13, narrow, tall, landscape and desktop: no overlaps, nothing off-screen, no horizontal scroll, no undersized touch targets.
 - Panel check (8 panels × the same 6 sizes): every panel opens and stays inside the viewport, with no horizontal
   scroll and no button under 30 px. On 320 px, after the wrap fix, nothing runs past the right edge (the horizontally
   scrolling tab rails are excluded).
