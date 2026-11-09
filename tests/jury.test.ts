@@ -165,3 +165,67 @@ describe.skipIf(!existsSync(JURY_CAPTAIN))('the 5.5-head captain walks on plante
     });
   }
 });
+
+// Toll draw-call work (docs/jury-rigged): a Jawboat's two crew drawn as one skinned mesh must look identical to the
+// two separate meshes, in any pose, and keep animating independently.
+const JURY_RAIDER = 'public/models/tb_jury_raider.glb';
+describe.skipIf(!existsSync(JURY_RAIDER))('batched raider crew (one draw per boat)', () => {
+  it('skins every vertex where the separate meshes did, with the two raiders in different clips and times', async () => {
+    const { batchCrew } = await import('../src/world/crewBatch');
+    const SkeletonUtils = await import('three/examples/jsm/utils/SkeletonUtils.js');
+    await MeshoptDecoder.ready;
+    const buf = readFileSync(JURY_RAIDER);
+    const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+    const gl = await new Promise<{ scene: THREE.Group; animations: THREE.AnimationClip[] }>((res, rej) => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(ab, '', res as never, rej));
+    const boat = new THREE.Group();
+    boat.position.set(64, 0.3, 108);
+    boat.rotation.set(0.05, 1.1, -0.04, 'YXZ');
+    const crew = [0, 1].map((i) => {
+      const root = SkeletonUtils.clone(gl.scene);
+      root.position.set(i ? 0.1 : -0.25, 0.58, i ? -2.75 : 1.75);
+      root.rotation.y = i ? 0.4 : 0.15;
+      boat.add(root);
+      const mixer = new THREE.AnimationMixer(root);
+      const clip = gl.animations.find((c) => c.name === (i ? 'Idle' : 'Attack'))!;
+      mixer.clipAction(clip).play();
+      return { root, mixer, clip };
+    });
+    const pose = (t: number) => {
+      crew.forEach((c, i) => c.mixer.setTime((t + i * 0.37) % c.clip.duration));
+      boat.updateMatrixWorld(true);
+    };
+    const skinned = (m: THREE.SkinnedMesh) => {
+      m.skeleton.update();
+      m.updateMatrixWorld(true);
+      const out: THREE.Vector3[] = [];
+      for (let i = 0; i < m.geometry.attributes.position.count; i++) out.push(m.getVertexPosition(i, new THREE.Vector3()).applyMatrix4(m.matrixWorld));
+      return out;
+    };
+    const originals = crew.map((c) => {
+      let m!: THREE.SkinnedMesh;
+      c.root.traverse((o) => (o as THREE.SkinnedMesh).isSkinnedMesh && (m = o as THREE.SkinnedMesh));
+      return m;
+    });
+    const times = [0.1, 0.55, 0.9];
+    const before = times.map((t) => (pose(t), originals.flatMap(skinned)));
+    const sm = batchCrew(boat, crew)!;
+    expect(sm).not.toBeNull();
+    expect(originals.every((m) => !m.parent)).toBe(true); // the separate meshes are no longer drawn
+    expect(sm.skeleton.bones.length).toBe(originals[0].skeleton.bones.length * 2);
+    let worst = 0;
+    times.forEach((t, k) => {
+      pose(t);
+      const after = skinned(sm);
+      expect(after.length).toBe(before[k].length);
+      after.forEach((v, i) => (worst = Math.max(worst, v.distanceTo(before[k][i]))));
+    });
+    console.log(`[jury] batched crew: worst vertex difference ${(worst * 1000).toFixed(3)} mm over ${times.length} poses`);
+    expect(worst).toBeLessThan(1e-4);
+    // and the cull sphere holds the whole crew in every pose
+    for (const t of times) {
+      pose(t);
+      const s = sm.boundingSphere!.clone().applyMatrix4(sm.matrixWorld);
+      for (const v of skinned(sm)) expect(s.containsPoint(v)).toBe(true);
+    }
+  });
+});
