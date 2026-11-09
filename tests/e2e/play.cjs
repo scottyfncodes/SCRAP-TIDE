@@ -516,6 +516,8 @@ const check = (name, ok, detail = '') => {
       await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
       await page.waitForTimeout(600); // let the action column refresh
       await click(/^⚓ DOCK$/);
+      // docking runs behind a fade on a timer: wait until she is actually alongside before using the harbour
+      await page.waitForFunction(() => window.__game.boat.docked, null, { timeout: 60000, polling: 100 }).catch(() => {});
       await page.waitForTimeout(1500);
       await dismiss();
       await g(() => window.__game.ui.openPanel('harbor'));
