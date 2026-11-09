@@ -6,3 +6,19 @@
 export function haulRolls(siteRolls: number, hits: number, salvager = false): number {
   return Math.max(1, Math.round(siteRolls * (0.2 + 0.35 * hits))) + (salvager ? 1 : 0);
 }
+
+/**
+ * Bonus loot rolls for pulls landed dead centre (the gold "perfect" strip inside the green, loop pass Phase 1):
+ * one for the first perfect, a second for two or more. A miss never takes anything away.
+ */
+export function perfectBonus(perfects: number): number {
+  return Math.max(0, Math.min(2, perfects | 0));
+}
+
+/** Width of the perfect strip as a share of the green window, and whether a needle position hits it. */
+export const PERFECT_SHARE = 0.34;
+export function pullGrade(pos: number, zoneLeft: number, window: number): 'perfect' | 'hit' | 'miss' {
+  if (pos < zoneLeft || pos > zoneLeft + window) return 'miss';
+  const mid = zoneLeft + window / 2;
+  return Math.abs(pos - mid) <= (window * PERFECT_SHARE) / 2 ? 'perfect' : 'hit';
+}

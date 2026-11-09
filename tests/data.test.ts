@@ -81,8 +81,9 @@ describe('crew, goals, settlements', () => {
     expect(GOALS[GOALS.length - 1].id).toBe('g_done');
     expect(FIRST_VOYAGE[FIRST_VOYAGE.length - 1].id).toBe('free');
   });
-  it('the First Voyage is 8 steps of things done in the world, and every retired step continues somewhere live', () => {
-    expect(FIRST_VOYAGE).toHaveLength(8);
+  it('the First Voyage is 10 steps of things done in the world (loop pass: first haul and bank come first), and every retired step continues somewhere live', () => {
+    expect(FIRST_VOYAGE).toHaveLength(10);
+    expect(FIRST_VOYAGE.slice(0, 4).map((q) => q.id)).toEqual(['leave_dock', 'first_haul', 'bank_haul', 'upgrade']);
     const live = new Set(FIRST_VOYAGE.map((q) => q.id));
     for (const id of ['steer', 'anchor', 'read_map', 'sell', 'catalog']) expect(live.has(id as never), id).toBe(false);
     for (const [from, to] of Object.entries(RETIRED_STEPS)) {

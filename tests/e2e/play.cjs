@@ -374,12 +374,64 @@ const check = (name, ok, detail = '') => {
     await g(() => { clearInterval(window.__uwPin); Object.assign(window.__game.ui.joy, { x: 0, y: 0, active: false }); });
   }
 
+  // ── loop pass Phase 1: trips, the hold, banking, the squall, sinking, the harpoon ring
+  {
+    if (await page.$('.reveal')) await dismiss();
+    await teleport({ x: 40, z: 110, h: 0 });
+    await g(() => { const G = window.__game; G.tripStart(); G.store.addCargo('scrap_metal', 5); G.store.addCargo('gold_watch', 1); });
+    await playFor(1);
+    const strip = await g(() => { const t = document.querySelector('.trip'); return { shown: getComputedStyle(t).display !== 'none', hold: t.querySelector('.t-hold b').textContent, dock: t.querySelector('.t-dock b').textContent, clock: t.querySelector('.t-clock').textContent }; });
+    check('trip strip shows hold value, distance to dock and the squall clock at sea', strip.shown && +strip.hold > 0 && +strip.dock > 0 && /\d:\d\d/.test(strip.clock), JSON.stringify(strip));
+    await g(() => { const G = window.__game; G.store.data.trip.t = G.tripLen + 40; G.store.data.hull = G.store.stats.hullMax; });
+    const h0 = await g(() => window.__game.store.data.hull);
+    await playFor(2);
+    const sq = await g(() => ({ squall: window.__game.atmo.squall, hull: window.__game.store.data.hull, phase: document.querySelector('.trip').dataset.phase }));
+    check('when the trip clock runs out the squall arrives and eats the hull', sq.squall > 0.9 && sq.hull < h0 && sq.phase === 'squall', JSON.stringify({ ...sq, h0 }));
+    await page.screenshot({ path: `${out}/loop_squall.png` });
+    // bank at the pier
+    const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
+    await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
+    await page.waitForTimeout(600);
+    const before = await g(() => ({ banked: window.__game.store.data.loop.tripsBanked, cargo: window.__game.store.data.cargo.length }));
+    await click(/^⚓ DOCK$/);
+    await page.waitForTimeout(1500);
+    await dismiss();
+    const bank = await g(() => { const d = window.__game.store.data; return { cargo: d.cargo.length, scrap: d.vault.find((v) => v.id === 'scrap_metal')?.n ?? 0, banked: d.loop.tripsBanked, tripOn: d.trip.on, squall: window.__game.atmo.squall }; });
+    check('docking banks the hold into the vault and ends the trip', before.cargo > 0 && bank.cargo === 0 && bank.scrap >= 5 && bank.banked === before.banked + 1 && !bank.tripOn, JSON.stringify({ before, bank }));
+    if (await page.$('.sheet')) await g(() => window.__game.ui.closePanel());
+    // swamped: the hold is lost, gold, vault and upgrades never
+    await teleport({ x: 40, z: 110, h: 0 });
+    await g(() => { const G = window.__game; G.tripStart(); G.store.addCargo('wire', 3); G.store.addCargo('sun_mask', 1); window.__keep = { gold: G.store.data.gold, vault: JSON.stringify(G.store.data.vault), ups: G.store.data.upgrades.join() }; G.store.data.hull = 1; G.damage(50, null); });
+    await page.waitForTimeout(1500);
+    const sunk = await g(() => { const d = window.__game.store.data; return { cargo: d.cargo.map((c) => c.id), gold: d.gold === window.__keep.gold, vault: JSON.stringify(d.vault) === window.__keep.vault, ups: d.upgrades.join() === window.__keep.ups, lost: d.loop.tripsLost }; });
+    check('swamped: the hold goes over the side (story finds stay); gold, vault and upgrades are untouched', sunk.cargo.join() === 'sun_mask' && sunk.gold && sunk.vault && sunk.ups && sunk.lost >= 1, JSON.stringify(sunk));
+    await dismiss();
+    // the harpoon ring hooks a drifting cache out of reach
+    await g(() => { const G = window.__game; if (!G.store.data.upgrades.includes('harpoon_turret')) G.store.data.upgrades.push('harpoon_turret'); G.rebuildShip(); });
+    await teleport({ x: 40, z: 100, h: 0 });
+    await g(() => { const G = window.__game; for (const c of G.caches) G.scene.remove(c.obj); G.caches.length = 0; const obj = new G.shipRoot.constructor(); /* a THREE.Group stands in for the crate */ obj.position.set(40, 0, 130); G.scene.add(obj); G.caches.push({ obj, x: 40, z: 130, region: 'shallows' }); G.cacheTimer = 999; });
+    await page.waitForTimeout(800);
+    const hacts = await actions();
+    check('with a Harpoon Turret, a cache out of hook reach offers HARPOON', hacts.some((a) => /HARPOON CACHE/.test(a)), hacts.join(' | '));
+    await click(/HARPOON/);
+    await page.waitForSelector('.harpoon-ring', { timeout: 5000 }).catch(() => {});
+    const ring = !!(await page.$('.harpoon-ring'));
+    await page.screenshot({ path: `${out}/loop_harpoon.png` });
+    // wait for the ring to close on the band, then tap
+    await page.waitForFunction(() => { const r = document.querySelector('.hr-ring'); return !r || Math.abs(+r.getAttribute('r') - 24) < 5; }, null, { timeout: 8000, polling: 16 }).catch(() => {});
+    await page.dispatchEvent('.harpoon-ring', 'pointerdown').catch(() => {});
+    await page.waitForTimeout(800);
+    const caught = await g(() => window.__game.caches.length);
+    check('the harpoon ring opens and a hit reels the cache in', ring && caught === 0, `ring ${ring}, caches left ${caught}`);
+    await dismiss();
+  }
+
   // ── save & reload
   await g(() => { window.__game.persistShip?.(); window.__game.store.saveNow(); });
   await page.reload();
   await page.waitForSelector('.title-screen .act', { timeout: 180000 });
   const after = await g(() => ({ crew: window.__game.store.data.crew, hauls: window.__game.store.data.hauls, v: window.__game.store.data.version, ups: window.__game.store.data.upgrades.length }));
-  check('progress survives a reload (save v5)', after.v === 5 && after.crew.includes('kai') && after.hauls === 1 && after.ups >= 2, JSON.stringify(after));
+  check('progress survives a reload (save v6)', after.v === 6 && after.crew.includes('kai') && after.hauls === 1 && after.ups >= 2, JSON.stringify(after));
 
   check('no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   const fails = results.filter((r) => !r.ok).length;

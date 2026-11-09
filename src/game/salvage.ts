@@ -6,7 +6,8 @@ import { SALVAGE_SITES, CACHE_POOL, FRAGMENT_MAP, TREASURE_MAP_MAP, type Salvage
 import { item } from '../data/items';
 import { audio } from '../audio/audio';
 import { pack } from '../audio/pack';
-import { haulRolls } from './haul';
+import { haulRolls, perfectBonus } from './haul';
+import { holdValue } from './trip';
 
 function roll(rng: () => number, list: LootRoll[]) {
   const total = list.reduce((a, b) => a + b.w, 0);
@@ -28,7 +29,10 @@ export class Salvage {
     let best: SalvageSiteDef | null = null;
     let bd = Infinity;
     for (const s of SALVAGE_SITES) {
-      const d = Math.hypot(s.x - b.x, s.z - b.z) - s.r - this.g.ship.beam - 10;
+      // onboarding (loop pass Phase 1): the very first haul hooks from a little further out
+      const q = this.g.store.data.quest;
+      const assist = s.id === 'sv_stump' && (q === 'leave_dock' || q === 'first_haul') ? 14 : 0;
+      const d = Math.hypot(s.x - b.x, s.z - b.z) - s.r - this.g.ship.beam - 10 - assist;
       if (d < 0 && d < bd) {
         bd = d;
         best = s;
@@ -109,16 +113,17 @@ export class Salvage {
         audio.winch(false);
         g.boat.busy = false;
         if (hits < 0) return; // cancelled
-        this.finish(site, hits);
+        this.finish(site, hits, g.ui.lastPerfects);
       });
   }
 
-  private finish(site: SalvageSiteDef, hits: number) {
+  private finish(site: SalvageSiteDef, hits: number, perfects = 0) {
     const g = this.g;
     const s = g.store;
     const first = !s.data.firstHauls.includes(site.id);
     const salvager = s.hasRole('salvager');
-    const rolls = haulRolls(site.rolls, hits, salvager);
+    const rolls = haulRolls(site.rolls, hits, salvager) + perfectBonus(perfects);
+    const before = holdValue(s.data.cargo);
     const got: Record<string, number> = {};
     const rng = () => Math.random();
     for (let i = 0; i < rolls; i++) {
@@ -143,6 +148,8 @@ export class Salvage {
     loot.splice(0, loot.length, ...[...merged].map(([id, n]) => ({ id, n })));
     s.data.salvaged[site.id] = s.seaNow();
     s.data.hauls++;
+    s.data.trip.hauls++;
+    s.data.loop.perfects += perfects;
     if (first) s.data.firstHauls.push(site.id);
     if (first && site.fragment && !s.data.fragments.includes(site.fragment)) {
       // a page of the Redfinch Line comes up with the haul
@@ -154,28 +161,38 @@ export class Salvage {
     }
     s.commit();
     g.checkMilestones();
-    // feedback: the haul breaks the surface
+    // feedback: the haul breaks the surface (loop pass Phase 1: hit-stop, kick, debris, haptics scale with the haul)
+    const worth = holdValue(s.data.cargo) - before;
+    const big = worth >= 60 || perfects >= 2 || (first && !!site.first);
     const p = new THREE.Vector3(g.boat.x, 0.5, g.boat.z);
-    g.foam.emit(p, 40, '#ffffff', 3, 5, 1.2, 8, 1);
-    g.flip.burst('splash', p.clone().setY(1.2), 4.5);
-    g.sparkle.emit(p.clone().setY(1.5), 40, '#ffd25e', 3, 4, 1.2, 5, 0.6);
+    g.foam.emit(p, big ? 46 : 32, '#ffffff', 3, 5, 1.2, 8, 1);
+    g.flip.burst('splash', p.clone().setY(1.2), big ? 5.5 : 4.5);
+    g.sparkle.emit(p.clone().setY(1.5), big ? 44 : 28, '#ffd25e', 3, 4, 1.2, 5, 0.6);
+    g.dirt.emit(p.clone().setY(1.0), big ? 22 : 12, '#6b4a33', 2.4, 4, 1.1, 7, 0.35); // rust flakes and weed off the lift
+    audio.haulUp(big);
+    g.haptic(big ? [40, 30, 90] : 45);
+    if (big) {
+      g.hitStop(110);
+      g.kick(0.22);
+    } else g.kick(0.08);
     audio.chestOpen();
     pack.sting('salvage', 0.7);
     if (hits >= 2) g.crewCheer(1200);
     if (s.hasRole('salvager')) setTimeout(() => pack.say(first && site.first ? 'bram_story' : 'bram_salvage', first && site.first ? 1e9 : 120), 1800);
     setTimeout(() => g.crewBark('haul', { first: !!(first && site.first) }, { prefer: 'salvager', cool: 45 }), 2400);
     this.hookAnim = 1;
-    const grade = hits === 3 ? 'PERFECT HAUL!' : hits === 2 ? 'Good haul' : hits === 1 ? 'Scraped something up' : 'The line slipped…';
+    const grade = perfects >= 3 ? 'PERFECT HAUL!' : hits === 3 ? 'Clean haul!' : hits === 2 ? 'Good haul' : hits === 1 ? 'Scraped something up' : 'Barely held on';
+    if (perfects) g.ui.stamp(perfects >= 3 ? 'PERFECT HAUL!' : `+${perfectBonus(perfects)} BONUS`, `${perfects} perfect pull${perfects > 1 ? 's' : ''}`);
     if (loot.length) g.ui.revealChest(site.name, loot, `${grade}${overflow ? ` · ${overflow} items didn’t fit in the hold` : ''}`);
     else g.ui.toast(`${grade} Nothing worth keeping.`);
   }
 
   /** A floating supply cache was hooked aboard. */
-  openCache(region: RegionId) {
+  openCache(region: RegionId, bonus = 0) {
     const g = this.g;
     const s = g.store;
     const pool = CACHE_POOL[region] ?? CACHE_POOL.shallows;
-    const n = 1 + Math.floor(Math.random() * 2) + (s.hasRole('salvager') ? 1 : 0);
+    const n = 1 + Math.floor(Math.random() * 2) + (s.hasRole('salvager') ? 1 : 0) + bonus;
     const out: string[] = [];
     for (let i = 0; i < n; i++) {
       const r = roll(Math.random, pool);
@@ -190,6 +207,7 @@ export class Salvage {
     }
     audio.pickup();
     audio.splash();
+    g.haptic(25);
     g.sparkle.emit(new THREE.Vector3(g.boat.x, 1.4, g.boat.z), 24, '#bff7e6', 2, 3, 1, 3, 0.5);
     g.ui.toast(`Drifting cache: ${out.join(', ') || 'empty, sadly'}`, { icon: 'fuel_can', color: '#4f9a95', life: 3 });
     s.commit();
