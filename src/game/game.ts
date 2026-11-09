@@ -1,6 +1,7 @@
 // SCRAP TIDE core: rendering loop, sailing and motoring, weather and hull, salvage, crew, raiders,
 // settlements, going ashore, digging, treasure, the first voyage and the Captain's Log.
-import { heroize, updateHeroLight } from '../world/hero';
+import { heroize, updateHeroLight, inkScale } from '../world/hero';
+import { gradeUniforms } from '../world/materials';
 import { OUTLINE } from '../world/style';
 import * as THREE from 'three';
 import { Store } from '../state/store';
@@ -61,6 +62,9 @@ function weighted<T extends { w: number }>(rng: () => number, list: T[]): T {
 const WAKE_PUFF = 0.55;
 // on foot (world m/s, m/s²): a brisk run tops out where the procedural Run's stride and cadence put it
 const FOOT_MIN = 0.7, FOOT_MAX = 5.0, FOOT_ACCEL = 9, FOOT_DECEL = 14;
+
+const _white = new THREE.Color(1, 1, 1);
+const _shade = new THREE.Color();
 
 export class Game implements GameAPI {
   store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades(), experiments: pageExperiments(), fresh: pageFresh() });
@@ -280,6 +284,8 @@ export class Game implements GameAPI {
     this.camera.aspect = w / h;
     this.camera.fov = w < h ? 68 : 55;
     this.camera.updateProjectionMatrix();
+    // world ink: ~1.1 CSS px wide at any distance (metres of ink per metre of distance, for this screen)
+    inkScale.value = (1.1 * 2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov) / 2)) / Math.max(320, h);
     // points are sized against screen height, so on a tall, narrow phone the same puff covers far more of the
     // width; shrink wake puffs with the aspect ratio (desktop keeps close to the old size)
     this.ocean?.setWakeAspect(w / h);
@@ -1070,7 +1076,16 @@ export class Game implements GameAPI {
     this.sunLight.intensity = a.sunIntensity;
     this.hemi.color.copy(a.hemiSky);
     this.hemi.groundColor.copy(a.hemiGround);
-    this.hemi.intensity = a.hemiIntensity;
+    // the sky fills the shade a little less than before: shapes model in the sun instead of flattening to pastel
+    this.hemi.intensity = a.hemiIntensity * 0.84;
+    // shared light response (materials.ts): sun-warm lit faces, sky-cool shade; eased off at night and in storms
+    const lumOf = (c: THREE.Color) => Math.max(0.05, c.r * 0.3 + c.g * 0.55 + c.b * 0.15);
+    gradeUniforms.uLightTint.value.copy(a.sunColor).multiplyScalar(1 / lumOf(a.sunColor)).lerp(_white, 0.78);
+    // shade takes the sky fill's hue: cool blue by day, warm at golden hour and sunset (not the zenith, which stays
+    // blue at sunset and turned backlit towns cold grey)
+    _shade.copy(a.skyTop).lerp(a.hemiSky, 0.65);
+    gradeUniforms.uShadeTint.value.copy(_shade).multiplyScalar(0.94 / lumOf(_shade)).lerp(_white, 0.8);
+    gradeUniforms.uShadeK.value = (1 - a.night * 0.7) * (1 - a.storm * 0.5);
     const fog = this.scene.fog as THREE.Fog;
     fog.color.copy(a.fogColor);
     fog.near = a.fogNear;

@@ -10,6 +10,9 @@ import * as THREE from 'three';
  * here so every use is visible in one file. 0 = off.
  */
 export const OUTLINE = {
+  /** world ink (hero.ts inkWorld: settlements, drowned structures, the harbour): off. A universal line is exactly what
+   * the policy rules out; > 0 re-enables the distance-scaled shell as a multiplier on its width. */
+  world: 0,
   hull: 0,
   crew: 0,
   captain: 0,
@@ -115,5 +118,8 @@ export const FORM_SHADED: Record<string, readonly string[]> = {
   tb_coast_kit: ['barrel', 'cargo_crate', 'bollard', 'pier_lamp', 'pier_section', 'fence_panel'],
   tb_outpost_kit: ['market_stall', 'rain_catcher'],
 };
+
+/** Procedural salvage dwellings (shanty.ts) are form-shaded as one unit each, from their ground/water line up. */
+export const FORM_SHADE_SHANTY = true;
 
 export const isFormShaded = (file: string, node: string) => !!FORM_SHADED[file]?.includes(node);

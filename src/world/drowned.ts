@@ -6,6 +6,8 @@ import { STRUCTURES, SALVAGE_SITES, OUTPOSTS, type StructureDef, type OutpostDef
 import { model, kitGeo, glowMat } from './assets';
 import { vcMat, paint, xf, merge } from './materials';
 import { RNG } from '../core/noise';
+import { Shanty } from './shanty';
+import { inkWorld } from './hero';
 import { heightAt } from './terrain';
 
 export interface Circle { x: number; z: number; r: number }
@@ -48,6 +50,8 @@ export class DrownedWorld {
   private batch = 'misc';
   private batches = new Map<string, { geos: THREE.BufferGeometry[]; glows: THREE.BufferGeometry[]; x: number; z: number; n: number }>();
   private batchMeshes: { obj: THREE.Object3D; x: number; z: number; r: number }[] = [];
+  /** procedural salvage architecture (src/world/shanty.ts), merged into the same settlement batches */
+  private shanty = new Shanty(new RNG(6161));
 
   constructor(private scene: THREE.Scene) {
     for (const s of STRUCTURES) this.place(s);
@@ -86,6 +90,7 @@ export class DrownedWorld {
     const [file, node] = FILE[s.kind];
     const name = s.kind === 'container' ? `container_${s.variant ?? 'red'}` : node;
     const obj = model(file, name) ?? fallback(s.kind);
+    inkWorld(obj);
     const scale = (s.scale ?? 1) * (s.kind === 'mega_spire' ? 2.4 : 1);
     this.add(obj, s.x, s.kind === 'container' ? -1.1 : s.kind === 'tower_stump' ? -2.5 : s.kind === 'crane' ? -1.5 : 0, s.z, s.rot ?? 0, scale);
     if (s.kind === 'container') {
@@ -139,13 +144,45 @@ export class DrownedWorld {
 
   /** Raft districts moored either side of Driftholm's pier. */
   private buildDriftholmRafts() {
-    const west = [
-      ['mod_shack', -26, 194, 0.1], ['mod_market', -40, 184, -0.2], ['mod_water', -27, 176, 0.3], ['mod_turbine', -54, 194, 0],
-    ] as const;
-    const east = [
-      ['mod_market', 28, 195, 0.15], ['mod_shack', 42, 185, -0.3], ['mod_turbine', 30, 177, 0.2], ['mod_water', 57, 193, 0],
-    ] as const;
+    // the raft districts are stilt houses driven into the shallows either side of the pier (salvage architecture,
+    // src/world/shanty.ts), with the water still and the wind turbine on their own floats
+    const west = [['mod_water', -27, 176, 0.3], ['mod_turbine', -54, 194, 0]] as const;
+    const east = [['mod_turbine', 30, 177, 0.2], ['mod_water', 57, 193, 0]] as const;
     for (const [k, x, z, r] of [...west, ...east]) this.module3(k, x, z, r);
+    const S = this.shanty;
+    const tops: [number, number, number][] = [];
+    const house = (x: number, z: number, rot: number, o: Parameters<Shanty['dwelling']>[0]) => {
+      // a touch over life size: these are read from a phone across the bay
+      const top = S.dwelling(o);
+      this.takeShanty(x, 0, z, Math.PI + rot, 1.15, 4.6);
+      tops.push([x, top * 1.15, z]);
+    };
+    house(-26, 194, 0.1, { base: 'stilts', storeys: 2, roof: 'gable', accent: 'mast', awning: true });
+    house(-40, 184, -0.2, { base: 'stilts', roof: 'barrel', accent: 'chimney', awning: true });
+    house(28, 195, 0.15, { base: 'stilts', roof: 'gable', accent: 'aerial', awning: true });
+    house(42, 185, -0.3, { base: 'stilts', storeys: 2, roof: 'lean', accent: 'mast' });
+    // the waterfront: a row of stilt houses over the flats below the shops (between them, so the shop boards still
+    // show from the water), joined by a boardwalk on piles that runs out to the pier
+    const front = [
+      [-57, 209, 0.12, 'gable', 'mast', 2], [-31, 207, -0.06, 'lean', 'chimney', 1], [-9, 209, 0.05, 'barrel', 'aerial', 1],
+      [9, 208, -0.08, 'gable', 'chimney', 1], [31, 207, 0.1, 'gable', 'mast', 2], [57, 209, -0.12, 'lean', 'aerial', 1],
+    ] as const;
+    for (const [x, z, r, roof, accent, st] of front) house(x, z, r, { base: 'stilts', roof, accent, storeys: st as 1 | 2, awning: true });
+    S.boardwalk(-62, 201, -3.5, 200.5, 2.2);
+    this.takeShanty(0, 0, 0);
+    S.boardwalk(3.5, 200.5, 62, 201, 2.2);
+    this.takeShanty(0, 0, 0);
+    // the town's washing and its colours, strung roof to roof and out to the pier
+    const line = (a: [number, number, number], b: [number, number, number], sag = 1.4) => {
+      S.bunting(a, b, sag);
+      this.takeShanty(0, 0, 0);
+    };
+    const at = (i: number, dy: number): [number, number, number] => [tops[i][0], tops[i][1] + dy, tops[i][2]];
+    line(at(0, -0.6), at(1, -0.5));
+    line(at(2, -0.5), at(3, -0.6));
+    line(at(0, -0.8), [-3, 5.5, 186], 1.6);
+    line(at(2, -0.6), [3, 5.5, 190], 1.6);
+    for (const [a, b] of [[4, 5], [5, 6], [7, 8], [8, 9]]) line(at(a, -0.7), at(b, -0.7), 1.3);
     // walkways tie the rafts to the pier
     for (const [x, z, r] of [[-14, 196, 0], [16, 197, 0], [-34, 186, 0.6], [36, 187, -0.6]] as const) this.module3('mod_walkway', x, z, r);
     // Driftholm is a fortified atoll: scrap palisades flank the raft districts (one still scorched from the last
@@ -210,12 +247,26 @@ export class DrownedWorld {
     return obj;
   }
 
+  /** Merge what the Shanty builder made into the current settlement's static batch, placed and turned. */
+  private takeShanty(x: number, y: number, z: number, rot = 0, scale = 1, r = 0) {
+    const t = this.shanty.take(x, y, z, rot, scale);
+    let b = this.batches.get(this.batch);
+    if (!b) this.batches.set(this.batch, (b = { geos: [], glows: [], x: 0, z: 0, n: 0 }));
+    b.geos.push(...t.geos);
+    b.glows.push(...t.glows);
+    b.x += x;
+    b.z += z;
+    b.n++;
+    if (r) this.colliders.push({ x, z, r: r * scale });
+  }
+
   private flushBatches() {
     for (const [, b] of this.batches) {
       const grp = new THREE.Group();
       const solid = new THREE.Mesh(merge(b.geos), vcMat());
       solid.castShadow = solid.receiveShadow = true;
       grp.add(solid);
+      inkWorld(solid);
       if (b.glows.length) {
         const gm = new THREE.Mesh(merge(b.glows), glowMat());
         gm.userData.glow = true;
@@ -244,7 +295,10 @@ export class DrownedWorld {
     };
     if (o.kind === 'outpost') {
       put('tb_outpost_kit', 'pontoon', 0, 0);
-      put('tb_settlement_kit', 'mod_shack', -1.5, 0.5, 0.1, 0.7);
+      // a patched cabin on the pontoon, its mast the outpost's mark on the horizon
+      this.shanty.dwelling({ base: 'none', w: 4.6, d: 3.8, accent: 'mast', awning: true });
+      const [hx, hz] = at(-1.2, 0.2);
+      this.takeShanty(hx, 0.85, hz, o.rot + 0.1 + Math.PI, 0.9);
       put('tb_atoll_kit', 'watchtower', 3.2, 2.5, 0.3, 0.6);
       put('tb_outpost_kit', 'rain_catcher', 8.5, -3, 0, 0.75);
       put('tb_outpost_kit', 'scrap_boat', -7.5, -4, 1.4, 1);
@@ -288,20 +342,29 @@ export class DrownedWorld {
       const c = Math.cos(rot), s = Math.sin(rot);
       return { x: bx + lx * c + lz * s, z: bz - lx * s + lz * c };
     };
-    for (const [k, lx, lz, r] of [['mod_market', 4.5, -2, 0], ['mod_water', -4, 2.5, 0], ['mod_turbine', 6, 3, 0]] as const) {
+    {
+      // the fish market on the roof: a two-storey shack of the building's own scrap, its mast over the bay
+      const p = local(3.5, -3);
+      this.shanty.dwelling({ base: 'ground', storeys: 2, roof: 'gable', accent: 'mast', awning: true, w: 6, d: 5 });
+      this.takeShanty(p.x, top - 0.2, p.z, rot + Math.PI);
+    }
+    for (const [k, lx, lz, r] of [['mod_water', -4, 2.5, 0], ['mod_turbine', 6, 3, 0]] as const) {
       const p = local(lx, lz);
       this.module(k, p.x, top - 0.8, p.z, rot + r, false);
     }
     // pontoon dock at water level by the south face, with fishing rafts
-    this.module3('mod_shack', -226, -45, rot + 0.2);
+    this.shanty.dwelling({ base: 'drums', roof: 'lean', accent: 'chimney', awning: true });
+    this.takeShanty(-226, 0, -45, rot + 0.2, 1, 4.6);
     this.module3('mod_walkway', -234, -52, rot + Math.PI / 2);
     this.module3('mod_water', -214, -52, rot);
   }
 
   private buildHeliosDock() {
     this.module3('mod_walkway', -532, 150, 0.6 + Math.PI / 2);
-    this.module3('mod_shack', -522, 142, 0.6);
-    this.module3('mod_market', -548, 140, 0.6);
+    this.shanty.dwelling({ base: 'drums', roof: 'barrel', accent: 'aerial', awning: true });
+    this.takeShanty(-522, 0, 142, 0.6, 1, 4.6);
+    this.shanty.dwelling({ base: 'drums', storeys: 2, roof: 'gable', accent: 'mast', awning: true });
+    this.takeShanty(-548, 0, 140, 0.6, 1, 4.6);
     // the market spills off the rig onto pontoons: stalls, fresh water for sale, a lookout and a stripping barge
     this.kitPiece('tb_outpost_kit', 'market_stall', -512, 150, 0.6 + Math.PI);
     this.kitPiece('tb_outpost_kit', 'market_stall', -560, 128, 0.6);

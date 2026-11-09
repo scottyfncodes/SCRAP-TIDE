@@ -183,16 +183,18 @@ void main() {
   vec3 N = normalize(vN + vec3(slope.x, 0.0, slope.y));
   // the sky reflection follows a gentler normal: at sunset a low, bright horizon reflected through every chop tilt
   // turned the sea into pale camouflage blotches; the full chop still drives the sun glitter below
-  vec3 Nsky = normalize(vN + vec3(slope.x, 0.0, slope.y) * 0.35);
+  vec3 Nsky = normalize(vN + vec3(slope.x, 0.0, slope.y) * 0.16);
   vec3 Nflat = normalize(vN);
 
   // depth colour (SCRAP TIDE, BEAUTIFUL RUIN): sandy shallows -> luminous Sea Glass shelf -> Abyss Blue open water ->
   // ink-blue deep. Beautiful from a distance; the silt, oil and scum below keep it weathered up close.
-  vec3 cShore = vec3(0.20, 0.29, 0.25);
-  vec3 cShelf = vec3(0.012, 0.19, 0.215);
-  vec3 cOpen = vec3(0.010, 0.082, 0.125);
-  vec3 cDeep = vec3(0.006, 0.040, 0.072);
-  vec3 cAbyss = vec3(0.003, 0.017, 0.036);
+  // (visual cohesion pass: a little less chroma and a touch of warmth, so the sea sits in the same sun-faded world
+  // as the salvage on it instead of reading as a separate, photographic layer)
+  vec3 cShore = vec3(0.22, 0.28, 0.22);
+  vec3 cShelf = vec3(0.030, 0.165, 0.170);
+  vec3 cOpen = vec3(0.018, 0.078, 0.108);
+  vec3 cDeep = vec3(0.010, 0.040, 0.066);
+  vec3 cAbyss = vec3(0.005, 0.018, 0.035);
   vec3 col = mix(cShore, cShelf, smoothstep(0.0, 1.8, depth));
   col = mix(col, cOpen, smoothstep(1.8, 7.0, depth));
   col = mix(col, cDeep, smoothstep(7.0, 16.0, depth));
@@ -223,10 +225,16 @@ void main() {
   float fres = 0.04 + 0.96 * pow(1.0 - max(dot(Nsky, V), 0.0), 5.0);
   vec3 R = reflect(-V, Nsky);
   vec3 sky = mix(uSkyColor, uSkyTop, smoothstep(0.0, 0.45, R.y));
-  col = mix(col, sky * vec3(0.84, 0.88, 0.88), clamp(fres * 0.62, 0.0, 0.7));
+  // the sky's reflection laid on in soft-edged bands, like the toon light on everything else, instead of a smooth
+  // photographic gradient (which also broke into cloudy blotches through the chop)
+  float fr = clamp(fres * 0.62, 0.0, 0.7) * 4.0;
+  fr = (floor(fr) + smoothstep(0.3, 0.7, fract(fr))) / 4.0;
+  col = mix(col, sky * vec3(0.82, 0.86, 0.85), fr);
   vec3 H = normalize(uSunDir + V);
   float ndh = max(dot(N, H), 0.0);
-  float spec = pow(ndh, mix(1400.0, 200.0, uStorm)) * 0.6 + pow(ndh, 90.0) * 0.03 + pow(ndh, 600.0) * oil * 0.8;
+  // glints are crisp, cut-out highlights (the toon world's language), with a faint soft sheen under them
+  float glint = pow(ndh, mix(1400.0, 200.0, uStorm));
+  float spec = smoothstep(0.12, 0.3, glint) * 0.75 + glint * 0.15 + pow(ndh, 90.0) * 0.03 + pow(ndh, 600.0) * oil * 0.8;
   col += uSunColor * spec * mix(1.1, 0.45, uNight) * (1.0 - uStorm * 0.7);
 
   // foam: shoreline, reef breakers, wave crests (more in storms), and the boat's wake
@@ -277,6 +285,10 @@ void main() {
 
   float alpha = mix(0.5, 0.97, smoothstep(0.0, 6.0, depth));
   alpha = max(alpha, foam * 0.95);
+
+  // the same highlight shoulder as the toon materials (materials.ts GRADE_FRAG)
+  vec3 over = max(col - 0.72, 0.0);
+  col = min(col, 0.72) + over / (1.0 + over * 2.6);
 
   float dist = length(cameraPosition - vWorld);
   float fog = smoothstep(uFogNear, uFogFar, dist);

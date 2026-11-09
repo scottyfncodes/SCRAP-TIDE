@@ -6,6 +6,8 @@ import { vcMat, merge, paint, xf, canvasTex, toonMat } from './materials';
 import * as P from './props';
 import { kitGeo, glowMat, model, characterModel, type Character } from './assets';
 import { RNG, fbm } from '../core/noise';
+import { Shanty } from './shanty';
+import { inkWorld } from './hero';
 
 export interface Collider { x: number; z: number; r: number }
 export interface Rect { x0: number; x1: number; z0: number; z1: number }
@@ -257,6 +259,7 @@ export class Environment {
       m.castShadow = true;
       m.receiveShadow = true;
       this.scene.add(m);
+      inkWorld(m);
     }
     if (glows.length) this.scene.add(new THREE.Mesh(merge(glows), glowMat()));
     if (sway.length) {
@@ -348,6 +351,13 @@ export class Environment {
       }
       return !!k;
     };
+    // salvage architecture (src/world/shanty.ts): dwellings assembled from plank, tin, canvas and rope
+    const shanty = new Shanty(new RNG(7717));
+    const takeShanty = (x: number, y: number, z: number, ry = 0, sc = 1) => {
+      const t = shanty.take(x, y, z, ry, sc);
+      geos.push(...t.geos);
+      glows.push(...t.glows);
+    };
     const pierEnd = WORLD.harborDock.endZ;
     const pierStart = shoreZ + 6;
     const deckY = 1.3;
@@ -410,7 +420,9 @@ export class Environment {
       const y = heightAt(s.x, z);
       if (s.kind === 'container') kit('tb_atoll_kit', 'container_home', s.x, y - 0.95, z + 0.5, Math.PI, 0.82);
       else {
-        kit('tb_settlement_kit', 'mod_shack', s.x, y - 0.9, z, Math.PI, 1.05);
+        // a two-storey shopfront facing the harbour, its stall out front
+        shanty.dwelling({ base: 'ground', storeys: 2, roof: 'gable', accent: 'mast', awning: false, w: 7, d: 6.4, lit: true });
+        takeShanty(s.x, y - 0.1, z, Math.PI);
         kit('tb_outpost_kit', 'market_stall', s.x + 1, y - 0.9, z - 5.5, Math.PI, 0.75);
       }
       this.addSign(s.name, s.sign, s.x, y + 6.0, z - 4.2, s.tint);
@@ -455,10 +467,13 @@ export class Environment {
       const y = heightAt(x, z);
       const ry = rng.range(-0.4, 0.4) + (i % 2 ? Math.PI : 0);
       const pick = i % 5;
-      if (pick === 0 || pick === 3) kit('tb_atoll_kit', 'container_home', x, y - 0.95, z, ry, 0.7);
-      else if (pick === 1) kit('tb_settlement_kit', 'mod_shack', x, y - 0.9, z, ry, 0.9);
-      else if (pick === 2) kit('tb_outpost_kit', 'rain_catcher', x, y - 0.9, z, ry, 0.9);
-      else kit('tb_settlement_kit', 'mod_market', x, y - 0.9, z, ry, 0.85);
+      // mostly homes built from salvage, facing down to the harbour; the odd stacked container and rain catcher
+      if (pick === 3) kit('tb_atoll_kit', 'container_home', x, y - 0.95, z, ry, 0.7);
+      else if (pick === 2 && i % 2) kit('tb_outpost_kit', 'rain_catcher', x, y - 0.9, z, ry, 0.9);
+      else {
+        shanty.dwelling({ base: 'ground', storeys: i % 4 === 0 ? 2 : 1 });
+        takeShanty(x, y - 0.1, z, Math.PI + rng.range(-0.35, 0.35), rng.range(0.95, 1.15));
+      }
       this.colliders.push({ x, z, r: pick === 0 || pick === 3 ? 5 : 3.6 });
     });
     // the freshwater tank stands highest, where everyone can see it is still full
@@ -548,6 +563,7 @@ export class Environment {
     m.castShadow = true;
     m.receiveShadow = true;
     this.scene.add(m);
+    inkWorld(m);
     if (glows.length) this.scene.add(new THREE.Mesh(merge(glows), glowMat()));
     if (sway.length) {
       const s = new THREE.Mesh(merge(sway), vcMat({ sway: true, side: THREE.DoubleSide }));

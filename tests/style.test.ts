@@ -18,6 +18,7 @@ function column(colour: [number, number, number]) {
 
 describe('outline policy', () => {
   it('has no universal outline on heroes, and any opt-in line is thin and not black', () => {
+    expect(OUTLINE.world).toBe(0); // no universal world ink (hero.ts inkWorld is a no-op)
     expect(OUTLINE.hull).toBe(0);
     expect(OUTLINE.crew).toBe(0);
     expect(OUTLINE.captain).toBe(0);
@@ -60,6 +61,14 @@ describe('formShade', () => {
     const open = new THREE.Color(WORLD_PALETTE.opening);
     expect(g.attributes.color.getX(0)).toBeCloseTo(open.r, 4);
     expect(g.attributes.color.getX(0)).toBeGreaterThan(0);
+  });
+  it('shades a many-part object as one unit with a shared height range', () => {
+    const roof = column([0.5, 0.5, 0.5]);
+    roof.translate(0, 6, 0); // a part sitting 6-10 m up a 10 m house
+    formShade(roof, undefined, [0, 10]);
+    for (let i = 0; i < roof.attributes.position.count; i++) {
+      if (Math.abs(roof.attributes.normal.getY(i)) < 0.1) expect(roof.attributes.color.getX(i)).toBeCloseTo(0.5, 3); // above the contact band
+    }
   });
   it('is gentler on people than on buildings', () => {
     expect(CHARACTER_FORM.contactFloor).toBeGreaterThan(FORM_SHADE.contactFloor);

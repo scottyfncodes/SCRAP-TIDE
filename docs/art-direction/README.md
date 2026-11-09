@@ -13,6 +13,15 @@ There was no screen-space outline shader. The heavy-line look came from three pl
 | Hard 4-band light ramp, shadow step at 23 % of the sun | `toonGradient()` in `src/world/materials.ts` (every toon surface) | Every terminator on buildings and props became a dark contour band |
 | Near-black colours | the tide-line algae in `weather()` (0.09, 0.12, 0.09); kit windows and trims `TBD_Navy`/`TBW_Navy #06182e` | A black line along every waterline; window holes reading as black stickers |
 
+### Merged with PR #56 (visual cohesion)
+
+PR #56 landed on `main` while this pass was in review. It added **world ink**: the same navy inverted-hull line on
+every settlement batch, drowned structure and the harbour (`inkWorld` in `hero.ts`, distance-scaled to ~1 px). That
+is a universal outline, which this direction rules out, so it is now **off** (`OUTLINE.world = 0`; the function stays,
+gated, if a specific case ever earns it). Everything else from #56 is kept: the salvage-architecture dwellings
+(`shanty.ts`), the shared sun/shade light grade, and the painted sea. The shanty dwellings now replace the kit shacks
+in Driftholm, so they are form-shaded too, each house as one unit from its water or ground line up.
+
 ## What changed
 
 1. **Style spec as code**, `src/world/style.ts`: outline policy (`OUTLINE`, all 0), the light ramp, wear limits, a
@@ -28,8 +37,8 @@ There was no screen-space outline shader. The heavy-line look came from three pl
    raised to a desaturated navy. It adds no draw calls, vertices or shader cost. Applied as the representative set:
    - **Character:** the captain, with the gentler `CHARACTER_FORM` (grounded boots, lighter head and shoulders). The
      six crew and Driftholm's three shopkeeper models share the code path.
-   - **Building:** Driftholm's patchwork shack and market (`mod_shack`, `mod_market`) and the container homes and
-     water tank (`container_home`, `water_tank`).
+   - **Building:** Driftholm's salvage dwellings (`shanty.ts`: shops, stilt houses, hillside homes) and the kit
+     buildings still in use (`mod_shack`, `mod_market`, `container_home`, `water_tank`).
    - **Props:** barrel, cargo crate, bollard, pier lamp, pier section, fence panel, market stall, rain catcher.
 
 **Untouched:** gameplay, interactions, camera, HUD and controls, and every model file (no asset was replaced). The
@@ -37,7 +46,7 @@ change is cheaper to render, not dearer: each hero mesh used to carry a second o
 
 ## Verification
 
-- Before/after at actual mobile gameplay scale: iPhone 13 portrait (390×844 @2x), headless Chromium with SwiftShader
+- Before = `main` after #56 (hero ink plus world ink); after = this branch. Before/after at actual mobile gameplay scale: iPhone 13 portrait (390×844 @2x), headless Chromium with SwiftShader
   (software GL, not a real device). The same camera poses were used for both. Screens are in `screens/`
   (left = before, right = after):
   - `1-harbor-noon`: sailing out of Driftholm, default gameplay camera

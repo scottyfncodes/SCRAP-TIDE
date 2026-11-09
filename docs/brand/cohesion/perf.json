@@ -1,0 +1,170 @@
+{
+ "phone/driftholm": {
+  "before": {
+   "msPerFrame": 613.3,
+   "calls": 93,
+   "tris": 377868
+  },
+  "after": {
+   "msPerFrame": 668.8,
+   "calls": 99,
+   "tris": 469908
+  }
+ },
+ "phone/driftholm-golden": {
+  "before": {
+   "msPerFrame": 561.8,
+   "calls": 99,
+   "tris": 378220
+  },
+  "after": {
+   "msPerFrame": 661.8,
+   "calls": 104,
+   "tris": 470232
+  }
+ },
+ "phone/rafts-close": {
+  "before": {
+   "msPerFrame": 423.1,
+   "calls": 88,
+   "tris": 378218
+  },
+  "after": {
+   "msPerFrame": 646.2,
+   "calls": 87,
+   "tris": 466466
+  }
+ },
+ "phone/gullstep": {
+  "before": {
+   "msPerFrame": 543.8,
+   "calls": 100,
+   "tris": 374556
+  },
+  "after": {
+   "msPerFrame": 720.4,
+   "calls": 111,
+   "tris": 397088
+  }
+ },
+ "phone/hollow": {
+  "before": {
+   "msPerFrame": 542.6,
+   "calls": 127,
+   "tris": 473870
+  },
+  "after": {
+   "msPerFrame": 570.7,
+   "calls": 130,
+   "tris": 508692
+  }
+ },
+ "phone/helios": {
+  "before": {
+   "msPerFrame": 421.8,
+   "calls": 85,
+   "tris": 227376
+  },
+  "after": {
+   "msPerFrame": 440.8,
+   "calls": 85,
+   "tris": 238880
+  }
+ },
+ "phone/boat-side": {
+  "before": {
+   "msPerFrame": 536.4,
+   "calls": 80,
+   "tris": 364186
+  },
+  "after": {
+   "msPerFrame": 415.2,
+   "calls": 82,
+   "tris": 376368
+  }
+ },
+ "desktop/driftholm": {
+  "before": {
+   "msPerFrame": 540.3,
+   "calls": 130,
+   "tris": 403402
+  },
+  "after": {
+   "msPerFrame": 776.4,
+   "calls": 135,
+   "tris": 509342
+  }
+ },
+ "desktop/driftholm-golden": {
+  "before": {
+   "msPerFrame": 663.3,
+   "calls": 128,
+   "tris": 403346
+  },
+  "after": {
+   "msPerFrame": 699.6,
+   "calls": 134,
+   "tris": 509314
+  }
+ },
+ "desktop/rafts-close": {
+  "before": {
+   "msPerFrame": 610.3,
+   "calls": 101,
+   "tris": 438130
+  },
+  "after": {
+   "msPerFrame": 737.5,
+   "calls": 102,
+   "tris": 536606
+  }
+ },
+ "desktop/gullstep": {
+  "before": {
+   "msPerFrame": 732.4,
+   "calls": 114,
+   "tris": 435354
+  },
+  "after": {
+   "msPerFrame": 695.6,
+   "calls": 129,
+   "tris": 547606
+  }
+ },
+ "desktop/hollow": {
+  "before": {
+   "msPerFrame": 611.5,
+   "calls": 153,
+   "tris": 512790
+  },
+  "after": {
+   "msPerFrame": 654.7,
+   "calls": 158,
+   "tris": 549808
+  }
+ },
+ "desktop/helios": {
+  "before": {
+   "msPerFrame": 443.5,
+   "calls": 94,
+   "tris": 327692
+  },
+  "after": {
+   "msPerFrame": 517.2,
+   "calls": 94,
+   "tris": 338824
+  }
+ },
+ "desktop/boat-side": {
+  "before": {
+   "msPerFrame": 510.4,
+   "calls": 134,
+   "tris": 379184
+  },
+  "after": {
+   "msPerFrame": 477.1,
+   "calls": 145,
+   "tris": 401102
+  }
+ }
+}

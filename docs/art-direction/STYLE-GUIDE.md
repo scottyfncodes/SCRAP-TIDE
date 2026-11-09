@@ -21,7 +21,7 @@ change it at a call site.
 | Wear | `WEAR` → `weather()` in `materials.ts` | World-space grime, rust streaks, the tide line (algae below, salt crust above) and sun-bleached tops. Matte, never black. |
 | Form shading | `FORM_SHADE` / `CHARACTER_FORM` → `formShade()` in `assets.ts` | Ambient occlusion baked into the vertex colours at load: contact shadow at the base, darker under overhangs, a lift on top faces, and black openings raised to a deep navy. Zero runtime cost. |
 | Hero light | `hero.ts` | The player's boat, crew and captain: a sun-coloured rim on sunward edges and a soft falloff on shadow-side edges. |
-| Outline | `OUTLINE` → `heroize(root, width)` | **Off.** A last resort, opt-in, thin and sea-toned (see §7). |
+| Outline | `OUTLINE` → `heroize(root, width)`, `inkWorld(root)` | **Off**, for heroes and for the world. A last resort, opt-in, thin and sea-toned (see §7). |
 | Atmosphere | `atmosphere.ts`, `sky.ts`, `ocean.ts` | Warm directional sun, hemisphere ambient, distance haze (fog), water reflections, day/dusk/night/storm grades. |
 
 ### Where the old "bold line" look came from (audit, Nov 2026)
@@ -30,7 +30,8 @@ There was no screen-space outline shader. The heavy-outline read had three sourc
 
 1. **An inverted-hull ink outline** (`hero.ts`, `#0e2233`, 2.2–3.5 cm on hulls, 1.2 cm on people) on the player's
    boat, every crew member and the captain. It traced every mast, rope, gunwale, crate and limb, which is what made
-   them look like stickers. **Now off** (`OUTLINE.* = 0`).
+   them look like stickers. PR #56 then extended the same line to every settlement, structure and the harbour
+   ("world ink"). **Both are now off** (`OUTLINE.* = 0`).
 2. **A hard 4-band light ramp** with its shadow step at 23 % of the sun. Every terminator on every building and prop
    became a dark contour band. **Now** a 6-step linear ramp starting at 31 % (`LIGHT_RAMP`).
 3. **Near-black colours at edges:** the tide-line algae stain was almost black (0.09, 0.12, 0.09), so a dark line ran
@@ -64,7 +65,8 @@ There was no screen-space outline shader. The heavy-outline read had three sourc
   pallets, signage, corrugated sheet.
 - Budget: ≤ 3k triangles per kit node. Kit pieces are merged per settlement (one toon + one glow draw call per town),
   so keep separate materials to a dozen or fewer per node.
-- Add the node to `FORM_SHADED` in `style.ts` so it gets contact shadow and under-eave occlusion.
+- Add the node to `FORM_SHADED` in `style.ts` so it gets contact shadow and under-eave occlusion. Procedural
+  dwellings from `shanty.ts` get this automatically (each house shaded as one unit by `Shanty.take()`).
 
 ## 4. Props and environment
 

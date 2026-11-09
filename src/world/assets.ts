@@ -229,18 +229,24 @@ export function part(file: string, name: string, inFile = false) {
  * under overhangs (down-facing faces), a slight sun-bleached lift on top faces, and near-black colours (window holes,
  * hatches) lifted to a deep warm shadow. Free at runtime: same vertex count, same material, same draw calls.
  */
-export function formShade(geo: THREE.BufferGeometry, F: FormShadeParams = FORM_SHADE) {
+export function formShade(geo: THREE.BufferGeometry, F: FormShadeParams = FORM_SHADE, yRange?: [number, number]) {
   const pos = geo.attributes.position;
   const col = geo.attributes.color as THREE.BufferAttribute | undefined;
   if (!col || !pos.count) return geo;
   if (!geo.attributes.normal) geo.computeVertexNormals();
   const nrm = geo.attributes.normal;
-  geo.computeBoundingBox();
-  const bb = geo.boundingBox!;
-  const span = Math.max(1e-4, (bb.max.y - bb.min.y) * FORM_SHADE.contactHeight);
+  // the piece's own height, or a shared range when one object is built from many parts (shanty dwellings)
+  let y0: number, y1: number;
+  if (yRange) [y0, y1] = yRange;
+  else {
+    geo.computeBoundingBox();
+    y0 = geo.boundingBox!.min.y;
+    y1 = geo.boundingBox!.max.y;
+  }
+  const span = Math.max(1e-4, (y1 - y0) * F.contactHeight);
   const open = new THREE.Color(WORLD_PALETTE.opening);
   for (let i = 0; i < pos.count; i++) {
-    const t = THREE.MathUtils.clamp((pos.getY(i) - bb.min.y) / span, 0, 1);
+    const t = THREE.MathUtils.clamp((pos.getY(i) - y0) / span, 0, 1);
     let k = F.contactFloor + (1 - F.contactFloor) * t * t * (3 - 2 * t);
     const ny = nrm.getY(i);
     k *= ny < 0 ? 1 + (F.underside - 1) * -ny : 1 + (F.topLift - 1) * ny;

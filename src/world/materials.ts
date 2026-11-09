@@ -39,11 +39,38 @@ export function toonMat(color: THREE.ColorRepresentation, extra: Partial<THREE.M
 
 export const swayUniforms = { uTime: { value: 0 } };
 
+/**
+ * One light response for everything solid (the world, the boat, the people): the sun's warmth on lit faces, the sky's
+ * cool blue in the shade, and a soft shoulder so pale salvage under a noon sun keeps its colour instead of clipping to
+ * white (the renderer has no tone mapping; the ocean shader grades itself to match). Driven by the atmosphere each
+ * frame (Game.applyAtmosphere).
+ */
+export const gradeUniforms = {
+  uLightTint: { value: new THREE.Color(1.05, 1.0, 0.9) },
+  uShadeTint: { value: new THREE.Color(0.8, 0.9, 1.08) },
+  uShadeK: { value: 1 },
+};
+const GRADE_FRAG = /* glsl */ `
+{
+  // how lit this fragment is, relative to its own albedo: the toon bands of sun + sky
+  float wxAlb = max(dot(diffuseColor.rgb, vec3(0.3333)), 0.03);
+  float wxLit = dot(outgoingLight, vec3(0.3333)) / wxAlb;
+  float wxShade = 1.0 - smoothstep(0.5, 1.15, wxLit);
+  outgoingLight *= mix(vec3(1.0), mix(uLightTint, uShadeTint, wxShade), uShadeK);
+  // highlight shoulder: values past 0.72 roll off toward ~1.0 instead of clipping
+  vec3 wxOver = max(outgoingLight - 0.72, 0.0);
+  outgoingLight = min(outgoingLight, 0.72) + wxOver / (1.0 + wxOver * 2.6);
+}
+`;
+
 const WEATHER_COMMON = /* glsl */ `
 varying vec3 vWxPos;
 varying vec3 vWxNrm;
 varying float vWxY; // height above the sea, for the tide line
 uniform float uWeather;
+uniform vec3 uLightTint;
+uniform vec3 uShadeTint;
+uniform float uShadeK;
 float wxHash(vec3 p) { p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 float wxNoise(vec3 x) {
   vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f);
@@ -100,6 +127,9 @@ export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false
   const u = { value: amount };
   m.onBeforeCompile = (shader) => {
     shader.uniforms.uWeather = u;
+    shader.uniforms.uLightTint = gradeUniforms.uLightTint;
+    shader.uniforms.uShadeTint = gradeUniforms.uShadeTint;
+    shader.uniforms.uShadeK = gradeUniforms.uShadeK;
     if (sway) shader.uniforms.uTime = swayUniforms.uTime;
     let vs = shader.vertexShader.replace('#include <common>', `#include <common>\n${WEATHER_COMMON}${sway ? 'uniform float uTime;\nattribute float sway;' : ''}`);
     if (sway)
@@ -133,7 +163,8 @@ export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false
     shader.vertexShader = vs;
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>\n${WEATHER_COMMON}`)
-      .replace('#include <color_fragment>', `#include <color_fragment>\n${WEATHER_FRAG}`);
+      .replace('#include <color_fragment>', `#include <color_fragment>\n${WEATHER_FRAG}`)
+      .replace('#include <opaque_fragment>', `${GRADE_FRAG}\n#include <opaque_fragment>`);
   };
   m.customProgramCacheKey = () => `weather-${sway ? 1 : 0}`;
   m.userData.weather = u;
