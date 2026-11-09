@@ -11,6 +11,8 @@
 // Output is plain vertex-coloured geometry for the existing batches (one draw call per settlement, toon + weathering).
 import * as THREE from 'three';
 import { paint } from './materials';
+import { formShade } from './assets';
+import { FORM_SHADE_SHANTY } from './style';
 import { RNG } from '../core/noise';
 
 /** The shared settlement palette: sun-faded, salt-bleached, and painted in the brand colours, never saturated. */
@@ -37,6 +39,8 @@ const _up = new THREE.Vector3(0, 1, 0);
 export class Shanty {
   geos: THREE.BufferGeometry[] = [];
   glows: THREE.BufferGeometry[] = [];
+  /** set by dwelling(): its roof height, so take() form-shades the house as one unit (style.ts FORM_SHADE) */
+  private shadeTop = 0;
   constructor(public rng: RNG) {}
 
   private put(g: THREE.BufferGeometry, color: string, x: number, y: number, z: number, rx = 0, ry = 0, rz = 0, glow = false, jitter = 0.07) {
@@ -276,6 +280,7 @@ export class Shanty {
     }
     if (opts.awning ?? r.next() < 0.6) this.awning(w, 0, floor + h, d / 2 + 0.1);
     this.clutter(0, floor, d / 2 + (opts.base === 'ground' ? 1.4 : 0.6), r.int(1, 3));
+    this.shadeTop = top;
     return top;
   }
 
@@ -345,6 +350,9 @@ export class Shanty {
 
   /** Take the parts built so far, placed at x, y, z turned by ry (and scaled), and start fresh. */
   take(x: number, y: number, z: number, ry = 0, s = 1) {
+    // light, not ink: contact shadow from the water/ground line (local y 0) up, darker eaves, black openings lifted
+    if (this.shadeTop > 0 && FORM_SHADE_SHANTY) for (const g of this.geos) formShade(g, undefined, [0, this.shadeTop]);
+    this.shadeTop = 0;
     const m = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, ry, 0)), new THREE.Vector3(s, s, s));
     const out = { geos: this.geos.map((g) => g.applyMatrix4(m)), glows: this.glows.map((g) => g.applyMatrix4(m)) };
     this.geos = [];

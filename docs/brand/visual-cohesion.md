@@ -1,5 +1,9 @@
 # SCRAP TIDE: visual cohesion pass
 
+> **Superseded on line work** by `docs/art-direction/STYLE-GUIDE.md` ("stylized, not cartoon-outlined"): the hero
+> ink and the world ink described below are both off (`OUTLINE` in `src/world/style.ts`). Silhouettes now separate
+> through form shading, material contrast and light. The architecture, light grade and sea in this document still apply.
+
 *One world: a beautiful sea, and a salvaged civilization built on it.*
 
 Before/after frames: `docs/brand/cohesion/` (same boat position, heading, camera yaw/pitch, clock and viewport;

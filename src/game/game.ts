@@ -2,6 +2,7 @@
 // settlements, going ashore, digging, treasure, the first voyage and the Captain's Log.
 import { heroize, updateHeroLight, inkScale } from '../world/hero';
 import { gradeUniforms } from '../world/materials';
+import { OUTLINE } from '../world/style';
 import * as THREE from 'three';
 import { Store } from '../state/store';
 import { UI, type GameAPI, type Action } from '../ui/ui';
@@ -255,7 +256,7 @@ export class Game implements GameAPI {
     const cap = characterModel('tb_captain');
     if (cap) {
       this.captain.useCharacter(cap);
-      heroize(cap.root, 0.012);
+      heroize(cap.root, OUTLINE.captain);
       this.captain.onStep = (side, run) => this.footfall(side, run);
     }
     this.env.upgradeNpcs();
@@ -370,8 +371,9 @@ export class Game implements GameAPI {
   rebuildShip() {
     if (this.ship) this.shipRoot.remove(this.ship.group);
     this.ship = buildShip(this.store);
-    for (const c of this.ship.crew) heroize(c.root, 0.012); // (thinner ink on people than on hulls)
-    heroize(this.ship.group, this.store.data.vessel === 'dinghy' ? 0.022 : 0.035);
+    // rim light and soft form, no ink (style.ts OUTLINE: stylized, not cartoon-outlined)
+    for (const c of this.ship.crew) heroize(c.root, OUTLINE.crew);
+    heroize(this.ship.group, OUTLINE.hull);
     this.shipRoot.add(this.ship.group);
     this.camDist = this.store.data.vessel === 'ironwake' ? 30 : this.store.data.vessel === 'brig' ? 27 : this.store.data.vessel === 'sloop' ? 24 : 15;
     const st = this.store.stats;

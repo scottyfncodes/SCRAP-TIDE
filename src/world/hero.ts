@@ -1,16 +1,19 @@
 // Hero treatment for the things the player looks at all game: their boat, its crew and the captain.
-// The sea is rich and lit; flat toon boats and people dissolved into it, especially at dusk. Two cheap passes fix that:
-// - an ink outline (inverted hull along smoothed normals, Deep Tide navy per the art direction), so silhouettes read;
-// - a rim light (fresnel) in the sun's colour, so edges catch the low sun and separate from the water behind.
-// Both work on skinned meshes (the outline is a SkinnedMesh bound to the same skeleton).
+// Style spec (src/world/style.ts, docs/art-direction/STYLE-GUIDE.md): stylized, not cartoon-outlined. Heroes separate
+// from the sea by light, not ink:
+// - a rim light (fresnel) in the sun's colour on the sunward edges, so silhouettes catch the low sun;
+// - a soft falloff on the shadow-side edges (a few percent, wide), so rounded forms turn away instead of ending in a line.
+// An inverted-hull line is still available for the rare case that needs one (OUTLINE in style.ts, default 0): thin,
+// deep sea-toned, never black. It works on skinned meshes (the line is a SkinnedMesh bound to the same skeleton).
 import * as THREE from 'three';
 import { weather } from './materials';
+import { OUTLINE } from './style';
 
 /** Rim colour, driven by the atmosphere each frame (strongest when the sun is low). */
 export const heroRim = { value: new THREE.Color(0, 0, 0) };
 /** The sun's direction in view space, so the rim only lights edges on the sunward side. */
 export const heroSunView = { value: new THREE.Vector3(0, 1, 0) };
-const outlineColor = { value: new THREE.Color('#0e2233') };
+const outlineColor = { value: new THREE.Color(OUTLINE.ink) };
 
 const heroCache = new WeakMap<THREE.Material, THREE.Material>();
 
@@ -40,6 +43,8 @@ function heroMaterial(src: THREE.Material): THREE.Material {
           float fr = 1.0 - clamp(dot(rn, normalize(vViewPosition)), 0.0, 1.0);
           float sunward = smoothstep(-0.1, 0.6, dot(rn, uRimSun));
           outgoingLight += uRim * smoothstep(0.62, 0.95, fr) * sunward;
+          // form, not ink: the shadow-side edges fall off softly (a gradient a few pixels wide, at most 12%)
+          outgoingLight *= 1.0 - 0.12 * smoothstep(0.5, 1.0, fr) * (1.0 - sunward);
         }
         #include <opaque_fragment>`
       );
@@ -114,10 +119,11 @@ function withSmoothNormals(g: THREE.BufferGeometry): THREE.BufferGeometry {
 }
 
 /**
- * Give everything under `root` the hero look: rim-lit toon materials and an ink outline `width` metres thick
- * (0: rim only). Glowing parts, transparent cloth (sails, flags) and lines are left alone or rim-only.
+ * Give everything under `root` the hero look: rim-lit toon materials with soft edge falloff, and, only if `width` > 0
+ * (style.ts OUTLINE; capped at OUTLINE.maxWidth), a thin sea-toned line that many metres thick. Glowing parts, transparent cloth (sails, flags) and lines are left alone or rim-only.
  */
-export function heroize(root: THREE.Object3D, width = 0.03) {
+export function heroize(root: THREE.Object3D, width: number = OUTLINE.hull) {
+  width = Math.min(Math.max(width, 0), OUTLINE.maxWidth);
   const meshes: THREE.Mesh[] = [];
   root.traverse((o) => {
     const m = o as THREE.Mesh;
@@ -158,10 +164,10 @@ export function heroize(root: THREE.Object3D, width = 0.03) {
 /** Follow the atmosphere: a warm rim from the sun, strongest at dusk and dawn; a faint cool one at night. */
 export function updateHeroLight(sunColor: THREE.Color, sunIntensity: number, night: number, sunDir?: THREE.Vector3, camera?: THREE.Camera) {
   const low = THREE.MathUtils.clamp((2.2 - sunIntensity) / 1.6, 0, 1);
-  heroRim.value.copy(sunColor).multiplyScalar(0.1 + 0.25 * low * (1 - night));
+  heroRim.value.copy(sunColor).multiplyScalar(0.15 + 0.25 * low * (1 - night)); // (base raised from 0.1 when the ink outline went)
   if (sunDir && camera) heroSunView.value.copy(sunDir).transformDirection(camera.matrixWorldInverse);
   heroRim.value.lerp(new THREE.Color(0.25, 0.32, 0.45), night * 0.6);
-  outlineColor.value.set('#0e2233').multiplyScalar(1 - night * 0.5);
+  outlineColor.value.set(OUTLINE.ink).multiplyScalar(1 - night * 0.5);
 }
 
 /**
@@ -189,7 +195,7 @@ function worldInkMaterial() {
           // ~1 px near and mid range; past ~100 m it thins and pales, or thin piles, rails and rope (thinner than
           // the line) turned a whole distant town to ink
           vInkFar = smoothstep(70.0, 220.0, inkD);
-          float inkWidth = clamp(inkD * uInkScale * (1.0 - 0.45 * vInkFar), 0.02, 0.2);
+          float inkWidth = clamp(inkD * uInkScale * ${OUTLINE.world.toFixed(3)} * (1.0 - 0.45 * vInkFar), 0.0, 0.2);
           transformed += normalize(oNormal) * inkWidth / max(length(modelMatrix[0].xyz), 1e-4);
         }`
       );
@@ -202,8 +208,12 @@ function worldInkMaterial() {
   return m;
 }
 
-/** Add world ink to static toon meshes under `root` (settlement batches, drowned structures, harbour). */
+/**
+ * Add world ink to static toon meshes under `root` (settlement batches, drowned structures, harbour). Off by the
+ * outline policy (style.ts OUTLINE.world = 0): settlements are defined by form shading, material and light instead.
+ */
 export function inkWorld(root: THREE.Object3D) {
+  if (!OUTLINE.world) return;
   const meshes: THREE.Mesh[] = [];
   root.traverse((o) => {
     const m = o as THREE.Mesh;

@@ -35,6 +35,10 @@ The app icon (patchwork sail, `public/icons/`) is unchanged; it already fits the
 
 ## World
 
+World art (characters, buildings, props, vessels) follows **stylized, not cartoon-outlined**: no universal
+outline; form from geometry, material, colour and light. See `docs/art-direction/STYLE-GUIDE.md` and
+`src/world/style.ts`.
+
 - **Sky**: clear abyss-blue zenith over a warm, sun-bleached horizon haze by day; Sun Gold mornings and afternoons,
   Oxide Rust sunsets, deep Abyss Blue nights (`src/world/atmosphere.ts`). Storms stay cold blue-grey.
 - **Ocean**: sandy shallows, a luminous Sea Glass shelf, Abyss Blue open water, ink-blue deep; Sea Glass subsurface

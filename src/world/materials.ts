@@ -3,15 +3,18 @@
 // grime, rust streaks, tide-line staining and salt crust on top, so nothing reads as clean plastic.
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { LIGHT_RAMP, LIGHT_RAMP_FILTER, WEAR } from './style';
 
 let gradient: THREE.DataTexture | null = null;
 export function toonGradient() {
   if (gradient) return gradient;
-  // 4 hard bands with a deep shadow step: contrasty, weathered light instead of soft storybook shading.
-  const data = new Uint8Array([58, 58, 58, 255, 118, 118, 118, 255, 196, 196, 196, 255, 255, 255, 255, 255]);
-  gradient = new THREE.DataTexture(data, 4, 1, THREE.RGBAFormat);
-  gradient.minFilter = THREE.NearestFilter;
-  gradient.magFilter = THREE.NearestFilter;
+  // the style spec's soft, lifted ramp (src/world/style.ts): flat-shaded faces still read as facets, but shading
+  // falls off like sun instead of stepping into a dark contour band at every terminator
+  const data = new Uint8Array(LIGHT_RAMP.length * 4);
+  LIGHT_RAMP.forEach((v, i) => data.set([v, v, v, 255], i * 4));
+  gradient = new THREE.DataTexture(data, LIGHT_RAMP.length, 1, THREE.RGBAFormat);
+  gradient.minFilter = LIGHT_RAMP_FILTER;
+  gradient.magFilter = LIGHT_RAMP_FILTER;
   gradient.needsUpdate = true;
   return gradient;
 }
@@ -76,6 +79,9 @@ float wxNoise(vec3 x) {
 }
 `;
 
+/** a JS number as a GLSL float literal */
+const glf = (n: number) => n.toFixed(3);
+
 const WEATHER_FRAG = /* glsl */ `
 {
   vec3 c = diffuseColor.rgb;
@@ -90,16 +96,16 @@ const WEATHER_FRAG = /* glsl */ `
   float fine = wxNoise(P * 1.7 + 11.0);
   // grime: blotchy oily build-up, heavier in crevices facing down
   float grime = smoothstep(0.42, 0.95, big * 0.7 + fine * 0.45) * (0.55 + 0.45 * (1.0 - max(vWxNrm.y, 0.0)));
-  graded = mix(graded, graded * vec3(0.42, 0.38, 0.33), grime * 0.55);
+  graded = mix(graded, graded * vec3(${glf(WEAR.grimeFloor)}, ${glf(WEAR.grimeFloor * 0.92)}, ${glf(WEAR.grimeFloor * 0.8)}), grime * ${glf(WEAR.grimeMix)});
   // rust streaks: noise stretched vertically so it runs down walls; strongest on grey/neutral (metal) surfaces
   float streak = wxNoise(vec3(P.x * 2.3, P.y * 0.16, P.z * 2.3)) * 0.75 + fine * 0.25;
   float metal = 1.0 - smoothstep(0.08, 0.32, sat);
   float rust = smoothstep(0.58, 0.82, streak) * (0.35 + 0.65 * metal) * (1.0 - max(vWxNrm.y, 0.0) * 0.6);
   graded = mix(graded, vec3(0.40, 0.17, 0.07) * (0.7 + lum * 0.6), rust * 0.6);
-  // tide line: algae-black stain below, a crust of bone-white salt just above
+  // tide line: dark sea-green algae below (never black: style.ts WEAR), a crust of bone-white salt just above
   float y = vWxY;
   float algae = (1.0 - smoothstep(-0.2, 0.9, y)) * step(-6.0, y);
-  graded = mix(graded, vec3(0.09, 0.12, 0.09), algae * (0.45 + fine * 0.3));
+  graded = mix(graded, vec3(${WEAR.algae.map(glf).join(', ')}), algae * (${glf(WEAR.algaeMix)} + fine * 0.2));
   float salt = smoothstep(0.5, 1.0, y) * (1.0 - smoothstep(1.2, 2.6, y)) * smoothstep(0.45, 0.75, fine);
   #ifdef WX_LOCAL
   // no salt crust on moving things: the band is fixed to the sea, so as the boat bobs it would wash up and down over
