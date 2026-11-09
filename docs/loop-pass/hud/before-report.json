@@ -1,0 +1,19 @@
+{
+  "base": "https://tidebreakers.vercel.app/",
+  "scenes": {
+    "helm_skiff-desktop": "ok",
+    "helm_trimaran-desktop": "ok",
+    "panel-desktop": "ok",
+    "helm_skiff-phone": "ok",
+    "helm_trimaran-phone": "ok",
+    "panel-phone": "ok"
+  },
+  "console": {
+    "desktop": [],
+    "phone": []
+  },
+  "fps": {
+    "desktop": 1.74,
+    "phone": 1.4
+  }
+}
