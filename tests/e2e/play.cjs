@@ -532,7 +532,13 @@ const check = (name, ok, detail = '') => {
     await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
     await page.waitForTimeout(600);
     await click(/^⚓ DOCK$/);
-    await page.waitForSelector('.daily-end', { timeout: 60000 }).catch(() => {});
+    // other cards (a milestone, the Captain's Log) can be queued in front of the Daily Tide card: tap them away
+    await page.waitForFunction(() => window.__game.boat.docked, null, { timeout: 60000, polling: 100 }).catch(() => {});
+    for (let k = 0; k < 40 && !(await page.$('.daily-end')); k++) {
+      await page.waitForTimeout(500);
+      const other = await page.$('.reveal:not(.daily-end) .r-ok');
+      if (other) await other.click().catch(() => {});
+    }
     const end = await g(() => ({ card: !!document.querySelector('.daily-end'), share: document.querySelector('.daily-end .d-share')?.textContent ?? '', streak: window.__game.store.data.daily.streak, best: window.__game.store.data.daily.best }));
     await page.screenshot({ path: `${out}/loop_daily_end.png` });
     check('the Daily Tide ends at the dock with a score breakdown, a shareable result and a streak', end.card && /Daily Tide/.test(end.share) && /streak/.test(end.share) && end.streak >= 1, JSON.stringify(end));
