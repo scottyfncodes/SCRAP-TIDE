@@ -179,21 +179,23 @@ function worldInkMaterial() {
     shader.uniforms.uInkScale = inkScale;
     shader.uniforms.uInk = outlineColor;
     shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\nattribute vec3 oNormal;\nuniform float uInkScale;')
+      .replace('#include <common>', '#include <common>\nattribute vec3 oNormal;\nuniform float uInkScale;\nvarying float vInkFar;')
       .replace(
         '#include <begin_vertex>',
         `#include <begin_vertex>
         {
           vec3 inkW = (modelMatrix * vec4(transformed, 1.0)).xyz;
           float inkD = distance(inkW, cameraPosition);
-          // ~1 px at any distance; never a fat cartoon line up close, never lost at range
-          float inkWidth = clamp(inkD * uInkScale, 0.02, 0.45);
+          // ~1 px near and mid range; past ~100 m it thins and pales, or thin piles, rails and rope (thinner than
+          // the line) turned a whole distant town to ink
+          vInkFar = smoothstep(70.0, 220.0, inkD);
+          float inkWidth = clamp(inkD * uInkScale * (1.0 - 0.45 * vInkFar), 0.02, 0.2);
           transformed += normalize(oNormal) * inkWidth / max(length(modelMatrix[0].xyz), 1e-4);
         }`
       );
     shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', '#include <common>\nuniform vec3 uInk;')
-      .replace('vec4 diffuseColor = vec4( diffuse, opacity );', 'vec4 diffuseColor = vec4( uInk * 1.15, opacity );');
+      .replace('#include <common>', '#include <common>\nuniform vec3 uInk;\nvarying float vInkFar;')
+      .replace('vec4 diffuseColor = vec4( diffuse, opacity );', 'vec4 diffuseColor = vec4( mix(uInk * 1.15, fogColor * 0.62, vInkFar * 0.7), opacity );');
   };
   m.customProgramCacheKey = () => 'world-ink';
   worldInkMat = m;
