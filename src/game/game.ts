@@ -10,7 +10,7 @@ import { Ocean } from '../world/ocean';
 import { Sky } from '../world/sky';
 import { Atmosphere } from '../world/atmosphere';
 import { DrownedWorld } from '../world/drowned';
-import { loadModels, loadModelFiles, modelRequested, loadCrew, model, loadReport, characterModel } from '../world/assets';
+import { loadModels, loadModelFiles, modelRequested, loadCrew, model, loadReport, characterModel, gltfOf } from '../world/assets';
 import { oceanState } from '../world/ocean';
 import { Salvage } from './salvage';
 import { Raiders, ZONES as RAIDER_ZONE_LIST } from './raiders';
@@ -53,7 +53,7 @@ import { completedSets, bonusText, TIER_LABEL, tierOf } from '../data/loot';
 import { clockRate } from './trip';
 import { tripLength, squallLevel, squallDamage, tripLeft, tripPhase, holdValue, keepsOnSink, SQUALL_WARN, type TripPhase } from './trip';
 import { LOOK, jury } from '../state/look';
-import { TOLL } from '../world/jury';
+import { TOLL, jawboat } from '../world/jury';
 
 type Mode = 'sail' | 'foot';
 
@@ -229,6 +229,8 @@ export class Game implements GameAPI {
     this.env = new Environment(this.scene);
     await this.progress(0.62, 'Drowning the cities…');
     this.drowned = new DrownedWorld(this.scene);
+    // measurement hooks for docs/jury-rigged (scripts/jury-shots.mjs, scripts/jury-measure.mjs): look visits only
+    if (jury()) (window as unknown as { __jury: unknown }).__jury = { THREE, assets: { characterModel, model, gltfOf }, grade: gradeUniforms, jury: { jawboat } };
     // ?look=jury: the Rustfang Toll's two drum rafts are solid (src/world/jury.ts tollGate, rafts at local x = ±6)
     if (jury()) for (const sx of [-1, 1]) this.drowned.colliders.push({ x: TOLL.x + sx * 6 * Math.cos(TOLL.ry), z: TOLL.z - sx * 6 * Math.sin(TOLL.ry), r: 2.4 });
     await this.progress(0.74, 'Brewing storms…');

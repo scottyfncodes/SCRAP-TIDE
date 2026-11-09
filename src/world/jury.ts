@@ -262,11 +262,13 @@ export function signalStack(k: Kit) {
   k.cyl(1.25, 1.25, 0.08, [0.3, y1 + 0.4, 0.4], '#c8c0ad', [0, 0, 0], 18);
   k.beam([0.3, y1 + 0.5, 0.4 - 1.2], [0.3, y1 + 3.6, 0.4 - 0.4], 0.08, '#9aa3ad', 6);
   // the traffic light, re-glazed: red on top, warm amber, bottle-glass white (never green)
-  const tx = 0.3, ty = y1 + 2.9, tz = 0.4 + 0.2;
-  k.box(0.5, 1.45, 0.42, [tx, ty, tz], '#2b2f36');
+  // twice real size: the lamp is the useful part, so it is the part that gets exaggerated (it must read at sea, at night)
+  const tx = 0.3, ty = y1 + 3.6, tz = 0.4 + 0.2;
+  k.beam([tx, y1 + 0.3, tz], [tx, ty - 1.4, tz], 0.16, '#4f5a5e', 6); // its post, through the dish
+  k.box(1.0, 2.9, 0.8, [tx, ty, tz], '#2b2f36');
   for (let i = 0; i < 3; i++) {
-    k.box(0.44, 0.06, 0.22, [tx, ty + 0.55 - i * 0.47, tz - 0.3], '#2b2f36', [0.35, 0, 0]);
-    k.glow(new THREE.CylinderGeometry(0.15, 0.15, 0.05, 12), ['#e2553e', SALVAGE.lamp, '#f2dcb0'][i], [tx, ty + 0.45 - i * 0.47, tz - 0.23], [Math.PI / 2, 0, 0]);
+    k.box(0.9, 0.1, 0.42, [tx, ty + 1.1 - i * 0.94, tz - 0.58], '#2b2f36', [0.35, 0, 0]);
+    k.glow(new THREE.CylinderGeometry(0.32, 0.32, 0.08, 14), ['#e2553e', SALVAGE.lamp, '#f2dcb0'][i], [tx, ty + 0.9 - i * 0.94, tz - 0.43], [Math.PI / 2, 0, 0]);
   }
   // an airport windsock, striped orange and white, on the LNB arm
   for (let i = 0; i < 4; i++) k.cyl(0.32 - i * 0.05, 0.27 - i * 0.05, 0.42, [0.3, y1 + 3.55, 0.4 - 0.65 - i * 0.4], i % 2 ? ACC.bleachWhite : ACC.coneOrange, [Math.PI / 2 + 0.15, 0, 0], 10);
@@ -287,10 +289,13 @@ export function signalStack(k: Kit) {
       for (let j = 1; j < 12; j++) {
         const u = j / 12;
         k.pennant([a[0] + (t[0] - a[0]) * u, a[1] + (t[1] - a[1]) * u - 0.05, a[2] + (t[2] - a[2]) * u], along, cols[(j + i) % cols.length], 0.55);
+        // festoon bulbs between the pennants, like the journey bunting's (they shine at night)
+        const v = (j + 0.5) / 12;
+        k.glow(new THREE.SphereGeometry(0.13, 6, 4), SALVAGE.lamp, [a[0] + (t[0] - a[0]) * v, a[1] + (t[1] - a[1]) * v - 0.12, a[2] + (t[2] - a[2]) * v]);
       }
     }
   });
-  return { start, startGlow, height: y1 + 3.65 };
+  return { start, startGlow, height: y1 + 5.05 };
 }
 
 // ───────────────────────────── Driftholm: the pier ─────────────────────────────

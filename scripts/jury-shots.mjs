@@ -92,6 +92,7 @@ for (const look of LOOKS) {
         if (!s) return;
         g.atmo.time = s.tod;
         g.atmo.squall = s.storm;
+        g.atmo.storm = s.storm; // pinned, not ramped in or out
         g.ui.joy.x = 0;
         g.ui.joy.y = 0;
         g.zoom = 1;
@@ -130,7 +131,7 @@ for (const look of LOOKS) {
         await page.waitForTimeout(800);
         await clear();
         const t0 = await page.evaluate(() => window.__game.renderT);
-        await page.waitForFunction((t) => window.__game.renderT >= t, t0 + 3.0, { timeout: 240000, polling: 100 });
+        await page.waitForFunction((t) => window.__game.renderT >= t, t0 + 1.0, { timeout: 240000, polling: 100 });
         await clear();
         const info = await page.evaluate(() => ({ calls: window.__game.renderer.info.render.calls, tris: window.__game.renderer.info.render.triangles }));
         const ms = await page.evaluate(
@@ -142,7 +143,7 @@ for (const look of LOOKS) {
               requestAnimationFrame(f);
             })
         );
-        await page.screenshot({ path: `${out}/${look}-${vp.id}-${s.id}-${c.id}.png` });
+        await page.screenshot({ path: `${out}/${look}-${vp.id}-${s.id}-${c.id}.png`, timeout: 180000 });
         const row = { ...info, msPerFrame: +ms.toFixed(1) };
         if (look === 'jury') {
           // C4: accent-mask render (plastic magenta, everything else black, no fog) into a target, count pixels

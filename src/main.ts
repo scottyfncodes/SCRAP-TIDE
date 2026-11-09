@@ -35,11 +35,6 @@ async function boot() {
   (window as any).__game = game;
   await game.init();
   (window as any).__loadReport = loadReport;
-  if (game.store.look === 'jury') {
-    // measurement hooks for docs/jury-rigged (scripts/jury-shots.mjs, scripts/jury-measure.mjs); look visits only
-    const [THREE, assets, mats, jury] = await Promise.all([import('three'), import('./world/assets'), import('./world/materials'), import('./world/jury')]);
-    (window as any).__jury = { THREE, assets, grade: mats.gradeUniforms, jury };
-  }
   if (game.store.sandbox) {
     // ?ship= preview or ?exp= experiment link: say so, so nobody mistakes it for their real save
     const { EXPERIMENTS } = await import('./state/experiments');
