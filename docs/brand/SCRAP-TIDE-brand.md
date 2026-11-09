@@ -49,9 +49,15 @@ outline; form from geometry, material, colour and light. See `docs/art-direction
 
 ## Interface: a scavenger's navigation kit
 
-HUD instruments sit on abyss-blue enamelled steel; primary actions are stamped Sun Gold plates; panels are
-bleached-sand journal pages under a steel header strip with a gold rule. Stencil for names, condensed grotesk for
-labels, mono for readouts. Spacing, touch targets and safe-area handling are unchanged.
+HUD instruments are survivor-built equipment: riveted, scratched steel plates with a faded hazard-stripe bracket,
+squared corners and stencilled labels; the objective is a sun-bleached painted tag with an oxide edge (not parchment);
+the radar sits in a bolted bezel. Primary actions are stamped Sun Gold plates; panels are bleached-sand journal pages
+under a steel header strip. Stencil for names, condensed grotesk for labels, mono for readouts.
+
+The helm keeps the classic ship's-wheel shape (rim, spokes, grip handles) but every wheel is built from salvage: pipe,
+copper, bolted aluminium or riveted steel, with taped, rope-whipped or rubber grips and a hazard-yellow top grip, and a
+knurled steel thumb cap instead of a brass boss. Never timber-and-brass, Jolly Roger, colonial costume or treasure-map
+parchment. See `docs/art-pass/`.
 
 ## Naming
 

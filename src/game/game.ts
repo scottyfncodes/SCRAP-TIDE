@@ -1376,7 +1376,8 @@ export class Game implements GameAPI {
     (this.scene.background as THREE.Color).copy(a.skyHorizon);
     const u = this.ocean.uniforms;
     u.uSunDir.value.copy(a.sunDir);
-    u.uSunColor.value.copy(a.sunColor).multiplyScalar(Math.min(1.2, a.sunIntensity / 2));
+    // the moon keeps a visible glint on the water at night (it was a fifth of the noon sun's and the sea went flat)
+    u.uSunColor.value.copy(a.sunColor).multiplyScalar(Math.max(Math.min(1.2, a.sunIntensity / 2), 0.62 * a.night));
     u.uFogColor.value.copy(a.fogColor);
     u.uFogNear.value = a.fogNear;
     u.uFogFar.value = a.fogFar;
@@ -1385,7 +1386,7 @@ export class Game implements GameAPI {
     u.uStorm.value = a.storm;
     u.uNight.value = a.night;
     a.calm = !!this.store.data.settings.calm;
-    const amb = 0.3 + 0.7 * (1 - a.night) * (1 - a.storm * 0.45) + a.flash * 0.5;
+    const amb = 0.42 + 0.58 * (1 - a.night) * (1 - a.storm * 0.45) + a.flash * 0.5;
     u.uAmbient.value.setRGB(amb * 0.9, amb * 0.97, amb);
     oceanState.storm = a.storm;
     if (this.ship.lamp) this.ship.lamp.intensity = a.night * 3 + a.storm * 1.2;
@@ -1394,11 +1395,29 @@ export class Game implements GameAPI {
 
   /** Dusk, night and storms flatten the boat into the dark sea (the sun is low or gone, and the ocean shader lights
    *  the water separately). A warm fill from the camera side, above the boat, fades in as the sun's light drops and
-   *  only reaches about four boat-lengths, so the boat reads without brightening the world. Off in daylight. */
+   *  only reaches about four boat-lengths, so the boat reads without brightening the world. Off in daylight.
+   *  Ashore the same light is the captain's work lamp: a small warm pool round the captain and the ground at their
+   *  feet, so the path ahead reads at dusk and night without lifting the whole island. */
   private updateShipFill() {
     const f = this.shipFill;
     const low = clamp((1.6 - this.atmo.sunIntensity) / 1.0, 0, 1);
-    if (this.mode !== 'sail' || low <= 0) {
+    if (low <= 0) {
+      f.intensity = 0;
+      return;
+    }
+    if (this.mode === 'foot') {
+      const fx = this.foot.x, fz = this.foot.z;
+      const gy = heightAt(fx, fz);
+      const to = new THREE.Vector3(this.camera.position.x - fx, 0, this.camera.position.z - fz);
+      if (to.lengthSq() < 1e-6) to.set(0, 0, 1);
+      to.normalize();
+      f.position.set(fx + to.x * 1.6, gy + 3.2, fz + to.z * 1.6);
+      f.distance = 16;
+      f.color.setRGB(1, 0.86, 0.68).lerp(new THREE.Color(0.85, 0.9, 1), this.atmo.night * 0.35);
+      f.intensity = low * 5.5;
+      return;
+    }
+    if (this.mode !== 'sail') {
       f.intensity = 0;
       return;
     }
@@ -3035,6 +3054,7 @@ export class Game implements GameAPI {
     this.shake = Math.max(0, this.shake - dt * 2.2);
     const target = new THREE.Vector3();
     let dist: number, pitch: number;
+    let footLook = false;
     if (!this.started) {
       // title orbit: opens on Driftholm (the scrap atoll behind the pier), then drifts round to the open sea
       if (!this.titleYawSet) {
@@ -3062,9 +3082,13 @@ export class Game implements GameAPI {
       dist = this.camDist * this.zoom;
       pitch = this.camPitch;
     } else {
+      // on foot (art-direction pass): a lower, closer camera than at sea. The old 0.42 rad pitch at 10 m filled the
+      // lower half of a portrait screen with bare sand; now the captain sits in the lower third and the look-at point
+      // rides ahead of and above them, so the horizon and the next point of interest stay in frame.
       target.set(this.foot.x, heightAt(this.foot.x, this.foot.z) + 1.4, this.foot.z);
-      dist = 10 * this.zoom;
-      pitch = Math.max(0.35, this.camPitch);
+      dist = 8.6 * this.zoom;
+      pitch = clamp(this.camPitch * 0.68, 0.22, 0.8);
+      footLook = true;
     }
     const cx = target.x - Math.sin(this.camYaw) * Math.cos(pitch) * dist;
     const cz = target.z - Math.cos(this.camYaw) * Math.cos(pitch) * dist;
@@ -3087,6 +3111,13 @@ export class Game implements GameAPI {
       this.camera.position.x += (Math.random() - 0.5) * k;
       this.camera.position.y += (Math.random() - 0.5) * k;
       target.x += (Math.random() - 0.5) * k * 0.4;
+    }
+    if (footLook) {
+      // look past the captain: ahead along the camera's heading and up, so they sit low in the frame (steady: the
+      // offset follows camYaw, which is already smoothed, not the captain's turning)
+      target.x += Math.sin(this.camYaw) * 3.2;
+      target.z += Math.cos(this.camYaw) * 3.2;
+      target.y += 1.15;
     }
     this.camera.lookAt(target);
   }

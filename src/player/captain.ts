@@ -174,7 +174,7 @@ export class Captain {
     torso.castShadow = true;
     this.body.add(torso);
 
-    // head with bandana + tricorn
+    // head with bandana + wide-brim sun hat
     const head = new THREE.Group();
     const hp: THREE.BufferGeometry[] = [];
     hp.push(paint(xf(new THREE.SphereGeometry(0.34, 14, 10), 0, 0, 0), '#e8b896'));

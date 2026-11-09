@@ -23,16 +23,18 @@ interface Key {
 // sun-bleached horizon haze by day; Sun Gold mornings and afternoons; Oxide Rust sunsets; deep Abyss Blue nights under
 // a cold moon. The haze is warm sand, not grey: the world is breathtaking at distance and weathered up close.
 const KEYS: Key[] = [
-  { t: 0.0, top: '#04111a', hor: '#123342', fog: '#0f2b38', sun: '#8fb6c6', sunI: 0.62, hemiSky: '#365f70', hemiGnd: '#0f1513', hemiI: 0.95 },
-  { t: 0.2, top: '#08192a', hor: '#24434c', fog: '#1f3c45', sun: '#98aeb0', sunI: 0.55, hemiSky: '#47636a', hemiGnd: '#1d1b16', hemiI: 1.0 },
-  { t: 0.26, top: '#2c5068', hor: '#e2a062', fog: '#a98364', sun: '#f2a85c', sunI: 1.55, hemiSky: '#a69684', hemiGnd: '#5e4634', hemiI: 1.15 },
+  // Night and dusk were lifted (art-direction pass): a cold moon and a blue sky-fill that reach the ground, so the
+  // captain, the sand and the water still read. Still clearly night: dark, cool and desaturated next to the day keys.
+  { t: 0.0, top: '#061624', hor: '#1a4152', fog: '#163746', sun: '#a6c8d8', sunI: 0.9, hemiSky: '#55839a', hemiGnd: '#26332f', hemiI: 1.18 },
+  { t: 0.2, top: '#0a1d30', hor: '#2c4d58', fog: '#26454f', sun: '#a8bec2', sunI: 0.82, hemiSky: '#61808a', hemiGnd: '#2e2b24', hemiI: 1.18 },
+  { t: 0.26, top: '#2c5068', hor: '#e2a062', fog: '#a98364', sun: '#f2a85c', sunI: 1.6, hemiSky: '#ad9c88', hemiGnd: '#6a5040', hemiI: 1.2 },
   { t: 0.33, top: '#3b7a9c', hor: '#d8cfaa', fog: '#b4c0b2', sun: '#f6dca6', sunI: 2.35, hemiSky: '#b4c8c6', hemiGnd: '#80704f', hemiI: 1.35 },
   { t: 0.5, top: '#2b77a2', hor: '#d6d3b8', fog: '#b2c5c0', sun: '#fff0cc', sunI: 2.8, hemiSky: '#b8d0d2', hemiGnd: '#8e7754', hemiI: 1.4 },
   { t: 0.66, top: '#336f8e', hor: '#dfbd80', fog: '#bfad88', sun: '#f3c86c', sunI: 2.15, hemiSky: '#c2bba2', hemiGnd: '#80634a', hemiI: 1.35 },
-  { t: 0.74, top: '#294b60', hor: '#d76a3a', fog: '#995638', sun: '#f08c40', sunI: 1.7, hemiSky: '#b08a72', hemiGnd: '#5e3828', hemiI: 1.15 },
-  { t: 0.8, top: '#0f2232', hor: '#5d3c37', fog: '#392d31', sun: '#a6705c', sunI: 0.75, hemiSky: '#55565c', hemiGnd: '#2b211d', hemiI: 0.95 },
-  { t: 0.88, top: '#05121c', hor: '#173643', fog: '#132f3b', sun: '#8fb6c6', sunI: 0.62, hemiSky: '#365f70', hemiGnd: '#0f1513', hemiI: 0.95 },
-  { t: 1.0, top: '#04111a', hor: '#123342', fog: '#0f2b38', sun: '#8fb6c6', sunI: 0.62, hemiSky: '#365f70', hemiGnd: '#0f1513', hemiI: 0.95 },
+  { t: 0.74, top: '#294b60', hor: '#d76a3a', fog: '#995638', sun: '#f08c40', sunI: 1.75, hemiSky: '#bc937a', hemiGnd: '#6a4030', hemiI: 1.25 },
+  { t: 0.8, top: '#13283a', hor: '#6e4640', fog: '#46343a', sun: '#c08068', sunI: 1.0, hemiSky: '#7a7680', hemiGnd: '#43342c', hemiI: 1.18 },
+  { t: 0.88, top: '#07151f', hor: '#1d4250', fog: '#183846', sun: '#a6c8d8', sunI: 0.88, hemiSky: '#55839a', hemiGnd: '#26332f', hemiI: 1.18 },
+  { t: 1.0, top: '#061624', hor: '#1a4152', fog: '#163746', sun: '#a6c8d8', sunI: 0.9, hemiSky: '#55839a', hemiGnd: '#26332f', hemiI: 1.18 },
 ];
 const STORM = { top: new THREE.Color('#1c272d'), hor: new THREE.Color('#435158'), fog: new THREE.Color('#3c4a50'), hemiSky: new THREE.Color('#74838a') };
 
@@ -137,8 +139,8 @@ export class Atmosphere {
     this.hemiSky.lerp(STORM.hemiSky, st * 0.6);
     this.sunIntensity *= 1 - st * 0.7;
     // a permanent sea haze: the horizon is always a little lost
-    this.fogNear = 165 - st * 115 - this.night * 45;
-    this.fogFar = 900 - st * 560 - this.night * 220;
+    this.fogNear = 165 - st * 115 - this.night * 35;
+    this.fogFar = 900 - st * 560 - this.night * 170;
 
     // lightning
     this.lightning = Math.max(0, this.lightning - dt * 4);

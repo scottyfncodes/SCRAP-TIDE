@@ -1,65 +1,87 @@
-// The helm wheel matches the boat you're sailing (HUD facelift). Each wheel is drawn in the same 150×150 frame so
-// the stick, knob and turning code don't change; only the look does. Palette: docs/brand/SCRAP-TIDE-brand.md.
+// The helm wheel matches the boat you're sailing. It keeps the classic, instantly readable ship's-wheel shape (a rim,
+// spokes running through it and grip handles standing proud of it) but every wheel is rebuilt from salvage, not
+// timber and brass (art-direction pass: Waterworld + Mad Max). All four are drawn in the same 150×150 frame so the
+// stick, knob and turning code don't change; only the look does. Palette: docs/brand/SCRAP-TIDE-brand.md.
 //
-//   dinghy    Patchwork Skiff: scrap steel, mismatched spokes, a welded rust band (the original wheel)
-//   sloop     Scrap Trimaran: a real ship's wheel, honey timber with turned handles and a brass boss
-//   brig      Salt Brig: dark oak, ten spokes, a brass band round the rim
-//   ironwake  Ironwake Expedition Cat: a riveted steel wheel with brass bosses and sea-glass enamel
+//   dinghy    Patchwork Skiff: rusted pipe rim with welded patch bands, mismatched rebar spokes, tape-wrapped grips
+//   sloop     Scrap Trimaran: an oxidised copper pipe rim, steel spokes, rope-whipped grips
+//   brig      Salt Brig: a heavy aluminium rim bolted in sections, ten spokes, rubber grips with hazard-yellow tips
+//   ironwake  Ironwake Expedition Cat: a riveted steel rim with a hazard band, six spokes, sea-glass grip caps
+//
+// The top spoke's grip is painted hazard yellow on every wheel, the way a real helm marks "rudder amidships", so you can
+// see the wheel turn under your thumb.
 import type { VesselId } from '../data/ship';
 
 const C = 75;
+const f = (n: number) => n.toFixed(1);
 const at = (a: number, r: number) => [C + Math.cos(a) * r, C + Math.sin(a) * r] as const;
+const TOP = -Math.PI / 2;
 
-function spokes(n: number, r0: number, r1: number, draw: (i: number, a: number, x0: number, y0: number, x1: number, y1: number) => string) {
+function spokes(n: number, draw: (i: number, a: number) => string) {
   let s = '';
-  for (let i = 0; i < n; i++) {
-    const a = (i / n) * Math.PI * 2 - Math.PI / 2;
-    const [x0, y0] = at(a, r0);
-    const [x1, y1] = at(a, r1);
-    s += draw(i, a, x0, y0, x1, y1);
-  }
+  for (let i = 0; i < n; i++) s += draw(i, (i / n) * Math.PI * 2 + TOP);
   return s;
 }
 
-/** A turned wooden handle (the bit outside the rim you grip). */
-function handle(a: number, r0: number, r1: number, fill: string, dark: string) {
-  const [x0, y0] = at(a, r0);
-  const [x1, y1] = at(a, r1);
-  const [xm, ym] = at(a, (r0 + r1) / 2);
-  return `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${dark}" stroke-width="9" stroke-linecap="round"/>`
-    + `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${fill}" stroke-width="6.5" stroke-linecap="round"/>`
-    + `<circle cx="${xm}" cy="${ym}" r="4.6" fill="${fill}" stroke="${dark}" stroke-width="1.2"/>`;
+/** A spoke from the hub out through the rim (two strokes: dark edge, metal face). */
+function spoke(a: number, r0: number, r1: number, face: string, w: number, edge = '#0d1214') {
+  const [x0, y0] = at(a, r0), [x1, y1] = at(a, r1);
+  const l = `x1="${f(x0)}" y1="${f(y0)}" x2="${f(x1)}" y2="${f(y1)}"`;
+  return `<line ${l} stroke="${edge}" stroke-width="${w + 2.6}"/><line ${l} stroke="${face}" stroke-width="${w}"/>`;
 }
 
-const SKIFF = () => `<svg class="wheel" data-wheel="dinghy" viewBox="0 0 150 150"><circle cx="75" cy="75" r="62" fill="rgba(10,13,14,.35)"/><g fill="none" stroke-linecap="butt">
-${spokes(8, 18, 71, (i, a, x0, y0, x1, y1) => `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${i % 3 ? '#2a5363' : '#7a3a22'}" stroke-width="${i % 2 ? 7 : 9}"/><rect x="${at(a, 68)[0] - 4}" y="${at(a, 68)[1] - 4}" width="8" height="8" fill="#173b4a" transform="rotate(${(a * 180) / Math.PI} ${at(a, 68)[0]} ${at(a, 68)[1]})"/>`)}
-<circle cx="75" cy="75" r="56" stroke-width="13" stroke="#173b4a"/><circle cx="75" cy="75" r="56" stroke-width="13" stroke="#a04d30" stroke-dasharray="18 26 6 40 30 22" opacity=".85"/>
-<circle cx="75" cy="75" r="62.5" stroke-width="1.5" stroke="rgba(217,210,191,.25)"/><circle cx="75" cy="75" r="49.5" stroke-width="1.5" stroke="rgba(0,0,0,.6)"/></g></svg>`;
+/** A grip handle outside the rim: a stub of pipe with a wrapped grip and an end cap. */
+function grip(a: number, r0: number, r1: number, fill: string, wrap: string, cap: string, edge = '#0d1214') {
+  const [x0, y0] = at(a, r0), [x1, y1] = at(a, r1);
+  const [xa, ya] = at(a, r0 + (r1 - r0) * 0.35), [xb, yb] = at(a, r1 - 1.5);
+  const [xc, yc] = at(a, r1);
+  return `<line x1="${f(x0)}" y1="${f(y0)}" x2="${f(x1)}" y2="${f(y1)}" stroke="${edge}" stroke-width="9.5" stroke-linecap="round"/>`
+    + `<line x1="${f(x0)}" y1="${f(y0)}" x2="${f(x1)}" y2="${f(y1)}" stroke="${fill}" stroke-width="6.5" stroke-linecap="round"/>`
+    + `<line x1="${f(xa)}" y1="${f(ya)}" x2="${f(xb)}" y2="${f(yb)}" stroke="${wrap}" stroke-width="6.5" stroke-dasharray="1.6 1.4"/>`
+    + `<circle cx="${f(xc)}" cy="${f(yc)}" r="3.6" fill="${cap}" stroke="${edge}" stroke-width="1.4"/>`;
+}
 
-const TRIMARAN = () => `<svg class="wheel" data-wheel="sloop" viewBox="0 0 150 150"><circle cx="75" cy="75" r="60" fill="rgba(10,13,14,.3)"/>
-${spokes(8, 0, 0, (_i, a) => handle(a, 52, 72, '#c98f4e', '#4a2c14'))}
-<g fill="none">${spokes(8, 14, 52, (_i, _a, x0, y0, x1, y1) => `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#4a2c14" stroke-width="8"/><line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#b07a42" stroke-width="5.5"/>`)}
-<circle cx="75" cy="75" r="50" stroke="#4a2c14" stroke-width="13"/><circle cx="75" cy="75" r="50" stroke="#a8713c" stroke-width="10"/>
-<circle cx="75" cy="75" r="50" stroke="#d6a466" stroke-width="2" stroke-dasharray="14 8" opacity=".55"/>
-<circle cx="75" cy="75" r="55.5" stroke="rgba(236,224,194,.25)" stroke-width="1"/></g>
-<circle cx="75" cy="75" r="17" fill="#8a6a2a" stroke="#4a2c14" stroke-width="2"/></svg>`;
+/** The rim: a pipe ring (dark edge, metal face, a thin highlight). */
+function rim(r: number, w: number, face: string, hi: string, edge = '#0d1214') {
+  return `<circle cx="75" cy="75" r="${r}" stroke="${edge}" stroke-width="${w + 3}"/>`
+    + `<circle cx="75" cy="75" r="${r}" stroke="${face}" stroke-width="${w}"/>`
+    + `<circle cx="75" cy="75" r="${r - w * 0.22}" stroke="${hi}" stroke-width="1.2" opacity=".55"/>`;
+}
 
-const BRIG = () => `<svg class="wheel" data-wheel="brig" viewBox="0 0 150 150"><circle cx="75" cy="75" r="61" fill="rgba(10,13,14,.32)"/>
-${spokes(10, 0, 0, (_i, a) => handle(a, 53, 73, '#7a4a28', '#24140a'))}
-<g fill="none">${spokes(10, 14, 53, (_i, _a, x0, y0, x1, y1) => `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#24140a" stroke-width="7.5"/><line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#6b3e20" stroke-width="5"/>`)}
-<circle cx="75" cy="75" r="51" stroke="#24140a" stroke-width="13"/><circle cx="75" cy="75" r="51" stroke="#5c341b" stroke-width="10"/>
-<circle cx="75" cy="75" r="51" stroke="#e5c65e" stroke-width="3" opacity=".9"/>
-${spokes(10, 0, 0, (_i, a) => `<circle cx="${at(a, 51)[0]}" cy="${at(a, 51)[1]}" r="2.2" fill="#f0d77e"/>`)}</g>
-<circle cx="75" cy="75" r="17" fill="#b0882e" stroke="#24140a" stroke-width="2"/></svg>`;
+/** Hub plate behind the thumb cap. */
+const hub = (fill: string) => `<circle cx="75" cy="75" r="19" fill="${fill}" stroke="#0d1214" stroke-width="2.5"/>`;
 
-const IRONWAKE = () => `<svg class="wheel" data-wheel="ironwake" viewBox="0 0 150 150"><circle cx="75" cy="75" r="62" fill="rgba(10,13,14,.34)"/>
-<g fill="none">${spokes(6, 14, 66, (_i, _a, x0, y0, x1, y1) => `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#0b1418" stroke-width="10"/><line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#7d8a91" stroke-width="6.5"/>`)}
-<circle cx="75" cy="75" r="57" stroke="#0b1418" stroke-width="15"/><circle cx="75" cy="75" r="57" stroke="#5f6e76" stroke-width="12"/>
-<circle cx="75" cy="75" r="57" stroke="#168d9c" stroke-width="4" stroke-dasharray="30 12" opacity=".85"/>
-<circle cx="75" cy="75" r="63.5" stroke="rgba(236,224,194,.3)" stroke-width="1"/>
-${spokes(24, 0, 0, (_i, a) => `<circle cx="${at(a, 57)[0]}" cy="${at(a, 57)[1]}" r="1.4" fill="#c9d2d6"/>`)}
-${spokes(6, 0, 0, (_i, a) => `<circle cx="${at(a, 57)[0]}" cy="${at(a, 57)[1]}" r="5" fill="#d6a62a" stroke="#0b1418" stroke-width="1.5"/>`)}</g>
-<circle cx="75" cy="75" r="18" fill="#2a3a42" stroke="#0b1418" stroke-width="2"/></svg>`;
+const SKIFF = () => `<svg class="wheel" data-wheel="dinghy" viewBox="0 0 150 150"><circle cx="75" cy="75" r="56" fill="rgba(8,18,22,.32)"/>
+${spokes(8, (i, a) => grip(a, 54, 70, '#5f686b', i === 0 ? '#d9b648' : i % 3 ? '#7d3520' : '#24282a', i === 0 ? '#14110a' : '#8a9497'))}
+<g fill="none">${spokes(8, (i, a) => spoke(a, 15, 54, i % 3 ? '#6b5348' : '#5f686b', i % 2 ? 4.2 : 5.4))}
+${rim(51, 8, '#7d3a22', '#c98a64')}
+<circle cx="75" cy="75" r="51" stroke="#5f686b" stroke-width="8" stroke-dasharray="0 34 12 52 9 70 14 200" opacity=".95"/>
+${spokes(8, (_i, a) => `<circle cx="${f(at(a, 51)[0])}" cy="${f(at(a, 51)[1])}" r="3" fill="#4a3a32" stroke="#0d1214" stroke-width="1"/>`)}</g>
+${hub('#3a3230')}</svg>`;
+
+const TRIMARAN = () => `<svg class="wheel" data-wheel="sloop" viewBox="0 0 150 150"><circle cx="75" cy="75" r="56" fill="rgba(8,18,22,.32)"/>
+${spokes(8, (i, a) => grip(a, 54, 71, '#6d7a7c', i === 0 ? '#d9b648' : '#b8a27a', i === 0 ? '#14110a' : '#4a7d70'))}
+<g fill="none">${spokes(8, (_i, a) => spoke(a, 15, 54, '#6d7a7c', 4.8))}
+${rim(51, 9, '#4f8a7a', '#a9d6c4')}
+<circle cx="75" cy="75" r="51" stroke="#a8653a" stroke-width="9" stroke-dasharray="16 30 8 44 22 38" opacity=".55"/>
+${spokes(8, (_i, a) => `<circle cx="${f(at(a, 51)[0])}" cy="${f(at(a, 51)[1])}" r="2.4" fill="#c9cdc8" stroke="#0d1214" stroke-width="1"/>`)}</g>
+${hub('#2e3f3a')}</svg>`;
+
+const BRIG = () => `<svg class="wheel" data-wheel="brig" viewBox="0 0 150 150"><circle cx="75" cy="75" r="57" fill="rgba(8,18,22,.34)"/>
+${spokes(10, (i, a) => grip(a, 55, 72, '#2a2f31', i === 0 ? '#d9b648' : '#1a1d1e', i === 0 ? '#14110a' : '#d9b648'))}
+<g fill="none">${spokes(10, (_i, a) => spoke(a, 15, 55, '#8a9194', 4.4))}
+${rim(52, 10, '#8a9194', '#e3e6e2')}
+${spokes(5, (_i, a) => { const [x0, y0] = at(a - 0.06, 52), [x1, y1] = at(a + 0.06, 52); return `<line x1="${f(x0)}" y1="${f(y0)}" x2="${f(x1)}" y2="${f(y1)}" stroke="#0d1214" stroke-width="12"/>`; }).replace(/<line/g, '<line transform="rotate(18 75 75)"')}
+${spokes(10, (_i, a) => `<circle cx="${f(at(a, 52)[0])}" cy="${f(at(a, 52)[1])}" r="2.2" fill="#e3e6e2" stroke="#0d1214" stroke-width="1"/>`)}</g>
+${hub('#4c5356')}</svg>`;
+
+const IRONWAKE = () => `<svg class="wheel" data-wheel="ironwake" viewBox="0 0 150 150"><circle cx="75" cy="75" r="58" fill="rgba(8,18,22,.34)"/>
+${spokes(6, (i, a) => grip(a, 56, 72, '#55646b', i === 0 ? '#d9b648' : '#2a3236', i === 0 ? '#14110a' : '#168d9c'))}
+<g fill="none">${spokes(6, (_i, a) => spoke(a, 15, 56, '#6b787e', 6.5))}
+${rim(53, 11, '#55646b', '#b9c3c7')}
+<circle cx="75" cy="75" r="53" stroke="#d9b648" stroke-width="5" stroke-dasharray="5 5" opacity=".6" transform="rotate(30 75 75)" pathLength="200" style="stroke-dasharray:0 100 4 3 4 3 4 3 4 3 4 3 4 3 4 3 4 3 4 60"/>
+${spokes(24, (_i, a) => `<circle cx="${f(at(a, 53)[0])}" cy="${f(at(a, 53)[1])}" r="1.3" fill="#c9d2d6"/>`)}</g>
+${hub('#2a3a42')}</svg>`;
 
 const WHEELS: Record<VesselId, () => string> = { dinghy: SKIFF, sloop: TRIMARAN, brig: BRIG, ironwake: IRONWAKE };
 
