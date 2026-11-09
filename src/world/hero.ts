@@ -83,10 +83,11 @@ function withSmoothNormals(g: THREE.BufferGeometry): THREE.BufferGeometry {
     g.computeVertexNormals();
     nrm = g.attributes.normal;
   }
-  const sum = new Map<string, THREE.Vector3>();
-  const keys: string[] = new Array(pos.count);
+  const sum = new Map<number, THREE.Vector3>();
+  const keys: number[] = new Array(pos.count);
   for (let i = 0; i < pos.count; i++) {
-    const k = `${Math.round(pos.getX(i) * 1000)},${Math.round(pos.getY(i) * 1000)},${Math.round(pos.getZ(i) * 1000)}`;
+    // millimetre grid, folded into one number (cheap enough for a whole merged town)
+    const k = (Math.round(pos.getX(i) * 1000) * 73856093) ^ (Math.round(pos.getY(i) * 1000) * 19349663) ^ (Math.round(pos.getZ(i) * 1000) * 83492791);
     keys[i] = k;
     const v = sum.get(k) ?? sum.set(k, new THREE.Vector3()).get(k)!;
     v.x += nrm.getX(i);
@@ -161,4 +162,57 @@ export function updateHeroLight(sunColor: THREE.Color, sunIntensity: number, nig
   if (sunDir && camera) heroSunView.value.copy(sunDir).transformDirection(camera.matrixWorldInverse);
   heroRim.value.lerp(new THREE.Color(0.25, 0.32, 0.45), night * 0.6);
   outlineColor.value.set('#0e2233').multiplyScalar(1 - night * 0.5);
+}
+
+/**
+ * Ink for the world. The boat and crew always had an ink outline and the settlements never did, which is half of why
+ * they looked like different games. World ink is the same navy, but its width follows distance so a silhouette is
+ * about a pixel wide whether it is the next raft or a town across the bay, and it takes the fog, so far things fade
+ * into the haze with their line. `inkScale` (metres of ink per metre of distance) is set from the screen on resize.
+ */
+export const inkScale = { value: 0.0016 };
+let worldInkMat: THREE.MeshBasicMaterial | null = null;
+function worldInkMaterial() {
+  if (worldInkMat) return worldInkMat;
+  const m = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide, fog: true });
+  m.onBeforeCompile = (shader) => {
+    shader.uniforms.uInkScale = inkScale;
+    shader.uniforms.uInk = outlineColor;
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute vec3 oNormal;\nuniform float uInkScale;')
+      .replace(
+        '#include <begin_vertex>',
+        `#include <begin_vertex>
+        {
+          vec3 inkW = (modelMatrix * vec4(transformed, 1.0)).xyz;
+          float inkD = distance(inkW, cameraPosition);
+          // ~1 px at any distance; never a fat cartoon line up close, never lost at range
+          float inkWidth = clamp(inkD * uInkScale, 0.02, 0.45);
+          transformed += normalize(oNormal) * inkWidth / max(length(modelMatrix[0].xyz), 1e-4);
+        }`
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform vec3 uInk;')
+      .replace('vec4 diffuseColor = vec4( diffuse, opacity );', 'vec4 diffuseColor = vec4( uInk * 1.15, opacity );');
+  };
+  m.customProgramCacheKey = () => 'world-ink';
+  worldInkMat = m;
+  return m;
+}
+
+/** Add world ink to static toon meshes under `root` (settlement batches, drowned structures, harbour). */
+export function inkWorld(root: THREE.Object3D) {
+  const meshes: THREE.Mesh[] = [];
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (m.isMesh && !m.userData.glow && !m.userData.heroOutline && !m.userData.inked && (m.material as THREE.MeshToonMaterial).isMeshToonMaterial) meshes.push(m);
+  });
+  for (const m of meshes) {
+    m.userData.inked = true;
+    const o = new THREE.Mesh(withSmoothNormals(m.geometry), worldInkMaterial());
+    o.userData.heroOutline = true;
+    o.castShadow = o.receiveShadow = false;
+    o.frustumCulled = m.frustumCulled;
+    m.add(o);
+  }
 }
