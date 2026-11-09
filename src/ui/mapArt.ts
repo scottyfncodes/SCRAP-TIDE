@@ -1,35 +1,140 @@
-// Hand-drawn parchment treasure maps rendered from the real island heightfield + landmark data,
-// so what you see on the map is exactly what you find on the island.
+// Salvaged survey charts rendered from the real island heightfield + landmark data, so what you see on the chart is
+// exactly what you find on the island (art-direction pass 3: was pirate parchment).
+//
+// The look: an old-world survey sheet that survived the water. Bleached chart paper with a printed grid and coordinate
+// ticks, navy print ink, buff land and blue shallows as on a real nautical chart, fold creases, water rings and strips
+// of tape. Everything the survivors added themselves (the route, the dig mark, pins, raider warnings) is in red grease
+// pencil, the chinagraph every deckhand carries. No parchment, no quill, no ornate rose.
 import { heightAt } from '../world/terrain';
 import { ISLAND_MAP, ISLANDS, WORLD, type TreasureMapDef, type LandmarkType } from '../data/world';
 import { RNG } from '../core/noise';
 
-function parchment(ctx: CanvasRenderingContext2D, w: number, h: number, seed: number) {
+/** Chart palette: printed ink and paper, plus the survivors' grease pencil. */
+const INK = '#1f3038';
+const INK_SOFT = 'rgba(31,48,56,0.78)';
+const GREASE = '#c8412b';
+const GREASE_DK = '#8f2a1c';
+const PAPER = '#e2e3d8';
+const HALO = 'rgba(226,227,216,0.9)';
+const PRINT = "'Barlow Condensed', 'Arial Narrow', sans-serif";
+const MONO = "'Share Tech Mono', ui-monospace, monospace";
+
+/** A grease-pencil stroke: waxy, a little uneven (two offset passes). */
+function grease(ctx: CanvasRenderingContext2D, path: () => void, width = 3, color = GREASE) {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.globalAlpha = 0.85;
+  ctx.lineWidth = width;
+  ctx.beginPath();
+  path();
+  ctx.stroke();
+  ctx.globalAlpha = 0.35;
+  ctx.lineWidth = width * 0.55;
+  ctx.translate(0.8, -0.6);
+  ctx.beginPath();
+  path();
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** Chart paper: bleached stock, fibres, two fold creases, water rings and tape on the corners. */
+function chartPaper(ctx: CanvasRenderingContext2D, w: number, h: number, seed: number) {
   const rng = new RNG(seed);
-  const g = ctx.createRadialGradient(w / 2, h / 2, w * 0.1, w / 2, h / 2, w * 0.75);
-  g.addColorStop(0, '#f5e6c4');
-  g.addColorStop(0.7, '#e8d09f');
-  g.addColorStop(1, '#c9a46a');
+  const g = ctx.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, '#e9eae0');
+  g.addColorStop(1, '#d6d8cb');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, w, h);
-  for (let i = 0; i < 900; i++) {
-    ctx.fillStyle = `rgba(120,80,30,${rng.range(0.02, 0.07)})`;
-    ctx.fillRect(rng.range(0, w), rng.range(0, h), rng.range(1, 3), rng.range(1, 3));
+  for (let i = 0; i < 700; i++) {
+    ctx.fillStyle = `rgba(60,70,70,${rng.range(0.015, 0.05)})`;
+    ctx.fillRect(rng.range(0, w), rng.range(0, h), rng.range(1, 4), 1);
   }
-  for (let i = 0; i < 6; i++) {
-    ctx.fillStyle = `rgba(140,90,40,${rng.range(0.04, 0.08)})`;
+  // fold creases: a light ridge beside a soft shadow
+  for (const [x0, y0, x1, y1] of [[w / 2, 0, w / 2, h], [0, h / 2, w, h / 2]]) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(rng.range(0, w), rng.range(0, h), rng.range(10, 40), 0, Math.PI * 2);
-    ctx.fill();
+    ctx.moveTo(x0 - 1, y0 - 1);
+    ctx.lineTo(x1 - 1, y1 - 1);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(40,50,50,0.12)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x0 + 1, y0 + 1);
+    ctx.lineTo(x1 + 1, y1 + 1);
+    ctx.stroke();
   }
+  // water rings (a mug, a wet bilge)
+  for (let i = 0; i < 2; i++) {
+    const x = rng.range(w * 0.15, w * 0.85), y = rng.range(h * 0.15, h * 0.85), r = rng.range(16, 30);
+    ctx.strokeStyle = `rgba(80,100,105,${rng.range(0.1, 0.16)})`;
+    ctx.lineWidth = rng.range(1.5, 3);
+    ctx.beginPath();
+    ctx.arc(x, y, r, rng.range(0, 1), rng.range(4.8, 6.2));
+    ctx.stroke();
+  }
+  // tape on two corners
+  for (const [x, y, a] of [[18, 10, -0.5], [w - 18, h - 10, -0.5]] as const) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(a);
+    ctx.fillStyle = 'rgba(200,190,150,0.55)';
+    ctx.fillRect(-22, -7, 44, 14);
+    ctx.restore();
+  }
+}
+
+/** A printed grid with coordinate ticks along the frame. `label(i)` names each line (axis 0 = x, 1 = y). */
+function chartGrid(ctx: CanvasRenderingContext2D, w: number, h: number, xs: number[], ys: number[], label: (axis: 0 | 1, i: number) => string) {
+  ctx.save();
+  ctx.strokeStyle = 'rgba(52,104,120,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (const x of xs) {
+    ctx.moveTo(Math.round(x) + 0.5, 0);
+    ctx.lineTo(Math.round(x) + 0.5, h);
+  }
+  for (const y of ys) {
+    ctx.moveTo(0, Math.round(y) + 0.5);
+    ctx.lineTo(w, Math.round(y) + 0.5);
+  }
+  ctx.stroke();
+  ctx.fillStyle = INK_SOFT;
+  ctx.font = `9px ${MONO}`;
+  ctx.textBaseline = 'top';
+  ctx.textAlign = 'center';
+  xs.forEach((x, i) => {
+    if (x < 30 || x > w - 30) return;
+    ctx.fillRect(Math.round(x), 0, 1, 5);
+    ctx.fillText(label(0, i), x, 7);
+  });
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ys.forEach((y, i) => {
+    if (y < 34 || y > h - 30) return;
+    ctx.fillRect(0, Math.round(y), 5, 1);
+    ctx.fillText(label(1, i), 7, y);
+  });
+  ctx.restore();
+}
+
+/** The printed neat line: a heavy outer rule and a thin inner one. */
+function neatLine(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  ctx.strokeStyle = INK;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(1, 1, w - 2, h - 2);
+  ctx.lineWidth = 0.75;
+  ctx.strokeRect(5.5, 5.5, w - 11, h - 11);
 }
 
 function glyph(ctx: CanvasRenderingContext2D, type: LandmarkType, x: number, y: number, s: number) {
   ctx.save();
   ctx.translate(x, y);
-  ctx.strokeStyle = '#4a2e14';
-  ctx.fillStyle = '#4a2e14';
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = INK;
+  ctx.fillStyle = INK;
+  ctx.lineWidth = 1.8;
   ctx.lineCap = 'round';
   const palm = (dx: number, lean: number) => {
     ctx.beginPath();
@@ -159,27 +264,34 @@ function glyph(ctx: CanvasRenderingContext2D, type: LandmarkType, x: number, y: 
   ctx.restore();
 }
 
+/** A printed compass card (degree ring and a plain north arrow), the kind on any survey chart: no ornate rose. */
 function compassRose(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
   ctx.save();
   ctx.translate(x, y);
-  ctx.strokeStyle = '#4a2e14';
-  ctx.fillStyle = '#4a2e14';
-  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = INK;
+  ctx.fillStyle = INK;
+  ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.arc(0, 0, r, 0, Math.PI * 2);
   ctx.stroke();
-  for (let i = 0; i < 4; i++) {
-    ctx.rotate(Math.PI / 2);
-    ctx.beginPath();
-    ctx.moveTo(0, -r * 1.2);
-    ctx.lineTo(r * 0.22, 0);
-    ctx.lineTo(-r * 0.22, 0);
-    ctx.closePath();
-    i === 3 ? ctx.fill() : ctx.stroke();
+  ctx.beginPath();
+  for (let i = 0; i < 36; i++) {
+    const a = (i / 36) * Math.PI * 2, k = i % 9 === 0 ? 0.7 : i % 3 === 0 ? 0.8 : 0.88;
+    ctx.moveTo(Math.sin(a) * r, -Math.cos(a) * r);
+    ctx.lineTo(Math.sin(a) * r * k, -Math.cos(a) * r * k);
   }
-  ctx.font = `bold ${r * 0.7}px Georgia`;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, -r * 0.62);
+  ctx.lineTo(r * 0.2, r * 0.3);
+  ctx.lineTo(0, r * 0.12);
+  ctx.lineTo(-r * 0.2, r * 0.3);
+  ctx.closePath();
+  ctx.fill();
+  ctx.font = `bold ${Math.round(r * 0.8)}px ${PRINT}`;
   ctx.textAlign = 'center';
-  ctx.fillText('N', 0, -r * 1.35);
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('N', 0, -r - 3);
   ctx.restore();
 }
 
@@ -206,7 +318,7 @@ function tornEdge(ctx: CanvasRenderingContext2D, x: number, h: number, seed: num
   ctx.restore();
 }
 
-/** `pxRatio` renders the parchment at a higher resolution (the zoomable panel uses 2) with a finer coastline. */
+/** `pxRatio` renders the survey sheet at a higher resolution (the zoomable panel uses 2) with a finer coastline. */
 export function drawTreasureMap(canvas: HTMLCanvasElement, map: TreasureMapDef, owned: string[], pxRatio = 1) {
   const W = 480, H = 360;
   canvas.width = W * pxRatio;
@@ -214,12 +326,22 @@ export function drawTreasureMap(canvas: HTMLCanvasElement, map: TreasureMapDef, 
   const ctx = canvas.getContext('2d')!;
   ctx.scale(pxRatio, pxRatio);
   ctx.clearRect(0, 0, W, H);
-  parchment(ctx, W, H, map.id.length * 13);
+  chartPaper(ctx, W, H, map.id.length * 13);
   const isl = ISLAND_MAP[map.island];
   const span = isl.r * 1.5;
   const scale = (H * 0.84) / (span * 2);
   const cx = W / 2, cy = H / 2 + 8;
   const toPx = (x: number, z: number) => [cx + (x - isl.x) * scale, cy + (z - isl.z) * scale] as const;
+  // survey grid every 20 m, labelled in metres east / south of the old harbour datum
+  {
+    const step = 20;
+    const wx0 = isl.x + (0 - cx) / scale, wz0 = isl.z + (0 - cy) / scale;
+    const gx: number[] = [], gz: number[] = [], vx: number[] = [], vz: number[] = [];
+    for (let v = Math.ceil(wx0 / step) * step; v < wx0 + W / scale; v += step) (gx.push(cx + (v - isl.x) * scale), vx.push(v));
+    for (let v = Math.ceil(wz0 / step) * step; v < wz0 + H / scale; v += step) (gz.push(cy + (v - isl.z) * scale), vz.push(v));
+    const fmt = (v: number, pos: string, neg: string) => `${Math.abs(Math.round(v))}${v >= 0 ? pos : neg}`;
+    chartGrid(ctx, W, H, gx, gz, (axis, i) => (axis === 0 ? fmt(vx[i], 'E', 'W') : fmt(vz[i], 'S', 'N')));
+  }
   // coastline: one height grid feeds the land shading, the shallows hatching and the ink outline
   const res = pxRatio >= 2 ? 1.5 : 3;
   const gw = Math.ceil(W / res), gh = Math.ceil(H / res);
@@ -231,15 +353,17 @@ export function drawTreasureMap(canvas: HTMLCanvasElement, map: TreasureMapDef, 
       const h = grid[j * gw + i];
       const px = i * res, py = j * res;
       if (h > 0.4) {
-        ctx.fillStyle = h > 4 ? 'rgba(120,140,70,0.35)' : 'rgba(170,140,80,0.28)';
+        // buff land, a shade darker on the high ground (chart convention, not a painted landscape)
+        ctx.fillStyle = h > 4 ? 'rgba(176,158,110,0.55)' : 'rgba(214,196,146,0.6)';
         ctx.fillRect(px, py, res, res);
-      } else if (h > -2.5 && (i + j) % 3 === 0 && (Math.round(px) + Math.round(py)) % 9 < 3) {
-        ctx.fillStyle = 'rgba(60,110,140,0.35)';
-        ctx.fillRect(px, py, 1.5, 1.5);
+      } else if (h > -2.5) {
+        // shoal water: the printed blue tint
+        ctx.fillStyle = 'rgba(96,160,184,0.22)';
+        ctx.fillRect(px, py, res, res);
       }
     }
   }
-  ctx.fillStyle = '#4a2e14';
+  ctx.fillStyle = INK;
   for (let j = 0; j < gh - 1; j++)
     for (let i = 0; i < gw - 1; i++) {
       const a = grid[j * gw + i] > 0.4;
@@ -251,33 +375,45 @@ export function drawTreasureMap(canvas: HTMLCanvasElement, map: TreasureMapDef, 
     const [px, py] = toPx(isl.x + l.x, isl.z + l.z);
     glyph(ctx, l.type, px, py, 1.1);
   }
-  // dotted trail from beach + X
+  // the survivor's marks in grease pencil: the walk in from the beach, and the dig spot (an X, circled)
   const [xx, xy] = toPx(isl.x + map.x, isl.z + map.z);
-  ctx.strokeStyle = '#7a3a1a';
-  ctx.setLineDash([4, 5]);
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(cx - 10, H - 20);
-  ctx.bezierCurveTo(cx + 40, H - 80, xx - 50, xy + 60, xx, xy + 10);
-  ctx.stroke();
+  ctx.setLineDash([7, 6]);
+  grease(ctx, () => {
+    ctx.moveTo(cx - 10, H - 20);
+    ctx.bezierCurveTo(cx + 40, H - 80, xx - 50, xy + 60, xx, xy + 14);
+  }, 2.6);
   ctx.setLineDash([]);
-  ctx.strokeStyle = '#c0392b';
-  ctx.lineWidth = 5;
-  ctx.beginPath();
-  ctx.moveTo(xx - 8, xy - 8);
-  ctx.lineTo(xx + 8, xy + 8);
-  ctx.moveTo(xx + 8, xy - 8);
-  ctx.lineTo(xx - 8, xy + 8);
-  ctx.stroke();
-  compassRose(ctx, W - 40, 50, 16);
-  ctx.fillStyle = '#4a2e14';
-  ctx.font = 'italic bold 18px Georgia';
+  grease(ctx, () => {
+    ctx.moveTo(xx - 7, xy - 7);
+    ctx.lineTo(xx + 7, xy + 7);
+    ctx.moveTo(xx + 7, xy - 7);
+    ctx.lineTo(xx - 7, xy + 7);
+  }, 4);
+  grease(ctx, () => ctx.ellipse(xx + 1, xy, 14, 12, -0.3, 0.3, Math.PI * 2 + 0.1), 2.2);
+  ctx.fillStyle = GREASE_DK;
+  ctx.font = `bold 13px ${PRINT}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = HALO;
+  ctx.strokeText('DIG', xx, xy + 22); // under the ring, clear of the landmarks beside it
+  ctx.fillText('DIG', xx, xy + 22);
   ctx.textAlign = 'left';
-  ctx.fillText(map.name, 16, 28);
-  // vignette border
-  ctx.strokeStyle = 'rgba(90,50,20,0.6)';
-  ctx.lineWidth = 6;
-  ctx.strokeRect(3, 3, W - 6, H - 6);
+  compassRose(ctx, W - 40, 56, 15);
+  // title block, printed: the chart's name and its sheet line
+  ctx.fillStyle = 'rgba(226,227,216,0.92)';
+  ctx.fillRect(10, 10, Math.min(W * 0.6, 260), 40);
+  ctx.strokeStyle = INK;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(10.5, 10.5, Math.min(W * 0.6, 260) - 1, 39);
+  ctx.fillStyle = INK;
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `bold 17px ${PRINT}`;
+  ctx.fillText(map.name.toUpperCase(), 16, 30);
+  ctx.font = `9px ${MONO}`;
+  ctx.fillStyle = INK_SOFT;
+  ctx.fillText(`SURVEY SHEET ${map.island.toUpperCase()} · ${Math.round(isl.x)}${isl.x >= 0 ? 'E' : 'W'} ${Math.abs(Math.round(isl.z))}${isl.z >= 0 ? 'S' : 'N'}`, 16, 43);
+  neatLine(ctx, W, H);
 
   // Missing pieces are torn away.
   if (map.fragments.length === 2) {
@@ -380,15 +516,15 @@ function paintLayer(L: LandLayer, hs: Float32Array) {
       const band = Math.floor(h / 3);
       const contour = land && h > 3 && (Math.floor(at(i + 1, j) / 3) !== band || Math.floor(at(i, j + 1) / 3) !== band);
       let r = 0, g = 0, b = 0, a = 0;
-      if (edge) [r, g, b, a] = [74, 46, 20, 235];
-      else if (contour) [r, g, b, a] = [120, 84, 44, 120];
+      if (edge) [r, g, b, a] = [31, 48, 56, 235];
+      else if (contour) [r, g, b, a] = [96, 104, 92, 110];
       else if (land) {
+        // printed buff, a shade darker on the high ground
         const t = Math.min(1, h / 14);
-        [r, g, b, a] = [205 - t * 45, 182 - t * 52, 132 - t * 50, 200];
+        [r, g, b, a] = [216 - t * 40, 198 - t * 40, 148 - t * 36, 215];
       } else if (h > -1.6) {
-        // shallows: a pale wash with fine hatching
-        const hatch = (i + j) % 5 === 0;
-        [r, g, b, a] = hatch ? [70, 100, 110, 70] : [110, 140, 140, 38];
+        // shoal water: the printed blue tint
+        [r, g, b, a] = [96, 160, 184, 60];
       }
       d[o] = r;
       d[o + 1] = g;
@@ -399,21 +535,22 @@ function paintLayer(L: LandLayer, hs: Float32Array) {
 }
 const clampI = (i: number, n: number) => (i < 0 ? 0 : i >= n ? n - 1 : i);
 
-let parchmentTile: HTMLCanvasElement | null = null;
-function parchmentPattern(ctx: CanvasRenderingContext2D) {
-  if (!parchmentTile) {
-    parchmentTile = document.createElement('canvas');
-    parchmentTile.width = parchmentTile.height = 256;
-    const pc = parchmentTile.getContext('2d')!;
-    pc.fillStyle = '#ead6a8';
+let paperTile: HTMLCanvasElement | null = null;
+/** Chart paper as a repeating tile (bleached stock and fibres) for the zoomable world chart. */
+function paperPattern(ctx: CanvasRenderingContext2D) {
+  if (!paperTile) {
+    paperTile = document.createElement('canvas');
+    paperTile.width = paperTile.height = 256;
+    const pc = paperTile.getContext('2d')!;
+    pc.fillStyle = PAPER;
     pc.fillRect(0, 0, 256, 256);
     const rng = new RNG(7);
-    for (let i = 0; i < 700; i++) {
-      pc.fillStyle = `rgba(120,80,30,${rng.range(0.02, 0.07)})`;
-      pc.fillRect(rng.range(0, 256), rng.range(0, 256), rng.range(1, 3), rng.range(1, 3));
+    for (let i = 0; i < 600; i++) {
+      pc.fillStyle = `rgba(60,70,70,${rng.range(0.015, 0.05)})`;
+      pc.fillRect(rng.range(0, 256), rng.range(0, 256), rng.range(1, 4), 1);
     }
   }
-  return ctx.createPattern(parchmentTile, 'repeat')!;
+  return ctx.createPattern(paperTile, 'repeat')!;
 }
 
 /** a label below its mark at (x, y); with an anchor (ax, ay, r) it may move above, right or left of the mark to fit */
@@ -450,7 +587,7 @@ function drawLabels(ctx: CanvasRenderingContext2D, labels: Label[], W: number, H
     placed.push(r);
     if (l.halo !== false) {
       ctx.lineWidth = 3;
-      ctx.strokeStyle = 'rgba(240,226,190,0.85)';
+      ctx.strokeStyle = HALO;
       ctx.strokeText(l.text, l.x, l.y);
     }
     ctx.fillStyle = l.color;
@@ -464,9 +601,9 @@ function scaleBar(ctx: CanvasRenderingContext2D, x: number, y: number, s: number
   const steps = [10, 20, 50, 100, 200, 500, 1000];
   const m = steps.filter((d) => d * s <= 90).pop() ?? 10;
   const w = m * s;
-  ctx.fillStyle = 'rgba(240,226,190,0.8)';
+  ctx.fillStyle = HALO;
   ctx.fillRect(x - 4, y - 14, w + 8, 20);
-  ctx.strokeStyle = '#4a2e14';
+  ctx.strokeStyle = INK;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(x, y - 4);
@@ -474,10 +611,10 @@ function scaleBar(ctx: CanvasRenderingContext2D, x: number, y: number, s: number
   ctx.lineTo(x + w, y);
   ctx.lineTo(x + w, y - 4);
   ctx.stroke();
-  ctx.fillStyle = '#4a2e14';
-  ctx.font = 'bold 10px Georgia';
+  ctx.fillStyle = INK;
+  ctx.font = `10px ${MONO}`;
   ctx.textAlign = 'center';
-  ctx.fillText(`${m} m`, x + w / 2, y - 4);
+  ctx.fillText(`${m} M`, x + w / 2, y - 4);
 }
 
 /** World chart at any zoom: islands with real coastlines, drowned cities, settlements, salvage beacons, raider waters,
@@ -487,18 +624,31 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
   const s = view.s;
   const P = (x: number, z: number) => [(x - view.x0) * s, (z - view.z0) * s] as const;
   const zk = Math.min(1.6, 0.85 + view.zoom * 0.08); // marks grow a little as you zoom in
-  ctx.fillStyle = parchmentPattern(ctx);
+  ctx.fillStyle = paperPattern(ctx);
   ctx.fillRect(0, 0, W, H);
-  // age stains in world space so they travel with the map
+  // water stains in world space so they travel with the chart: faint rings, not brown age blots
   {
     const rng = new RNG(3);
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 8; i++) {
       const [px, py] = P(rng.range(CHART_BOUNDS.x0, CHART_BOUNDS.x1), rng.range(CHART_BOUNDS.z0, CHART_BOUNDS.z1));
-      ctx.fillStyle = `rgba(140,90,40,${rng.range(0.035, 0.07)})`;
+      const r = rng.range(60, 160) * s;
+      ctx.fillStyle = `rgba(80,100,105,${rng.range(0.025, 0.05)})`;
+      ctx.strokeStyle = `rgba(80,100,105,${rng.range(0.08, 0.14)})`;
+      ctx.lineWidth = Math.max(1, r * 0.04);
       ctx.beginPath();
-      ctx.arc(px, py, rng.range(60, 180) * s, 0, Math.PI * 2);
+      ctx.arc(px, py, r, 0, Math.PI * 2);
       ctx.fill();
+      ctx.stroke();
     }
+  }
+  // the survey grid in world space: lines every 100–500 m (whatever keeps ~60–140 px apart), labelled on the frame
+  {
+    const step = [100, 200, 500].find((d) => d * s >= 60) ?? 500;
+    const xs: number[] = [], ys: number[] = [], vx: number[] = [], vz: number[] = [];
+    for (let v = Math.ceil(view.x0 / step) * step; (v - view.x0) * s < W; v += step) (xs.push((v - view.x0) * s), vx.push(v));
+    for (let v = Math.ceil(view.z0 / step) * step; (v - view.z0) * s < H; v += step) (ys.push((v - view.z0) * s), vz.push(v));
+    const fmt = (v: number, pos: string, neg: string) => (v === 0 ? '0' : `${Math.abs(v)}${v > 0 ? pos : neg}`);
+    chartGrid(ctx, W, H, xs, ys, (axis, i) => (axis === 0 ? fmt(vx[i], 'E', 'W') : fmt(vz[i], 'S', 'N')));
   }
   const labels: Label[] = [];
   // the Stormwall: everything beyond it is shaded
@@ -515,7 +665,7 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
   ctx.beginPath();
   ctx.arc(cx, cy, WORLD.stormRadius * s, 0, Math.PI * 2);
   ctx.stroke();
-  labels.push({ text: '~ THE STORMWALL ~', x: cx, y: cy - WORLD.stormRadius * s + 14, font: 'italic bold 12px Georgia', color: 'rgba(40,50,64,0.95)', pri: 0 });
+  labels.push({ text: 'STORMWALL · NO SAFE PASSAGE', x: cx, y: cy - WORLD.stormRadius * s + 14, font: `bold 12px ${PRINT}`, color: 'rgba(40,50,64,0.95)', pri: 0 });
   if (ex) {
     for (const r of ex.raiders) {
       const [px, py] = P(r.x, r.z);
@@ -528,7 +678,7 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
       ctx.fill();
       ctx.stroke();
       ctx.setLineDash([]);
-      if (view.zoom > 1.6) labels.push({ text: r.name, x: px, y: py + r.r * s - 12, font: 'italic 11px Georgia', color: '#8f2a20', pri: 1 });
+      if (view.zoom > 1.6) labels.push({ text: `⚠ ${r.name.toUpperCase()}`, x: px, y: py + r.r * s - 12, font: `bold 11px ${PRINT}`, color: GREASE_DK, pri: 1 });
     }
   }
   // swell boundary and the reef
@@ -539,7 +689,7 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
   ctx.arc(cx, cy, WORLD.shallowsRadius * s, 0, Math.PI * 2);
   ctx.stroke();
   ctx.setLineDash([]);
-  labels.push({ text: '~ the open swell · the Sunken Reach beyond ~', x: cx, y: cy - WORLD.shallowsRadius * s - 8, font: 'italic 11px Georgia', color: 'rgba(40,70,120,0.85)', pri: 0 });
+  labels.push({ text: 'OPEN SWELL · SUNKEN REACH BEYOND', x: cx, y: cy - WORLD.shallowsRadius * s - 8, font: `11px ${PRINT}`, color: 'rgba(40,70,120,0.85)', pri: 0 });
   const [rx, ry] = P(WORLD.reef.x, WORLD.reef.z);
   ctx.strokeStyle = 'rgba(200,80,60,0.6)';
   ctx.lineWidth = 3;
@@ -562,8 +712,8 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
     if (!L.ready) {
       // coastline still baking (first open only): the island's footprint
       const [ix, iy] = P(isl.x, isl.z);
-      ctx.fillStyle = 'rgba(190,165,110,0.75)';
-      ctx.strokeStyle = '#4a2e14';
+      ctx.fillStyle = 'rgba(216,198,148,0.8)';
+      ctx.strokeStyle = INK;
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.arc(ix, iy, Math.max(3, isl.r * s * 0.8), 0, Math.PI * 2);
@@ -572,7 +722,7 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
     } else if (sz < 7) {
       // too small for a coastline at this zoom: a dot
       const [ix, iy] = P(isl.x, isl.z);
-      ctx.fillStyle = 'rgba(150,130,70,0.7)';
+      ctx.fillStyle = 'rgba(150,134,90,0.8)';
       ctx.beginPath();
       ctx.arc(ix, iy, 3, 0, Math.PI * 2);
       ctx.fill();
@@ -581,7 +731,7 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
     if (isl.id === 'harbor' || settled.has(isl.name)) continue; // the settlement label names it
     const [ix, iy] = P(isl.x, isl.z);
     const ir = Math.max(6, isl.r * s * 0.75);
-    labels.push({ text: known ? isl.name : '???', x: ix, y: iy + ir + 9, font: 'bold 11px Georgia', color: '#4a2e14', pri: 2, ax: ix, ay: iy, r: ir });
+    labels.push({ text: known ? isl.name.toUpperCase() : '???', x: ix, y: iy + ir + 9, font: `bold 11px ${PRINT}`, color: INK, pri: 2, ax: ix, ay: iy, r: ir });
   }
   if (ex) {
     for (const st of ex.structures) {
@@ -596,7 +746,7 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
       if (!ex.flags.includes(`seen_${p.id}`) && p.id !== 'hollow') continue;
       if (settled.has(p.name)) continue; // the settlement marker already names it
       const [px, py] = P(p.x, p.z);
-      labels.push({ text: p.name, x: px, y: py - 14, font: 'italic bold 12px Georgia', color: '#2b3542', pri: 1 });
+      labels.push({ text: p.name.toUpperCase(), x: px, y: py - 14, font: `bold 12px ${PRINT}`, color: '#2b3542', pri: 1 });
     }
     for (const site of ex.sites) {
       const [px, py] = P(site.x, site.z);
@@ -609,10 +759,10 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
       ctx.lineTo(px - r, py);
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = '#4a2e14';
+      ctx.strokeStyle = INK;
       ctx.lineWidth = 1;
       ctx.stroke();
-      if (view.zoom > 2.5) labels.push({ text: site.name, x: px, y: py + r + 9, font: '10px Georgia', color: '#6b4a12', pri: 0.5 });
+      if (view.zoom > 2.5) labels.push({ text: site.name, x: px, y: py + r + 9, font: `10px ${PRINT}`, color: '#6b4a12', pri: 0.5 });
     }
     for (const st of ex.settlements) {
       const [px, py] = P(st.x, st.z);
@@ -624,23 +774,18 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
       ctx.strokeStyle = '#173c37';
       ctx.lineWidth = 2;
       ctx.stroke();
-      labels.push({ text: st.name, x: px, y: py + r + 10, font: 'bold 12px Georgia', color: '#173c37', pri: 3, ax: px, ay: py, r });
+      labels.push({ text: st.name.toUpperCase(), x: px, y: py + r + 10, font: `bold 12px ${PRINT}`, color: '#173c37', pri: 3, ax: px, ay: py, r });
     }
     for (const pin of ex.pins ?? []) {
       const [px, py] = P(pin.x, pin.z);
       const r = 5 * zk;
-      ctx.fillStyle = '#d6a62a';
-      ctx.strokeStyle = '#3a2a0a';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(px, py - r * 2.2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(px, py - r * 2.2, r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      labels.push({ text: `📌 ${pin.name}`, x: px, y: py - r * 3.6 - 4, font: 'bold 11px Georgia', color: '#6e5210', pri: 2 });
+      // a rumour pinned from Old Wren's board, ringed in grease pencil
+      grease(ctx, () => ctx.ellipse(px, py, r * 1.6, r * 1.3, -0.2, 0.2, Math.PI * 2 + 0.1), 2.2);
+      grease(ctx, () => {
+        ctx.moveTo(px - 2, py);
+        ctx.lineTo(px + 2, py);
+      }, 3.5);
+      labels.push({ text: `📌 ${pin.name}`, x: px, y: py - r * 2.4 - 4, font: `bold 11px ${PRINT}`, color: GREASE_DK, pri: 2 });
     }
     for (const c of ex.castaways) {
       const [px, py] = P(c.x, c.z);
@@ -654,16 +799,16 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
     }
   }
   if (target) {
+    // the active dig spot, in grease pencil: an X, circled
     const [tx, ty] = P(target.x, target.z);
     const r = 6 * zk;
-    ctx.strokeStyle = '#c0392b';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(tx - r, ty - r);
-    ctx.lineTo(tx + r, ty + r);
-    ctx.moveTo(tx + r, ty - r);
-    ctx.lineTo(tx - r, ty + r);
-    ctx.stroke();
+    grease(ctx, () => {
+      ctx.moveTo(tx - r, ty - r);
+      ctx.lineTo(tx + r, ty + r);
+      ctx.moveTo(tx + r, ty - r);
+      ctx.lineTo(tx - r, ty + r);
+    }, 3.2);
+    grease(ctx, () => ctx.ellipse(tx, ty, r * 1.9, r * 1.6, -0.3, 0.3, Math.PI * 2 + 0.1), 2);
   }
   // your boat, always on top; labels keep clear of it
   const [bx, by] = P(ship.x, ship.z);
@@ -671,8 +816,8 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
   ctx.save();
   ctx.translate(bx, by);
   ctx.rotate(-ship.heading + Math.PI);
-  ctx.fillStyle = '#c0392b';
-  ctx.strokeStyle = 'rgba(255,240,210,0.9)';
+  ctx.fillStyle = GREASE;
+  ctx.strokeStyle = HALO;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(0, -10);
@@ -687,10 +832,13 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
   scaleBar(ctx, 12, H - 12, s);
   if (ex && view.zoom < 1.5 && W >= 320) {
     ctx.textAlign = 'left';
-    ctx.font = 'bold 10px Georgia';
-    const lg: [string, string][] = [['#e0a20f', 'salvage'], ['#3e8c80', 'settlement'], ['#c8352a', 'raiders / castaway'], ['#2b3542', 'drowned towers']];
-    ctx.fillStyle = 'rgba(240,226,190,0.8)';
+    ctx.font = `bold 10px ${PRINT}`;
+    const lg: [string, string][] = [['#e0a20f', 'SALVAGE'], ['#3e8c80', 'SETTLEMENT'], ['#c8352a', 'RAIDERS / CASTAWAY'], ['#2b3542', 'DROWNED TOWERS']];
+    ctx.fillStyle = HALO;
     ctx.fillRect(8, H - 92, 122, 58);
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(8.5, H - 91.5, 121, 57);
     lg.forEach(([c, t], i) => {
       ctx.fillStyle = c;
       ctx.fillRect(14, H - 86 + i * 13, 8, 8);
@@ -698,8 +846,6 @@ export function paintWorldChart(ctx: CanvasRenderingContext2D, W: number, H: num
       ctx.fillText(t, 26, H - 78 + i * 13);
     });
   }
-  // a worn border
-  ctx.strokeStyle = 'rgba(90,50,20,0.55)';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(2, 2, W - 4, H - 4);
+  // the printed neat line
+  neatLine(ctx, W, H);
 }
