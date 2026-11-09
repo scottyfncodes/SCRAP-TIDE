@@ -1,0 +1,23 @@
+{
+  "base": "http://127.0.0.1:42153/",
+  "scenes": {
+    "helm_skiff-desktop": "ok",
+    "helm_trimaran-desktop": "ok",
+    "helm_brig-desktop": "ok",
+    "helm_ironwake-desktop": "ok",
+    "panel-desktop": "ok",
+    "helm_skiff-phone": "ok",
+    "helm_trimaran-phone": "ok",
+    "helm_brig-phone": "ok",
+    "helm_ironwake-phone": "ok",
+    "panel-phone": "ok"
+  },
+  "console": {
+    "desktop": [],
+    "phone": []
+  },
+  "fps": {
+    "desktop": 0.59,
+    "phone": 2.97
+  }
+}
