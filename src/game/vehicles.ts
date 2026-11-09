@@ -86,7 +86,7 @@ export function vehicleFiles(owned: readonly string[]): string[] {
 
 /** Where the docked runner and stowed balloon ride, in the boat's frame (the Trimaran's floats; alongside elsewhere). */
 export function stowSpots(vessel: string, beam: number) {
-  if (vessel === 'sloop') return { runner: new THREE.Vector3(-5.25, 0.75, -0.39), balloon: new THREE.Vector3(4.375, 1.06, -0.75) };
+  if (vessel === 'sloop') return { runner: new THREE.Vector3(-5.25, 0.15, -0.39), balloon: new THREE.Vector3(4.375, 1.06, -0.75) };
   return { runner: new THREE.Vector3(-(beam + 0.9), 0.05, -0.4), balloon: new THREE.Vector3(beam + 1.0, 0.05, -0.6) };
 }
 
@@ -409,7 +409,7 @@ export class Vehicles {
   // ─────────── per frame ───────────
   /** The camera target and framing while a vehicle is out (null: follow the boat). */
   camera(): { x: number; y: number; z: number; dist: number; pitch: number } | null {
-    if (this.active === 'runner') return { x: this.rx, y: 1 + this.rY * 0.6, z: this.rz, dist: 9.5 * this.g.zoom, pitch: 0.3 };
+    if (this.active === 'runner') return { x: this.rx, y: 0.8 + this.rY * 0.6, z: this.rz, dist: 7 * this.g.zoom, pitch: 0.26 };
     if (this.active === 'balloon') {
       const high = clamp((this.alt - 25) / 60, 0, 1);
       return { x: this.bx, y: this.alt * 0.6, z: this.bz, dist: (22 + high * 200) * this.g.zoom, pitch: 0.45 + high * 0.85 };
