@@ -42,6 +42,10 @@ import { GOALS } from '../data/progress';
 import { windEff, offWind, luffAmount, pointOfSail, bearAwaySide, luffLine, drawingLine, LUFF_WARN_AFTER, LUFF_WARN_COOLDOWN, NO_GO } from './pointOfSail';
 import { WindStreaks } from '../world/windStreaks';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
+import { Wrecks, type Wreck } from './wrecks';
+import { progressJobs, claimJobs, type JobEvent } from './dockJobs';
+import { completedSets, bonusText, TIER_LABEL } from '../data/loot';
+import { clockRate } from './trip';
 import { tripLength, squallLevel, squallDamage, tripLeft, tripPhase, holdValue, keepsOnSink, SQUALL_WARN, type TripPhase } from './trip';
 
 type Mode = 'sail' | 'foot';
@@ -84,6 +88,11 @@ export class Game implements GameAPI {
   drowned!: DrownedWorld;
   salvage!: Salvage;
   raiders!: Raiders;
+  wrecks!: Wrecks;
+  /** Phase 3 sea events hook: a surfacing wreck went under before you hauled it. */
+  onWreckLost?: (w: Wreck) => void;
+  /** Armour plating's one big hit a trip (loop pass Phase 2). */
+  shieldUsed = false;
   engineOn = false;
   private fishTimer = 0;
   private castawayObjs = new Map<string, THREE.Object3D>();
@@ -127,7 +136,7 @@ export class Game implements GameAPI {
   private digsThisVisit = 0;
   private digBusy = 0;
   private crabs: { obj: THREE.Object3D; vx: number; vz: number; life: number }[] = [];
-  private anims: ((dt: number) => boolean)[] = [];
+  anims: ((dt: number) => boolean)[] = [];
   private msgCooldown: Record<string, number> = {};
   private barkRecent: string[] = [];
   private barkAt = -99;
@@ -208,6 +217,7 @@ export class Game implements GameAPI {
     this.sky = new Sky(this.scene, this.atmo);
     this.atmo.onThunder = (d) => setTimeout(() => audio.thunder(1 - d * 0.6), d * 1400);
     this.salvage = new Salvage(this);
+    this.wrecks = new Wrecks(this);
     this.raiders = new Raiders(this);
     this.placeCastaways();
     this.placeSeaMarks();
@@ -437,7 +447,7 @@ export class Game implements GameAPI {
     if (!sold) return;
     // if we sold the last displayed trophy, take it down
     if (s.countOwned(id) === 0) s.data.trophies = s.data.trophies.map((t) => (t === id ? null : t));
-    const gold = item(id).value * sold;
+    const gold = Math.round(item(id).value * sold * s.stats.sellMul); // Salvage Log sets add to every sale
     s.data.gold += gold;
     s.data.stats.goldEarned += gold;
     if (!s.data.flags.includes('sold')) s.data.flags.push('sold');
@@ -589,12 +599,60 @@ export class Game implements GameAPI {
     d.trip = { on: true, t: 0, hauls: 0, startGold: d.gold };
     this.tripSaid = 'calm';
     this.atmo.squall = 0;
+    this.shieldUsed = false;
+    this.wrecks?.onTripStart();
+  }
+  /** Can this boat work the water at a spot (the open swell needs the Trimaran, the Stormwall the Ironwake)? */
+  crossOk(x: number, z: number) {
+    const st = this.store.stats;
+    if (this.atmo.wallAt(x, z) > 0.5) return st.crossStorm;
+    if (swellFactor(x, z) > 0.55) return st.crossSwell;
+    return true;
+  }
+
+  // ───────── dock contracts and the Salvage Log (loop pass Phase 2) ─────────
+  /** Progress the dock board. Finished jobs are paid the next time you dock. */
+  jobEvent(e: JobEvent) {
+    const fin = progressJobs(this.store.data.jobs.board, e);
+    for (const j of fin) {
+      this.ui.toast(`Dock job done! ${j.reward}g waiting at the next dock`, { color: '#d6a62a', life: 3 });
+      audio.perfect();
+    }
+    if (fin.length) this.store.commit();
+  }
+  private claimDockJobs() {
+    const d = this.store.data;
+    const level = d.vesselsOwned.length - 1 + Math.floor(d.upgrades.length / 4);
+    const r = claimJobs(d.jobs.board, d.jobs.seed, d.jobs.serial, level);
+    if (!r.claimed.length) return;
+    d.jobs = { ...d.jobs, board: r.board, serial: r.serial, done: d.jobs.done + r.claimed.length };
+    d.gold += r.paid;
+    d.stats.goldEarned += r.paid;
+    setTimeout(() => {
+      this.ui.stamp(`+${r.paid}g`, `${r.claimed.length} dock job${r.claimed.length > 1 ? 's' : ''} paid · new jobs posted`, '#d6a62a');
+      audio.coins(10);
+    }, 2300);
+  }
+  /** Announce Salvage Log sets completed by a new find (once each). */
+  private checkSets() {
+    const d = this.store.data;
+    for (const set of completedSets((id) => !!d.discoveries[id])) {
+      if (d.setsDone.includes(set.id)) continue;
+      d.setsDone.push(set.id);
+      audio.discover(4);
+      this.crewCheer(400);
+      this.ui.revealInfo('Salvage Log', `Set complete: ${set.name}`, `${set.blurb}<br><br><b>Permanent bonus: ${bonusText(set.bonus)}.</b>`, 'Nice');
+      this.store.commit();
+    }
   }
   /** Dock anywhere: the hold is banked into the vault. Returns what it was worth. */
   private bankHold(where: string) {
     const s = this.store, d = s.data;
     const value = holdValue(d.cargo);
+    const items = d.cargo.map((c) => ({ id: c.id, n: c.n }));
     const n = s.unloadToVault();
+    if (n) this.jobEvent({ kind: 'bank', value, items });
+    this.claimDockJobs();
     const wasOn = d.trip.on;
     d.trip.on = false;
     d.trip.t = 0;
@@ -618,7 +676,7 @@ export class Game implements GameAPI {
       return;
     }
     const L = this.tripLen;
-    if (this.tripClock() && this.mode === 'sail' && !this.ui.panelOpen && !b.busy) d.trip.t += dt;
+    if (this.tripClock() && this.mode === 'sail' && !this.ui.panelOpen && !b.busy) d.trip.t += dt * clockRate(this.atmo.night, this.store.stats.nightOk);
     const lvl = this.tripClock() ? squallLevel(d.trip.t, L) : 0;
     this.atmo.squall = lvl;
     if (lvl > 0 && this.mode === 'sail') this.damage(squallDamage(lvl, d.trip.t, L) * dt, null);
@@ -777,6 +835,7 @@ export class Game implements GameAPI {
     const d = item(id);
     if (d.category !== 'resource' || !s.data.discoveries[id]) {
       const isNew = d.category !== 'resource' ? s.discover(id, where, got) : (s.discover(id, where, got), false);
+      if (isNew) setTimeout(() => this.checkSets(), 1500);
       const mode = opts.reveal ?? 'toast';
       if (isNew && mode === 'card') this.ui.revealItem(id, got, true);
       else if (isNew && mode === 'toast') {
@@ -1362,6 +1421,15 @@ export class Game implements GameAPI {
 
   damage(n: number, msg: string | null) {
     const s = this.store.data, st = this.store.stats;
+    // armour plating shrugs off the first big hit of a trip (a ram, a rock, a rogue wave)
+    if (st.shield && !this.shieldUsed && n >= 8 && this.mode === 'sail') {
+      this.shieldUsed = true;
+      this.kick(0.2);
+      audio.clunk();
+      this.haptic(50);
+      this.say('shield', 'The armour plating took it! (once a trip)', 2, { color: '#9fd0c8' });
+      return;
+    }
     const dmg = n * (1 - st.armor);
     s.hull = Math.max(0, s.hull - dmg);
     if (msg && dmg > 0.5) this.say('dmg', `${msg} −${Math.round(dmg)} hull`, 2, { color: '#ff6b4a' });
@@ -1784,6 +1852,7 @@ export class Game implements GameAPI {
       }
       audio.harpoon();
       this.haptic(grade === 'perfect' ? [30, 30, 70] : 40);
+      this.jobEvent({ kind: 'harpoon' });
       if (raider) return this.raiders.shoot(raider, grade);
       if (!cache || !this.caches.includes(cache)) return;
       this.scene.remove(cache.obj);
@@ -1856,6 +1925,13 @@ export class Game implements GameAPI {
     const range = st.radar || 160;
     const blips: { x: number; z: number; kind: string }[] = [];
     for (const site of SALVAGE_SITES) if (Math.hypot(site.x - px, site.z - pz) < range * 1.4) blips.push({ x: site.x - px, z: site.z - pz, kind: this.salvage.ready(site) ? 'site' : 'site_done' });
+    // drifting wrecks: the Salvage Radar shows Rare and Legendary ones in colour, at full radar range
+    for (const w of this.wrecks.list) {
+      if (w.hauled || w.taken) continue;
+      const d = Math.hypot(w.site.x - px, w.site.z - pz);
+      if (st.radar && w.tier !== 'common') blips.push({ x: w.site.x - px, z: w.site.z - pz, kind: `wreck_${w.tier}` });
+      else if (d < range * 1.2) blips.push({ x: w.site.x - px, z: w.site.z - pz, kind: 'wreck' });
+    }
     for (const st2 of SETTLEMENTS) if (Math.hypot(st2.x - px, st2.z - pz) < range * 1.4) blips.push({ x: st2.x - px, z: st2.z - pz, kind: 'town' });
     // anything still growing shows up green: the one blip every captain turns toward
     for (const f of this.finds) if (f.def.kind === 'plant' && Math.hypot(f.x - px, f.z - pz) < range * 1.2) blips.push({ x: f.x - px, z: f.z - pz, kind: 'plant' });
@@ -2173,6 +2249,7 @@ export class Game implements GameAPI {
     // wind you can see: faint streaks drifting downwind round the boat (fainter at night, stronger in a storm)
     this.windStreaks.update(this.t, pxz.x, pxz.z, WORLD.wind.dir, this.started ? (1 - this.atmo.night * 0.6) * (1 + this.atmo.storm * 0.8) : 0);
     this.salvage.update(dt);
+    if (this.started) this.wrecks.update(dt);
     this.raiders.update(dt);
     for (const c of this.ship.crew) c.mixer.update(dt);
     for (const [id, o] of this.castawayObjs) {

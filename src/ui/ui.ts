@@ -27,6 +27,9 @@ import { wordmarkSVG } from './brand';
 import { wheelSVG } from './helmWheel';
 import { PERFECT_SHARE, pullGrade } from '../game/haul';
 import { clockText } from '../game/trip';
+import { tierOf, tierRank, TIER_COLOR, TIER_LABEL, SETS, SET_MAP, bonusText, type Tier } from '../data/loot';
+import { PLAY_EFFECT } from '../data/ship';
+import { jobText } from '../game/dockJobs';
 
 export interface GameAPI {
   store: Store;
@@ -586,7 +589,7 @@ export class UI {
       }
     }
     const cos = Math.cos(camYaw), sin = Math.sin(camYaw);
-    const col: Record<string, string> = { site: '#e8b83a', site_done: 'rgba(232,184,58,.32)', town: '#9fd0c8', cache: '#d9c8a0', raider: '#ff5a2a', castaway: '#f2ede0', plant: LIVING_GREEN };
+    const col: Record<string, string> = { site: '#e8b83a', site_done: 'rgba(232,184,58,.32)', town: '#9fd0c8', cache: '#d9c8a0', raider: '#ff5a2a', castaway: '#f2ede0', plant: LIVING_GREEN, wreck: '#d9cfb4', wreck_rare: '#4f9ad8', wreck_legendary: '#f0c445', mark: '#ffffff', mark_storm: '#9aa9b4', mark_wave: '#e9fbf6', mark_rival: '#ff7a5c' };
     for (const b of blips) {
       // world → screen: camera forward is up
       const fx = b.x * sin + b.z * cos; // forward component
@@ -599,7 +602,7 @@ export class UI {
       }
       ctx.fillStyle = col[b.kind] ?? '#fff';
       ctx.beginPath();
-      const r = b.kind === 'town' ? 8 : b.kind === 'raider' ? 7 : b.kind === 'plant' ? 5 + Math.sin(performance.now() / 260) * 1.5 : 6;
+      const r = b.kind === 'town' ? 8 : b.kind === 'raider' ? 7 : b.kind === 'wreck_legendary' ? 8 + Math.sin(performance.now() / 200) * 1.5 : b.kind === 'wreck_rare' ? 7 : b.kind === 'plant' ? 5 + Math.sin(performance.now() / 260) * 1.5 : 6;
       if (b.kind === 'raider') {
         ctx.moveTo(R + px * R, R + py * R - r);
         ctx.lineTo(R + px * R + r, R + py * R + r);
@@ -628,7 +631,7 @@ export class UI {
   /** Perfect pulls in the last winch game (read by Salvage after it resolves). */
   lastPerfects = 0;
 
-  openWinch(o: { title: string; sub: string; window: number; speed: number; pulls: number; crane?: boolean }): Promise<number> {
+  openWinch(o: { title: string; sub: string; window: number; speed: number; pulls: number; crane?: boolean; perfectShare?: number }): Promise<number> {
     return new Promise((resolve) => {
       this.panelOpen = true;
       this.lastPerfects = 0;
@@ -644,8 +647,9 @@ export class UI {
       const msg = wrap.querySelector('.w-msg') as HTMLElement;
       const pips = [...wrap.querySelectorAll('.w-pips i')] as HTMLElement[];
       let zx = 0.5, hits = 0, perfects = 0, pull = 0, t = Math.random() * 3, raf = 0, lock = false;
-      perfect.style.width = `${PERFECT_SHARE * 100}%`;
-      perfect.style.left = `${((1 - PERFECT_SHARE) / 2) * 100}%`;
+      const share = Math.min(0.7, PERFECT_SHARE + (o.perfectShare ?? 0));
+      perfect.style.width = `${share * 100}%`;
+      perfect.style.left = `${((1 - share) / 2) * 100}%`;
       const place = () => {
         zx = 0.15 + Math.random() * (0.7 - o.window);
         zone.style.left = `${zx * 100}%`;
@@ -671,7 +675,7 @@ export class UI {
       wrap.querySelector('.w-reel')!.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
         if (lock) return;
-        const grade = pullGrade(pos(), zx, o.window);
+        const grade = pullGrade(pos(), zx, o.window, share);
         const ok = grade !== 'miss';
         pips[pull].classList.add(grade === 'perfect' ? 'perfect' : ok ? 'hit' : 'miss');
         if (ok) hits++;
@@ -817,12 +821,18 @@ export class UI {
     );
   }
 
-  revealChest(title: string, loot: { id: string; n: number }[], sub: string) {
+  revealChest(title: string, loot: { id: string; n: number }[], sub: string, best: Tier = 'common') {
+    // loot pass Phase 2: rarest first; each chip flips in with its tier colour; Rare and Legendary get a stamp
+    const sorted = [...loot].sort((a, b) => tierRank(tierOf(b.id)) - tierRank(tierOf(a.id)));
+    const hi = best === 'rare' || best === 'legendary';
+    const rc = hi ? TIER_COLOR[best] : '#ffd25e';
+    if (hi) setTimeout(() => audio.discover(best === 'legendary' ? 5 : 3), 350);
     this.queueReveal(() =>
-      el(`<div class="reveal"><div class="reveal-card" style="--rc:#ffd25e"><div class="rays"></div>
+      el(`<div class="reveal tier-${best}"><div class="reveal-card" style="--rc:${rc}"><div class="rays"></div>
+        ${hi ? `<div class="tier-stamp" style="--tc:${TIER_COLOR[best]}">${TIER_LABEL[best].toUpperCase()} FIND</div>` : ''}
         <div class="r-kicker">${sub}</div>
         <div class="r-name">${title}</div>
-        <div class="r-loot">${loot.map((l, i) => `<div class="lchip" style="--c:${RARITY_COLOR[item(l.id).rarity]};animation-delay:${0.15 + i * 0.12}s">${iconSVG(l.id, { size: 30 })}${item(l.id).name}${l.n > 1 ? ` ×${l.n}` : ''}</div>`).join('')}</div>
+        <div class="r-loot">${sorted.map((l, i) => { const t = tierOf(l.id); return `<div class="lchip tchip t-${t}" style="--c:${TIER_COLOR[t]};animation-delay:${0.25 + i * 0.16}s">${iconSVG(l.id, { size: 30 })}<span>${item(l.id).name}${l.n > 1 ? ` ×${l.n}` : ''}</span><em>${TIER_LABEL[t]}</em></div>`; }).join('')}</div>
         <button class="btn r-ok" style="min-width:160px">Haul it aboard</button></div></div>`)
     );
   }
@@ -1061,6 +1071,12 @@ export class UI {
     const mine = s.data.contracts.active.map((a) => ({ a, c: CONTRACT_MAP[a.id] })).filter((x) => x.c);
     const here = mine.filter((x) => x.c.port === port);
     const board = boardFor(port, s.data).slice(0, 3);
+    // dock contracts (loop pass Phase 2): three rotating jobs, paid when you dock, refilled straight away
+    html += `<div class="section-title">Dock board <small>${s.data.jobs.done} done · paid on docking</small></div>`;
+    for (const j of s.data.jobs.board) {
+      const prog = j.kind === 'bank' ? `${Math.min(j.progress, j.n)}/${j.n}g` : `${Math.min(j.progress, j.n)}/${j.n}`;
+      html += `<div class="row job dock ${j.done ? 'done-job' : ''}"><div class="r-main"><div class="r-title">${jobText(j, (id) => item(id).name)}</div><div class="jobbar"><i style="width:${Math.min(100, (j.progress / j.n) * 100)}%"></i></div></div><b style="font-size:13px;white-space:nowrap">${j.done ? '✔ ' : ''}${prog} · ${j.reward}g</b></div>`;
+    }
     html += `<div class="section-title">Work board · ${rank.name}${disc < 1 ? ` · ${Math.round((1 - disc) * 100)}% off here` : ''}</div>`;
     for (const { a, c } of here) {
       const ready = contractReady(c, a, s.data, s);
@@ -1241,7 +1257,7 @@ export class UI {
           const afford = s.canAfford(cost);
           const welcome = s.data.flags.includes(`welcome_${u.id}`);
           const where = (u.where ?? ['driftholm']).map((w) => SETTLEMENT_MAP[w]?.name).join(' or ');
-          const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked || !sold ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : !sold ? `<div class="r-sub"><b>Fitted at ${where}</b></div>` : `${welcome ? '<div class="r-sub"><b>Marlo’s welcome price: half the gold</b></div>' : ''}${costHTML(s, cost)}`}</div>
+          const row = el(`<div class="row ${owned ? 'owned' : ''} ${locked || !sold ? 'locked' : ''}"><div class="r-main"><div class="r-title">${u.name}${owned ? ' ✔' : ''}</div><div class="r-sub">${u.desc}</div>${PLAY_EFFECT[u.id] ? `<div class="play-fx">${PLAY_EFFECT[u.id]}</div>` : ''}${owned ? '' : locked ? `<div class="r-sub"><b>Requires ${UPGRADE_MAP[u.requires!].name}</b></div>` : !sold ? `<div class="r-sub"><b>Fitted at ${where}</b></div>` : `${welcome ? '<div class="r-sub"><b>Marlo’s welcome price: half the gold</b></div>' : ''}${costHTML(s, cost)}`}</div>
             ${owned ? '<span class="rar" style="background:#168d9c">Installed</span>' : `<button class="btn" ${!afford || locked || !sold ? 'disabled' : ''}>Install</button>`}</div>`);
           row.querySelector('button')?.addEventListener('click', () => {
             this.game.buyUpgrade(u.id);
@@ -1476,16 +1492,28 @@ export class UI {
     const s = this.store;
     this.game.questEvent('catalog');
     const cats = [...new Set(CATALOG_ITEMS.map((i) => i.category))] as Category[];
-    const { body, tabs } = this.openSheet('Discovery Catalog', `${s.discoveryCount} of ${CATALOG_ITEMS.length} discovered · ${Math.round((s.discoveryCount / CATALOG_ITEMS.length) * 100)}%`);
+    const setsDone = SETS.filter((st) => st.items.every((id) => s.data.discoveries[id])).length;
+    const { body, tabs } = this.openSheet('Salvage Log', `${s.discoveryCount} of ${CATALOG_ITEMS.length} found · ${setsDone}/${SETS.length} sets complete`);
     let tab: string = cat ?? 'all';
     let selected: string | null = null;
     const render = () => {
-      this.setTabs(tabs, [{ id: 'all', label: 'All' }, ...cats.map((c) => ({ id: c, label: CATEGORY_LABEL[c] })), { id: 'milestones', label: '★ Milestones' }], tab, (t) => {
+      this.setTabs(tabs, [{ id: 'all', label: 'All' }, { id: 'sets', label: '⚑ Sets' }, ...cats.map((c) => ({ id: c, label: CATEGORY_LABEL[c] })), { id: 'milestones', label: '★ Milestones' }], tab, (t) => {
         tab = t;
         selected = null;
         render();
       });
       body.innerHTML = '';
+      if (tab === 'sets') {
+        body.append(el(`<div class="note">Find every item in a set for a small bonus that lasts forever. Tiers: ${(['junk', 'common', 'rare', 'legendary'] as Tier[]).map((t) => `<b style="color:${TIER_COLOR[t]}">●</b> ${TIER_LABEL[t]}`).join(' · ')}</div>`));
+        for (const st of SETS) {
+          const got = st.items.filter((id) => s.data.discoveries[id]);
+          const done = got.length === st.items.length;
+          body.append(el(`<div class="set-card ${done ? 'done' : ''}"><div class="s-head"><span class="s-name">${done ? '★ ' : ''}${st.name}</span><span class="s-bonus">${bonusText(st.bonus)}</span></div>
+            <div class="r-sub">${st.blurb}</div><div class="progress" style="margin-top:6px"><div style="width:${(got.length / st.items.length) * 100}%"></div></div>
+            <div class="s-items">${st.items.map((id) => { const d = ITEM_MAP[id]; const have = !!s.data.discoveries[id]; return `<span class="${have ? 'got' : 'miss'}"><b style="color:${TIER_COLOR[tierOf(id)]}">●</b>${have ? d.name : '???'}</span>`; }).join('')}</div></div>`));
+        }
+        return;
+      }
       if (tab === 'milestones') {
         for (const m of MILESTONES) {
           const done = s.data.milestones.includes(m.id);
@@ -1506,7 +1534,7 @@ export class UI {
         const disc = s.data.discoveries[selected];
         const isl = disc ? disc.where : '';
         body.append(el(`<div class="detail" style="--c:${RARITY_COLOR[d.rarity]}"><div class="d-icon">${iconSVG(d.id, { size: 84 })}</div><div style="flex:1"><h3>${d.name}</h3>
-          <span class="rar" style="background:${RARITY_COLOR[d.rarity]}">${RARITY_LABEL[d.rarity]}</span>
+          <span class="rar" style="background:${TIER_COLOR[tierOf(d.id)]};color:#14110d">${TIER_LABEL[tierOf(d.id)]}</span> <span class="rar" style="background:${RARITY_COLOR[d.rarity]}">${RARITY_LABEL[d.rarity]}</span>${SETS.filter((st) => st.items.includes(d.id)).map((st) => ` <span class="rar" style="background:#2b2f36">⚑ ${st.name}</span>`).join('')}
           <p>${d.desc}</p><div class="meta"><span>\u{1F4CD} ${isl}</span><span>\u{1F4C5} ${new Date(disc.first).toLocaleDateString()}</span><span>Found ×${disc.count}</span><span>Owned ×${s.countOwned(d.id)}</span><span>${CATEGORY_LABEL[d.category]}</span><span>Value ${d.value}g</span>${d.displayable ? '<span>✨ Displayable</span>' : ''}</div></div></div>`));
       }
       const groups = tab === 'all' ? cats : [tab as Category];
@@ -1519,7 +1547,7 @@ export class UI {
         for (const d of items) {
           const disc = s.data.discoveries[d.id];
           const isNew = disc && !this.seenCatalog.has(d.id);
-          const cell = el(`<button class="cell ${disc ? '' : 'unknown'} ${isNew ? 'new' : ''} ${disc && d.category === 'living' ? 'living' : ''}" style="--c:${disc ? (d.category === 'living' ? LIVING_GREEN : RARITY_COLOR[d.rarity]) : ''}">${iconSVG(d.id, { silhouette: !disc })}<div class="c-name">${disc ? d.name : '???'}</div>${disc ? `<div class="c-n">×${disc.count}</div>` : ''}</button>`);
+          const cell = el(`<button class="cell ${disc ? '' : 'unknown'} ${isNew ? 'new' : ''} ${disc && d.category === 'living' ? 'living' : ''}" style="--c:${disc ? (d.category === 'living' ? LIVING_GREEN : RARITY_COLOR[d.rarity]) : ''};--tc:${TIER_COLOR[tierOf(d.id)]}"><i class="tier-dot"></i>${iconSVG(d.id, { silhouette: !disc })}<div class="c-name">${disc ? d.name : '???'}</div>${disc ? `<div class="c-n">×${disc.count}</div>` : ''}</button>`);
           cell.addEventListener('click', () => {
             if (!disc) {
               audio.deny();

@@ -646,3 +646,32 @@ body.calm .quest.pulse { animation: none; }
 .stamp span { display: block; margin-top: 6px; font: 700 15px/1.2 var(--label); color: #efe6d2; text-shadow: 0 1px 3px #000; }
 @keyframes stampin { 0% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); } 12% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -60%) scale(1); } }
 @media (max-width: 480px) { .stamp b { font-size: 28px; } .trip { font-size: 11px; gap: 4px; } .harpoon-ring { bottom: calc(250px + env(safe-area-inset-bottom)); } }
+
+/* ── loop pass, Phase 2: loot tiers, Salvage Log, dock board, play effects ── */
+.lchip.tchip { animation-name: tflip; animation-duration: .45s; animation-fill-mode: both; border-left: 4px solid var(--c); }
+.lchip.tchip em { font-style: normal; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--c); margin-left: auto; padding-left: 8px; }
+.lchip.t-junk { opacity: .82; }
+.lchip.t-rare { box-shadow: 0 0 0 1px var(--c), 0 0 12px rgba(79,154,216,.45); }
+.lchip.t-legendary { box-shadow: 0 0 0 1px var(--c), 0 0 16px rgba(240,196,69,.7); }
+@keyframes tflip { 0% { opacity: 0; transform: rotateX(90deg) scale(.9); } 60% { opacity: 1; transform: rotateX(-12deg) scale(1.04); } 100% { opacity: 1; transform: none; } }
+.tier-stamp { position: absolute; top: -14px; left: 50%; transform: translateX(-50%) rotate(-4deg); background: var(--tc); color: #14110d; font-family: var(--display); font-size: 20px; letter-spacing: 2px; padding: 5px 14px; border-radius: 4px; box-shadow: 0 4px 0 rgba(0,0,0,.35); animation: tstamp .5s .15s cubic-bezier(.2,1.6,.4,1) both; z-index: 2; white-space: nowrap; }
+@keyframes tstamp { 0% { opacity: 0; transform: translateX(-50%) rotate(-4deg) scale(2.2); } 100% { opacity: 1; transform: translateX(-50%) rotate(-4deg) scale(1); } }
+.reveal.tier-legendary .reveal-card { animation: tglow 1.6s ease-in-out infinite alternate; }
+@keyframes tglow { from { box-shadow: 0 0 0 2px #f0c445, 0 0 24px rgba(240,196,69,.4); } to { box-shadow: 0 0 0 2px #f0c445, 0 0 48px rgba(240,196,69,.85); } }
+.cell .tier-dot { position: absolute; top: 5px; left: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--tc); box-shadow: 0 0 0 1px rgba(0,0,0,.4); }
+.cell { position: relative; }
+.set-card { border: 1px solid rgba(217,210,191,.25); border-radius: 10px; padding: 10px; margin-bottom: 10px; background: rgba(13,17,19,.2); }
+.set-card.done { border-color: #f0c445; background: rgba(240,196,69,.1); }
+.set-card .s-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.set-card .s-name { font-family: var(--label); font-weight: 800; font-size: 15px; }
+.set-card .s-bonus { font-size: 12px; font-weight: 700; color: #a87400; }
+.set-card .s-items { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.set-card .s-items span { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 3px 6px; border-radius: 6px; background: rgba(13,17,19,.12); }
+.set-card .s-items span.got { background: rgba(240,196,69,.2); font-weight: 700; }
+.set-card .s-items span.miss { opacity: .55; }
+.play-fx { margin-top: 4px; font-size: 12.5px; font-weight: 700; color: #0e6670; }
+.play-fx::before { content: '▶ '; }
+.row.job.dock .r-title::before { content: '⚓ '; }
+.row.job.done-job { border-color: #f0c445; }
+.jobbar { height: 6px; border-radius: 3px; background: rgba(13,17,19,.15); overflow: hidden; margin-top: 6px; }
+.jobbar i { display: block; height: 100%; background: #d6a62a; }

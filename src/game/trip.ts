@@ -11,6 +11,7 @@ import { item } from '../data/items';
 export interface TripStats {
   solar: number; // fuel regen per minute (solar 2.5, turbine 6)
   fuelCap: number;
+  tripBonus?: number; // Salvage Log sets (s)
 }
 
 /** Base trip length, seconds of open water before the squall arrives. */
@@ -26,7 +27,7 @@ export function tripLength(st: TripStats): number {
   if (st.solar >= 6) t += 60; // Deck Wind Turbine (with the array)
   else if (st.solar > 0) t += 20; // Solar Array alone
   if (st.fuelCap > 40) t += 20; // Fuel Drum Rack
-  return t;
+  return t + (st.tripBonus ?? 0);
 }
 
 /** 0 before the squall arrives, then ramps to 1 over SQUALL_RAMP seconds. */
@@ -81,4 +82,9 @@ export function sinkHold(cargo: { id: string; n: number }[]) {
 export function clockText(sec: number): string {
   const s = Math.max(0, Math.ceil(sec));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+/** How fast the trip clock runs: the dark eats it 1.5× faster without deck lights (loop pass Phase 2). */
+export function clockRate(night: number, lights: boolean): number {
+  return lights ? 1 : 1 + 0.5 * Math.max(0, Math.min(1, (night - 0.5) * 2));
 }

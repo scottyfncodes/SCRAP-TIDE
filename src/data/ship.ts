@@ -210,3 +210,29 @@ export const SLOT_LABEL: Record<UpgradeSlot, string> = {
 export const SLOT_ORDER = Object.keys(SLOT_LABEL) as UpgradeSlot[];
 
 export const BASE_FUEL = 40;
+
+/**
+ * What each upgrade changes in play (loop pass Phase 2), shown in the shipwright's list. Every line is wired to a
+ * real effect in Store.stats, game/trip.ts or the game loop; tests/progression.test.ts checks one per upgrade.
+ */
+export const PLAY_EFFECT: Record<string, string> = {
+  sail_canvas: 'Sail speed ×1.4: more sea before the squall',
+  sail_cutter: 'Sail speed ×1.7',
+  engine_outboard: 'Motor at 9 kn, any wind (burns fuel)',
+  engine_twin: 'Motor at 14 kn: outrun raiders and squalls',
+  hull_copper: 'Reef-safe · +20 hull',
+  hull_armor: '45% less damage · shrugs off one ram or rogue wave a trip',
+  cargo_crate: '+4 hold slots',
+  cargo_net: '+8 hold slots in total',
+  tank_drums: '+60 fuel · +20 s before the squall',
+  rudder_ash: 'Turns 45% sharper',
+  compass_brass: 'Needle to your treasure X',
+  radar_mast: 'Radar 420 m · Rare and Legendary wrecks show in colour',
+  salvage_crane: 'Heavy sites · hauls in 2 pulls, not 3',
+  harpoon_turret: 'Harpoon raiders and far caches · salvage from 18 m further',
+  solar_array: '+2.5 fuel/min · +20 s before the squall',
+  deck_turbine: '+6 fuel/min · +60 s before the squall',
+  cabin_container: '+2 crew berths',
+  deck_lights: 'Night trips: without lights the dark runs the squall clock 1.5× faster',
+  fishing_rig: 'Catch Silverfin while under way',
+};

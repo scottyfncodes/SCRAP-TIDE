@@ -434,12 +434,63 @@ const check = (name, ok, detail = '') => {
     await dismiss();
   }
 
+  // ── loop pass Phase 2: wreck tiers and the reveal, the Salvage Log, shop effects, the dock board
+  {
+    if (await page.$('.reveal')) await dismiss();
+    await teleport({ x: 40, z: 100, h: 0 });
+    await g(() => { const G = window.__game; G.tripStart(); if (!G.store.data.upgrades.includes('radar_mast')) G.store.data.upgrades.push('compass_brass', 'radar_mast'); G.rebuildShip(); G.wrecks.spawnAt(48, 104, 'legendary'); window.__wr = G.wrecks.list[G.wrecks.list.length - 1].site.id; });
+    await page.waitForTimeout(800);
+    const radarHas = await g(() => { const G = window.__game; return G.wrecks.list.some((w) => w.tier === 'legendary' && !w.hauled); });
+    const wacts = await actions();
+    check('a Legendary wreck drifts in and offers SALVAGE', radarHas && wacts.some((a) => /SALVAGE LEGENDARY WRECK/.test(a)), wacts.join(' | '));
+    await click(/SALVAGE LEGENDARY/);
+    await page.waitForSelector('.winch', { timeout: 5000 }).catch(() => {});
+    const pulls = await g(() => document.querySelectorAll('.w-pips i').length);
+    for (let i = 0; i < pulls; i++) {
+      await page.waitForFunction(() => { const z = document.querySelector('.w-zone'), n = document.querySelector('.w-needle'); if (!z || !n) return true; const l = parseFloat(z.style.left), w = parseFloat(z.style.width), x = parseFloat(n.style.left); return x > l + w * 0.4 && x < l + w * 0.6; }, null, { timeout: 15000, polling: 16 }).catch(() => {});
+      await page.dispatchEvent('.w-reel', 'pointerdown');
+      await page.waitForTimeout(600);
+    }
+    await page.waitForSelector('.reveal .lchip', { timeout: 8000 }).catch(() => {});
+    const rev = await g(() => ({ chips: [...document.querySelectorAll('.reveal .lchip em')].map((e) => e.textContent), stamp: document.querySelector('.reveal .tier-stamp')?.textContent ?? '', tiers: window.__game.store.data.tiers, gone: window.__game.wrecks.byId(window.__wr)?.hauled }));
+    await page.screenshot({ path: `${out}/loop_loot_reveal.png` });
+    check('hauling it reveals each find with its tier; the wreck is used up', rev.chips.length > 0 && rev.chips.every((c) => /Junk|Common|Rare|Legendary/.test(c)) && rev.gone === true, JSON.stringify(rev));
+    await dismiss();
+    // Salvage Log
+    await g(() => window.__game.ui.openPanel('catalog', 'sets'));
+    await page.waitForTimeout(300);
+    const log = await g(() => ({ title: document.querySelector('.sheet h2')?.textContent, sets: document.querySelectorAll('.set-card').length }));
+    await page.screenshot({ path: `${out}/loop_salvage_log.png` });
+    check('the Salvage Log shows every set with its bonus', /Salvage Log/.test(log.title) && log.sets >= 7, JSON.stringify(log));
+    await g(() => window.__game.ui.closePanel());
+    // shop effect lines
+    const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
+    await g(() => { const d = window.__game.store.data; d.jobs.board[0].progress = d.jobs.board[0].n; d.jobs.board[0].done = true; window.__job = { gold: d.gold, done: d.jobs.done, id: d.jobs.board[0].id }; });
+    await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
+    await page.waitForTimeout(600);
+    await click(/^⚓ DOCK$/);
+    await page.waitForTimeout(1800);
+    await dismiss();
+    const job = await g(() => { const d = window.__game.store.data; return { paid: d.gold > window.__job.gold, done: d.jobs.done, fresh: d.jobs.board[0].id !== window.__job.id, n: d.jobs.board.length }; });
+    check('a finished dock job is paid on docking and a new one is posted', job.paid && job.done === (await g(() => window.__job.done)) + 1 && job.fresh && job.n === 3, JSON.stringify(job));
+    await g(() => window.__game.ui.openPanel('harbor'));
+    await page.waitForTimeout(300);
+    const board = await g(() => document.querySelectorAll('.row.job.dock').length);
+    check('the harbour shows the three dock jobs', board === 3, `${board}`);
+    await g(() => window.__game.ui.openPanel('shipwright'));
+    await page.waitForTimeout(300);
+    const fx = await g(() => document.querySelectorAll('.play-fx').length);
+    await page.screenshot({ path: `${out}/loop_shop_effects.png` });
+    check('the shipwright shows what every upgrade does in play', fx >= 19, `${fx} effect lines`);
+    await g(() => window.__game.ui.closePanel());
+  }
+
   // ── save & reload
   await g(() => { window.__game.persistShip?.(); window.__game.store.saveNow(); });
   await page.reload();
   await page.waitForSelector('.title-screen .act', { timeout: 180000 });
   const after = await g(() => ({ crew: window.__game.store.data.crew, hauls: window.__game.store.data.hauls, v: window.__game.store.data.version, ups: window.__game.store.data.upgrades.length }));
-  check('progress survives a reload (save v6)', after.v === 6 && after.crew.includes('kai') && after.hauls === 1 && after.ups >= 2, JSON.stringify(after));
+  check('progress survives a reload (save v7)', after.v === 7 && after.crew.includes('kai') && after.hauls === 1 && after.ups >= 2, JSON.stringify(after));
 
   check('no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   const fails = results.filter((r) => !r.ok).length;

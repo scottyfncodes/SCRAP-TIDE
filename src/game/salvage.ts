@@ -8,6 +8,7 @@ import { audio } from '../audio/audio';
 import { pack } from '../audio/pack';
 import { haulRolls, perfectBonus } from './haul';
 import { holdValue } from './trip';
+import { tierOf, bestTier } from '../data/loot';
 
 function roll(rng: () => number, list: LootRoll[]) {
   const total = list.reduce((a, b) => a + b.w, 0);
@@ -28,11 +29,11 @@ export class Salvage {
     const b = this.g.boat;
     let best: SalvageSiteDef | null = null;
     let bd = Infinity;
-    for (const s of SALVAGE_SITES) {
+    for (const s of this.all()) {
       // onboarding (loop pass Phase 1): the very first haul hooks from a little further out
       const q = this.g.store.data.quest;
       const assist = s.id === 'sv_stump' && (q === 'leave_dock' || q === 'first_haul') ? 14 : 0;
-      const d = Math.hypot(s.x - b.x, s.z - b.z) - s.r - this.g.ship.beam - 10 - assist;
+      const d = Math.hypot(s.x - b.x, s.z - b.z) - s.r - this.g.ship.beam - 10 - assist - this.g.store.stats.harpoonReach;
       if (d < 0 && d < bd) {
         bd = d;
         best = s;
@@ -41,7 +42,13 @@ export class Salvage {
     return best;
   }
 
+  /** Fixed salvage sites plus this trip's drifting wrecks. */
+  all(): SalvageSiteDef[] {
+    return [...SALVAGE_SITES, ...this.g.wrecks.sites];
+  }
+
   ready(s: SalvageSiteDef) {
+    if (s.id.startsWith('wr_')) return !!this.g.wrecks.byId(s.id) && !this.g.wrecks.byId(s.id)!.hauled;
     const last = this.g.store.data.salvaged[s.id];
     if (!last) return true;
     if (!s.respawn) return false;
@@ -106,21 +113,25 @@ export class Salvage {
     g.engineOn = false;
     audio.winch(true);
     const salvager = g.store.hasRole('salvager');
-    const window = Math.max(0.12, 0.3 - site.difficulty * 0.05 + st.salvage * 0.07 + (salvager ? 0.05 : 0));
+    const window = Math.max(0.12, 0.3 - site.difficulty * 0.05 + st.salvage * 0.07 + (salvager ? 0.05 : 0) + st.windowAdd);
+    const pulls = st.cranePulls;
     g.ui
-      .openWinch({ title: site.name, sub: site.blurb, window, speed: 0.75 + site.difficulty * 0.3, pulls: 3 })
+      .openWinch({ title: site.name, sub: site.blurb, window, speed: 0.75 + site.difficulty * 0.3, pulls, crane: pulls < 3, perfectShare: st.perfectAdd })
       .then((hits) => {
         audio.winch(false);
         g.boat.busy = false;
         if (hits < 0) return; // cancelled
-        this.finish(site, hits, g.ui.lastPerfects);
+        // the crane lifts in two pulls: scale to the three-pull payout (2/2 = 3/3)
+        const k = 3 / pulls;
+        this.finish(site, Math.round(hits * k), Math.round(g.ui.lastPerfects * k));
       });
   }
 
   private finish(site: SalvageSiteDef, hits: number, perfects = 0) {
     const g = this.g;
     const s = g.store;
-    const first = !s.data.firstHauls.includes(site.id);
+    const wreck = site.id.startsWith('wr_');
+    const first = !wreck && !s.data.firstHauls.includes(site.id);
     const salvager = s.hasRole('salvager');
     const rolls = haulRolls(site.rolls, hits, salvager) + perfectBonus(perfects);
     const before = holdValue(s.data.cargo);
@@ -146,10 +157,15 @@ export class Salvage {
     const merged = new Map<string, number>();
     for (const l of loot) merged.set(l.id, (merged.get(l.id) ?? 0) + l.n);
     loot.splice(0, loot.length, ...[...merged].map(([id, n]) => ({ id, n })));
-    s.data.salvaged[site.id] = s.seaNow();
+    if (wreck) g.wrecks.hauled(site.id);
+    else s.data.salvaged[site.id] = s.seaNow();
+    // tiers (loop pass Phase 2): count every find by tier; the best one drives the reveal
+    for (const l of loot) s.data.tiers[tierOf(l.id)] += l.n;
+    const best = bestTier(loot.map((l) => l.id));
     s.data.hauls++;
     s.data.trip.hauls++;
     s.data.loop.perfects += perfects;
+    g.jobEvent({ kind: 'haul', tripHauls: s.data.trip.hauls, perfects, best });
     if (first) s.data.firstHauls.push(site.id);
     if (first && site.fragment && !s.data.fragments.includes(site.fragment)) {
       // a page of the Redfinch Line comes up with the haul
@@ -163,7 +179,7 @@ export class Salvage {
     g.checkMilestones();
     // feedback: the haul breaks the surface (loop pass Phase 1: hit-stop, kick, debris, haptics scale with the haul)
     const worth = holdValue(s.data.cargo) - before;
-    const big = worth >= 60 || perfects >= 2 || (first && !!site.first);
+    const big = worth >= 60 || perfects >= 2 || (first && !!site.first) || best === 'rare' || best === 'legendary';
     const p = new THREE.Vector3(g.boat.x, 0.5, g.boat.z);
     g.foam.emit(p, big ? 46 : 32, '#ffffff', 3, 5, 1.2, 8, 1);
     g.flip.burst('splash', p.clone().setY(1.2), big ? 5.5 : 4.5);
@@ -183,7 +199,12 @@ export class Salvage {
     this.hookAnim = 1;
     const grade = perfects >= 3 ? 'PERFECT HAUL!' : hits === 3 ? 'Clean haul!' : hits === 2 ? 'Good haul' : hits === 1 ? 'Scraped something up' : 'Barely held on';
     if (perfects) g.ui.stamp(perfects >= 3 ? 'PERFECT HAUL!' : `+${perfectBonus(perfects)} BONUS`, `${perfects} perfect pull${perfects > 1 ? 's' : ''}`);
-    if (loot.length) g.ui.revealChest(site.name, loot, `${grade}${overflow ? ` · ${overflow} items didn’t fit in the hold` : ''}`);
+    if (best === 'legendary') {
+      g.hitStop(220);
+      g.kick(0.35);
+      g.haptic([60, 40, 60, 40, 140]);
+    }
+    if (loot.length) g.ui.revealChest(site.name, loot, `${grade}${overflow ? ` · ${overflow} items didn’t fit in the hold` : ''}`, best);
     else g.ui.toast(`${grade} Nothing worth keeping.`);
   }
 

@@ -7,10 +7,12 @@ import { MILESTONES, FIRST_VOYAGE, liveStep, type QuestStepId } from '../data/pr
 import { WORLD } from '../data/world';
 import { seaAdvance } from './seaClock';
 import type { ExperimentId } from './experiments';
+import { setBonuses } from '../data/loot';
+import { dealBoard, type Job } from '../game/dockJobs';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
-export const SAVE_VERSION = 6;
+export const SAVE_VERSION = 7;
 
 export interface Stack {
   id: string;
@@ -79,6 +81,10 @@ export interface SaveData {
   // v6: push-your-luck trips (loop pass, game/trip.ts)
   trip: { on: boolean; t: number; hauls: number; startGold: number };
   loop: { banked: number; bestHold: number; tripsBanked: number; tripsLost: number; perfects: number };
+  // v7: loot and progression (loop pass Phase 2)
+  jobs: { board: Job[]; seed: number; serial: number; done: number };
+  setsDone: string[]; // Salvage Log sets already announced
+  tiers: { junk: number; common: number; rare: number; legendary: number }; // finds hauled, by tier
 }
 
 export function freshSave(): SaveData {
@@ -135,7 +141,16 @@ export function freshSave(): SaveData {
     beats: [],
     trip: { on: false, t: 0, hauls: 0, startGold: 0 },
     loop: { banked: 0, bestHold: 0, tripsBanked: 0, tripsLost: 0, perfects: 0 },
+    jobs: freshJobs(now),
+    setsDone: [],
+    tiers: { junk: 0, common: 0, rare: 0, legendary: 0 },
   };
+}
+
+/** A new dock board: three jobs dealt from a seed. */
+export function freshJobs(seedFrom: number) {
+  const seed = (seedFrom % 100000) + 1;
+  return { board: dealBoard(seed, 0, 0), seed, serial: 3, done: 0 };
 }
 
 function migrate(raw: any): SaveData {
@@ -174,6 +189,12 @@ function migrate(raw: any): SaveData {
     startGold: Number.isFinite(t.startGold) ? t.startGold : merged.gold,
   };
   merged.loop = { ...base.loop, ...(raw.loop ?? {}) };
+  // v7: the dock board, Salvage Log sets and tier counts. Sets an older save already completed are announced quietly
+  // (marked done) so a returning captain is not buried in cards.
+  const j = raw.jobs;
+  merged.jobs = j && Array.isArray(j.board) && j.board.length === 3 && Number.isFinite(j.seed) ? { board: j.board, seed: j.seed, serial: j.serial | 0, done: j.done | 0 } : base.jobs;
+  merged.tiers = { ...base.tiers, ...(raw.tiers ?? {}) };
+  merged.setsDone = Array.isArray(raw.setsDone) ? raw.setsDone.filter((x: unknown) => typeof x === 'string') : [];
   merged.shipName = typeof raw.shipName === 'string' ? raw.shipName.slice(0, 24) : '';
   merged.quest = liveStep(merged.quest); // the First Voyage was shortened: retired steps continue from their successor
   // v5 put the Salt Brig into the Captain's Log before the Ironwake: older saves past that point move up one
@@ -358,10 +379,11 @@ export class Store {
     const sail = b('sail'), storage = b('storage'), steer = b('steering'), eng = b('engine'), hull = b('hull'), nav = b('navigation');
     const power = b('power'), tank = b('tank');
     const crewNav = this.hasRole('navigator') ? 1.1 : 1;
+    const sets = this.setBonus;
     return {
       speed: v.speed * (sail.speedMul ?? 1) * crewNav,
       turn: v.turn * (steer.turnMul ?? 1),
-      cargo: v.cargo + (storage.cargo ?? 0),
+      cargo: v.cargo + (storage.cargo ?? 0) + sets.cargo,
       reef: !!hull.reef || this.data.vessel !== 'dinghy',
       compass: !!nav.compass,
       crossSwell: v.crossSwell,
@@ -370,7 +392,7 @@ export class Store {
       engine: eng.engine ?? 0,
       fuelUse: (eng.fuelUse ?? 0) * (this.hasRole('mechanic') ? (this.data.flags.includes('juno_diesel') ? 0.55 : 0.65) : 1),
       fuelCap: BASE_FUEL + (tank.fuelCap ?? 0),
-      hullMax: v.hull + (hull.hull ?? 0),
+      hullMax: v.hull + (hull.hull ?? 0) + sets.hull,
       armor: hull.armor ?? 0,
       salvage: b('salvage').salvage ?? 0,
       harpoon: (b('defense').harpoon ?? 0) * (this.data.vessel === 'brig' ? 1.3 : 1), // the brig's broadside mounts
@@ -379,7 +401,20 @@ export class Store {
       light: b('lighting').light ?? 0,
       fishing: b('fishing').fishing ?? 0,
       solar: power.solar ?? 0,
+      // loop pass Phase 2: what each upgrade changes in play (see data/ship.ts PLAY_EFFECT)
+      tripBonus: sets.trip,
+      sellMul: 1 + sets.sell / 100,
+      windowAdd: sets.window,
+      perfectAdd: sets.perfect,
+      cranePulls: b('salvage').salvage ? 2 : 3, // the crane lifts in two pulls instead of three
+      harpoonReach: b('defense').harpoon ? 18 : 0, // salvage sites and wrecks reached from further out
+      shield: hull.armor ? 1 : 0, // armour plating shrugs off one big hit a trip (a ram, a rogue wave)
+      nightOk: !!b('lighting').light, // night trips at the normal clock; without lights the dark eats it faster
     };
+  }
+  /** Permanent bonuses from completed Salvage Log sets. */
+  get setBonus() {
+    return setBonuses((id) => !!this.data.discoveries[id]);
   }
   get goal() {
     return GOALS[this.data.goal];
