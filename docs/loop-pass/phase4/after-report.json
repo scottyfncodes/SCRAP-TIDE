@@ -1,0 +1,209 @@
+{
+  "base": "http://127.0.0.1:41973/",
+  "scenes": {
+    "docked-desktop": {
+      "vw": 1280,
+      "vh": 800,
+      "actions": [
+        {
+          "label": "🚤 LAUNCH RUNNER",
+          "x": 1082,
+          "y": 722,
+          "w": 186,
+          "h": 56
+        },
+        {
+          "label": "🎈 GO UP",
+          "x": 1160,
+          "y": 668,
+          "w": 108,
+          "h": 46
+        }
+      ],
+      "hold": [],
+      "stick": [
+        {
+          "label": "STEER",
+          "x": 12,
+          "y": 638,
+          "w": 140,
+          "h": 140
+        }
+      ]
+    },
+    "raider_chase-desktop": {
+      "vw": 1280,
+      "vh": 800,
+      "actions": [
+        {
+          "label": "↩ RETURN",
+          "x": 1144,
+          "y": 722,
+          "w": 124,
+          "h": 56
+        },
+        {
+          "label": "⚡ BOOST",
+          "x": 1160,
+          "y": 668,
+          "w": 108,
+          "h": 46
+        },
+        {
+          "label": "🎯 HARPOON RAIDER",
+          "x": 1101,
+          "y": 614,
+          "w": 167,
+          "h": 46
+        }
+      ],
+      "hold": [],
+      "stick": [
+        {
+          "label": "STEER",
+          "x": 12,
+          "y": 638,
+          "w": 140,
+          "h": 140
+        }
+      ]
+    },
+    "winch_lift-desktop": {
+      "vw": 1280,
+      "vh": 800,
+      "actions": [
+        {
+          "label": "⬇ LAND",
+          "x": 1144,
+          "y": 722,
+          "w": 124,
+          "h": 56
+        }
+      ],
+      "hold": [
+        {
+          "label": "🔥 HOLD TO BURN",
+          "x": 1118,
+          "y": 498,
+          "w": 132,
+          "h": 132
+        }
+      ],
+      "stick": [
+        {
+          "label": "STEER",
+          "x": 12,
+          "y": 638,
+          "w": 140,
+          "h": 140
+        }
+      ]
+    },
+    "docked-phone": {
+      "vw": 393,
+      "vh": 852,
+      "actions": [
+        {
+          "label": "🚤 LAUNCH RUNNER",
+          "x": 242,
+          "y": 776,
+          "w": 139,
+          "h": 54
+        },
+        {
+          "label": "🎈 GO UP",
+          "x": 273,
+          "y": 722,
+          "w": 108,
+          "h": 46
+        }
+      ],
+      "hold": [],
+      "stick": [
+        {
+          "label": "STEER",
+          "x": 100,
+          "y": 696,
+          "w": 134,
+          "h": 134
+        }
+      ]
+    },
+    "raider_chase-phone": {
+      "vw": 393,
+      "vh": 852,
+      "actions": [
+        {
+          "label": "↩ RETURN",
+          "x": 262,
+          "y": 776,
+          "w": 119,
+          "h": 54
+        },
+        {
+          "label": "⚡ BOOST",
+          "x": 273,
+          "y": 722,
+          "w": 108,
+          "h": 46
+        },
+        {
+          "label": "🎯 HARPOON RAIDER",
+          "x": 242,
+          "y": 668,
+          "w": 139,
+          "h": 46
+        }
+      ],
+      "hold": [],
+      "stick": [
+        {
+          "label": "STEER",
+          "x": 100,
+          "y": 696,
+          "w": 134,
+          "h": 134
+        }
+      ]
+    },
+    "winch_lift-phone": {
+      "vw": 393,
+      "vh": 852,
+      "actions": [
+        {
+          "label": "⬇ LAND",
+          "x": 265,
+          "y": 776,
+          "w": 116,
+          "h": 54
+        }
+      ],
+      "hold": [
+        {
+          "label": "🔥 HOLD TO BURN",
+          "x": 247,
+          "y": 570,
+          "w": 132,
+          "h": 132
+        }
+      ],
+      "stick": [
+        {
+          "label": "STEER",
+          "x": 100,
+          "y": 696,
+          "w": 134,
+          "h": 134
+        }
+      ]
+    }
+  },
+  "console": {
+    "desktop": [],
+    "phone": []
+  },
+  "fps": {
+    "desktop": 0.97,
+    "phone": 2.35
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "base": "http://127.0.0.1:33665/",
+  "scenes": {
+    "hud_trip-desktop": {
+      "vw": 1280,
+      "vh": 800,
+      "actions": [],
+      "hold": [],
+      "stick": [
+        {
+          "label": "STEER",
+          "x": 12,
+          "y": 638,
+          "w": 140,
+          "h": 140
+        }
+      ]
+    },
+    "hud_trip-phone": {
+      "vw": 393,
+      "vh": 852,
+      "actions": [],
+      "hold": [],
+      "stick": [
+        {
+          "label": "STEER",
+          "x": 100,
+          "y": 696,
+          "w": 134,
+          "h": 134
+        }
+      ]
+    }
+  },
+  "console": {
+    "desktop": [],
+    "phone": []
+  },
+  "fps": {
+    "desktop": 1.34,
+    "phone": 3
+  }
+}
