@@ -607,8 +607,10 @@ const check = (name, ok, detail = '') => {
     const down = await g(() => ({ active: window.__game.vehicles.active, marks: window.__game.vehicles.marks.length, saved: (window.__game.store.data.trip.marks ?? []).length }));
     check('from the balloon a Legendary wreck is marked (tier shown with radar) and the marks stay after landing', up.active === 'balloon' && up.hold && up.marks.includes('wreck_legendary') && down.active === null && down.marks >= 1 && down.saved >= 1, JSON.stringify({ up, down }));
     // the winch: hook a heavy wreck and fly it home
+    await dismiss();
     await click(/GO UP/);
     await page.waitForTimeout(300);
+    await g(() => { const v = window.__game.vehicles; if (v.active !== 'balloon') v.goUp(); }); // a late card can swallow the tap
     await g(() => { const G = window.__game, v = G.vehicles; v.alt = 20; const w = G.wrecks.spawnAt(v.bx + 3, v.bz + 3, 'rare', { name: 'Heavy Wreck in the Shallows' }); window.__h = G.store.data.hauls; });
     await page.waitForTimeout(600);
     const wa = await actions();
