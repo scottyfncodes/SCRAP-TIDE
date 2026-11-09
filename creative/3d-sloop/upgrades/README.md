@@ -28,6 +28,7 @@ not the part's. Moving parts are child nodes whose origin is their pivot.
 | Rope Cargo Nets | `cargo_net` | [`cargo_nets/`](cargo_nets/) | 3,200 | 14 / 0 / 0 | pass | nets slung over both sides between the outrigger beams, tied off on gunwale cleats | — |
 | Riveted Armour Plating | `hull_armor` | [`armour_plating/`](armour_plating/) | 1,728 | 14 / 0 / 0 | pass | plates above the copper band in a forward and an aft belt, leaving amidships for the nets | — |
 | String Lights & Spotlight | `deck_lights` | [`deck_lights/`](deck_lights/) | 2,728 | 14 / 0 / 0 | pass | bulb strings swagged along both rails (glow at night), spotlight on the roof's forward starboard corner | — |
+| Salvaged Helm (replaces the package's wooden wheel, art pass 3) | `rudder_ash` | [`wheel_rudder/`](wheel_rudder/) | 1,064 | 14 / 0 / 0 | pass | at the steering socket, same footprint and hub as the wheel it replaces; ships as `tb_upg_wheel_rudder.glb` | — |
 
 The Cutter Rig + Jib needs no model: the sloop's own jib is hidden until it is owned, and takes the sail cosmetic.
 

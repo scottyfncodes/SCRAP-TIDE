@@ -68,14 +68,14 @@ child of the sloop's matching `socket_*` node, as the package's composed Turtle 
 | `sail_canvas` | `public/models/tb_upg_canvas_mainsail.glb` | `socket_sail` | 588 | `01c43590a8499f4b` |
 | `cargo_crate` | `public/models/tb_upg_cargo_crates.glb` | `socket_storage` | 492 | `d761b5a7dd6721bd` |
 | `compass_brass` | `public/models/tb_upg_brass_compass.glb` | `socket_navigation` | 698 | `86a7fb600d053994` |
-| `rudder_ash` | `public/models/tb_upg_wheel_rudder.glb` | `socket_steering` | 1,016 | `9f1ec17f5ca1a5db` |
+| `rudder_ash` | `public/models/tb_upg_wheel_rudder.glb` | `socket_steering` | 1,064 | `67b1224ac6a91ee6` (MeshCraft rebuild, art pass 3: [`upgrades/build_wheel_rudder.py`](upgrades/build_wheel_rudder.py)) |
 | `hull_copper` | `public/models/tb_upg_copper_hull.glb` | `socket_hull` | 1,912 | `c4543ce10e37ba96` |
 
 How each is fitted:
 - **Canvas Mainsail.** Replaces the model's base mainsail (its faces aft of the mast and its band are dropped); the jib
   stays. The canvas takes the sail cosmetic's colour, with the cosmetic's second colour as a band at 30–50% of its
   height, where the base sail's stripe sits.
-- **Ship's Wheel & Ash Rudder.** Wheel and pedestal at the helm. With it fitted, the model's tiller is dropped and the
+- **Ship's Wheel & Ash Rudder** (now the **Salvaged Helm**: copper pipe wheel, truck boss, gearbox post and cable drum, rebuilt in MeshCraft in art pass 3). Wheel and pedestal at the helm. With it fitted, the model's tiller is dropped and the
   captain stands to port of the wheel. The rudder blade is the model's own; the old code-built ash rudder is gone.
 - **Copper-Banded Hull.** Mounted as modelled: measured in Blender, the sheathing sits 7–17 mm proud of the sloop's
   planking skin along the hull normal (up to 44 mm at its forward edge), so it shows as built. The copper stays copper;

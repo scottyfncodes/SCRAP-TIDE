@@ -556,6 +556,38 @@ def hat_tricorn(col="#2E2620", goggles=True):
     part("Head", *parts)
 
 
+def hat_salvage_helmet(col="#5E666B", trim="#7A3A1E", flap="#8C7A5C", goggles=True):
+    """The captain's helmet (art-direction pass 2): a dented steel half-shell cut down from a hard hat, a welded ridge,
+    a short peak against glare off the water, welding goggles on the front and a sailcloth neck flap against the sun.
+    Replaces the cocked tricorn: scavenger, not pirate."""
+    cz = 1.63
+    hm = mat(col)
+    dome = kit.sphere("helm", 0.121, (0, 0.006, cz + 0.02), hm, segs=16, rings=10)  # noqa: F821
+    bm_del(dome, lambda v: v.z < cz + 0.022)
+    # dents: a couple of shallow knocks so it reads as salvage, not a new hat
+    deform(dome, lambda v: Vector((v.x, v.y, cz + 0.02 + (v.z - cz - 0.02) * 1.06
+                                   - 0.008 * smoothstep(0.05, 0.0, math.hypot(v.x - 0.06, v.y + 0.04))
+                                   - 0.006 * smoothstep(0.045, 0.0, math.hypot(v.x + 0.05, v.y - 0.06)))))
+    rim = cyl("helmrim", 0.124, 0.024, (0, 0.006, cz + 0.034), mat(_shade(col, 0.75)), n=16)
+    ridge = kit.torus("ridge", 0.122, 0.011, (0, 0.006, cz + 0.02), axis="X", mat=mat(trim), major=16, minor=4)  # noqa: F821
+    bm_del(ridge, lambda v: v.z < cz + 0.04)
+    deform(ridge, lambda v: Vector((v.x, v.y, cz + 0.02 + (v.z - cz - 0.02) * 1.06)))
+    peak = box("peak", (0.17, 0.075, 0.012), (0, -0.13, cz + 0.036), hm, rot=(-0.28, 0, 0), bevel=0.004)
+    parts = [dome, rim, ridge, peak]
+    for a in (-2.2, -1.57, -0.94, 0.6, 2.54):  # rivets round the rim
+        parts.append(cyl("hrivet", 0.008, 0.008, (math.cos(a) * 0.126, 0.006 + math.sin(a) * 0.126, cz + 0.034), mat("#9AA3AD"), axis="Y", n=6))
+    # sailcloth neck flap (a havelock) hanging from the back of the rim
+    parts.append(loft("havelock", [ring(10, 0.124, 0.124, cz + 0.03, cy=0.006, a0=0.35, a1=math.pi - 0.35, closed=False),
+                                   ring(10, 0.132, 0.138, cz - 0.05, cy=0.012, a0=0.3, a1=math.pi - 0.3, closed=False),
+                                   ring(10, 0.122, 0.13, cz - 0.11, cy=0.02, a0=0.3, a1=math.pi - 0.3, closed=False)], mat(flap), closed=False))
+    if goggles:
+        parts.append(tube("hgstrap", (-0.12, 0.0, cz + 0.07), (0.12, 0.0, cz + 0.07), [0.011, 0.011], mat("#1A1612"), n=4))
+        for s_ in (-1, 1):
+            parts.append(cyl("hgog", 0.028, 0.03, (s_ * 0.04, -0.112, cz + 0.078), mat("#3A4148"), axis="Y", n=10))
+            parts.append(cyl("hglens", 0.021, 0.004, (s_ * 0.04, -0.128, cz + 0.078), mat("#2F6F6A"), axis="Y", n=10))
+    part("Head", *parts)
+
+
 def hat_souwester(col="#C9A23A"):
     cz = 1.63
     hm = mat(col)
@@ -756,7 +788,15 @@ def held(kind):
     x = wr.x - 0.075
     z = wr.z
     hm = []
-    if kind == "cutlass":  # a blade cut from a car leaf-spring, rebar guard
+    if kind == "machete":  # art-direction pass 2: a straight leaf-spring machete, taped pipe grip, no pirate guard
+        hm += [tube("grip", (x, 0.06, z), (x, -0.05, z), [0.018, 0.018], mat("#2B2620"), n=6),
+               cyl("ferrule", 0.022, 0.025, (x, -0.06, z), mat("#6B2E14"), axis="Y", n=8),
+               box("blade", (0.012, 0.56, 0.06), (x, -0.35, z + 0.014), mat("#8C949C")),
+               box("spine", (0.014, 0.56, 0.012), (x, -0.35, z + 0.046), mat("#5E666B")),
+               box("bladetip", (0.012, 0.05, 0.075), (x, -0.645, z + 0.02), mat("#8C949C"))]  # squared, cleaver-like
+        for yh in (-0.2, -0.38):  # the spring's bolt holes
+            hm.append(cyl("hole", 0.009, 0.014, (x, yh, z + 0.02), mat("#1A1612"), axis="X", n=6))
+    elif kind == "cutlass":  # a blade cut from a car leaf-spring, rebar guard
         hm += [tube("grip", (x, 0.05, z), (x, -0.04, z), [0.016, 0.016], mat("#3B2A1C"), n=6),
                kit.torus("guard", 0.04, 0.008, (x, -0.045, z), axis="Y", mat=mat("#6B2E14"), major=10, minor=4),  # noqa: F821
                box("blade", (0.012, 0.6, 0.045), (x, -0.35, z + 0.012), mat("#9AA3AD")),
@@ -1058,11 +1098,12 @@ def rig(body, clips):
 
 # ------------------------------------------------------------------ the cast
 CAST = {
-    # the player: patched leather-and-sailcloth duster and tricorn (the pirate), welded scrap on top (the wasteland):
-    # a spiked steel pauldron, tin-can bracers, hubcap knee plates and a respirator hung at the throat
+    # the player: patched leather-and-sailcloth duster under welded scrap: a dented salvage helmet with welding goggles
+    # and a neck flap (art-direction pass 2: was a tricorn), a spiked steel pauldron, tin-can bracers, hubcap knee plates
+    # and a respirator hung at the throat
     "captain": dict(p=dict(frame="m", build=1.0, skin="olive", hair="#2A2018", hairstyle="long", beard="short", beard_color="#3E2E22", age=0.4, shirt="#7A7262", pants="#3E3A30",
                            boots="#2A1F17", scar=True, gloves="#3B2A1C"),
-                    wear=lambda p: (coat(p, length=0.5, col="#5A4430"), bandolier(p), scarf(p, "#7E3524"), hat_tricorn("#2B231C"), pouch_belt(),
+                    wear=lambda p: (coat(p, length=0.5, col="#5A4430"), bandolier(p), scarf(p, "#7E3524"), hat_salvage_helmet(), pouch_belt(),
                                     pauldron("Left", "#6E7680", "#7A3A1E"), spikes("Left"), bracer("Left"), bracer("Right", "#6E7680"),
                                     kneepad("Left"), kneepad("Right", "#7A3A1E"), respirator(hanging=True)),
                     held=None, clips=["Idle", "Walk", "Sit", "Dig", "Cheer", "Interact"]),
@@ -1091,9 +1132,9 @@ CAST = {
                           wear=lambda p: (goggles_forehead("#B8642E"), rope_coil(1), pouch_belt("#3A4148"), pauldron("Right", "#7F8A94", "#3A4148"), spikes("Right"),
                                           tyre_pauldron("Left"), bracer("Left", "#7A3A1E"), bracer("Right"), kneepad("Left"), kneepad("Right"), chain_loop(p)),
                           held="grapple", clips=["Idle", "Walk", "Interact", "Attack", "Cheer"]),
-    "crew_defender": dict(p=dict(frame="f", build=1.02, skin="olive", hair="#2A1A12", hairstyle="mohawk", age=0.3, shirt="#3A3530", pants="#3A3530", eyepatch=1,
+    "crew_defender": dict(p=dict(frame="f", build=1.02, skin="olive", hair="#2A1A12", hairstyle="mohawk", age=0.3, shirt="#3A3530", pants="#3A3530", scar=True,
                                  gloves="#2B1D14"),
-                          wear=lambda p: (pauldron("Left", "#C8352A", "#E9E2CC"), spikes("Left"), chestplate("#8C3A26"), scarf(p, "#2B1D14"), pouch_belt(),
+                          wear=lambda p: (goggles_forehead("#3A4148"), pauldron("Left", "#C8352A", "#E9E2CC"), spikes("Left"), chestplate("#8C3A26"), scarf(p, "#2B1D14"), pouch_belt(),
                                           tyre_pauldron("Right"), bracer("Left", "#6E7680"), bracer("Right"), kneepad("Left", "#C8352A"), kneepad("Right")),
                           held="harpoon", clips=["Idle", "Walk", "Interact", "Attack", "Cheer"]),
     # townsfolk: scavengers too, just less armed
@@ -1107,12 +1148,12 @@ CAST = {
                                 bare_arms=True, gloves="#3B2A1C"),
                          wear=lambda p: (cap_beanie("#33505A"), rope_coil(-1), pouch_belt(), tyre_pauldron("Left"), bracer("Right", "#7A3A1E"), bracer("Left"),
                                          kneepad("Left"), kneepad("Right"), scarf(p, "#5A5648")), held=None, clips=["Idle", "Interact"]),
-    # Rustfang raiders: scrap armour, respirators, mohawks, cutlasses
+    # Rustfang raiders: scrap armour, respirators, mohawks, leaf-spring machetes
     "raider": dict(p=dict(frame="m", build=1.05, skin="pale", hair="#B8352A", hairstyle="mohawk", age=0.3, shirt="#2B2620", pants="#2B2620", gloves="#1A1612", bare_arms=True),
                    wear=lambda p: (pauldron("Left", "#3A4148", "#B8352A"), spikes("Left", 4), pauldron("Right", "#6B2E14", "#3A4148"), spikes("Right", 3, "#6B2E14"),
                                    respirator("#2E2B28"), goggles_eyes("#2E2B28", "#C8352A"), bandolier(p, "#1A1612", "#9AA3AD", side=-1),
                                    bracer("Left", "#3A4148"), bracer("Right", "#6B2E14"), kneepad("Left", "#6B2E14"), kneepad("Right", "#3A4148"), chain_loop(p, "#3A4148")),
-                   held="cutlass", clips=["Idle", "Attack"]),
+                   held="machete", clips=["Idle", "Attack"]),
     # ---- Jury-Rigged (docs/jury-rigged), 5.5 heads via jury_warp. Driftholm: round, layered, lashed. The captain
     # keeps their face, hair, scar and red scarf; the tricorn, bandolier and duster are gone.
     "jury_captain": dict(p=dict(frame="m", build=1.0, skin="olive", hair="#2A2018", hairstyle="long", beard="short", beard_color="#3E2E22", age=0.4,

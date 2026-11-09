@@ -44,8 +44,8 @@ rarest behind the scrap walls of Canopy Rise. Each comes aboard with a green ALI
 **Settlements:** outposts on drum pontoons, trading posts (Rooftop Hollow, Rig Helios), Driftholm's fortified scrap
 atoll with its salvaged propeller and freshwater tower, the raiders' Rustfang Hold, and Canopy Rise, the last garden.
 
-**People:** the captain, crew, townsfolk and Rustfang raiders are rigged apocalyptic-pirate survivors (patched dusters,
-tricorns and goggles, road-sign armour, salvaged blades), with idle, walk, dig, sit, cheer and attack animation
+**People:** the captain, crew, townsfolk and Rustfang raiders are rigged post-apocalyptic scavengers (patched dusters,
+salvage helmets and welding goggles, road-sign armour, salvaged blades), with idle, walk, dig, sit, cheer and attack animation
 (`creative/3d-characters`, `docs/characters-pass/`); the crew on deck cheer after a good haul, an upgrade or a new hand (`docs/gitcraft-pass/`).
 
 **Crew:** six survivors, six roles with real perks: Mechanic, Navigator, Salvager, Fisher, Lookout, Defender.

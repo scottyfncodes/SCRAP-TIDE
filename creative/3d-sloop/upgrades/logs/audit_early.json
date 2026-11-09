@@ -3,7 +3,7 @@
  "parts": [
   {
    "name": "boom",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
    "materials": [
     "GC_Wood_9a5a2e"
    ],
@@ -20,7 +20,7 @@
   },
   {
    "name": "mast",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
    "materials": [
     "GC_Wood_9a5a2e",
     "GC_Wood_5e331b"
@@ -38,7 +38,7 @@
   },
   {
    "name": "jib",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
    "materials": [
     "GC_Cloth_f1e6cc"
    ],
@@ -50,7 +50,7 @@
   },
   {
    "name": "lantern",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
    "materials": [
     "GC_Plain_ff9f2e_e2"
    ],
@@ -64,7 +64,7 @@
   },
   {
    "name": "beams_port",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_sloop_outriggers.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_sloop_outriggers.glb",
    "materials": [
     "GC_Wood_9a5a2e",
     "GC_Wood_5e331b",
@@ -83,7 +83,7 @@
   },
   {
    "name": "beams_starboard",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_sloop_outriggers.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_sloop_outriggers.glb",
    "materials": [
     "GC_Wood_9a5a2e",
     "GC_Wood_5e331b",
@@ -97,7 +97,7 @@
   },
   {
    "name": "crates",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_cargo_crates.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_cargo_crates.glb",
    "transform": {
     "location": [
      0.5,
@@ -108,7 +108,7 @@
   },
   {
    "name": "compass",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_brass_compass.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_brass_compass.glb",
    "transform": {
     "location": [
      0,
@@ -119,7 +119,7 @@
   },
   {
    "name": "wheel",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_wheel_rudder.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_wheel_rudder.glb",
    "transform": {
     "location": [
      0,
@@ -144,53 +144,53 @@
   },
   {
    "name": "turbine",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_deck_turbine.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_deck_turbine.glb"
   },
   {
    "name": "fishing",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_fishing_rig.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_fishing_rig.glb"
   },
   {
    "name": "harpoon",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_harpoon_turret.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_harpoon_turret.glb"
   },
   {
    "name": "crane",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_salvage_crane.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_salvage_crane.glb"
   },
   {
    "name": "drums",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_fuel_drums.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_fuel_drums.glb"
   },
   {
    "name": "nets",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_cargo_nets.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_cargo_nets.glb"
   },
   {
    "name": "armour",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_armour_plating.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_armour_plating.glb"
   },
   {
    "name": "lights",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_deck_lights.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_deck_lights.glb",
    "node": "deck_lights_strings"
   },
   {
    "name": "solar",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_solar_array.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_solar_array.glb"
   },
   {
    "name": "radar",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_radar_mast.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_radar_mast.glb"
   },
   {
    "name": "spotlight",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_deck_lights.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_deck_lights.glb",
    "node": "deck_spotlight"
   },
   {
    "name": "cabin",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
    "materials": [
     "GC_Plank_f2ead8",
     "GC_Plank_5e331b",
@@ -209,7 +209,7 @@
   },
   {
    "name": "base_mainsail",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_coastal_sloop.glb",
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_coastal_sloop.glb",
    "materials": [
     "GC_Cloth_f1e6cc",
     "GC_Cloth_c0392b"
@@ -222,7 +222,7 @@
   },
   {
    "name": "outboard",
-   "file": "/home/user/TIDEBREAKERS/public/models/tb_upg_outboard.glb"
+   "file": "/home/user/SCRAP-TIDE/public/models/tb_upg_outboard.glb"
   }
  ],
  "motion": [
