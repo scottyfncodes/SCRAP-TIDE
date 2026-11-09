@@ -9,6 +9,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 // the ship models ship Meshopt-compressed (EXT_meshopt_compression + KHR_mesh_quantization); the decoder comes with three
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { merge, vcMat, toonGradient, weather, paint } from './materials';
+import { CHARACTER_FORM, FORM_SHADE, FORM_SHADED_CHARACTERS, WORLD_PALETTE, isFormShaded, type FormShadeParams } from './style';
 
 export const MODEL_FILES = [
   'tb_tower_glass',
@@ -217,8 +218,44 @@ export function part(file: string, name: string, inFile = false) {
     (isGlowMaterial(m.material) ? glow : solid).push(geo);
   });
   const out = { geo: solid.length ? merge(solid) : new THREE.BufferGeometry(), glow: glow.length ? merge(glow) : null };
+  if (solid.length && isFormShaded(file, name)) formShade(out.geo);
   partCache.set(key, out);
   return out;
+}
+
+/**
+ * Baked form shading (style.ts FORM_SHADE): ambient occlusion written into the vertex colours once, at load, so a
+ * building or prop is defined by light instead of outlines. Contact darkening toward the piece's base, soft darkening
+ * under overhangs (down-facing faces), a slight sun-bleached lift on top faces, and near-black colours (window holes,
+ * hatches) lifted to a deep warm shadow. Free at runtime: same vertex count, same material, same draw calls.
+ */
+export function formShade(geo: THREE.BufferGeometry, F: FormShadeParams = FORM_SHADE) {
+  const pos = geo.attributes.position;
+  const col = geo.attributes.color as THREE.BufferAttribute | undefined;
+  if (!col || !pos.count) return geo;
+  if (!geo.attributes.normal) geo.computeVertexNormals();
+  const nrm = geo.attributes.normal;
+  geo.computeBoundingBox();
+  const bb = geo.boundingBox!;
+  const span = Math.max(1e-4, (bb.max.y - bb.min.y) * FORM_SHADE.contactHeight);
+  const open = new THREE.Color(WORLD_PALETTE.opening);
+  for (let i = 0; i < pos.count; i++) {
+    const t = THREE.MathUtils.clamp((pos.getY(i) - bb.min.y) / span, 0, 1);
+    let k = F.contactFloor + (1 - F.contactFloor) * t * t * (3 - 2 * t);
+    const ny = nrm.getY(i);
+    k *= ny < 0 ? 1 + (F.underside - 1) * -ny : 1 + (F.topLift - 1) * ny;
+    let r = col.getX(i) * k, g = col.getY(i) * k, b = col.getZ(i) * k;
+    const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    if (lum < F.blackLift) {
+      const w = lum / F.blackLift;
+      r = open.r + (r - open.r) * w;
+      g = open.g + (g - open.g) * w;
+      b = open.b + (b - open.b) * w;
+    }
+    col.setXYZ(i, r, g, b);
+  }
+  col.needsUpdate = true;
+  return geo;
 }
 
 /**
@@ -472,6 +509,7 @@ export function crewModel(role: string) {
   return characterModel(`tb_crew_${role}`);
 }
 
+const formShaded = new WeakSet<THREE.BufferGeometry>();
 export type Character = { root: THREE.Object3D; mixer: THREE.AnimationMixer; actions: Record<string, THREE.AnimationAction> };
 /** Any rigged character GLB: a skeleton-safe clone, the game's toon material, a mixer and one action per clip. */
 export function characterModel(file: string): Character | null {
@@ -479,9 +517,15 @@ export function characterModel(file: string): Character | null {
   if (!g) return null;
   const root = SkeletonUtils.clone(g.scene);
   mergeSkinned(root);
+  const shapeByLight = FORM_SHADED_CHARACTERS.includes(file);
   root.traverse((o) => {
     const m = o as THREE.Mesh;
     if (!m.isMesh) return;
+    // style.ts CHARACTER_FORM, once per geometry (clones share the GLB's geometry unless mergeSkinned rebuilt it)
+    if (shapeByLight && m.geometry.attributes.color && !formShaded.has(m.geometry)) {
+      formShaded.add(m.geometry);
+      formShade(m.geometry, CHARACTER_FORM);
+    }
     const src = m.material as THREE.MeshStandardMaterial;
     let tm = skinMats.get(src);
     if (!tm) {
