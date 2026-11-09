@@ -514,6 +514,7 @@ const check = (name, ok, detail = '') => {
     const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
     const dailyRun = async () => {
       await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
+      await page.waitForTimeout(600); // let the action column refresh
       await click(/^⚓ DOCK$/);
       await page.waitForTimeout(1500);
       await dismiss();
@@ -527,6 +528,7 @@ const check = (name, ok, detail = '') => {
     const active = await g(() => window.__game.store.data.daily.active);
     await g(() => { const G = window.__game; G.store.addCargo('gold_watch', 2); });
     await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
+    await page.waitForTimeout(600);
     await click(/^⚓ DOCK$/);
     await page.waitForSelector('.daily-end', { timeout: 60000 }).catch(() => {});
     const end = await g(() => ({ card: !!document.querySelector('.daily-end'), share: document.querySelector('.daily-end .d-share')?.textContent ?? '', streak: window.__game.store.data.daily.streak, best: window.__game.store.data.daily.best }));
