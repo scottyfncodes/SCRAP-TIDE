@@ -1,0 +1,19 @@
+{
+  "base": "http://127.0.0.1:37021/",
+  "scenes": {
+    "rogue_wave-desktop": "ok",
+    "rival-desktop": "ok",
+    "daily_end-desktop": "ok",
+    "rogue_wave-phone": "ok",
+    "rival-phone": "ok",
+    "daily_end-phone": "ok"
+  },
+  "console": {
+    "desktop": [],
+    "phone": []
+  },
+  "fps": {
+    "desktop": 1.31,
+    "phone": 2.35
+  }
+}
