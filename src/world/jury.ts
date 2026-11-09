@@ -146,14 +146,17 @@ export function jawboat(seed = 1) {
     const a = (i / 20) * Math.PI * 2;
     k.box(0.06, 0.24, 0.13, [0, fy + Math.cos(a) * (R + 0.07), fz + Math.sin(a) * (R + 0.07)], RUSTFANG.steel, [a + 0.5, 0, 0]);
   }
-  k.beam([0, 0.55, 2.4], [0, fy, fz], 0.16, RUSTFANG.plate[2]);
-  k.beam([0, -0.3, 2.6], [0, fy, fz], 0.14, RUSTFANG.plate[4]);
-  // the jaw: rebar teeth along both bow gunwales, raked forward
-  for (const s of [-1, 1])
-    for (let i = 0; i < 4; i++) {
-      const z = 1.0 + i * 0.5, half = 1.25 * (1 - Math.max(0, (z / 7 + 0.5 - 0.55) / 0.45) ** 1.4 * 0.92);
-      k.cyl(0.0, 0.07, 0.5 - i * 0.05, [s * half, 0.82, z + 0.12], RUSTFANG.steel, [1.05, 0, -s * 0.5], 5);
-    }
+  // the jaw: a welded upper jaw raking forward over the blade, teeth down, so the bow reads as an open mouth with the
+  // saw for a tongue (this, not a row of rebar spikes, is what has to survive at 40 px). One strut carries the hub.
+  const j0 = new THREE.Vector3(0, 0.85, 1.9), j1 = new THREE.Vector3(0, 1.75, 4.3);
+  const jl = j0.distanceTo(j1), ja = Math.atan2(j1.y - j0.y, j1.z - j0.z);
+  k.box(0.95, 0.16, jl, [0, (j0.y + j1.y) / 2, (j0.z + j1.z) / 2], RUSTFANG.plate[2], [-ja, 0, 0]);
+  k.box(0.7, 0.1, jl * 0.8, [0, (j0.y + j1.y) / 2 + 0.12, (j0.z + j1.z) / 2 + 0.1], RUSTFANG.plate[4], [-ja, 0, 0]); // the doubler weld plate
+  for (let i = 0; i < 5; i++) {
+    const t = 0.35 + i * 0.15, z = j0.z + (j1.z - j0.z) * t, y = j0.y + (j1.y - j0.y) * t;
+    k.cyl(0.0, 0.08, 0.34, [0, y - 0.24, z], RUSTFANG.steel, [Math.PI, 0, 0], 5);
+  }
+  k.beam([0, fy, fz], [0, j0.y + (j1.y - j0.y) * ((fz - j0.z) / (j1.z - j0.z)), fz], 0.15, RUSTFANG.plate[2]);
   // road-sign shields bolted on the flanks: a red-bordered warning triangle is still a warning triangle
   for (const [s, z] of [[1, 0.2], [1, -1.2], [-1, -0.4]] as const) {
     k.cyl(0.46, 0.46, 0.03, [s * 1.33, 0.45, z], ACC.buoyRed, [Math.PI / 2, 0, s * Math.PI / 2 + Math.PI / 2], 3);
@@ -169,12 +172,13 @@ export function jawboat(seed = 1) {
   k.box(0.95, 0.2, 1.0, [0, 1.62, -3.82], RUSTFANG.navy, [0.12, 0, 0]);
   k.box(0.22, 1.4, 0.3, [0, -0.1, -3.95], RUSTFANG.plate[2]);
   k.cyl(0.32, 0.32, 0.08, [0, -0.7, -4.05], RUSTFANG.steel, [Math.PI / 2, 0, 0], 3);
-  // exhaust stacks: four pipes of different heights to starboard aft, raked back, sooted at the top
+  // exhaust stacks: four pipes of different heights clustered on the transom beside the outboard, raked hard back
+  // (the hot-rod place for them: they read as speed, and they keep the boat's mass low and to the stern)
   for (let i = 0; i < 4; i++) {
-    const hgt = 1.6 + ((i * 5 + seed) % 4) * 0.35;
-    const x = 0.72 + (i % 2) * 0.22, z = -2.2 - i * 0.28;
-    k.cyl(0.09, 0.11, hgt, [x, 0.55 + hgt / 2, z], RUSTFANG.plate[(i + seed) % 5], [-0.22, 0, -0.08], 8);
-    k.cyl(0.12, 0.1, 0.18, [x, 0.55 + hgt, z - hgt * 0.22], RUSTFANG.soot, [-0.22, 0, -0.08], 8);
+    const hgt = 1.5 + ((i * 5 + seed) % 4) * 0.3;
+    const x = 0.62 + (i % 2) * 0.2, z = -3.0 - (i >> 1) * 0.22;
+    k.cyl(0.09, 0.11, hgt, [x, 0.55 + hgt / 2 * Math.cos(0.5), z - (hgt / 2) * Math.sin(0.5)], RUSTFANG.plate[(i + seed) % 5], [-0.5, 0, -0.06], 8);
+    k.cyl(0.12, 0.1, 0.18, [x, 0.55 + hgt * Math.cos(0.5), z - hgt * Math.sin(0.5)], RUSTFANG.soot, [-0.5, 0, -0.06], 8);
   }
   // a cage outrigger to port only: rebar box round a float drum (asymmetric on purpose)
   {
@@ -186,11 +190,12 @@ export function jawboat(seed = 1) {
     k.beam([ox + 0.4, 0.5, 0.6], [-1.2, 0.6, 0.6], 0.1, RUSTFANG.plate[3]);
     k.beam([ox + 0.4, 0.5, -0.8], [-1.2, 0.6, -0.8], 0.1, RUSTFANG.plate[3]);
   }
-  // the trophy rack: other crews' nameplates on a pole, and the Rustfang rag on a whip aerial above them
-  k.beam([-0.8, 0.55, -2.9], [-0.95, 3.4, -3.2], 0.07, RUSTFANG.steel);
+  // the trophy rack: other crews' nameplates on a short post, the Rustfang rag knotted to its top. No tall whip: a
+  // Rustfang boat sits low, long and heavy on the water, the opposite of a sailing skiff's tall triangle.
+  k.beam([-0.8, 0.55, -2.9], [-0.9, 2.3, -3.1], 0.08, RUSTFANG.steel);
   const plates = [ACC.bleachWhite, ACC.poolBlue, '#ddd2b4'];
-  plates.forEach((c, i) => k.box(0.62, 0.17, 0.04, [-0.86 - i * 0.01, 1.3 + i * 0.32, -3.0 - i * 0.03], c, [0, 0.4, (i - 1) * 0.12]));
-  k.add(new THREE.PlaneGeometry(0.9, 0.5), ACC.buoyRed, [-1.35, 3.12, -3.3], [0, -0.3, -0.12]);
+  plates.forEach((c, i) => k.box(0.62, 0.17, 0.04, [-0.86 - i * 0.01, 1.15 + i * 0.3, -3.0 - i * 0.03], c, [0, 0.4, (i - 1) * 0.12]));
+  k.add(new THREE.PlaneGeometry(0.85, 0.45), ACC.buoyRed, [-1.3, 2.1, -3.25], [0, -0.3, -0.12]);
   const geo = merge(k.geos);
   const root = new THREE.Group();
   const mesh = new THREE.Mesh(geo, vcMat({ accent: true, side: THREE.DoubleSide }));

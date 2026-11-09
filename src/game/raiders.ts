@@ -12,6 +12,24 @@ import { jury } from '../state/look';
 import { jawboat, JAWBOAT_CREW, TOLL } from '../world/jury';
 
 /** The patrolled waters: with ?look=jury, also the Rustfang Toll outside Driftholm (docs/jury-rigged). */
+/**
+ * Characters are built with culling off (assets.ts: a skinned mesh's bounds don't follow its animation), so every
+ * raider crew member in a spawned patrol is drawn even when its boat is behind the camera or far off-screen. On a look
+ * visit (docs/jury-rigged) each crew mesh gets its own bounding sphere instead, computed in the bind pose and padded
+ * for the widest swing (the glaive), so off-screen crews cost no draw calls and on-screen ones never pop.
+ */
+const CREW_SWING = 0.9;
+function cullable(root: THREE.Object3D) {
+  root.updateMatrixWorld(true);
+  root.traverse((o) => {
+    const m = o as THREE.SkinnedMesh;
+    if (!m.isSkinnedMesh) return;
+    m.computeBoundingSphere(); // per instance: the shared geometry and every other character are untouched
+    m.boundingSphere!.radius += CREW_SWING;
+    m.frustumCulled = true;
+  });
+}
+
 export const ZONES: RaiderZone[] = jury() ? [...RAIDER_ZONES, { ...TOLL }] : RAIDER_ZONES;
 
 interface Raider {
@@ -78,6 +96,7 @@ export class Raiders {
       if (!c) return;
       c.root.position.set(p.x, p.y, p.z);
       c.root.rotation.y = p.ry;
+      if (jury()) cullable(c.root);
       r.obj.add(c.root);
       const idle = c.actions.Idle;
       if (idle) {
