@@ -507,7 +507,7 @@ const check = (name, ok, detail = '') => {
     const rode = await g(() => { clearInterval(window.__pinSpeed); return window.__game.events.beaten; });
     check('turning the bow into a rogue wave rides over it', rode >= 1, `beaten ${rode}`);
     // surfacing wreck sinks after 30 s if nobody hauls it
-    await g(() => { const G = window.__game; G.events.trigger('surfacing_wreck'); window.__sw = G.wrecks.list.find((w) => w.sinkIn !== undefined)?.site.id; G.wrecks.byId(window.__sw).sinkIn = 1; });
+    await g(() => { const G = window.__game; for (let k = 0; k < 5 && !G.wrecks.list.some((w) => w.sinkIn !== undefined); k++) G.events.trigger('surfacing_wreck'); window.__sw = G.wrecks.list.find((w) => w.sinkIn !== undefined)?.site.id; const w = G.wrecks.byId(window.__sw); if (w) w.sinkIn = 1; });
     await playFor(2);
     check('a surfacing wreck goes back under when its time runs out', await g(() => !!window.__sw && !window.__game.wrecks.byId(window.__sw)), '');
     // Daily Tide: same wrecks twice for the same date, end card with score, share text and streak

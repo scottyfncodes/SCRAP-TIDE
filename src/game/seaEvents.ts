@@ -124,9 +124,10 @@ export class SeaEvents {
 
   private openWater(min: number, max: number) {
     const b = this.g.boat;
-    for (let i = 0; i < 12; i++) {
-      const a = b.heading + (Math.random() - 0.5) * 2.2;
-      const d = min + Math.random() * (max - min);
+    // ahead first, then anywhere around, a little further out each time: near islands most spots are shallow
+    for (let i = 0; i < 40; i++) {
+      const a = b.heading + (Math.random() - 0.5) * (i < 12 ? 2.2 : Math.PI * 2);
+      const d = (min + Math.random() * (max - min)) * (1 + Math.floor(i / 12) * 0.35);
       const x = b.x + Math.sin(a) * d, z = b.z + Math.cos(a) * d;
       if (heightAt(x, z) > -4) continue;
       if (this.g.drowned.colliders.some((c) => Math.hypot(c.x - x, c.z - z) < c.r + 10)) continue;
