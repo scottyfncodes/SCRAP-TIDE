@@ -88,6 +88,17 @@ for (const vp of VIEWPORTS) {
   for (const s of SHOTS) {
     if (only && !only.includes(s.id)) continue;
     await page.evaluate((s) => (window.__shot = s), s);
+    // arriving somewhere new can raise a card (renown, region): clear it so it doesn't cover the frame
+    const clear = async () => {
+      for (let i = 0; i < 4; i++) {
+        const b = await page.$('button:visible:has-text("EARNED"), button:visible:has-text("Let"), button:visible:has-text("OK"), button:visible:has-text("Got it"), button:visible:has-text("Nice"), button:visible:has-text("Onward")');
+        if (!b) break;
+        await b.click({ force: true }).catch(() => {});
+        await page.waitForTimeout(400);
+      }
+    };
+    await page.waitForTimeout(1500);
+    await clear();
     const t0 = await page.evaluate(() => window.__game.renderT);
     await page.waitForFunction((t) => window.__game.renderT >= t, t0 + 2.5, { timeout: 180000, polling: 100 });
     // frame time over ~2 s of wall clock
@@ -100,6 +111,7 @@ for (const vp of VIEWPORTS) {
           requestAnimationFrame(f);
         })
     );
+    await clear();
     const info = await page.evaluate(() => ({ calls: window.__game.renderer.info.render.calls, tris: window.__game.renderer.info.render.triangles }));
     perf[`${vp.id}/${s.id}`] = { msPerFrame: +ms.toFixed(1), ...info };
     await page.screenshot({ path: `${out}/${vp.id}-${s.id}.png` });
