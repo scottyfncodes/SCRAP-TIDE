@@ -8,6 +8,11 @@ import { model, characterModel, type Character } from '../world/assets';
 import { angleDiff, clamp } from '../core/noise';
 import { audio } from '../audio/audio';
 import { pack } from '../audio/pack';
+import { jury } from '../state/look';
+import { jawboat, JAWBOAT_CREW, TOLL } from '../world/jury';
+
+/** The patrolled waters: with ?look=jury, also the Rustfang Toll outside Driftholm (docs/jury-rigged). */
+export const ZONES: RaiderZone[] = jury() ? [...RAIDER_ZONES, { ...TOLL }] : RAIDER_ZONES;
 
 interface Raider {
   obj: THREE.Object3D;
@@ -52,7 +57,9 @@ export class Raiders {
 
   private spawn(z: RaiderZone) {
     for (let i = 0; i < z.count; i++) {
-      const obj = model('tb_raider_skiff', 'raider_body', { shadows: true }) ?? new THREE.Mesh(new THREE.BoxGeometry(2.4, 1, 6), new THREE.MeshToonMaterial({ color: 0x6b2e14 }));
+      const obj = jury()
+        ? jawboat(i + 1)
+        : model('tb_raider_skiff', 'raider_body', { shadows: true }) ?? new THREE.Mesh(new THREE.BoxGeometry(2.4, 1, 6), new THREE.MeshToonMaterial({ color: 0x6b2e14 }));
       const a = (i / z.count) * Math.PI * 2;
       const r: Raider = { obj, x: z.x + Math.cos(a) * z.r * 0.5, z: z.z + Math.sin(a) * z.r * 0.5, heading: a, speed: 4, state: 'patrol', timer: 0, zone: z, ph: a, crew: [], attacking: false };
       this.crewUp(r);
@@ -65,15 +72,16 @@ export class Raiders {
   /** Rustfang crew on deck (GITCRAFT survivor rig): one at the bow with a cutlass, one at the tiller. */
   crewUp(r: Raider) {
     if (r.crew.length) return;
-    for (const [z, ry] of [[1.1, 0], [-1.7, 0.4]] as const) {
-      const c = characterModel('tb_raider');
+    const spots = jury() ? JAWBOAT_CREW : ([[1.1, 0], [-1.7, 0.4]] as const).map(([z, ry]) => ({ x: z > 0 ? 0.15 : -0.2, y: 0.62, z, ry }));
+    for (const p of spots) {
+      const c = (jury() && characterModel('tb_jury_raider')) || characterModel('tb_raider');
       if (!c) return;
-      c.root.position.set(z > 0 ? 0.15 : -0.2, 0.62, z);
-      c.root.rotation.y = ry;
+      c.root.position.set(p.x, p.y, p.z);
+      c.root.rotation.y = p.ry;
       r.obj.add(c.root);
       const idle = c.actions.Idle;
       if (idle) {
-        idle.time = r.ph + z;
+        idle.time = r.ph + p.z;
         idle.play();
       }
       r.crew.push(c);
@@ -95,7 +103,7 @@ export class Raiders {
     const g = this.g;
     const b = g.boat;
     const px = g.mode === 'sail' ? b.x : g.foot.x, pz = g.mode === 'sail' ? b.z : g.foot.z;
-    for (const z of RAIDER_ZONES) {
+    for (const z of ZONES) {
       const d = Math.hypot(px - z.x, pz - z.z);
       // the ledger read out on the flare deck: Rustfang pulls its skiffs out of Old Meridian (PR 2.4)
       if (z.id === 'rz_meridian' && g.store.data.flags.includes('ledger_confront')) {

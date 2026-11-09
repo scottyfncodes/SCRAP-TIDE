@@ -35,16 +35,24 @@ async function boot() {
   (window as any).__game = game;
   await game.init();
   (window as any).__loadReport = loadReport;
+  if (game.store.look === 'jury') {
+    // measurement hooks for docs/jury-rigged (scripts/jury-shots.mjs, scripts/jury-measure.mjs); look visits only
+    const [THREE, assets, mats, jury] = await Promise.all([import('three'), import('./world/assets'), import('./world/materials'), import('./world/jury')]);
+    (window as any).__jury = { THREE, assets, grade: mats.gradeUniforms, jury };
+  }
   if (game.store.sandbox) {
     // ?ship= preview or ?exp= experiment link: say so, so nobody mistakes it for their real save
     const { EXPERIMENTS } = await import('./state/experiments');
     const exps = game.store.experiments.map((id) => EXPERIMENTS[id].title);
     const tag = document.createElement('div');
     tag.className = 'preview-tag';
-    tag.textContent = exps.length ? `EXPERIMENT · ${exps.join(' + ')} · NOT SAVED` : 'PREVIEW · NOT SAVED';
+    const look = game.store.look === 'jury' ? 'JURY-RIGGED' : null;
+    tag.textContent = exps.length ? `EXPERIMENT · ${exps.join(' + ')} · NOT SAVED` : look ? `LOOK · ${look} · NOT SAVED` : 'PREVIEW · NOT SAVED';
     tag.title = exps.length
       ? `Phase 3 experiment preview. Nothing from this visit is saved.`
-      : `Previewing the ${VESSELS[game.store.preview!].name}. Nothing from this visit is saved.`;
+      : look || !game.store.preview
+        ? `Art-direction preview (docs/jury-rigged). Nothing from this visit is saved.`
+        : `Previewing the ${VESSELS[game.store.preview].name}. Nothing from this visit is saved.`;
     document.body.append(tag);
   }
   loading.classList.add('done');

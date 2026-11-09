@@ -71,6 +71,34 @@ export const RUN: GaitParams = {
   armAbduct: 0.16, elbow: 1.45, elbowSwing: 0.25, armInward: 0.32,
 };
 
+/**
+ * Retune a gait for a rig with different proportions (the Jury-Rigged 5.5-head cast, docs/jury-rigged): every length
+ * scales with leg length, so the feet still plant (IK reads the rig's own bones) and the stride shortens. At the same
+ * ground speed a shorter stride means a quicker cadence, which is most of what makes short legs read as short.
+ * `expr` scales the expressive swings (pelvis roll, arm swing, bounce) for a livelier walk.
+ */
+export function retune(g: GaitParams, legScale: number, hipHeight: number, width = 1, expr = 1): GaitParams {
+  return {
+    ...g,
+    name: g.name,
+    speed: g.speed * legScale,
+    hipHeight,
+    stanceShift: g.stanceShift * legScale,
+    swingLift: g.swingLift * legScale,
+    heelKick: g.heelKick * legScale,
+    footHalfWidth: g.footHalfWidth * width,
+    sway: g.sway * legScale * expr,
+    pelvisRoll: g.pelvisRoll * expr,
+    pelvisYaw: g.pelvisYaw * expr,
+    leanBounce: g.leanBounce * legScale * expr,
+    armFwd: g.armFwd * expr,
+    armBack: g.armBack * expr,
+  };
+}
+
+/** Rest leg length (thigh + shin) of the original 7.3-head survivor rig, which WALK and RUN were tuned on. */
+export const BASE_LEG = 0.82;
+
 const BONES = ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head', 'LeftShoulder', 'LeftArm', 'LeftForeArm', 'LeftHand', 'RightShoulder',
   'RightArm', 'RightForeArm', 'RightHand', 'LeftUpLeg', 'LeftLeg', 'LeftFoot', 'LeftToeBase', 'RightUpLeg', 'RightLeg', 'RightFoot', 'RightToeBase'] as const;
 type BoneId = (typeof BONES)[number];

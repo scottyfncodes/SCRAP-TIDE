@@ -101,6 +101,30 @@ Matte, tactile, lightly weathered. No gloss, no plastic, no harsh black borders,
 can be slightly richer than they should look in game. The exceptions are pure primaries (`TBD_Tarp #2f6fb0`,
 `TBD_Red #c8352a`, `TBD_Hazard #f2b825`), which are still loud after grading. New assets should pick from the table.
 
+### 5a. Sun-faded plastic accents (Jury-Rigged, approved Nov 2026)
+
+The one exception to "no new saturated hues". Five accents for **small, hand-sized salvage**: floats, jugs, crates,
+trolley handles, sail patches, bunting, signage. Tokens: `PLASTIC_ACCENTS` in `src/world/style.ts`.
+
+| Token | Hex | Use |
+|---|---|---|
+| poolBlue | `#5a9fbf` | tarps, water tanks' caps, crates, bunting |
+| coneOrange | `#d9733a` | life vests, windsocks, marker floats, Rig Helios |
+| buoyRed | `#c2443a` | floats, barrier arms, Rustfang's cowlings and rags |
+| laundryPink | `#d69a94` | cloth, bunting, Rooftop Hollow |
+| bleachWhite | `#ede6d6` | jugs, tanks, enamel (baths), satellite dishes, sign faces |
+
+Rules:
+
+- **Budget:** at most ~10 % of the visible frame (`ACCENT_BUDGET`). Large surfaces stay in §5. Measured by the
+  accent-mask pass in `scripts/jury-shots.mjs`.
+- **Never green** (living things only) and **never Sun Gold** (interactive things only). `tests/jury.test.ts` checks
+  every accent's hue and chroma against both bands.
+- **Tag it as plastic.** Geometry painted with an accent carries the `accent` vertex attribute (the `Kit` builder in
+  `src/world/jury.ts` does this; Jury-Rigged characters are tagged at load). The weathering shader then treats it as
+  plastic (`PLASTIC` in `style.ts`): it keeps 84 % of its authored saturation instead of 62 %, takes about half the
+  grime and **never rusts** (plastic doesn't). Untagged geometry is graded exactly as before.
+
 ## 6. Lighting and atmosphere
 
 - Warm directional sun, soft ambient shadows (hemisphere light plus the lifted ramp), gentle haze with distance.
@@ -143,3 +167,42 @@ should still be the clearest shapes.
    capture poses used for this pass (harbour, boat close, on foot by the shops, dusk) are in
    `docs/art-direction/README.md`.
 7. `npm test` (the style test enforces the outline policy and ramp), `npm run build`, `npm run check:visual`.
+
+---
+
+## 10. Jury-Rigged: the design language (approved Nov 2026)
+
+*The apocalypse is real. The absurdity is how humanity adapted.*
+
+Beautiful Ruin stays the art direction. **Jury-Rigged** is its design language for characters, factions,
+settlements, vessels and environmental storytelling. Everything in §1–9 still applies (no outlines, matte toon,
+weathering, the palette). Proof of concept: The Rustfang Toll (`?look=jury`, `docs/jury-rigged/`).
+
+1. **Danger is real; adaptation is funny.** Threats keep cold values and serious shapes. The humour lives in what
+   people built, wore and repurposed, never at the threat's expense.
+2. **Exaggerate the useful part.** The winch drum, the outboard, the hat against the sun, the tool in a fist.
+3. **Mechanically plausible.** Every contraption shows its load path: bolts, lashings, braces, counterweights.
+4. **Stack, lean, overhang.** Nothing level or symmetric; things grow upward and outward, a few degrees off true.
+5. **Recognise the object before the flood.** A traffic light, a clawfoot bath, a car-park barrier, a supermarket
+   trolley, a satellite dish. The joke is the second life, so the first life must stay legible: keep the defining
+   feature (the claw feet, the red trolley handle, the striped boom, the octagonal sign).
+
+**Characters: ~5.5 heads.** Stylised adults, not chibi: adult faces, stubble, scars. Heads ~1.15×, hands ~1.4×,
+boots ~1.3×, legs ~0.74×. One signature silhouette piece per person, taken from their job. Built by the proportion
+pass in `creative/3d-characters/scripts/survivors.py` (`JURY`, `jury_warp`) on the same 22-bone rig, so the clips
+and the procedural gait (`retune()` in `src/player/gait.ts`) carry over.
+
+**Factions read by construction, not colour.** Fill a faction's things with black and you should still know whose
+they are.
+
+| | Driftholm | Rustfang |
+|---|---|---|
+| Logic | lashed together, and proud of it | take it, weld teeth on it |
+| Joins | rope, guy lines, lashings, pontoon drums | welds, bolts, plate on plate |
+| Shapes | round and stacked: tanks, tubs, dishes, wide hats | wedges and spikes: saw blades, rams, exhaust stacks |
+| Posture | upright, leaning back on its ropes | forward-leaning, asymmetric |
+| Colour lead | Sea Glass, bleached sand, pool-blue and pink bunting | buoy red, oxide, oily navy |
+
+**Environmental humour** comes from a survivor's reason, never from a gag for its own sake: a bath is a lifeboat
+because it floats; trolleys are lobster pots because they are cages; a traffic light is the harbour lamp, its green
+lens long since swapped for bottle glass (green means alive here).

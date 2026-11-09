@@ -787,6 +787,175 @@ def held(kind):
         part("RightHand", *hm)
 
 
+# ------------------------------------------------------------------ Jury-Rigged (docs/jury-rigged): 5.5 heads
+# The cast is authored at ~7.3 heads on MeshCraft's 22-bone skeleton. A Jury-Rigged character is the same build put
+# through a PROPORTION PASS: every bone gets a scale (x, y, z in Blender space, z up, front -y) applied to its own
+# vertices and to the offsets of its children, so joints stay joined and skin weights stay valid. Legs and spine get
+# shorter, heads, hands and boots bigger; the armature is rebuilt from the warped joints and every Hips translation in
+# the clips is scaled by the new hip height. Nothing about the original cast changes.
+#
+# Profiles are about function, not cuteness: the captain is round and grounded (big boots, wide hat, a life-vest
+# worn as armour); the Rustfang raider is a forward-leaning wedge (huge shoulders and fists, narrow waist).
+JURY = {
+    "jury_captain": dict(lean=0.0, scale={
+        "Hips": (1.12, 1.12, 0.74), "LeftUpLeg": (1.14, 1.14, 0.74), "LeftLeg": (1.14, 1.14, 0.74),
+        "LeftFoot": (1.32, 1.32, 1.32), "LeftToeBase": (1.32, 1.32, 1.32),
+        "Spine": (1.1, 1.12, 0.84), "Spine1": (1.14, 1.16, 0.84), "Spine2": (1.14, 1.16, 0.84), "Neck": (1.1, 1.1, 0.7),
+        "Head": (1.14, 1.14, 1.14), "LeftShoulder": (1.16, 1.16, 1.0), "LeftArm": (0.82, 1.18, 1.18), "LeftForeArm": (0.84, 1.18, 1.18),
+        "LeftHand": (1.38, 1.38, 1.38)}),
+    "jury_raider": dict(lean=0.16, scale={
+        "Hips": (0.96, 1.0, 0.74), "LeftUpLeg": (1.04, 1.04, 0.74), "LeftLeg": (1.0, 1.0, 0.74),
+        "LeftFoot": (1.25, 1.25, 1.25), "LeftToeBase": (1.25, 1.25, 1.25),
+        "Spine": (0.92, 1.0, 0.86), "Spine1": (1.12, 1.1, 0.86), "Spine2": (1.34, 1.2, 0.86), "Neck": (1.05, 1.05, 0.65),
+        "Head": (1.12, 1.12, 1.12), "LeftShoulder": (1.4, 1.3, 1.1), "LeftArm": (0.96, 1.3, 1.3), "LeftForeArm": (0.98, 1.34, 1.34),
+        "LeftHand": (1.5, 1.5, 1.5)}),
+}
+for _prof in JURY.values():
+    for _k, _v in list(_prof["scale"].items()):
+        if _k.startswith("Left"):
+            _prof["scale"]["Right" + _k[4:]] = _v
+SKR = dict(SK)  # the skeleton the rig is built from (warped for Jury-Rigged characters)
+LOC_K = 1.0  # Hips translations in the clips scale with the new hip height
+
+
+def jury_warp(body, prof):
+    """Proportion pass: warp the joined, skinned body and return the warped skeleton (see JURY)."""
+    S = {b: Vector(prof["scale"].get(b, (1.0, 1.0, 1.0))) for b in SK}
+    newh = {}
+
+    def nh(b):
+        if b in newh:
+            return newh[b]
+        h, t, par = SK[b]
+        h = Vector(h)
+        if not par:
+            newh[b] = h.copy()
+        else:
+            ph = Vector(SK[par][0])
+            newh[b] = nh(par) + (h - ph) * S[par]
+        return newh[b]
+
+    hipz = SK["Hips"][0][2]
+    lean = prof.get("lean", 0.0)
+
+    def bend(v):  # forward lean of everything above the hips, eased in up the spine (front = -y)
+        if not lean:
+            return v
+        k = smoothstep(hipz, hipz + 0.25, v.z) * lean
+        y, z = v.y - 0.0, v.z - hipz
+        return Vector((v.x, y * math.cos(k) - z * math.sin(k), hipz + y * math.sin(k) + z * math.cos(k)))
+
+    idx = {g.index: g.name[len(MX):] for g in body.vertex_groups}
+    pts = []
+    for v in body.data.vertices:
+        acc, tot = Vector((0, 0, 0)), 0.0
+        for ge in v.groups:
+            b = idx.get(ge.group)
+            if b not in SK or ge.weight <= 0:
+                continue
+            h = Vector(SK[b][0])
+            acc += (nh(b) + (v.co - h) * S[b]) * ge.weight
+            tot += ge.weight
+        pts.append(acc / tot if tot else v.co.copy())
+    pts = [bend(p) for p in pts]
+    floor = min(p.z for p in pts)
+    for v, p in zip(body.data.vertices, pts):
+        v.co = p - Vector((0, 0, floor))
+    body.data.update()
+    out = {}
+    for b, (h, t, par) in SK.items():
+        hh = bend(nh(b)) - Vector((0, 0, floor))
+        tt = bend(nh(b) + (Vector(t) - Vector(h)) * S[b]) - Vector((0, 0, floor))
+        out[b] = (tuple(hh), tuple(tt), par)
+    return out, (out["Hips"][0][2]) / hipz
+
+
+def hat_sailbrim(col="#C8A576", patch="#5A9FBF"):
+    """Captain: a wide sun hat cut and stitched from an old sail, a blue patch, goggles on the band."""
+    cz = 1.63
+    hz = cz + 0.055
+    brim = kit.cylinder("sbrim", 0.24, 0.014, (0, 0.004, hz), verts=28, mat=mat(col))  # noqa: F821
+    deform(brim, lambda v: Vector((v.x, v.y, v.z - 0.035 * smoothstep(0.12, 0.24, math.hypot(v.x, v.y)) * (0.6 + 0.4 * math.sin(math.atan2(v.y, v.x) * 2)))))
+    crown = loft("scrown", [ring(16, 0.104, 0.11, hz - 0.004), ring(16, 0.1, 0.106, hz + 0.075), ring(16, 0.07, 0.074, hz + 0.105)], mat(col))
+    seam = cyl("sseam", 0.106, 0.012, (0, 0, hz + 0.04), mat("#8A6F52"), n=16)
+    pt = box("spatch", (0.07, 0.012, 0.055), (0.04, -0.104, hz + 0.045), mat(patch))
+    tf(pt, (0.0, 0.0, 0.35), (0.04, -0.104, hz + 0.045))
+    parts = [brim, crown, seam, pt]
+    for s_ in (-1, 1):
+        parts.append(cyl("hgog", 0.026, 0.026, (s_ * 0.042, -0.108, hz + 0.022), mat("#6E7680"), axis="Y", n=10))
+        parts.append(cyl("hlens", 0.02, 0.004, (s_ * 0.042, -0.122, hz + 0.022), mat("#4E7A82"), axis="Y", n=10))
+    part("Head", *parts)
+
+
+def life_vest(p, col="#D9733A", strap="#EDE6D6"):
+    """Captain: a cracked-foam life jacket worn as armour over the coat: two fat front blocks, a collar cushion."""
+    g = p.get("build", 1.0)
+    vm, sm = mat(col), mat(strap)
+    for s_ in (-1, 1):
+        blk = box("vest", (0.13 * g, 0.075, 0.36), (s_ * 0.085 * g, -0.15 * g, 1.24), vm, bevel=0.03)
+        part("Spine1", blk)
+        part("Spine1", box("vstrap", (0.135 * g, 0.08, 0.03), (s_ * 0.085 * g, -0.152 * g, 1.17), sm))
+    part("Spine2", loft("vcollar", [ring(14, 0.15 * g, 0.13, 1.42), ring(14, 0.13 * g, 0.12, 1.48)], vm, cap_top=False, cap_bottom=False))
+    part("Spine2", box("vback", (0.3 * g, 0.07, 0.36), (0, 0.15 * g, 1.26), vm, bevel=0.03))
+    part("Spine1", box("whistle", (0.02, 0.02, 0.05), (0.09, -0.2 * g, 1.31), mat("#C2443A")))
+
+
+def gauntlet_rope(side="Right"):
+    """Captain: a forearm wrapped in rope against the sheet and the winch handle."""
+    el = Vector(SK[side + "ForeArm"][0])
+    wr = Vector(SK[side + "Hand"][0])
+    d = (wr - el).normalized()
+    for i in range(6):
+        c = wr - d * (0.04 + i * 0.03)
+        part(side + "ForeArm", tube("rwrap", c - d * 0.011, c + d * 0.011, [0.072, 0.072], mat("#B89A64"), n=10, flat=0.92))
+
+
+def mug_carabiner():
+    """Captain: a tin mug clipped to the belt on a climbing carabiner (somebody's kitchen, somebody's mountain)."""
+    part("Hips", kit.torus("carab", 0.022, 0.005, (-0.17, -0.07, 0.94), axis="X", mat=mat("#9AA3AD"), major=10, minor=4))  # noqa: F821
+    part("Hips", cyl("mug", 0.035, 0.07, (-0.18, -0.09, 0.88), mat("#6E7680"), n=10))
+
+
+def sawblade_pauldron(side="Left"):
+    """Raider: a circular saw blade bolted upright on the shoulder, teeth out. The Rustfang badge, worn."""
+    sx = 1 if side == "Left" else -1
+    c = Vector((sx * 0.24, 0.02, 1.48))
+    parts = [cyl("sblade", 0.17, 0.016, tuple(c), mat("#9AA3AD"), axis="X", n=20),
+             cyl("shub", 0.05, 0.03, tuple(c), mat("#2E2B28"), axis="X", n=8)]
+    for i in range(14):
+        a = i / 14 * math.tau
+        t = box("stooth", (0.018, 0.045, 0.03), (c.x, c.y + math.cos(a) * 0.185, c.z + math.sin(a) * 0.185), mat("#9AA3AD"))
+        tf(t, (a + 0.5, 0, 0), (c.x, c.y + math.cos(a) * 0.185, c.z + math.sin(a) * 0.185))
+        parts.append(t)
+    part(side + "Shoulder", *parts)
+    part(side + "Shoulder", box("smount", (0.05, 0.16, 0.1), (sx * 0.21, 0.02, 1.4), mat("#3A4148")))
+
+
+def exhaust_pack():
+    """Raider: two exhaust pipes on a back plate, standing up past the head, sooted at the mouth."""
+    part("Spine2", box("eplate", (0.26, 0.05, 0.3), (0, 0.15, 1.28), mat("#3A4148"), bevel=0.01))
+    for s_, h in ((-1, 0.62), (1, 0.5)):
+        x = s_ * 0.08
+        part("Spine2", tube("epipe", (x, 0.18, 1.15), (x + s_ * 0.03, 0.24, 1.15 + h), [0.03, 0.028, 0.028], mat("#6B2E14" if s_ < 0 else "#6E7680"), n=8))
+        part("Spine2", cyl("esoot", 0.034, 0.05, (x + s_ * 0.03, 0.24, 1.15 + h), mat("#1F1D1C"), n=8))
+
+
+def held_glaive():
+    """Raider: a saw blade on a scaffold pole (a cutlass is a pirate's; Rustfang cuts with what cuts steel)."""
+    wr = Vector(SK["RightHand"][0])
+    x, z = wr.x - 0.075, wr.z
+    # authored at 2/3 size: the raider's hand scale (JURY, 1.5) brings it to a 1.5 m pole and a 0.24 m blade
+    parts = [tube("gpole", (x, 0.33, z), (x, -0.67, z), [0.012, 0.012], mat("#6E7680"), n=6),
+             cyl("gblade", 0.11, 0.009, (x, -0.75, z), mat("#9AA3AD"), axis="X", n=20),
+             cyl("ghub", 0.027, 0.02, (x, -0.75, z), mat("#2E2B28"), axis="X", n=8)]
+    for i in range(12):
+        a = i / 12 * math.tau
+        t = box("gtooth", (0.011, 0.027, 0.018), (x, -0.75 + math.cos(a) * 0.115, z + math.sin(a) * 0.115), mat("#9AA3AD"))
+        tf(t, (a + 0.5, 0, 0), (x, -0.75 + math.cos(a) * 0.115, z + math.sin(a) * 0.115))
+        parts.append(t)
+    part("RightHand", *parts)
+
+
 # ------------------------------------------------------------------ clips (MeshCraft builders helpers)
 _rot, _loc, _cycle, _new, _fin = B._rot, B._loc, B._cycle, B._new_action, B._finish
 DOWN = B.ARMS_DOWN
@@ -872,10 +1041,10 @@ def rig(body, clips):
     bpy_.context.view_layer.objects.active = arm
     arm.select_set(True)
     bpy_.ops.object.mode_set(mode="EDIT")
-    for name, (h, t, par) in SK.items():
+    for name, (h, t, par) in SKR.items():
         b = arm_d.edit_bones.new(MX + name)
         b.head, b.tail, b.roll = h, t, 0
-    for name, (h, t, par) in SK.items():
+    for name, (h, t, par) in SKR.items():
         if par:
             arm_d.edit_bones[MX + name].parent = arm_d.edit_bones[MX + par]
     bpy_.ops.object.mode_set(mode="OBJECT")
@@ -944,6 +1113,21 @@ CAST = {
                                    respirator("#2E2B28"), goggles_eyes("#2E2B28", "#C8352A"), bandolier(p, "#1A1612", "#9AA3AD", side=-1),
                                    bracer("Left", "#3A4148"), bracer("Right", "#6B2E14"), kneepad("Left", "#6B2E14"), kneepad("Right", "#3A4148"), chain_loop(p, "#3A4148")),
                    held="cutlass", clips=["Idle", "Attack"]),
+    # ---- Jury-Rigged (docs/jury-rigged), 5.5 heads via jury_warp. Driftholm: round, layered, lashed. The captain
+    # keeps their face, hair, scar and red scarf; the tricorn, bandolier and duster are gone.
+    "jury_captain": dict(p=dict(frame="m", build=1.0, skin="olive", hair="#2A2018", hairstyle="long", beard="short", beard_color="#3E2E22", age=0.4,
+                                shirt="#7A7262", pants="#3E3A30", boots="#2A1F17", scar=True, gloves="#3B2A1C"),
+                         wear=lambda p: (coat(p, length=0.3, col="#5A4430", open_front=0.7, flare=0.06), tarp_patches(p, ("#C8A576", "#5A9FBF", "#8C8270"), 3),
+                                         life_vest(p), scarf(p, "#7E3524"), hat_sailbrim(), pouch_belt(), mug_carabiner(), gauntlet_rope("Right"),
+                                         bracer("Left", "#6E7680"), kneepad("Left")),
+                         held=None, clips=["Idle", "Walk", "Sit", "Dig", "Cheer", "Interact"]),
+    # Rustfang: welded, sharpened, forward. A wedge: saw blade and spiked road sign on the shoulders, exhausts on the back.
+    "jury_raider": dict(p=dict(frame="m", build=1.05, skin="pale", hair="#B8352A", hairstyle="mohawk", age=0.3, shirt="#26323B", pants="#2B2620", gloves="#1A1612",
+                               bare_arms=True),
+                        wear=lambda p: (sawblade_pauldron("Left"), pauldron("Right", "#C2443A", "#EDE6D6"), spikes("Right", 4), chestplate("#4A2C22", "#9AA3AD"),
+                                        exhaust_pack(), respirator("#2E2B28"), goggles_eyes("#2E2B28", "#C2443A"), bracer("Left", "#3A4148"), bracer("Right", "#6B2E14"),
+                                        kneepad("Left", "#6B2E14"), kneepad("Right", "#3A4148"), chain_loop(p, "#3A4148")),
+                        held="glaive", clips=["Idle", "Attack"]),
 }
 
 
@@ -951,9 +1135,20 @@ spec = CAST[ASSET]
 P = spec["p"]
 human(P)
 spec["wear"](P)
-if spec["held"]:
+if spec["held"] == "glaive":
+    held_glaive()
+elif spec["held"]:
     held(spec["held"])
 body = build_body_object()
+if ASSET in JURY:
+    SKR, LOC_K = jury_warp(body, JURY[ASSET])
+    _loc0 = B._loc
+
+    def _loc_scaled(arm_, bone, off, frame):
+        return _loc0(arm_, bone, tuple(c * LOC_K for c in off), frame)
+
+    B._loc = _loc_scaled
+    _loc = _loc_scaled
 kit.shade(body, 55)  # noqa: F821
 root, arm = rig(body, spec["clips"])
 for o in bpy_.context.scene.objects:
@@ -974,4 +1169,4 @@ os.makedirs(os.path.join(OUT, "source"), exist_ok=True)
 blend = os.path.join(OUT, "source", f"tb_{ASSET}.blend")
 bpy_.ops.wm.save_as_mainfile(filepath=blend, compress=True)
 tris = sum(len(p.vertices) - 2 for o in s.objects if o.type == "MESH" for p in o.data.polygons)
-print(json.dumps({"blend": blend, "tris": tris, "clips": spec["clips"]}))
+print(json.dumps({"blend": blend, "tris": tris, "clips": spec["clips"], "hip_scale": LOC_K}))

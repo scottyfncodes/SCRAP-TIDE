@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat } from '../world/materials';
 import { part, type Character } from '../world/assets';
-import { WALK, RUN, captureRest, buildGaitClip, strideAt } from './gait';
+import { WALK, RUN, captureRest, buildGaitClip, strideAt, retune, BASE_LEG, type GaitParams } from './gait';
 
 const CLIP_FOR: Record<string, string> = { idle: 'Idle', sit: 'Sit', dig: 'Dig', cheer: 'Cheer' };
 
@@ -42,10 +42,14 @@ export class Captain {
   onStep: ((side: 1 | -1, run: number) => void) | null = null;
 
   /** Swap the stand-in for the rigged character. */
-  useCharacter(c: Character) {
+  /** the walk and run this rig plays (retuned for the Jury-Rigged captain's shorter legs) */
+  private gaits: { walk: GaitParams; run: GaitParams } = { walk: WALK, run: RUN };
+
+  /** `stylised`: the Jury-Rigged 5.5-head captain (docs/jury-rigged), a touch larger so the hero keeps presence. */
+  useCharacter(c: Character, stylised = false) {
     this.char = c;
     this.body.visible = false;
-    c.root.scale.setScalar(1.08);
+    c.root.scale.setScalar(stylised ? 1.16 : 1.08);
     this.root.add(c.root);
     // a salvaged shovel in the right hand, shown while digging
     const hand = c.root.getObjectByName('mixamorigRightHand');
@@ -71,8 +75,17 @@ export class Captain {
     // procedural Walk + Run baked onto this skeleton (captured in its rest pose, before any clip plays)
     const rest = captureRest(c.root);
     if (rest) {
-      const walk = c.mixer.clipAction(buildGaitClip(rest, WALK));
-      const run = c.mixer.clipAction(buildGaitClip(rest, RUN));
+      if (stylised) {
+        // same gait engine, retuned to this rig: lengths follow the leg, hip height follows the rest pose
+        const k = (rest.thigh + rest.shin) / BASE_LEG;
+        const hip = rest.p.Hips.y; // captureRest measures in the character root's own (unscaled) space
+        this.gaits = {
+          walk: retune(WALK, k, hip * (WALK.hipHeight / 0.95), 1.14, 1.3),
+          run: retune(RUN, k, hip * (RUN.hipHeight / 0.95), 1.14, 1.15),
+        };
+      }
+      const walk = c.mixer.clipAction(buildGaitClip(rest, this.gaits.walk));
+      const run = c.mixer.clipAction(buildGaitClip(rest, this.gaits.run));
       for (const a of [walk, run]) a.timeScale = 0; // time is driven from the ground-speed phase
       c.actions.GaitWalk = walk;
       c.actions.GaitRun = run;
@@ -104,7 +117,7 @@ export class Captain {
     target.clear();
     let rate = 9;
     if (moving && loco) {
-      const s = strideAt(WALK, RUN, v);
+      const s = strideAt(this.gaits.walk, this.gaits.run, v);
       this.runMix = s.run;
       target.set(loco.walk, 1 - s.run);
       target.set(loco.run, s.run);

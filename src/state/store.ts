@@ -249,14 +249,18 @@ export class Store {
    */
   readonly sandbox: boolean;
 
+  /** An art-direction preview (`?look=jury`, src/state/look.ts): a sandbox visit too. Null in normal play. */
+  readonly look: string | null;
+
   /** performance.now() at the last sea-clock sync in this session (null before the first). */
   private perfAt: number | null = null;
 
-  constructor(opts: { preview?: VesselId | null; upgrades?: string[] | null; experiments?: ExperimentId[]; fresh?: boolean } = {}) {
+  constructor(opts: { preview?: VesselId | null; upgrades?: string[] | null; experiments?: ExperimentId[]; fresh?: boolean; look?: string | null } = {}) {
     this.experiments = opts.experiments ?? [];
+    this.look = opts.look ?? null;
     this.data = this.load();
-    // `&fresh=1` on an experiment link: a brand-new game, held in memory only
-    if (this.experiments.length && opts.fresh) {
+    // `&fresh=1` on an experiment or look link: a brand-new game, held in memory only
+    if ((this.experiments.length || this.look) && opts.fresh) {
       this.data = freshSave();
       this.isNew = true;
     }
@@ -265,7 +269,7 @@ export class Store {
     // an upgrades-only link previews the save's own boat
     this.preview = opts.preview ?? (this.previewUpgrades ? this.data.vessel : null);
     if (this.preview) this.applyPreview(this.data);
-    this.sandbox = !!this.preview || this.experiments.length > 0;
+    this.sandbox = !!this.preview || this.experiments.length > 0 || !!this.look;
   }
 
   /** Is this Phase 3 experiment on for this visit? (Always false in normal play.) */

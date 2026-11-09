@@ -3,7 +3,7 @@
 // grime, rust streaks, tide-line staining and salt crust on top, so nothing reads as clean plastic.
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { LIGHT_RAMP, LIGHT_RAMP_FILTER, WEAR } from './style';
+import { LIGHT_RAMP, LIGHT_RAMP_FILTER, WEAR, PLASTIC } from './style';
 
 let gradient: THREE.DataTexture | null = null;
 export function toonGradient() {
@@ -21,13 +21,13 @@ export function toonGradient() {
 
 const cache = new Map<string, THREE.Material>();
 
-export function vcMat(opts: { emissive?: number; side?: THREE.Side; sway?: boolean; weather?: number } = {}) {
-  const key = `vc-${opts.emissive ?? 0}-${opts.side ?? 0}-${opts.sway ? 1 : 0}-${opts.weather ?? 1}`;
+export function vcMat(opts: { emissive?: number; side?: THREE.Side; sway?: boolean; weather?: number; accent?: boolean } = {}) {
+  const key = `vc-${opts.emissive ?? 0}-${opts.side ?? 0}-${opts.sway ? 1 : 0}-${opts.weather ?? 1}${opts.accent ? '-acc' : ''}`;
   let m = cache.get(key) as THREE.MeshToonMaterial | undefined;
   if (!m) {
     m = new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: toonGradient(), side: opts.side ?? THREE.FrontSide });
     if (opts.emissive) m.emissive = new THREE.Color(opts.emissive);
-    weather(m, opts.weather ?? 1, !!opts.sway);
+    weather(m, opts.weather ?? 1, !!opts.sway, !!opts.accent);
     cache.set(key, m);
   }
   return m;
@@ -49,6 +49,8 @@ export const gradeUniforms = {
   uLightTint: { value: new THREE.Color(1.05, 1.0, 0.9) },
   uShadeTint: { value: new THREE.Color(0.8, 0.9, 1.08) },
   uShadeK: { value: 1 },
+  /** measurement only (scripts/jury-shots.mjs): 1 = render accent plastic magenta and everything else black */
+  uAccentMask: { value: 0 },
 };
 const GRADE_FRAG = /* glsl */ `
 {
@@ -60,6 +62,7 @@ const GRADE_FRAG = /* glsl */ `
   // highlight shoulder: values past 0.72 roll off toward ~1.0 instead of clipping
   vec3 wxOver = max(outgoingLight - 0.72, 0.0);
   outgoingLight = min(outgoingLight, 0.72) + wxOver / (1.0 + wxOver * 2.6);
+  if (uAccentMask > 0.5) outgoingLight = vWxAcc > 0.5 ? vec3(1.0, 0.0, 1.0) : vec3(0.0);
 }
 `;
 
@@ -71,6 +74,8 @@ uniform float uWeather;
 uniform vec3 uLightTint;
 uniform vec3 uShadeTint;
 uniform float uShadeK;
+uniform float uAccentMask;
+varying float vWxAcc; // 1 on Jury-Rigged sun-faded plastic (style.ts PLASTIC_ACCENTS), 0 elsewhere
 float wxHash(vec3 p) { p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 float wxNoise(vec3 x) {
   vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f);
@@ -90,18 +95,18 @@ const WEATHER_FRAG = /* glsl */ `
   float lum = dot(c, vec3(0.299, 0.587, 0.114));
   float sat = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
   // grade: bleach saturation the way sun and salt do, pull toward a warm grey-sienna base
-  vec3 graded = mix(vec3(lum), c, 0.62) * vec3(1.0, 0.95, 0.87);
+  vec3 graded = mix(vec3(lum), c, mix(0.62, ${glf(PLASTIC.keep)}, vWxAcc)) * mix(vec3(1.0, 0.95, 0.87), vec3(1.0, 0.98, 0.94), vWxAcc);
   vec3 P = vWxPos;
   float big = wxNoise(P * 0.21);
   float fine = wxNoise(P * 1.7 + 11.0);
   // grime: blotchy oily build-up, heavier in crevices facing down
   float grime = smoothstep(0.42, 0.95, big * 0.7 + fine * 0.45) * (0.55 + 0.45 * (1.0 - max(vWxNrm.y, 0.0)));
-  graded = mix(graded, graded * vec3(${glf(WEAR.grimeFloor)}, ${glf(WEAR.grimeFloor * 0.92)}, ${glf(WEAR.grimeFloor * 0.8)}), grime * ${glf(WEAR.grimeMix)});
+  graded = mix(graded, graded * vec3(${glf(WEAR.grimeFloor)}, ${glf(WEAR.grimeFloor * 0.92)}, ${glf(WEAR.grimeFloor * 0.8)}), grime * ${glf(WEAR.grimeMix)} * mix(1.0, ${glf(PLASTIC.grime)}, vWxAcc));
   // rust streaks: noise stretched vertically so it runs down walls; strongest on grey/neutral (metal) surfaces
   float streak = wxNoise(vec3(P.x * 2.3, P.y * 0.16, P.z * 2.3)) * 0.75 + fine * 0.25;
   float metal = 1.0 - smoothstep(0.08, 0.32, sat);
   float rust = smoothstep(0.58, 0.82, streak) * (0.35 + 0.65 * metal) * (1.0 - max(vWxNrm.y, 0.0) * 0.6);
-  graded = mix(graded, vec3(0.40, 0.17, 0.07) * (0.7 + lum * 0.6), rust * 0.6);
+  graded = mix(graded, vec3(0.40, 0.17, 0.07) * (0.7 + lum * 0.6), rust * 0.6 * mix(1.0, ${glf(PLASTIC.rust)}, vWxAcc));
   // tide line: dark sea-green algae below (never black: style.ts WEAR), a crust of bone-white salt just above
   float y = vWxY;
   float algae = (1.0 - smoothstep(-0.2, 0.9, y)) * step(-6.0, y);
@@ -123,15 +128,16 @@ const WEATHER_FRAG = /* glsl */ `
  * Drowned-world weathering for a toon material. `amount` 0..1 scales the whole effect (crew faces get less
  * than steel hulls). Composes with optional foliage sway.
  */
-export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false): M {
+export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false, accent = false): M {
   const u = { value: amount };
   m.onBeforeCompile = (shader) => {
     shader.uniforms.uWeather = u;
     shader.uniforms.uLightTint = gradeUniforms.uLightTint;
     shader.uniforms.uShadeTint = gradeUniforms.uShadeTint;
     shader.uniforms.uShadeK = gradeUniforms.uShadeK;
+    shader.uniforms.uAccentMask = gradeUniforms.uAccentMask;
     if (sway) shader.uniforms.uTime = swayUniforms.uTime;
-    let vs = shader.vertexShader.replace('#include <common>', `#include <common>\n${WEATHER_COMMON}${sway ? 'uniform float uTime;\nattribute float sway;' : ''}`);
+    let vs = shader.vertexShader.replace('#include <common>', `#include <common>\n${WEATHER_COMMON}${sway ? 'uniform float uTime;\nattribute float sway;' : ''}${accent ? '\nattribute float accent;' : ''}`);
     if (sway)
       vs = vs.replace(
         '#include <begin_vertex>',
@@ -158,6 +164,7 @@ export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false
         vWxPos = transformed * length(wxM[0].xyz);
         #endif
         vWxNrm = normalize(mat3(wxM) * objectNormal);
+        vWxAcc = ${accent ? 'accent' : '0.0'};
       }`
     );
     shader.vertexShader = vs;
@@ -166,7 +173,7 @@ export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false
       .replace('#include <color_fragment>', `#include <color_fragment>\n${WEATHER_FRAG}`)
       .replace('#include <opaque_fragment>', `${GRADE_FRAG}\n#include <opaque_fragment>`);
   };
-  m.customProgramCacheKey = () => `weather-${sway ? 1 : 0}`;
+  m.customProgramCacheKey = () => `weather-${sway ? 1 : 0}${accent ? '-acc' : ''}`;
   m.userData.weather = u;
   return m;
 }
@@ -226,10 +233,13 @@ export function xf(geo: THREE.BufferGeometry, x = 0, y = 0, z = 0, rx = 0, ry = 
 }
 
 export function merge(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  // the Jury-Rigged `accent` tag (plastic) survives a merge when any part carries it; otherwise it never appears
+  const acc = geos.some((g) => g.attributes.accent);
   const clean = geos.map((g) => {
     const ng = g.index ? g.toNonIndexed() : g;
-    for (const k of Object.keys(ng.attributes)) if (!['position', 'normal', 'color', 'sway'].includes(k)) ng.deleteAttribute(k);
+    for (const k of Object.keys(ng.attributes)) if (!['position', 'normal', 'color', 'sway', ...(acc ? ['accent'] : [])].includes(k)) ng.deleteAttribute(k);
     if (!ng.attributes.sway) ng.setAttribute('sway', new THREE.BufferAttribute(new Float32Array(ng.attributes.position.count), 1));
+    if (acc && !ng.attributes.accent) ng.setAttribute('accent', new THREE.BufferAttribute(new Float32Array(ng.attributes.position.count), 1));
     if (!ng.attributes.normal) ng.computeVertexNormals();
     return ng;
   });
