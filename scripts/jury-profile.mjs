@@ -170,7 +170,7 @@ if (PROFILE.includes('toll')) {
     await settle(page, clear, TOLL);
     const a = await attribute(page);
     report.toll[look] = { draws: a.rows.length, info: a.info, byCategory: byCat(a.rows), detail: summarise(a.rows) };
-    await page.screenshot({ path: `${out}/${look}-toll.png` });
+    await page.screenshot({ path: `${out}/${look}-toll.png`, timeout: 180000 });
     console.log(look, 'toll', a.rows.length, JSON.stringify(byCat(a.rows)));
     await ctx.close();
   }
@@ -194,6 +194,44 @@ if (PROFILE.includes('storm')) {
       console.log(v.name, 'storm run', i, samples.map((s) => s.calls).join(' '));
       await ctx.close();
     }
+  }
+}
+if (PROFILE.includes('sequence')) {
+  // the capture harness's order on one page: the Toll first (raiders pinned there), then Driftholm in a storm
+  report.sequence = {};
+  for (const look of ['default', 'jury']) {
+    const { ctx, page, clear } = await open(look);
+    await settle(page, clear, TOLL);
+    await settle(page, clear, STORM);
+    const a = await attribute(page);
+    const proj = await page.evaluate(() => {
+      const g = window.__game, T = g.camera.constructor;
+      return g.raiders.list.map((r) => {
+        const v = r.obj.position.clone().project(g.camera);
+        return { zone: r.zone.id, x: +r.x.toFixed(1), z: +r.z.toFixed(1), ndc: [+v.x.toFixed(2), +v.y.toFixed(2), +v.z.toFixed(3)], onScreen: Math.abs(v.x) <= 1 && Math.abs(v.y) <= 1 && v.z < 1 };
+      });
+    });
+    report.sequence[look] = { calls: a.info.calls, mainByCategory: byCat(a.rows.filter((x) => x.pass === 'main')), raiders: proj };
+    await page.screenshot({ path: `${out}/${look}-sequence-storm.png`, timeout: 180000 });
+    console.log(look, 'sequence storm', a.info.calls, JSON.stringify(report.sequence[look].mainByCategory), JSON.stringify(proj));
+    await ctx.close();
+  }
+}
+if (PROFILE.includes('harness')) {
+  // scripts/jury-shots.mjs's exact order on one page: the Toll in four keys, then Driftholm in four keys
+  const KEYS = [{ c: 'noon', tod: 0.5, storm: 0 }, { c: 'dusk', tod: 0.78, storm: 0 }, { c: 'night', tod: 0.95, storm: 0 }, { c: 'storm', tod: 0.5, storm: 1 }];
+  report.harness = {};
+  for (const look of ['default', 'jury']) {
+    const { ctx, page, clear } = await open(look);
+    report.harness[look] = {};
+    for (const k of KEYS) await settle(page, clear, { ...TOLL, tod: k.tod, storm: k.storm });
+    for (const k of KEYS) {
+      await settle(page, clear, { ...STORM, tod: k.tod, storm: k.storm });
+      const a = await attribute(page);
+      report.harness[look][k.c] = { calls: a.info.calls, mainByCategory: byCat(a.rows.filter((x) => x.pass === 'main')) };
+      console.log(look, 'harness driftholm', k.c, a.info.calls, JSON.stringify(report.harness[look][k.c].mainByCategory));
+    }
+    await ctx.close();
   }
 }
 writeFileSync(`${out}/profile.json`, JSON.stringify(report, null, 1));

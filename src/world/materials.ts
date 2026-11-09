@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { LIGHT_RAMP, LIGHT_RAMP_FILTER, WEAR, PLASTIC } from './style';
+import { jury } from '../state/look';
 
 let gradient: THREE.DataTexture | null = null;
 export function toonGradient() {
@@ -52,7 +53,8 @@ export const gradeUniforms = {
   /** measurement only (scripts/jury-shots.mjs): 1 = render accent plastic magenta and everything else black */
   uAccentMask: { value: 0 },
 };
-const GRADE_FRAG = /* glsl */ `
+/** `ext`: the Jury-Rigged extension (plastic accents, the accent-mask pass). Off, the text is exactly the default's. */
+const gradeFrag = (ext: boolean) => /* glsl */ `
 {
   // how lit this fragment is, relative to its own albedo: the toon bands of sun + sky
   float wxAlb = max(dot(diffuseColor.rgb, vec3(0.3333)), 0.03);
@@ -61,21 +63,18 @@ const GRADE_FRAG = /* glsl */ `
   outgoingLight *= mix(vec3(1.0), mix(uLightTint, uShadeTint, wxShade), uShadeK);
   // highlight shoulder: values past 0.72 roll off toward ~1.0 instead of clipping
   vec3 wxOver = max(outgoingLight - 0.72, 0.0);
-  outgoingLight = min(outgoingLight, 0.72) + wxOver / (1.0 + wxOver * 2.6);
-  if (uAccentMask > 0.5) outgoingLight = vWxAcc > 0.5 ? vec3(1.0, 0.0, 1.0) : vec3(0.0);
+  outgoingLight = min(outgoingLight, 0.72) + wxOver / (1.0 + wxOver * 2.6);${ext ? '\n  if (uAccentMask > 0.5) outgoingLight = vWxAcc > 0.5 ? vec3(1.0, 0.0, 1.0) : vec3(0.0);' : ''}
 }
 `;
 
-const WEATHER_COMMON = /* glsl */ `
+const weatherCommon = (ext: boolean) => /* glsl */ `
 varying vec3 vWxPos;
 varying vec3 vWxNrm;
 varying float vWxY; // height above the sea, for the tide line
 uniform float uWeather;
 uniform vec3 uLightTint;
 uniform vec3 uShadeTint;
-uniform float uShadeK;
-uniform float uAccentMask;
-varying float vWxAcc; // 1 on Jury-Rigged sun-faded plastic (style.ts PLASTIC_ACCENTS), 0 elsewhere
+uniform float uShadeK;${ext ? '\nuniform float uAccentMask;\nvarying float vWxAcc; // 1 on Jury-Rigged sun-faded plastic (style.ts PLASTIC_ACCENTS), 0 elsewhere' : ''}
 float wxHash(vec3 p) { p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 float wxNoise(vec3 x) {
   vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f);
@@ -87,7 +86,7 @@ float wxNoise(vec3 x) {
 /** a JS number as a GLSL float literal */
 const glf = (n: number) => n.toFixed(3);
 
-const WEATHER_FRAG = /* glsl */ `
+const weatherFrag = (ext: boolean) => /* glsl */ `
 {
   vec3 c = diffuseColor.rgb;
   // living plants (saturated green, and nothing else is) are exempt: sun and salt bleach everything but them
@@ -95,18 +94,18 @@ const WEATHER_FRAG = /* glsl */ `
   float lum = dot(c, vec3(0.299, 0.587, 0.114));
   float sat = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
   // grade: bleach saturation the way sun and salt do, pull toward a warm grey-sienna base
-  vec3 graded = mix(vec3(lum), c, mix(0.62, ${glf(PLASTIC.keep)}, vWxAcc)) * mix(vec3(1.0, 0.95, 0.87), vec3(1.0, 0.98, 0.94), vWxAcc);
+  vec3 graded = ${ext ? `mix(vec3(lum), c, mix(0.62, ${glf(PLASTIC.keep)}, vWxAcc)) * mix(vec3(1.0, 0.95, 0.87), vec3(1.0, 0.98, 0.94), vWxAcc)` : 'mix(vec3(lum), c, 0.62) * vec3(1.0, 0.95, 0.87)'};
   vec3 P = vWxPos;
   float big = wxNoise(P * 0.21);
   float fine = wxNoise(P * 1.7 + 11.0);
   // grime: blotchy oily build-up, heavier in crevices facing down
   float grime = smoothstep(0.42, 0.95, big * 0.7 + fine * 0.45) * (0.55 + 0.45 * (1.0 - max(vWxNrm.y, 0.0)));
-  graded = mix(graded, graded * vec3(${glf(WEAR.grimeFloor)}, ${glf(WEAR.grimeFloor * 0.92)}, ${glf(WEAR.grimeFloor * 0.8)}), grime * ${glf(WEAR.grimeMix)} * mix(1.0, ${glf(PLASTIC.grime)}, vWxAcc));
+  graded = mix(graded, graded * vec3(${glf(WEAR.grimeFloor)}, ${glf(WEAR.grimeFloor * 0.92)}, ${glf(WEAR.grimeFloor * 0.8)}), grime * ${glf(WEAR.grimeMix)}${ext ? ` * mix(1.0, ${glf(PLASTIC.grime)}, vWxAcc)` : ''});
   // rust streaks: noise stretched vertically so it runs down walls; strongest on grey/neutral (metal) surfaces
   float streak = wxNoise(vec3(P.x * 2.3, P.y * 0.16, P.z * 2.3)) * 0.75 + fine * 0.25;
   float metal = 1.0 - smoothstep(0.08, 0.32, sat);
   float rust = smoothstep(0.58, 0.82, streak) * (0.35 + 0.65 * metal) * (1.0 - max(vWxNrm.y, 0.0) * 0.6);
-  graded = mix(graded, vec3(0.40, 0.17, 0.07) * (0.7 + lum * 0.6), rust * 0.6 * mix(1.0, ${glf(PLASTIC.rust)}, vWxAcc));
+  graded = mix(graded, vec3(0.40, 0.17, 0.07) * (0.7 + lum * 0.6), rust * 0.6${ext ? ` * mix(1.0, ${glf(PLASTIC.rust)}, vWxAcc)` : ''});
   // tide line: dark sea-green algae below (never black: style.ts WEAR), a crust of bone-white salt just above
   float y = vWxY;
   float algae = (1.0 - smoothstep(-0.2, 0.9, y)) * step(-6.0, y);
@@ -130,14 +129,17 @@ const WEATHER_FRAG = /* glsl */ `
  */
 export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false, accent = false): M {
   const u = { value: amount };
+  // the Jury-Rigged extension compiles only into accent materials, and into everything on a look visit (the
+  // measurement mask has to black out untagged surfaces): the default look's shaders are exactly the default's
+  const ext = accent || jury();
   m.onBeforeCompile = (shader) => {
     shader.uniforms.uWeather = u;
     shader.uniforms.uLightTint = gradeUniforms.uLightTint;
     shader.uniforms.uShadeTint = gradeUniforms.uShadeTint;
     shader.uniforms.uShadeK = gradeUniforms.uShadeK;
-    shader.uniforms.uAccentMask = gradeUniforms.uAccentMask;
+    if (ext) shader.uniforms.uAccentMask = gradeUniforms.uAccentMask;
     if (sway) shader.uniforms.uTime = swayUniforms.uTime;
-    let vs = shader.vertexShader.replace('#include <common>', `#include <common>\n${WEATHER_COMMON}${sway ? 'uniform float uTime;\nattribute float sway;' : ''}${accent ? '\nattribute float accent;' : ''}`);
+    let vs = shader.vertexShader.replace('#include <common>', `#include <common>\n${weatherCommon(ext)}${sway ? 'uniform float uTime;\nattribute float sway;' : ''}${accent ? '\nattribute float accent;' : ''}`);
     if (sway)
       vs = vs.replace(
         '#include <begin_vertex>',
@@ -163,17 +165,16 @@ export function weather<M extends THREE.Material>(m: M, amount = 1, sway = false
         // in metres, so it rides along instead of sliding over the boat as it sails through world-space noise
         vWxPos = transformed * length(wxM[0].xyz);
         #endif
-        vWxNrm = normalize(mat3(wxM) * objectNormal);
-        vWxAcc = ${accent ? 'accent' : '0.0'};
+        vWxNrm = normalize(mat3(wxM) * objectNormal);${ext ? `\n        vWxAcc = ${accent ? 'accent' : '0.0'};` : ''}
       }`
     );
     shader.vertexShader = vs;
     shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', `#include <common>\n${WEATHER_COMMON}`)
-      .replace('#include <color_fragment>', `#include <color_fragment>\n${WEATHER_FRAG}`)
-      .replace('#include <opaque_fragment>', `${GRADE_FRAG}\n#include <opaque_fragment>`);
+      .replace('#include <common>', `#include <common>\n${weatherCommon(ext)}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>\n${weatherFrag(ext)}`)
+      .replace('#include <opaque_fragment>', `${gradeFrag(ext)}\n#include <opaque_fragment>`);
   };
-  m.customProgramCacheKey = () => `weather-${sway ? 1 : 0}${accent ? '-acc' : ''}`;
+  m.customProgramCacheKey = () => `weather-${sway ? 1 : 0}${accent ? '-acc' : ext ? '-jury' : ''}`;
   m.userData.weather = u;
   return m;
 }

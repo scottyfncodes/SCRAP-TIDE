@@ -8,7 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { parseLook } from '../src/state/look';
 import { PLASTIC_ACCENTS, ACCENT_BUDGET, WORLD_PALETTE } from '../src/world/style';
-import { merge, paint } from '../src/world/materials';
+import { merge, paint, weather } from '../src/world/materials';
 import { WALK, RUN, captureRest, buildGaitClip, legPhase, retune, BASE_LEG, GaitSolver, type GaitParams } from '../src/player/gait';
 
 /** hue in degrees and chroma (max − min of sRGB, 0..1): HSL saturation overstates near-whites, chroma does not */
@@ -227,5 +227,29 @@ describe.skipIf(!existsSync(JURY_RAIDER))('batched raider crew (one draw per boa
       const s = sm.boundingSphere!.clone().applyMatrix4(sm.matrixWorld);
       for (const v of skinned(sm)) expect(s.containsPoint(v)).toBe(true);
     }
+  });
+});
+
+// Normal-look isolation at the shader level: the Jury-Rigged extension (plastic accents, the measurement mask) must
+// not compile into the default look's materials. Outside a look visit an untagged material's shader carries none of
+// it and keeps the default program key, so it is the same program main builds (checked byte-for-byte when added).
+describe('the default look compiles the default shaders', () => {
+  const compile = (accent: boolean) => {
+    const m = weather(new THREE.MeshToonMaterial({ vertexColors: true }), 1, false, accent);
+    const sh = { uniforms: {} as Record<string, unknown>, vertexShader: THREE.ShaderLib.toon.vertexShader, fragmentShader: THREE.ShaderLib.toon.fragmentShader };
+    m.onBeforeCompile(sh as never, null as never);
+    return { src: sh.vertexShader + sh.fragmentShader, key: m.customProgramCacheKey(), uniforms: Object.keys(sh.uniforms) };
+  };
+  it('an untagged material has no accent code, no mask uniform and the default program key', () => {
+    const d = compile(false);
+    expect(d.src).not.toMatch(/vWxAcc|uAccentMask|attribute float accent/);
+    expect(d.uniforms).not.toContain('uAccentMask');
+    expect(d.key).toBe('weather-0');
+  });
+  it('an accent material gets the plastic grading, the tag and its own program', () => {
+    const a = compile(true);
+    expect(a.src).toMatch(/attribute float accent/);
+    expect(a.src).toMatch(/vWxAcc/);
+    expect(a.key).toBe('weather-0-acc');
   });
 });

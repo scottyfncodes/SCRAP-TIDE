@@ -1,0 +1,1161 @@
+{
+ "note": "scripts/jury-profile.mjs on the correction build. toll: per-draw attribution summed over two consecutive frames (main and shadow passes); info.calls is the C5 metric (main pass of the last frame). storm: Driftholm approach in a full squall, 5 runs x 5 frames per variant, fresh page each, order rotated; 'main' is a build of origin/main 751a921.",
+ "toll": {
+  "default": {
+   "draws": 300,
+   "info": {
+    "calls": 109,
+    "tris": 452658
+   },
+   "byCategory": {
+    "other: Mesh": 162,
+    "player boat": 86,
+    "captain": 4,
+    "townsfolk / other character": 32,
+    "other: Sprite": 4,
+    "other: wind_streaks": 4,
+    "other: Points": 8
+   },
+   "detail": {
+    "captain | main | MeshToonMaterial": 2,
+    "captain | shadow | MeshDepthMaterial": 2,
+    "other: Mesh | main | MeshBasicMaterial": 44,
+    "other: Mesh | main | MeshToonMaterial": 96,
+    "other: Mesh | main | ShaderMaterial": 4,
+    "other: Mesh | shadow | MeshDepthMaterial": 18,
+    "other: Points | main | PointsMaterial": 8,
+    "other: Sprite | main | SpriteMaterial": 4,
+    "other: wind_streaks | main | MeshBasicMaterial": 4,
+    "player boat | main | MeshToonMaterial": 44,
+    "player boat | shadow | MeshDepthMaterial": 42,
+    "townsfolk / other character | main | MeshToonMaterial": 16,
+    "townsfolk / other character | shadow | MeshDepthMaterial": 16
+   }
+  },
+  "jury": {
+   "draws": 314,
+   "info": {
+    "calls": 112,
+    "tris": 489764
+   },
+   "byCategory": {
+    "other: Mesh": 160,
+    "player boat": 86,
+    "captain": 4,
+    "Jawboat hull": 8,
+    "raider crew (Jawboat)": 8,
+    "townsfolk / other character": 32,
+    "other: Sprite": 4,
+    "other: wind_streaks": 4,
+    "other: Points": 8
+   },
+   "detail": {
+    "Jawboat hull | main | MeshToonMaterial": 4,
+    "Jawboat hull | shadow | MeshDepthMaterial": 4,
+    "captain | main | MeshToonMaterial": 2,
+    "captain | shadow | MeshDepthMaterial": 2,
+    "other: Mesh | main | MeshBasicMaterial": 44,
+    "other: Mesh | main | MeshToonMaterial": 94,
+    "other: Mesh | main | ShaderMaterial": 4,
+    "other: Mesh | shadow | MeshDepthMaterial": 18,
+    "other: Points | main | PointsMaterial": 8,
+    "other: Sprite | main | SpriteMaterial": 4,
+    "other: wind_streaks | main | MeshBasicMaterial": 4,
+    "player boat | main | MeshToonMaterial": 44,
+    "player boat | shadow | MeshDepthMaterial": 42,
+    "raider crew (Jawboat) | main | MeshToonMaterial": 4,
+    "raider crew (Jawboat) | shadow | MeshDepthMaterial": 4,
+    "townsfolk / other character | main | MeshToonMaterial": 16,
+    "townsfolk / other character | shadow | MeshDepthMaterial": 16
+   }
+  }
+ },
+ "storm": {
+  "main": [
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ]
+  ],
+  "default": [
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 208,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ]
+  ],
+  "jury": [
+   [
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ],
+   [
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    },
+    {
+     "calls": 70,
+     "draws": 212,
+     "mainDraws": 144,
+     "byCategory": {
+      "other: Mesh": 68,
+      "player boat": 44,
+      "captain": 2,
+      "townsfolk / other character": 16,
+      "other: LineSegments": 2,
+      "other: wind_streaks": 4,
+      "other: Points": 8
+     }
+    }
+   ]
+  ]
+ }
+}

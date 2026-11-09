@@ -134,6 +134,27 @@ for (const look of LOOKS) {
         await page.waitForFunction((t) => window.__game.renderT >= t, t0 + 1.0, { timeout: 240000, polling: 100 });
         await clear();
         const info = await page.evaluate(() => ({ calls: window.__game.renderer.info.render.calls, tris: window.__game.renderer.info.render.triangles }));
+        // the next frame's main-pass draws by kind (scripts/jury-profile.mjs has the full attribution), so a C5 delta can
+        // be tied to the objects that cause it
+        info.draws = await page.evaluate(
+          () =>
+            new Promise((done) => {
+              const g = window.__game, r = g.renderer, raiderObjs = new Set(g.raiders.list.map((q) => q.obj));
+              const kind = (o) => {
+                for (let p = o; p; p = p.parent) {
+                  if (p.userData?.jury === 'jawboat') return o.isSkinnedMesh ? 'jawboatCrew' : 'jawboat';
+                  if (raiderObjs.has(p)) return o.isSkinnedMesh ? 'raiderCrew' : 'raiderSkiff';
+                }
+                return o.isSkinnedMesh ? 'characters' : o.type === 'Mesh' ? 'meshes' : 'fx';
+              };
+              const orig = r.renderBufferDirect, m = {};
+              r.renderBufferDirect = function (camera, scene, geometry, material, object) {
+                if (camera === g.camera) m[kind(object)] = (m[kind(object)] ?? 0) + 1;
+                return orig.apply(this, arguments);
+              };
+              requestAnimationFrame(() => requestAnimationFrame(() => ((r.renderBufferDirect = orig), done(m))));
+            })
+        );
         const ms = await page.evaluate(
           () =>
             new Promise((r) => {
