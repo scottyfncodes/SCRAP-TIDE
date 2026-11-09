@@ -701,6 +701,7 @@ export class UI {
       const ring = wrap.querySelector('.hr-ring') as SVGCircleElement;
       const DUR = 1.3;
       const t0 = performance.now();
+      wrap.dataset.t0 = String(t0); // tests time their tap from the ring's own clock
       let raf = 0, over = false;
       const radius = () => {
         const k = ((performance.now() - t0) / 1000) / DUR;

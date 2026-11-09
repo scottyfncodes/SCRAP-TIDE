@@ -418,8 +418,8 @@ const check = (name, ok, detail = '') => {
     const ring = !!(await page.$('.harpoon-ring'));
     await page.screenshot({ path: `${out}/loop_harpoon.png` });
     // wait for the ring to close on the band, then tap
-    await page.waitForFunction(() => { const r = document.querySelector('.hr-ring'); return !r || Math.abs(+r.getAttribute('r') - 24) < 5; }, null, { timeout: 8000, polling: 16 }).catch(() => {});
-    await page.dispatchEvent('.harpoon-ring', 'pointerdown').catch(() => {});
+    // tap when the ring sits on the gold band: r = 56 - 50·t/1.3 s = 24 at t = 0.832 s (timed in the page, from the ring's own clock)
+    await g(() => new Promise((res) => { const w = document.querySelector('.harpoon-ring'); if (!w) return res(); const at = +w.dataset.t0 + 832; const f = () => { if (performance.now() >= at) { w.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); res(); } else setTimeout(f, 1); }; f(); }));
     await page.waitForTimeout(800);
     const caught = await g(() => window.__game.caches.length);
     check('the harpoon ring opens and a hit reels the cache in', ring && caught === 0, `ring ${ring}, caches left ${caught}`);

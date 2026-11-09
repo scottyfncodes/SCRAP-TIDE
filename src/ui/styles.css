@@ -628,4 +628,4 @@ body.calm .quest.pulse { animation: none; }
 .stamp b { display: block; font: 900 34px/1 var(--display); color: var(--sc); letter-spacing: 2px; text-shadow: 0 3px 0 rgba(0,0,0,.45), 0 0 18px rgba(0,0,0,.5); }
 .stamp span { display: block; margin-top: 6px; font: 700 15px/1.2 var(--label); color: #efe6d2; text-shadow: 0 1px 3px #000; }
 @keyframes stampin { 0% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); } 12% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -60%) scale(1); } }
-@media (max-width: 480px) { .stamp b { font-size: 28px; } .trip { font-size: 11px; gap: 4px; } }
+@media (max-width: 480px) { .stamp b { font-size: 28px; } .trip { font-size: 11px; gap: 4px; } .harpoon-ring { bottom: calc(250px + env(safe-area-inset-bottom)); } }

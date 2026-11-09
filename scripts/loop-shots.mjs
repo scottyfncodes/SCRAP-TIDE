@@ -48,7 +48,7 @@ const hold = (g, s) => {
 const SCENES = {
   // Phase 1
   hud_trip: { q: '?ship=trimaran', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.store.addCargo('scrap_metal', 6); g.store.addCargo('transistor_radio', 1); g.store.addCargo('gold_watch', 1); g.store.data.trip = { on: true, t: 60, hauls: 2, startGold: 0 }; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); } },
-  squall: { q: '?ship=trimaran', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.store.addCargo('scrap_metal', 8); g.store.addCargo('electronics', 3); g.store.addCargo('gold_watch', 1); g.store.data.trip = { on: true, t: g.tripLen + 30, hauls: 3, startGold: 0 }; g.store.data.hull = 9999; (window.__hold)(g, { x: 150, z: -40, h: 2.2, tod: 0.55 }); setInterval(() => { g.store.data.hull = Math.max(g.store.data.hull, g.store.stats.hullMax * 0.55); }, 50); } },
+  squall: { q: '?ship=trimaran', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.store.addCargo('scrap_metal', 8); g.store.addCargo('electronics', 3); g.store.addCargo('gold_watch', 1); g.store.data.trip = { on: true, t: g.tripLen + 30, hauls: 3, startGold: 0 }; (window.__hold)(g, { x: 150, z: -40, h: 2.2, tod: 0.55 }); setInterval(() => { g.store.data.hull = Math.max(g.store.data.hull, g.store.stats.hullMax * 0.55); }, 50); } },
   winch: { q: '?ship=trimaran', run: () => { const g = window.__game; (window.__hold)(g, { x: 70, z: 150, h: 1.6 }); g.ui.openWinch({ title: 'The Sunken Tower', sub: 'The top four floors of an office block.', window: 0.26, speed: 0.4, pulls: 3 }); setTimeout(() => { const p = document.querySelectorAll('.w-pips i'); p[0]?.classList.add('perfect'); p[1]?.classList.add('hit'); const m = document.querySelector('.w-msg'); if (m) { m.textContent = 'PERFECT! Bonus loot!'; m.style.color = '#a87400'; } }, 300); } },
   harpoon: { q: '?ship=trimaran&upgrades=harpoon_turret', run: () => { const g = window.__game; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.harpoonRing?.('CACHE'); } },
   bank: { q: '?ship=trimaran', run: () => { const g = window.__game; (window.__hold)(g, { x: 20, z: 150, h: 3.0 }); g.ui.stamp ? g.ui.stamp('BANKED', '9 items · worth 186g · Driftholm') : 0; } },
@@ -81,8 +81,8 @@ for (const [vid, vp] of Object.entries(VIEWS)) {
     if (name === want[0]) report.fps[vid] = await page.evaluate(() => new Promise((r) => { let n = 0; const t = performance.now(); const f = () => { n++; if (performance.now() - t < 4000) requestAnimationFrame(f); else r(+(n / ((performance.now() - t) / 1000)).toFixed(2)); }; requestAnimationFrame(f); }));
     await clear();
     if (name === 'harpoon' || name === 'bank') await page.evaluate(`(${sc.run.toString()})()`);
-    await page.waitForTimeout(name === 'bank' ? 250 : 500);
-    await page.screenshot({ path: `${out}/${name}-${vid}.png` });
+    await page.waitForTimeout(name === 'bank' ? 250 : name === 'harpoon' ? 120 : 500);
+    await page.screenshot({ path: `${out}/${name}-${vid}.png`, timeout: 120000 });
     report.scenes[`${name}-${vid}`] = 'ok';
     await ctx.close();
   }
