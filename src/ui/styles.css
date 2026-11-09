@@ -675,3 +675,4 @@ body.calm .quest.pulse { animation: none; }
 .row.job.done-job { border-color: #f0c445; }
 .jobbar { height: 6px; border-radius: 3px; background: rgba(13,17,19,.15); overflow: hidden; margin-top: 6px; }
 .jobbar i { display: block; height: 100%; background: #d6a62a; }
+.reveal.tier-rare .r-kicker, .reveal.tier-legendary .r-kicker { margin-top: 22px; }

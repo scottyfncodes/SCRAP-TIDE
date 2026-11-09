@@ -8,7 +8,7 @@ import { item, ITEM_MAP } from './items';
 export type Tier = 'junk' | 'common' | 'rare' | 'legendary';
 export const TIERS: Tier[] = ['junk', 'common', 'rare', 'legendary'];
 export const TIER_LABEL: Record<Tier, string> = { junk: 'Junk', common: 'Common', rare: 'Rare', legendary: 'Legendary' };
-export const TIER_COLOR: Record<Tier, string> = { junk: '#8d877a', common: '#d9cfb4', rare: '#4f9ad8', legendary: '#f0c445' };
+export const TIER_COLOR: Record<Tier, string> = { junk: '#8d877a', common: '#b98a4e', rare: '#4f9ad8', legendary: '#f0c445' };
 
 /** The display tier of an item: bulk materials and beach shells are Junk; epic and legendary finds are Legendary. */
 export function tierOf(id: string): Tier {

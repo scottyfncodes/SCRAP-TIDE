@@ -93,7 +93,7 @@ for (const [vid, vp] of Object.entries(VIEWS)) {
     if (name === want[0]) report.fps[vid] = await page.evaluate(() => new Promise((r) => { let n = 0; const t = performance.now(); const f = () => { n++; if (performance.now() - t < 4000) requestAnimationFrame(f); else r(+(n / ((performance.now() - t) / 1000)).toFixed(2)); }; requestAnimationFrame(f); }));
     await clear();
     if (['harpoon', 'bank', 'loot_reveal'].includes(name)) await page.evaluate(`(${sc.run.toString()})()`);
-    await page.waitForTimeout(name === 'bank' ? 250 : name === 'harpoon' ? 120 : 500);
+    await page.waitForTimeout(name === 'bank' ? 250 : name === 'harpoon' ? 120 : name === 'loot_reveal' ? 1600 : 500);
     await page.screenshot({ path: `${out}/${name}-${vid}.png`, timeout: 120000 });
     report.scenes[`${name}-${vid}`] = 'ok';
     await ctx.close();
