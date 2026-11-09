@@ -286,7 +286,16 @@ function waveMesh(): THREE.Object3D {
   const geo = new THREE.ExtrudeGeometry(sh, { depth: 90, bevelEnabled: false, curveSegments: 10 });
   geo.translate(0, 0, -45);
   geo.rotateY(Math.PI / 2); // the profile's forward axis becomes local -z: the face points along -z
-  const body = new THREE.Mesh(geo, new THREE.MeshToonMaterial({ color: 0x1f6474, transparent: true, opacity: 0.94 }));
+  // deep sea at the foot, glassy sea-glass near the lip (vertex colours by height)
+  const pos = geo.getAttribute('position');
+  const col = new Float32Array(pos.count * 3);
+  const lo = new THREE.Color('#0f3c4a'), hi = new THREE.Color('#4fb3b8'), c = new THREE.Color();
+  for (let i = 0; i < pos.count; i++) {
+    c.copy(lo).lerp(hi, Math.min(1, Math.max(0, (pos.getY(i) + 1) / 7)));
+    col.set([c.r, c.g, c.b], i * 3);
+  }
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const body = new THREE.Mesh(geo, new THREE.MeshToonMaterial({ vertexColors: true, transparent: true, opacity: 0.95 }));
   g.add(body);
   const lip = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 90, 8), new THREE.MeshBasicMaterial({ color: 0xe9fbf6 }));
   lip.rotation.z = Math.PI / 2;
