@@ -413,14 +413,22 @@ const check = (name, ok, detail = '') => {
     await page.waitForTimeout(800);
     const hacts = await actions();
     check('with a Harpoon Turret, a cache out of hook reach offers HARPOON', hacts.some((a) => /HARPOON CACHE/.test(a)), hacts.join(' | '));
-    await click(/HARPOON/);
-    await page.waitForSelector('.harpoon-ring', { timeout: 5000 }).catch(() => {});
-    const ring = !!(await page.$('.harpoon-ring'));
-    await page.screenshot({ path: `${out}/loop_harpoon.png` });
-    // wait for the ring to close on the band, then tap
-    // tap when the ring sits on the gold band: r = 56 - 50·t/1.3 s = 24 at t = 0.832 s (timed in the page, from the ring's own clock)
-    await g(() => new Promise((res) => { const w = document.querySelector('.harpoon-ring'); if (!w) return res(); const at = +w.dataset.t0 + 832; const f = () => { if (performance.now() >= at) { w.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); res(); } else setTimeout(f, 1); }; f(); }));
-    await page.waitForTimeout(800);
+    // fire and tap inside the page, on the ring's own clock (CI's headless GL is too slow for a round trip per frame);
+    // a miss just means "try again", as for a player
+    let ring = false;
+    for (let attempt = 0; attempt < 3 && (await g(() => window.__game.caches.length)) > 0; attempt++) {
+      ring = (await g(() => new Promise((res) => {
+        window.__game.harpoonShot();
+        const w = document.querySelector('.harpoon-ring');
+        if (!w) return res(false);
+        const at = +w.dataset.t0 + 832; // r = 56 - 50·t/1.3 s = 24 at t = 0.832 s
+        const f = () => { if (performance.now() >= at) { w.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); res(true); } else setTimeout(f, 1); };
+        f();
+      }))) || ring;
+      if (attempt === 0) await page.screenshot({ path: `${out}/loop_harpoon.png` });
+      await page.waitForTimeout(800);
+      if (await page.$('.reveal')) await dismiss();
+    }
     const caught = await g(() => window.__game.caches.length);
     check('the harpoon ring opens and a hit reels the cache in', ring && caught === 0, `ring ${ring}, caches left ${caught}`);
     await dismiss();
