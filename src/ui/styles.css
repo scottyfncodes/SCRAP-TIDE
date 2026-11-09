@@ -422,7 +422,7 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 .speech { background: rgba(246,248,243,.55); border-radius: 2px; padding: 10px 12px; font-family: var(--body); font-weight: 500; font-size: 15px; position: relative; margin: 0 0 12px; border: 1px solid var(--paper-edge); border-left: 3px solid var(--steel-3); line-height: 1.4; }
 .speech b { font-family: var(--display); font-weight: 400; font-size: 17px; color: var(--rust); }
 
-.map-canvas { width: 100%; max-width: 420px; display: block; margin: 0 auto 8px; border-radius: 2px; box-shadow: 0 6px 18px rgba(0,0,0,.35); filter: sepia(.25) saturate(.8) contrast(1.05); }
+.map-canvas { width: 100%; max-width: 420px; display: block; margin: 0 auto 8px; border-radius: 2px; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
 .clue { font-family: var(--body); font-style: italic; font-weight: 600; font-size: 15px; text-align: center; margin: 6px 6px 10px; color: var(--ink); }
 
 .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -612,9 +612,9 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 
 /* Zoomable maps (src/ui/mapView.ts): pinch, pan, double-tap; the surface owns its touches */
 .zmap { position: relative; width: min(100%, 64vh * var(--aspect, 1), 560px); margin: 0 auto 6px; border-radius: 3px; overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0,0,0,.35); background: #c9a46a; }
+  box-shadow: 0 6px 18px rgba(0,0,0,.35); background: #e2e3d8; }
 .zmap canvas { display: block; width: 100%; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
-  filter: sepia(.18) saturate(.85) contrast(1.04); cursor: grab; }
+  cursor: grab; }
 .zmap canvas:active { cursor: grabbing; }
 .zmap-btns { position: absolute; right: 8px; bottom: 8px; display: flex; flex-direction: column; gap: 8px; }
 .zmap-btn { width: 44px; height: 44px; border-radius: 4px; border: 1px solid var(--plate-edge); background: var(--rivets-top), linear-gradient(180deg, #24343a, #0e181c);
