@@ -158,6 +158,15 @@ Decision needed: approve the renames and the two model rebuilds.
 All of the above ran in **headless Chromium (SwiftShader) on Linux**. None of it was tested on a physical iPhone, so
 Safari canvas text rendering and touch feel on a device are untested.
 
+## Performance
+
+Measured in headless Chromium, old and new renderer on the same machine:
+- **World chart**, per paint (runs on every pan or zoom): 0.07 ms → 0.14 ms. Negligible.
+- **Treasure sheet**, one-time render at 2× when the map opens: 56 ms → 69 ms. The shoal tint now fills every cell
+  instead of a sparse hatch.
+
+No new textures or images: everything is drawn on the canvas, as before.
+
 ## Remaining
 
 - The three proposals above (currency, containers, instruments) wait for approval.
