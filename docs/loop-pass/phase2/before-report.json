@@ -1,0 +1,19 @@
+{
+  "base": "https://tidebreakers.vercel.app/",
+  "scenes": {
+    "wrecks-desktop": "ok",
+    "salvage_log-desktop": "ok",
+    "shop-desktop": "ok",
+    "wrecks-phone": "ok",
+    "salvage_log-phone": "ok",
+    "shop-phone": "ok"
+  },
+  "console": {
+    "desktop": [],
+    "phone": []
+  },
+  "fps": {
+    "desktop": 1.39,
+    "phone": 3.18
+  }
+}

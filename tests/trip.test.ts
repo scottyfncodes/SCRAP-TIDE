@@ -8,7 +8,7 @@ import { FIRST_VOYAGE, liveStep } from '../src/data/progress';
 const mem = new Map<string, string>();
 (globalThis as any).localStorage = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) };
 (globalThis as any).window = globalThis;
-const { Store, freshSave } = await import('../src/state/store');
+const { Store, freshSave, SAVE_VERSION } = await import('../src/state/store');
 
 describe('trip clock and squall', () => {
   it('a trip is roughly 3 to 5 minutes before the squall, longer with the turbine and drums', () => {
@@ -87,7 +87,7 @@ describe('banking and loss in the save', () => {
   it('a v5 save migrates: trip state is added, everything owned carries over', () => {
     mem.set('tidebreakers.save.v1', JSON.stringify({ version: 5, gold: 410, vessel: 'sloop', vesselsOwned: ['dinghy', 'sloop'], upgrades: ['sail_canvas', 'radar_mast'], cosmetics: ['paint_rust', 'sail_plain', 'flag_none'], equipped: { paint: 'paint_rust' }, quest: 'free', ship: { docked: false, x: 50, z: 50 } }));
     const d = new Store().data;
-    expect(d.version).toBe(6);
+    expect(d.version).toBe(SAVE_VERSION);
     expect(d.gold).toBe(410);
     expect(d.vesselsOwned).toEqual(['dinghy', 'sloop']);
     expect(d.upgrades).toEqual(['sail_canvas', 'radar_mast']);

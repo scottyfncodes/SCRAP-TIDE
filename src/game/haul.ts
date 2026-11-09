@@ -17,8 +17,8 @@ export function perfectBonus(perfects: number): number {
 
 /** Width of the perfect strip as a share of the green window, and whether a needle position hits it. */
 export const PERFECT_SHARE = 0.34;
-export function pullGrade(pos: number, zoneLeft: number, window: number): 'perfect' | 'hit' | 'miss' {
+export function pullGrade(pos: number, zoneLeft: number, window: number, share = PERFECT_SHARE): 'perfect' | 'hit' | 'miss' {
   if (pos < zoneLeft || pos > zoneLeft + window) return 'miss';
   const mid = zoneLeft + window / 2;
-  return Math.abs(pos - mid) <= (window * PERFECT_SHARE) / 2 ? 'perfect' : 'hit';
+  return Math.abs(pos - mid) <= (window * share) / 2 ? 'perfect' : 'hit';
 }

@@ -58,6 +58,12 @@ const SCENES = {
   helm_brig: { q: '?ship=brig', run: () => { const g = window.__game; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); } },
   helm_ironwake: { q: '?ship=ironwake&upgrades=all', run: () => { const g = window.__game; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); } },
   panel: { q: '?ship=trimaran', run: () => { const g = window.__game; g.store.data.gold = 900; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.openPanel('shipwright'); } },
+  // Phase 2
+  loot_reveal: { q: '?ship=trimaran&upgrades=radar_mast,compass_brass', run: () => { const g = window.__game; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.revealChest('Legendary Wreck: The Last Ferry', [{ id: 'scrap_metal', n: 3 }, { id: 'gold_bar', n: 2 }, { id: 'ship_in_bottle', n: 1 }, { id: 'sextant', n: 1 }], 'PERFECT HAUL!', 'legendary'); } },
+  wrecks: { q: '?ship=trimaran&upgrades=radar_mast,compass_brass', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.tripStart(); g.wrecks?.spawnAt(95, 60, 'legendary'); g.wrecks?.spawnAt(20, 40, 'rare'); g.wrecks?.spawnAt(70, 95, 'common'); (window.__hold)(g, { x: 60, z: 130, h: 2.8, yaw: 0.1, pitch: 0.28 }); document.querySelector('.radar')?.classList.add('big'); } },
+  salvage_log: { q: '?ship=trimaran', run: () => { const g = window.__game; for (const id of ['conch', 'spiral_shell', 'sand_dollar', 'starfish', 'sea_glass', 'coral_branch', 'transistor_radio', 'vinyl_record', 'sextant', 'ship_bell', 'rubber_duck', 'pearl', 'gold_watch']) g.store.discover(id, 'the Drift'); (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.openPanel('catalog', 'sets'); } },
+  shop: { q: '?ship=trimaran&upgrades=sail_canvas,cargo_crate,rudder_ash', run: () => { const g = window.__game; g.store.data.gold = 900; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.openPanel('shipwright'); setTimeout(() => { const b = document.querySelector('.sheet-body, .sheet .body'); const t = [...document.querySelectorAll('.section-title')].find((e) => /Salvage Gear|Navigation/.test(e.textContent)); t?.scrollIntoView(); }, 200); } },
+  dock_board: { q: '?ship=trimaran', run: () => { const g = window.__game; const j = g.store.data.jobs.board; j[0].progress = Math.ceil(j[0].n / 2); j[1].progress = j[1].n; j[1].done = true; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.openPanel('harbor'); setTimeout(() => [...document.querySelectorAll('.section-title')].find((e) => /Dock board/.test(e.textContent))?.scrollIntoView(), 200); } },
 };
 
 const browser = await playwright.chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -86,8 +92,8 @@ for (const [vid, vp] of Object.entries(VIEWS)) {
     await page.waitForFunction((t) => window.__game.renderT >= t, t0 + 1.5, { timeout: 120000, polling: 100 }).catch(() => {});
     if (name === want[0]) report.fps[vid] = await page.evaluate(() => new Promise((r) => { let n = 0; const t = performance.now(); const f = () => { n++; if (performance.now() - t < 4000) requestAnimationFrame(f); else r(+(n / ((performance.now() - t) / 1000)).toFixed(2)); }; requestAnimationFrame(f); }));
     await clear();
-    if (name === 'harpoon' || name === 'bank') await page.evaluate(`(${sc.run.toString()})()`);
-    await page.waitForTimeout(name === 'bank' ? 250 : name === 'harpoon' ? 120 : 500);
+    if (['harpoon', 'bank', 'loot_reveal'].includes(name)) await page.evaluate(`(${sc.run.toString()})()`);
+    await page.waitForTimeout(name === 'bank' ? 250 : name === 'harpoon' ? 120 : name === 'loot_reveal' ? 1600 : 500);
     await page.screenshot({ path: `${out}/${name}-${vid}.png`, timeout: 120000 });
     report.scenes[`${name}-${vid}`] = 'ok';
     await ctx.close();
