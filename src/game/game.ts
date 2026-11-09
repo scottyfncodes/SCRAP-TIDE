@@ -43,8 +43,10 @@ import { windEff, offWind, luffAmount, pointOfSail, bearAwaySide, luffLine, draw
 import { WindStreaks } from '../world/windStreaks';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
 import { Wrecks, type Wreck } from './wrecks';
+import { SeaEvents } from './seaEvents';
+import { dailyPlan, dayKey, scoreDaily, nextStreak, shareText, type SeaEventKind } from './daily';
 import { progressJobs, claimJobs, type JobEvent } from './dockJobs';
-import { completedSets, bonusText, TIER_LABEL } from '../data/loot';
+import { completedSets, bonusText, TIER_LABEL, tierOf } from '../data/loot';
 import { clockRate } from './trip';
 import { tripLength, squallLevel, squallDamage, tripLeft, tripPhase, holdValue, keepsOnSink, SQUALL_WARN, type TripPhase } from './trip';
 
@@ -89,6 +91,13 @@ export class Game implements GameAPI {
   salvage!: Salvage;
   raiders!: Raiders;
   wrecks!: Wrecks;
+  events!: SeaEvents;
+  /** Phase 4 hook: the raider wave-runner event. */
+  raiderEvent?: (a: any) => void;
+  /** The last big hit was taken by the armour's once-a-trip shield. */
+  shieldBlockedLast = false;
+  private jumpY = 0;
+  private jumpV = 0;
   /** Phase 3 sea events hook: a surfacing wreck went under before you hauled it. */
   onWreckLost?: (w: Wreck) => void;
   /** Armour plating's one big hit a trip (loop pass Phase 2). */
@@ -218,6 +227,8 @@ export class Game implements GameAPI {
     this.atmo.onThunder = (d) => setTimeout(() => audio.thunder(1 - d * 0.6), d * 1400);
     this.salvage = new Salvage(this);
     this.wrecks = new Wrecks(this);
+    this.events = new SeaEvents(this);
+    this.onWreckLost = (w) => this.events.wreckLost(w);
     this.raiders = new Raiders(this);
     this.placeCastaways();
     this.placeSeaMarks();
@@ -601,6 +612,67 @@ export class Game implements GameAPI {
     this.atmo.squall = 0;
     this.shieldUsed = false;
     this.wrecks?.onTripStart();
+    // the Daily Tide: today's fixed wrecks and events; free play: a fresh random set
+    const daily = d.daily.active ? dailyPlan(d.daily.active, this.events.pool) : null;
+    this.events?.onTripStart(daily?.events);
+    // ?event=rogue_wave|surfacing_wreck|rival|creature|raiders (a sandboxed preview): that event, 2 s after casting off
+    const ev = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('event') : null;
+    if (ev && this.store.sandbox && (this.events.pool as string[]).includes(ev)) setTimeout(() => this.events.trigger(ev as SeaEventKind), 2000);
+    if (daily) {
+      d.daily.perfects = 0;
+      d.daily.legendary = 0;
+      const p = this.env.pierTip;
+      for (const w of daily.wrecks) {
+        // walk out along the bearing until the water is deep enough (the same spot for everyone: terrain is fixed)
+        let dist = w.dist, x = 0, z = 0;
+        for (let k = 0; k < 40; k++, dist += 12) {
+          x = p.x + Math.sin(w.bearing) * dist;
+          z = p.z + Math.cos(w.bearing) * dist;
+          if (heightAt(x, z) < -4 && !this.drowned.colliders.some((c) => Math.hypot(c.x - x, c.z - z) < c.r + 10)) break;
+        }
+        this.wrecks.spawnAt(x, z, w.tier);
+      }
+    }
+  }
+
+  // ───────── the Daily Tide (loop pass Phase 3, game/daily.ts) ─────────
+  today() {
+    return dayKey(new Date());
+  }
+  /** Cast off on today's Daily Tide from the dock. Free play stays open: this is just a seeded trip. */
+  startDaily() {
+    const d = this.store.data;
+    if (!this.boat.docked) return;
+    d.daily.active = this.today();
+    this.ui.closePanel();
+    this.boat.docked = false;
+    this.tripStart();
+    this.ui.stamp('DAILY TIDE', `${d.daily.active} · same sea for everyone`, '#f0c445');
+    audio.squallWarn();
+    this.store.commit();
+  }
+  /** A Daily Tide run ends (banked at a dock, or swamped): score it, update the streak, show the end card. */
+  private endDaily(banked: number, sunk: boolean) {
+    const d = this.store.data;
+    const date = d.daily.active;
+    if (!date) return;
+    d.daily.active = null;
+    const sc = scoreDaily({ banked, perfects: d.daily.perfects, events: this.events.beaten, legendary: d.daily.legendary, sunk });
+    d.daily.streak = nextStreak(d.daily.last, d.daily.streak, date);
+    d.daily.last = date;
+    d.daily.runs++;
+    const prev = d.daily.best[date] ?? 0;
+    d.daily.best[date] = Math.max(prev, sc.total);
+    const seen = this.events.seen as SeaEventKind[];
+    const text = shareText(date, sc, d.daily.streak, seen);
+    this.store.commit();
+    setTimeout(() => this.ui.dailyEnd(date, sc, d.daily.streak, text, sc.total > prev && prev > 0), sunk ? 900 : 2600);
+  }
+  /** A small hop: riding over a wave crest (and, in Phase 4, the Wave Runner's jumps). */
+  jump(k = 1) {
+    this.jumpV = Math.max(this.jumpV, 5.5 * k);
+    this.haptic([20, 30, 60]);
+    audio.splash(true);
   }
   /** Can this boat work the water at a spot (the open swell needs the Trimaran, the Stormwall the Ironwake)? */
   crossOk(x: number, z: number) {
@@ -653,6 +725,11 @@ export class Game implements GameAPI {
     const n = s.unloadToVault();
     if (n) this.jobEvent({ kind: 'bank', value, items });
     this.claimDockJobs();
+    this.events?.clear();
+    if (d.daily.active) {
+      d.daily.legendary += items.filter((i) => tierOf(i.id) === 'legendary').reduce((a, b) => a + b.n, 0);
+      this.endDaily(value, false);
+    }
     const wasOn = d.trip.on;
     d.trip.on = false;
     d.trip.t = 0;
@@ -1428,8 +1505,10 @@ export class Game implements GameAPI {
       audio.clunk();
       this.haptic(50);
       this.say('shield', 'The armour plating took it! (once a trip)', 2, { color: '#9fd0c8' });
+      this.shieldBlockedLast = true;
       return;
     }
+    if (n >= 8) this.shieldBlockedLast = false;
     const dmg = n * (1 - st.armor);
     s.hull = Math.max(0, s.hull - dmg);
     if (msg && dmg > 0.5) this.say('dmg', `${msg} −${Math.round(dmg)} hull`, 2, { color: '#ff6b4a' });
@@ -1454,10 +1533,15 @@ export class Game implements GameAPI {
     if (s.hull <= 0) this.swamped();
   }
 
+  /** A swamping is under way (its fade has not landed yet): more damage must not start a second tow home. */
+  private swamping = false;
   private swamped() {
+    if (this.swamping) return;
+    this.swamping = true;
     const s = this.store;
     this.engineOn = false;
     this.ui.fade(() => {
+      this.swamping = false;
       // push-your-luck (loop pass Phase 1): the whole hold goes over the side, except one-of-a-kind story finds.
       // Gold, upgrades, vessels and everything already banked in the vault are never touched.
       const value = holdValue(s.data.cargo);
@@ -1465,6 +1549,8 @@ export class Game implements GameAPI {
       const lost = gone.reduce((a, b) => a + b.n, 0);
       const lostValue = value - holdValue(s.data.cargo);
       if (s.data.trip.on) s.data.loop.tripsLost++;
+      this.events.clear();
+      if (s.data.daily.active) this.endDaily(0, true);
       s.data.trip.on = false;
       s.data.trip.t = 0;
       this.atmo.squall = 0;
@@ -2249,7 +2335,10 @@ export class Game implements GameAPI {
     // wind you can see: faint streaks drifting downwind round the boat (fainter at night, stronger in a storm)
     this.windStreaks.update(this.t, pxz.x, pxz.z, WORLD.wind.dir, this.started ? (1 - this.atmo.night * 0.6) * (1 + this.atmo.storm * 0.8) : 0);
     this.salvage.update(dt);
-    if (this.started) this.wrecks.update(dt);
+    if (this.started) {
+      this.wrecks.update(dt);
+      this.events.update(dt);
+    }
     this.raiders.update(dt);
     for (const c of this.ship.crew) c.mixer.update(dt);
     for (const [id, o] of this.castawayObjs) {
@@ -2528,7 +2617,16 @@ export class Game implements GameAPI {
     const L = this.ship.length;
     const fwdSlope = (w.dx * fx + w.dz * fz);
     const sideSlope = (w.dx * fz - w.dz * fx);
-    this.shipRoot.position.set(b.x, w.y + 0.05, b.z);
+    if (this.jumpV > 0 || this.jumpY > 0) {
+      this.jumpY += this.jumpV * dt;
+      this.jumpV -= 16 * dt;
+      if (this.jumpY <= 0) {
+        if (this.jumpV < -3) this.foam.emit(new THREE.Vector3(b.x, w.y + 0.3, b.z), 30, '#ffffff', 3, 4, 1.1, 8, 1.5);
+        this.jumpY = 0;
+        this.jumpV = 0;
+      }
+    }
+    this.shipRoot.position.set(b.x, w.y + 0.05 + this.jumpY, b.z);
     this.shipRoot.rotation.order = 'YXZ';
     this.shipRoot.rotation.y = b.heading;
     // pitch and roll ease toward the wave slope (and the heel into a turn) at a rate in time, not per frame: the

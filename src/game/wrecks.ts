@@ -177,6 +177,7 @@ export class Wrecks {
     }
     // a few wrecks per trip, ahead and to the sides, in open water
     if (!g.store.data.trip.on || b.docked || g.mode !== 'sail') return;
+    if (g.store.data.daily.active) return; // the Daily Tide's wrecks are fixed by its seed
     this.timer -= dt;
     if (this.timer > 0) return;
     this.timer = 45;

@@ -10,7 +10,7 @@ import { RNG } from '../src/core/noise';
 const mem = new Map<string, string>();
 (globalThis as any).localStorage = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) };
 (globalThis as any).window = globalThis;
-const { Store } = await import('../src/state/store');
+const { Store, SAVE_VERSION } = await import('../src/state/store');
 
 describe('loot tiers', () => {
   it('maps the five rarities onto Junk, Common, Rare, Legendary', () => {
@@ -149,7 +149,7 @@ describe('save migration v6 → v7', () => {
   it('adds the dock board, sets and tiers; keeps ships, upgrades, cosmetics and the trip', () => {
     mem.set('tidebreakers.save.v1', JSON.stringify({ version: 6, gold: 90, vessel: 'brig', vesselsOwned: ['dinghy', 'sloop', 'brig'], upgrades: ['sail_canvas', 'salvage_crane'], cosmetics: ['paint_hazard'], equipped: { paint: 'paint_hazard' }, quest: 'free', trip: { on: true, t: 33, hauls: 1, startGold: 80 }, loop: { banked: 500, bestHold: 200, tripsBanked: 4, tripsLost: 1, perfects: 9 } }));
     const d = new Store().data;
-    expect(d.version).toBe(7);
+    expect(d.version).toBe(SAVE_VERSION);
     expect(d.vesselsOwned).toEqual(['dinghy', 'sloop', 'brig']);
     expect(d.upgrades).toEqual(['sail_canvas', 'salvage_crane']);
     expect(d.equipped.paint).toBe('paint_hazard');

@@ -676,3 +676,15 @@ body.calm .quest.pulse { animation: none; }
 .jobbar { height: 6px; border-radius: 3px; background: rgba(13,17,19,.15); overflow: hidden; margin-top: 6px; }
 .jobbar i { display: block; height: 100%; background: #d6a62a; }
 .reveal.tier-rare .r-kicker, .reveal.tier-legendary .r-kicker { margin-top: 34px; }
+
+/* ── loop pass, Phase 3: the Daily Tide ── */
+.daily-btn { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 3px; margin: 6px 0 4px; }
+.daily-btn small { font-size: 11px; letter-spacing: .5px; font-weight: 600; opacity: .85; text-transform: none; }
+.daily-end .d-score { width: 100%; border-collapse: collapse; margin: 10px 0 6px; font-size: 14px; }
+.daily-end .d-score td { padding: 4px 6px; border-bottom: 1px solid rgba(13,17,19,.12); }
+.daily-end .d-score td:last-child { text-align: right; font-weight: 700; font-family: var(--mono); }
+.daily-end .d-score tr.tot td { border-bottom: none; font-size: 16px; font-weight: 800; }
+.daily-end .d-streak { font-family: var(--label); font-size: 16px; margin: 4px 0; }
+.daily-end .d-share { white-space: pre-wrap; text-align: left; font-size: 12.5px; line-height: 1.45; background: rgba(13,17,19,.08); border-radius: 8px; padding: 8px 10px; margin: 6px 0; user-select: text; -webkit-user-select: text; }
+.daily-end .d-btns { display: flex; gap: 8px; justify-content: center; }
+.daily-end .best { font-size: 12px; background: #f0c445; color: #14110d; border-radius: 4px; padding: 2px 6px; vertical-align: middle; }

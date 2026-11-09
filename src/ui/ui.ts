@@ -65,6 +65,8 @@ export interface GameAPI {
   completeContract(id: string): void;
   plantGreen(id: string): void;
   haptic(ms: number | number[]): void;
+  startDaily(): void;
+  today(): string;
 }
 
 export interface StatusInfo {
@@ -512,6 +514,34 @@ export class UI {
     strip.dataset.phase = t.phase;
   }
   private lastTrip = '';
+
+  /** The Daily Tide's end screen: score breakdown, the shareable emoji result and the streak (loop pass Phase 3). */
+  dailyEnd(date: string, sc: { banked: number; perfects: number; events: number; legendary: number; sunk: boolean; total: number }, streak: number, share: string, best: boolean) {
+    audio.discover(sc.sunk ? 0 : 4);
+    this.queueReveal(() => {
+      const row = (k: string, v: string) => `<tr><td>${k}</td><td>${v}</td></tr>`;
+      const node = el(`<div class="reveal daily-end"><div class="reveal-card" style="--rc:#f0c445"><div class="rays"></div>
+        <div class="r-kicker">Daily Tide · ${date}</div>
+        <div class="r-name">${sc.sunk ? 'Swamped' : `${sc.total} points`}${best ? ' <span class="best">new best</span>' : ''}</div>
+        <table class="d-score">${row('Hold banked', `${sc.banked}g`)}${row('Perfect pulls', `${sc.perfects} × 10`)}${row('Sea events beaten', `${sc.events} × 25`)}${row('Legendary finds', `${sc.legendary} × 50`)}${sc.sunk ? row('Swamped', 'score 0') : ''}<tr class="tot"><td>Total</td><td>${sc.total}</td></tr></table>
+        <div class="d-streak">🔥 <b>${streak}</b>-day streak</div>
+        <pre class="d-share">${share}</pre>
+        <div class="d-btns"><button class="btn ghost r-ok">Done</button><button class="btn d-copy">Share result</button></div>
+        <div class="note">A new Daily Tide every day at 00:00 UTC. Free play is always open.</div></div></div>`);
+      node.querySelector('.d-copy')!.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const b = e.currentTarget as HTMLElement;
+        try {
+          if (navigator.share) await navigator.share({ text: share });
+          else await navigator.clipboard.writeText(share);
+          b.textContent = 'Copied ✔';
+        } catch {
+          b.textContent = 'Select the text above to copy';
+        }
+      });
+      return node;
+    });
+  }
 
   /** A big, short banner in the middle of the screen (banking a hold, a perfect haul). */
   stamp(title: string, sub = '', color = '#f0c445') {
@@ -1072,6 +1102,9 @@ export class UI {
     const here = mine.filter((x) => x.c.port === port);
     const board = boardFor(port, s.data).slice(0, 3);
     // dock contracts (loop pass Phase 2): three rotating jobs, paid when you dock, refilled straight away
+    const today = this.game.today();
+    const best = s.data.daily.best[today];
+    html += `<button class="act daily-btn">🌊 DAILY TIDE · ${today}<small>${best !== undefined ? `today's best ${best} · ` : ''}🔥 ${s.data.daily.last && s.data.daily.last !== today ? s.data.daily.streak : s.data.daily.streak || 0}-day streak · same sea for everyone</small></button>`;
     html += `<div class="section-title">Dock board <small>${s.data.jobs.done} done · paid on docking</small></div>`;
     for (const j of s.data.jobs.board) {
       const prog = j.kind === 'bank' ? `${Math.min(j.progress, j.n)}/${j.n}g` : `${Math.min(j.progress, j.n)}/${j.n}`;
@@ -1136,6 +1169,10 @@ export class UI {
       this.harborPanel();
     }));
     body.querySelector('.crb')?.addEventListener('click', () => this.crewBoardPanel());
+    body.querySelector('.daily-btn')?.addEventListener('click', () => {
+      audio.ui();
+      this.game.startDaily();
+    });
     body.querySelector('.setsail')!.addEventListener('click', () => {
       this.closePanel();
       this.game.setSail();

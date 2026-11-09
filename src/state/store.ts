@@ -12,7 +12,7 @@ import { dealBoard, type Job } from '../game/dockJobs';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
-export const SAVE_VERSION = 7;
+export const SAVE_VERSION = 8;
 
 export interface Stack {
   id: string;
@@ -85,6 +85,8 @@ export interface SaveData {
   jobs: { board: Job[]; seed: number; serial: number; done: number };
   setsDone: string[]; // Salvage Log sets already announced
   tiers: { junk: number; common: number; rare: number; legendary: number }; // finds hauled, by tier
+  // v8: the Daily Tide (loop pass Phase 3)
+  daily: { last: string | null; streak: number; best: Record<string, number>; runs: number; active: string | null; perfects: number; legendary: number };
 }
 
 export function freshSave(): SaveData {
@@ -144,6 +146,7 @@ export function freshSave(): SaveData {
     jobs: freshJobs(now),
     setsDone: [],
     tiers: { junk: 0, common: 0, rare: 0, legendary: 0 },
+    daily: { last: null, streak: 0, best: {}, runs: 0, active: null, perfects: 0, legendary: 0 },
   };
 }
 
@@ -194,6 +197,16 @@ function migrate(raw: any): SaveData {
   const j = raw.jobs;
   merged.jobs = j && Array.isArray(j.board) && j.board.length === 3 && Number.isFinite(j.seed) ? { board: j.board, seed: j.seed, serial: j.serial | 0, done: j.done | 0 } : base.jobs;
   merged.tiers = { ...base.tiers, ...(raw.tiers ?? {}) };
+  const dl = raw.daily ?? {};
+  merged.daily = {
+    last: typeof dl.last === 'string' ? dl.last : null,
+    streak: Number.isFinite(dl.streak) ? dl.streak : 0,
+    best: dl.best && typeof dl.best === 'object' ? { ...dl.best } : {},
+    runs: Number.isFinite(dl.runs) ? dl.runs : 0,
+    active: typeof dl.active === 'string' ? dl.active : null,
+    perfects: dl.perfects | 0,
+    legendary: dl.legendary | 0,
+  };
   merged.setsDone = Array.isArray(raw.setsDone) ? raw.setsDone.filter((x: unknown) => typeof x === 'string') : [];
   merged.shipName = typeof raw.shipName === 'string' ? raw.shipName.slice(0, 24) : '';
   merged.quest = liveStep(merged.quest); // the First Voyage was shortened: retired steps continue from their successor
