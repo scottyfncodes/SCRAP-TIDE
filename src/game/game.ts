@@ -1533,10 +1533,15 @@ export class Game implements GameAPI {
     if (s.hull <= 0) this.swamped();
   }
 
+  /** A swamping is under way (its fade has not landed yet): more damage must not start a second tow home. */
+  private swamping = false;
   private swamped() {
+    if (this.swamping) return;
+    this.swamping = true;
     const s = this.store;
     this.engineOn = false;
     this.ui.fade(() => {
+      this.swamping = false;
       // push-your-luck (loop pass Phase 1): the whole hold goes over the side, except one-of-a-kind story finds.
       // Gold, upgrades, vessels and everything already banked in the vault are never touched.
       const value = holdValue(s.data.cargo);
