@@ -1,0 +1,380 @@
+{
+  "iphone17": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 145,
+    "controlsTop": 649,
+    "clearWorldPx": 504,
+    "vh": 874,
+    "rcPre": "radar|null",
+    "rc0": "radar",
+    "trayItems": [
+      "Maps",
+      "Ship",
+      "Cargo",
+      "Catalog",
+      "Settings"
+    ],
+    "nav": {
+      "maps": {
+        "rc": "radar",
+        "open": true,
+        "title": "Maps & Charts",
+        "trayClosed": true
+      },
+      "ship": {
+        "rc": "radar",
+        "open": true,
+        "title": "Patchwork Skiff",
+        "trayClosed": true
+      },
+      "cargo": {
+        "rc": "radar",
+        "open": true,
+        "title": "Cargo Hold",
+        "trayClosed": true
+      },
+      "catalog": {
+        "rc": "radar",
+        "open": true,
+        "title": "Discovery Catalog",
+        "trayClosed": true
+      },
+      "settings": {
+        "rc": "radar",
+        "open": true,
+        "title": "Settings",
+        "trayClosed": true
+      },
+      "mapsDirect": true,
+      "cargoChip": "Cargo Hold",
+      "outsideCloses": true,
+      "rcAfter": "radar"
+    },
+    "radarBig": [
+      true,
+      66,
+      [
+        "radar",
+        "radar big"
+      ]
+    ]
+  },
+  "iphone13": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 145,
+    "controlsTop": 619,
+    "clearWorldPx": 474,
+    "vh": 844,
+    "rcPre": "radar|null",
+    "rc0": "radar",
+    "trayItems": [
+      "Maps",
+      "Ship",
+      "Cargo",
+      "Catalog",
+      "Settings"
+    ],
+    "nav": {
+      "maps": {
+        "rc": "radar",
+        "open": true,
+        "title": "Maps & Charts",
+        "trayClosed": true
+      },
+      "ship": {
+        "rc": "radar",
+        "open": true,
+        "title": "Patchwork Skiff",
+        "trayClosed": true
+      },
+      "cargo": {
+        "rc": "radar",
+        "open": true,
+        "title": "Cargo Hold",
+        "trayClosed": true
+      },
+      "catalog": {
+        "rc": "radar",
+        "open": true,
+        "title": "Discovery Catalog",
+        "trayClosed": true
+      },
+      "settings": {
+        "rc": "radar",
+        "open": true,
+        "title": "Settings",
+        "trayClosed": true
+      },
+      "mapsDirect": true,
+      "cargoChip": "Cargo Hold",
+      "outsideCloses": true,
+      "rcAfter": "radar"
+    },
+    "radarBig": [
+      true,
+      66,
+      [
+        "radar",
+        "radar big"
+      ]
+    ]
+  },
+  "narrow": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 143,
+    "controlsTop": 353,
+    "clearWorldPx": 210,
+    "vh": 568,
+    "rcPre": "radar|null",
+    "rc0": "radar",
+    "trayItems": [
+      "Maps",
+      "Ship",
+      "Cargo",
+      "Catalog",
+      "Settings"
+    ],
+    "nav": {
+      "maps": {
+        "rc": "radar",
+        "open": true,
+        "title": "Maps & Charts",
+        "trayClosed": true
+      },
+      "ship": {
+        "rc": "radar",
+        "open": true,
+        "title": "Patchwork Skiff",
+        "trayClosed": true
+      },
+      "cargo": {
+        "rc": "radar",
+        "open": true,
+        "title": "Cargo Hold",
+        "trayClosed": true
+      },
+      "catalog": {
+        "rc": "radar",
+        "open": true,
+        "title": "Discovery Catalog",
+        "trayClosed": true
+      },
+      "settings": {
+        "rc": "radar",
+        "open": true,
+        "title": "Settings",
+        "trayClosed": true
+      },
+      "mapsDirect": true,
+      "cargoChip": "Cargo Hold",
+      "outsideCloses": true,
+      "rcAfter": "radar"
+    },
+    "radarBig": [
+      true,
+      116,
+      [
+        "radar",
+        "radar big"
+      ]
+    ]
+  },
+  "tall": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 147,
+    "controlsTop": 701,
+    "clearWorldPx": 554,
+    "vh": 932,
+    "rcPre": "radar|null",
+    "rc0": "radar",
+    "trayItems": [
+      "Maps",
+      "Ship",
+      "Cargo",
+      "Catalog",
+      "Settings"
+    ],
+    "nav": {
+      "maps": {
+        "rc": "radar",
+        "open": true,
+        "title": "Maps & Charts",
+        "trayClosed": true
+      },
+      "ship": {
+        "rc": "radar",
+        "open": true,
+        "title": "Patchwork Skiff",
+        "trayClosed": true
+      },
+      "cargo": {
+        "rc": "radar",
+        "open": true,
+        "title": "Cargo Hold",
+        "trayClosed": true
+      },
+      "catalog": {
+        "rc": "radar",
+        "open": true,
+        "title": "Discovery Catalog",
+        "trayClosed": true
+      },
+      "settings": {
+        "rc": "radar",
+        "open": true,
+        "title": "Settings",
+        "trayClosed": true
+      },
+      "mapsDirect": true,
+      "cargoChip": "Cargo Hold",
+      "outsideCloses": true,
+      "rcAfter": "radar"
+    },
+    "radarBig": [
+      true,
+      66,
+      [
+        "radar",
+        "radar big"
+      ]
+    ]
+  },
+  "landscape": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 143,
+    "controlsTop": 264,
+    "clearWorldPx": 121,
+    "vh": 390,
+    "rcPre": "radar|null",
+    "rc0": "radar",
+    "trayItems": [
+      "Maps",
+      "Ship",
+      "Cargo",
+      "Catalog",
+      "Settings"
+    ],
+    "nav": {
+      "maps": {
+        "rc": "radar",
+        "open": true,
+        "title": "Maps & Charts",
+        "trayClosed": true
+      },
+      "ship": {
+        "rc": "radar",
+        "open": true,
+        "title": "Patchwork Skiff",
+        "trayClosed": true
+      },
+      "cargo": {
+        "rc": "radar",
+        "open": true,
+        "title": "Cargo Hold",
+        "trayClosed": true
+      },
+      "catalog": {
+        "rc": "radar",
+        "open": true,
+        "title": "Discovery Catalog",
+        "trayClosed": true
+      },
+      "settings": {
+        "rc": "radar",
+        "open": true,
+        "title": "Settings",
+        "trayClosed": true
+      },
+      "mapsDirect": true,
+      "cargoChip": "Cargo Hold",
+      "outsideCloses": true,
+      "rcAfter": "radar"
+    },
+    "radarBig": [
+      true,
+      66,
+      [
+        "radar",
+        "radar big"
+      ]
+    ]
+  },
+  "desktop": {
+    "overlaps": [],
+    "offscreen": [],
+    "hscroll": false,
+    "smallTargets": [],
+    "topHudBottom": 147,
+    "controlsTop": 489,
+    "clearWorldPx": 342,
+    "vh": 720,
+    "rcPre": "radar|null",
+    "rc0": "radar",
+    "trayItems": [
+      "Maps",
+      "Ship",
+      "Cargo",
+      "Catalog",
+      "Settings"
+    ],
+    "nav": {
+      "maps": {
+        "rc": "radar",
+        "open": true,
+        "title": "Maps & Charts",
+        "trayClosed": true
+      },
+      "ship": {
+        "rc": "radar",
+        "open": true,
+        "title": "Patchwork Skiff",
+        "trayClosed": true
+      },
+      "cargo": {
+        "rc": "radar",
+        "open": true,
+        "title": "Cargo Hold",
+        "trayClosed": true
+      },
+      "catalog": {
+        "rc": "radar",
+        "open": true,
+        "title": "Discovery Catalog",
+        "trayClosed": true
+      },
+      "settings": {
+        "rc": "radar",
+        "open": true,
+        "title": "Settings",
+        "trayClosed": true
+      },
+      "mapsDirect": true,
+      "cargoChip": "Cargo Hold",
+      "outsideCloses": true,
+      "rcAfter": "radar"
+    },
+    "radarBig": [
+      true,
+      66,
+      [
+        "radar",
+        "radar big"
+      ]
+    ]
+  }
+}
