@@ -52,6 +52,12 @@ const SCENES = {
   winch: { q: '?ship=trimaran', run: () => { const g = window.__game; (window.__hold)(g, { x: 70, z: 150, h: 1.6 }); g.ui.openWinch({ title: 'The Sunken Tower', sub: 'The top four floors of an office block.', window: 0.26, speed: 0.4, pulls: 3 }); setTimeout(() => { const p = document.querySelectorAll('.w-pips i'); p[0]?.classList.add('perfect'); p[1]?.classList.add('hit'); const m = document.querySelector('.w-msg'); if (m) { m.textContent = 'PERFECT! Bonus loot!'; m.style.color = '#a87400'; } }, 300); } },
   harpoon: { q: '?ship=trimaran&upgrades=harpoon_turret', run: () => { const g = window.__game; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.harpoonRing?.('CACHE'); } },
   bank: { q: '?ship=trimaran', run: () => { const g = window.__game; (window.__hold)(g, { x: 20, z: 150, h: 3.0 }); g.ui.stamp ? g.ui.stamp('BANKED', '9 items · worth 186g · Driftholm') : 0; } },
+  // HUD facelift: the helm wheel for each vessel, and a panel
+  helm_skiff: { q: '?ship=skiff', run: () => { const g = window.__game; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); } },
+  helm_trimaran: { q: '?ship=trimaran&upgrades=harpoon_turret', run: () => { const g = window.__game; (window.__hold)(g, { x: 92, z: 128, h: 0, yaw: 0.6 }); } },
+  helm_brig: { q: '?ship=brig', run: () => { const g = window.__game; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); } },
+  helm_ironwake: { q: '?ship=ironwake&upgrades=all', run: () => { const g = window.__game; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); } },
+  panel: { q: '?ship=trimaran', run: () => { const g = window.__game; g.store.data.gold = 900; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.openPanel('shipwright'); } },
 };
 
 const browser = await playwright.chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });

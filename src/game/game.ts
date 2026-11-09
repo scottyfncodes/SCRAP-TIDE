@@ -383,6 +383,7 @@ export class Game implements GameAPI {
     for (const c of this.ship.crew) heroize(c.root, OUTLINE.crew);
     heroize(this.ship.group, OUTLINE.hull);
     this.shipRoot.add(this.ship.group);
+    this.ui?.setWheel(this.store.data.vessel); // the helm wheel matches the boat
     this.camDist = this.store.data.vessel === 'ironwake' ? 30 : this.store.data.vessel === 'brig' ? 27 : this.store.data.vessel === 'sloop' ? 24 : 15;
     const st = this.store.stats;
     this.store.data.hull = Math.min(this.store.data.hull, st.hullMax);
@@ -2246,6 +2247,43 @@ export class Game implements GameAPI {
     }
   }
 
+  // ── people move with the boat (HUD facelift pass): nobody stands like a post on a rolling deck ──
+  private sway = { y: 0, vy: 0, heading: 0, turn: 0, speed: 0, accel: 0 };
+  /**
+   * The crew on deck and the captain at the helm ride the boat's motion like people keeping their balance: they lean
+   * against the roll and pitch (staying nearer upright than the hull), dip at the knees when she drops into a trough,
+   * lean into turns and back when she surges, plus a slow weight shift of their own so no two of them move as one.
+   */
+  private swayAboard(dt: number) {
+    if (dt <= 0) return;
+    const sw = this.sway, root = this.shipRoot, b = this.boat;
+    const k = 1 - Math.exp(-dt * 5);
+    const vy = (root.position.y - sw.y) / dt;
+    sw.y = root.position.y;
+    sw.vy += (clamp(vy, -6, 6) - sw.vy) * k;
+    const turn = angleDiff(sw.heading, b.heading) / dt;
+    sw.heading = b.heading;
+    sw.turn += (clamp(turn, -1.5, 1.5) - sw.turn) * k;
+    const accel = (b.speed - sw.speed) / dt;
+    sw.speed = b.speed;
+    sw.accel += (clamp(accel, -4, 4) - sw.accel) * k;
+    const roll = root.rotation.z, pitch = root.rotation.x, t = this.t;
+    const calm = this.store.data.settings.calm ? 0.5 : 1;
+    this.ship.crew.forEach((c, i) => {
+      const r = c.root;
+      const base = (r.userData.sway ??= { y: r.position.y, rx: r.rotation.x, rz: r.rotation.z, ph: i * 1.7 + 0.4 }) as { y: number; rx: number; rz: number; ph: number };
+      r.rotation.z = base.rz + (-roll * 0.6 + Math.sin(t * 1.2 + base.ph) * 0.035 + sw.turn * 0.1) * calm;
+      r.rotation.x = base.rx + (-pitch * 0.5 + Math.sin(t * 0.85 + base.ph) * 0.02 - sw.accel * 0.012) * calm;
+      r.position.y = base.y + (clamp(-sw.vy * 0.025, -0.07, 0.07) + Math.sin(t * 2.1 + base.ph) * 0.01) * calm;
+    });
+    // the captain sits on the boat (she carries him through her motion), braced a little against it, swaying at the wheel
+    const cap = this.captain.root;
+    cap.rotation.order = 'YXZ';
+    cap.rotation.x = (pitch * 0.55 + Math.sin(t * 0.8) * 0.02 - sw.accel * 0.01) * calm;
+    cap.rotation.z = (roll * 0.55 + Math.sin(t * 1.1 + 1.3) * 0.03 + sw.turn * 0.08) * calm;
+    cap.position.y += clamp(-sw.vy * 0.02, -0.05, 0.05) * calm;
+  }
+
   /** Sail speed for a heading: unchanged, see pointOfSail.windEff. */
   private windEff(heading: number) {
     return windEff(heading, WORLD.wind.dir);
@@ -2450,6 +2488,7 @@ export class Game implements GameAPI {
     this.captain.root.position.copy(seat);
     this.captain.root.rotation.y = b.heading;
     this.captain.update(dt, 0);
+    this.swayAboard(dt);
 
     const wl = this.ship.waterline;
     this.ocean.setHull(b.x, b.z, b.heading, wl.halfLen, wl.halfBeam, wl.twin, clamp(b.speed / 9, 0, 1));
@@ -2632,7 +2671,7 @@ export class Game implements GameAPI {
     this.digBusy -= dt;
     const h = heightAt(f.x, f.z);
     this.captain.root.position.set(f.x, Math.max(h, -0.75) - 0.02, f.z);
-    this.captain.root.rotation.y = f.heading;
+    this.captain.root.rotation.set(0, f.heading, 0); // on land: no boat motion to ride
     if (this.captain.pose !== 'dig' && this.captain.pose !== 'cheer') this.captain.pose = moving ? 'walk' : 'idle';
     if (moving && this.captain.pose === 'cheer') this.captain.pose = 'walk';
     this.captain.update(dt, f.speed);

@@ -24,6 +24,7 @@ import { audio } from '../audio/audio';
 import { SAIL_LABEL, type PointOfSail } from '../game/pointOfSail';
 import { pack } from '../audio/pack';
 import { wordmarkSVG } from './brand';
+import { wheelSVG } from './helmWheel';
 import { PERFECT_SHARE, pullGrade } from '../game/haul';
 import { clockText } from '../game/trip';
 
@@ -83,13 +84,6 @@ const ICON = {
   cargo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M4 12h16M10 12v3h4v-3"/><path d="M7 8V5h10v3"/></svg>',
   settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>',
 };
-
-// a ship's wheel cut from scrap steel: rust-scabbed rim, mismatched spokes, a welded hazard band
-const WHEEL_SVG = `<svg class="wheel" viewBox="0 0 150 150"><circle cx="75" cy="75" r="62" fill="rgba(10,13,14,.35)"/><g fill="none" stroke-linecap="butt">
-${Array.from({ length: 8 }, (_, i) => { const a = (i / 8) * Math.PI * 2; return `<line x1="${75 + Math.cos(a) * 18}" y1="${75 + Math.sin(a) * 18}" x2="${75 + Math.cos(a) * 71}" y2="${75 + Math.sin(a) * 71}" stroke="${i % 3 ? '#2a5363' : '#7a3a22'}" stroke-width="${i % 2 ? 7 : 9}"/><rect x="${75 + Math.cos(a) * 68 - 4}" y="${75 + Math.sin(a) * 68 - 4}" width="8" height="8" fill="#173b4a" transform="rotate(${(i / 8) * 360} ${75 + Math.cos(a) * 68} ${75 + Math.sin(a) * 68})"/>`; }).join('')}
-<circle cx="75" cy="75" r="56" stroke-width="13" stroke="#173b4a"/><circle cx="75" cy="75" r="56" stroke-width="13" stroke="#a04d30" stroke-dasharray="18 26 6 40 30 22" opacity=".85"/>
-<circle cx="75" cy="75" r="56" stroke-width="5" stroke="#e5c65e" stroke-dasharray="46 306" opacity=".8" transform="rotate(-112 75 75)" pathLength="352"/>
-<circle cx="75" cy="75" r="62.5" stroke-width="1.5" stroke="rgba(217,210,191,.25)"/><circle cx="75" cy="75" r="49.5" stroke-width="1.5" stroke="rgba(0,0,0,.6)"/></g></svg>`;
 
 const el = (html: string) => {
   const t = document.createElement('template');
@@ -239,9 +233,10 @@ export class UI {
     this.hud.append(top);
 
     // joystick
-    const stick = el(`<div class="stick">${WHEEL_SVG}<div class="knob"></div><div class="stick-label">STEER</div></div>`);
+    const stick = el(`<div class="stick" data-vessel="${this.store.data.vessel}">${wheelSVG(this.store.data.vessel)}<div class="knob"></div><div class="stick-label">STEER</div></div>`);
     const knob = stick.querySelector('.knob') as HTMLElement;
-    const wheel = stick.querySelector('.wheel') as SVGElement;
+    this.stickEl = stick;
+    this.wheelEl = stick.querySelector('.wheel') as SVGElement;
     let pid = -1;
     const R = 50;
     const move = (e: PointerEvent) => {
@@ -254,7 +249,7 @@ export class UI {
         dy = (dy / len) * R;
       }
       knob.style.transform = `translate(${dx}px, ${dy}px)`;
-      wheel.style.transform = `rotate(${dx * 0.9}deg)`;
+      this.wheelEl.style.transform = `rotate(${dx * 0.9}deg)`;
       this.joy.x = dx / R;
       this.joy.y = -dy / R;
     };
@@ -274,7 +269,7 @@ export class UI {
       this.joy.x = this.joy.y = 0;
       this.joy.active = false;
       knob.style.transform = '';
-      wheel.style.transform = '';
+      this.wheelEl.style.transform = '';
     };
     stick.addEventListener('pointerup', end);
     stick.addEventListener('pointercancel', end);
@@ -520,6 +515,19 @@ export class UI {
     const n = el(`<div class="stamp" style="--sc:${color}"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>`);
     this.hud.append(n);
     setTimeout(() => n.remove(), 2100);
+  }
+
+  private stickEl!: HTMLElement;
+  private wheelEl!: SVGElement;
+  /** Swap the helm wheel for the vessel you're sailing (called whenever the ship is rebuilt). */
+  setWheel(vessel: string) {
+    if (!this.stickEl || this.stickEl.dataset.vessel === vessel) return;
+    this.stickEl.dataset.vessel = vessel;
+    const t = document.createElement('template');
+    t.innerHTML = wheelSVG(vessel).trim();
+    const svg = t.content.firstElementChild as unknown as SVGElement;
+    this.wheelEl.replaceWith(svg);
+    this.wheelEl = svg;
   }
 
   setCritical(on: boolean) {
