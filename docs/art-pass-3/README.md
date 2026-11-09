@@ -151,7 +151,12 @@ Decision needed: approve the renames and the two model rebuilds.
 
 ## Validation
 
-- Unit tests, build, e2e, visual check, turn check: see the PR.
+- Unit tests: 468/468 pass, including the model checks (the helm's root node).
+- Build: passes.
+- E2E gameplay (`tests/e2e/play.cjs`): 60/60 pass.
+- Wake visual check and turn check: pass.
+- HUD layout check at iPhone 17, iPhone 13, narrow, tall, landscape and desktop: no overlaps, nothing off-screen, no
+  horizontal scroll, no undersized targets.
 - Maps panel (treasure sheet and world chart) at iPhone 17, iPhone 13, narrow 320, tall, landscape and desktop:
   opens, stays in the viewport, no horizontal scroll, no undersized buttons.
 
