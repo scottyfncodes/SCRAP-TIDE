@@ -2,8 +2,8 @@
   "C1": {
     "tb_captain": {
       "heads": 7.61,
-      "height": 1.958,
-      "head": 0.257,
+      "height": 1.944,
+      "head": 0.255,
       "skinVerts": 715
     },
     "tb_raider": {
@@ -27,12 +27,12 @@
   },
   "C2": {
     "characters": {
-      "today": 0.738,
+      "today": 0.678,
       "jury": 0.642
     },
     "boats": {
       "today": 0.334,
-      "jury": 0.34
+      "jury": 0.279
     }
   }
 }

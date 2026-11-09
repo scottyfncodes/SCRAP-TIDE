@@ -1,116 +1,115 @@
 {
  "default/desktop/driftholm/noon": {
   "calls": 102,
-  "tris": 401076,
-  "msPerFrame": 1243.6
+  "tris": 401332,
+  "msPerFrame": 1196.5
  },
  "default/desktop/foot/noon": {
-  "calls": 159,
-  "tris": 572996,
-  "msPerFrame": 1301.5
+  "calls": 160,
+  "tris": 573280,
+  "msPerFrame": 1097.8
  },
  "default/desktop/raiders/noon": {
-  "calls": 84,
-  "tris": 355776,
-  "msPerFrame": 641.9
+  "calls": 85,
+  "tris": 356304,
+  "msPerFrame": 731.3
  },
  "default/desktop/toll/noon": {
   "calls": 145,
-  "tris": 469430,
-  "msPerFrame": 786.4
+  "tris": 469686,
+  "msPerFrame": 909.1
  },
  "default/phone/driftholm/dusk": {
   "calls": 67,
-  "tris": 376574,
-  "msPerFrame": 927.6
+  "tris": 376830,
+  "msPerFrame": 1091.7
  },
  "default/phone/driftholm/night": {
   "calls": 66,
-  "tris": 376546,
-  "msPerFrame": 953.1
+  "tris": 376802,
+  "msPerFrame": 896.9
  },
  "default/phone/driftholm/noon": {
   "calls": 73,
-  "tris": 376926,
-  "msPerFrame": 1035.3
+  "tris": 377182,
+  "msPerFrame": 1090.1
  },
  "default/phone/driftholm/storm": {
-  "calls": 68,
-  "tris": 376574,
-  "msPerFrame": 1113.7
+  "calls": 67,
+  "tris": 376802,
+  "msPerFrame": 1145.5
  },
  "default/phone/foot/dusk": {
-  "calls": 93,
-  "tris": 496982,
-  "msPerFrame": 943.7
+  "calls": 94,
+  "tris": 497266,
+  "msPerFrame": 867.4
  },
  "default/phone/foot/night": {
   "calls": 94,
-  "tris": 499322,
-  "msPerFrame": 989.8
+  "tris": 499578,
+  "msPerFrame": 873.3
  },
  "default/phone/foot/noon": {
-  "calls": 108,
-  "tris": 499620,
-  "msPerFrame": 1185.3
+  "calls": 109,
+  "tris": 499904,
+  "msPerFrame": 968.3
  },
  "default/phone/foot/storm": {
-  "calls": 98,
-  "tris": 499406,
-  "msPerFrame": 913.5
+  "calls": 97,
+  "tris": 499608,
+  "msPerFrame": 921.2
  },
  "default/phone/raiders/dusk": {
   "calls": 71,
-  "tris": 353134,
-  "msPerFrame": 771.9
+  "tris": 353048,
+  "msPerFrame": 687.6
  },
  "default/phone/raiders/night": {
-  "calls": 72,
-  "tris": 352820,
-  "msPerFrame": 739.3
+  "calls": 71,
+  "tris": 353292,
+  "msPerFrame": 813.8
  },
  "default/phone/raiders/noon": {
   "calls": 73,
-  "tris": 352848,
-  "msPerFrame": 1016.3
+  "tris": 353104,
+  "msPerFrame": 756.8
  },
  "default/phone/raiders/storm": {
   "calls": 73,
-  "tris": 352820,
-  "msPerFrame": 978.6
+  "tris": 353320,
+  "msPerFrame": 1120.9
  },
  "default/phone/toll/dusk": {
-  "calls": 96,
-  "tris": 451426,
-  "msPerFrame": 758.1
+  "calls": 94,
+  "tris": 451626,
+  "msPerFrame": 900.7
  },
  "default/phone/toll/night": {
   "calls": 96,
-  "tris": 451670,
-  "msPerFrame": 1061.6
+  "tris": 451682,
+  "msPerFrame": 1313
  },
  "default/phone/toll/noon": {
   "calls": 107,
-  "tris": 452102,
-  "msPerFrame": 889.3
+  "tris": 452358,
+  "msPerFrame": 783.1
  },
  "default/phone/toll/storm": {
-  "calls": 99,
-  "tris": 451726,
-  "msPerFrame": 894.3
+  "calls": 98,
+  "tris": 451710,
+  "msPerFrame": 972.6
  },
  "isolation": {
   "defaultFetchedJuryFiles": [],
   "juryFetchedJuryFiles": [
    "/models/tb_jury_captain.glb",
    "/models/tb_jury_raider.glb"
-  ],
-  "note": "re-checked after moving the measurement hooks into the game chunk (driftholm/noon, phone)"
+  ]
  },
  "jury/desktop/driftholm/noon": {
-  "calls": 105,
-  "tris": 433766,
-  "msPerFrame": 844.6,
+  "calls": 100,
+  "tris": 407578,
+  "msPerFrame": 1104.8,
   "accentShare": 0.0007,
   "skyline": {
    "stackPx": 167.1,
@@ -131,27 +130,27 @@
   }
  },
  "jury/desktop/foot/noon": {
-  "calls": 162,
-  "tris": 611310,
-  "msPerFrame": 1411.5,
+  "calls": 157,
+  "tris": 572062,
+  "msPerFrame": 1145.2,
   "accentShare": 0.0098
  },
  "jury/desktop/raiders/noon": {
-  "calls": 86,
-  "tris": 387652,
-  "msPerFrame": 864.6,
+  "calls": 80,
+  "tris": 348376,
+  "msPerFrame": 796.6,
   "accentShare": 0.0011
  },
  "jury/desktop/toll/noon": {
-  "calls": 150,
-  "tris": 506820,
-  "msPerFrame": 954.5,
-  "accentShare": 0.0016
+  "calls": 152,
+  "tris": 506924,
+  "msPerFrame": 754.9,
+  "accentShare": 0.0014
  },
  "jury/phone/driftholm/dusk": {
-  "calls": 70,
-  "tris": 409264,
-  "msPerFrame": 1276.6,
+  "calls": 67,
+  "tris": 383132,
+  "msPerFrame": 980.7,
   "accentShare": 0.0017,
   "skyline": {
    "stackPx": 156.6,
@@ -172,9 +171,9 @@
   }
  },
  "jury/phone/driftholm/night": {
-  "calls": 71,
-  "tris": 409292,
-  "msPerFrame": 816,
+  "calls": 66,
+  "tris": 383104,
+  "msPerFrame": 979.7,
   "accentShare": 0.0017,
   "skyline": {
    "stackPx": 156.6,
@@ -195,9 +194,9 @@
   }
  },
  "jury/phone/driftholm/noon": {
-  "calls": 77,
-  "tris": 409644,
-  "msPerFrame": 1011.3,
+  "calls": 72,
+  "tris": 383456,
+  "msPerFrame": 999.2,
   "accentShare": 0.0017,
   "skyline": {
    "stackPx": 156.6,
@@ -219,9 +218,9 @@
  },
  "jury/phone/driftholm/storm": {
   "calls": 71,
-  "tris": 409264,
-  "msPerFrame": 1042.4,
-  "accentShare": 0.0017,
+  "tris": 383170,
+  "msPerFrame": 864.4,
+  "accentShare": 0.0016,
   "skyline": {
    "stackPx": 156.6,
    "stackX": 256.6,
@@ -241,75 +240,75 @@
   }
  },
  "jury/phone/foot/dusk": {
-  "calls": 92,
-  "tris": 496824,
-  "msPerFrame": 995.4,
+  "calls": 95,
+  "tris": 499164,
+  "msPerFrame": 995.7,
   "accentShare": 0.0303
  },
  "jury/phone/foot/night": {
-  "calls": 94,
-  "tris": 496880,
-  "msPerFrame": 1056.1,
+  "calls": 93,
+  "tris": 499108,
+  "msPerFrame": 1096.1,
   "accentShare": 0.0303
  },
  "jury/phone/foot/noon": {
-  "calls": 111,
-  "tris": 498028,
-  "msPerFrame": 1246.4,
+  "calls": 108,
+  "tris": 499408,
+  "msPerFrame": 985.1,
   "accentShare": 0.0303
  },
  "jury/phone/foot/storm": {
-  "calls": 98,
-  "tris": 496918,
-  "msPerFrame": 1114.5,
-  "accentShare": 0.0302
+  "calls": 97,
+  "tris": 499192,
+  "msPerFrame": 1281.1,
+  "accentShare": 0.0303
  },
  "jury/phone/raiders/dusk": {
-  "calls": 71,
-  "tris": 386762,
-  "msPerFrame": 1145,
-  "accentShare": 0.0076
+  "calls": 70,
+  "tris": 360612,
+  "msPerFrame": 806.6,
+  "accentShare": 0.0074
  },
  "jury/phone/raiders/night": {
-  "calls": 72,
-  "tris": 384508,
-  "msPerFrame": 1193.4,
-  "accentShare": 0.0026
+  "calls": 68,
+  "tris": 347532,
+  "msPerFrame": 769.9,
+  "accentShare": 0.0024
  },
  "jury/phone/raiders/noon": {
-  "calls": 76,
-  "tris": 384712,
-  "msPerFrame": 1139.9,
-  "accentShare": 0.0026
+  "calls": 68,
+  "tris": 345268,
+  "msPerFrame": 744.3,
+  "accentShare": 0.0028
  },
  "jury/phone/raiders/storm": {
-  "calls": 71,
-  "tris": 384452,
-  "msPerFrame": 1462.6,
-  "accentShare": 0.0022
+  "calls": 69,
+  "tris": 345268,
+  "msPerFrame": 882.3,
+  "accentShare": 0
  },
  "jury/phone/toll/dusk": {
   "calls": 103,
-  "tris": 488284,
-  "msPerFrame": 1315,
-  "accentShare": 0.004
+  "tris": 489088,
+  "msPerFrame": 1166.3,
+  "accentShare": 0.0037
  },
  "jury/phone/toll/night": {
-  "calls": 104,
-  "tris": 488312,
-  "msPerFrame": 1236.1,
-  "accentShare": 0.0041
+  "calls": 103,
+  "tris": 489088,
+  "msPerFrame": 1255.1,
+  "accentShare": 0.0038
  },
  "jury/phone/toll/noon": {
-  "calls": 114,
-  "tris": 488960,
-  "msPerFrame": 1155.5,
-  "accentShare": 0.0036
+  "calls": 115,
+  "tris": 489792,
+  "msPerFrame": 842,
+  "accentShare": 0.0034
  },
  "jury/phone/toll/storm": {
-  "calls": 103,
-  "tris": 488256,
-  "msPerFrame": 1337.4,
-  "accentShare": 0.0025
+  "calls": 104,
+  "tris": 489088,
+  "msPerFrame": 811.5,
+  "accentShare": 0.0022
  }
 }
