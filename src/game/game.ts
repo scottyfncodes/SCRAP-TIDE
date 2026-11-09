@@ -287,7 +287,7 @@ export class Game implements GameAPI {
     this.ui.showTitle(this.store.isNew);
   }
 
-  /** The apocalyptic-pirate cast has streamed in: the captain, the townsfolk and the raider crews come alive. */
+  /** The scavenger cast has streamed in: the captain, the townsfolk and the raider crews come alive. */
   private onCharacters() {
     const cap = characterModel('tb_captain');
     if (cap) {

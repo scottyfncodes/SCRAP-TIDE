@@ -62,7 +62,7 @@ export class Raiders {
     this.spawned.add(z.id);
   }
 
-  /** Rustfang crew on deck (GITCRAFT survivor rig): one at the bow with a cutlass, one at the tiller. */
+  /** Rustfang crew on deck (GITCRAFT survivor rig): one at the bow with a leaf-spring machete, one at the tiller. */
   crewUp(r: Raider) {
     if (r.crew.length) return;
     for (const [z, ry] of [[1.1, 0], [-1.7, 0.4]] as const) {

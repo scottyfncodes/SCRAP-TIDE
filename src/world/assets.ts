@@ -86,7 +86,7 @@ const lazyFile = (f: string) => UPGRADE_MODEL_FILES.includes(f) || VESSEL_MODEL_
 const CORE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => !lazyFile(f));
 
 export const CREW_FILES = ['mechanic', 'navigator', 'salvager', 'fisher', 'lookout', 'defender'] as const;
-/** Apocalyptic-pirate cast (creative/3d-characters): the captain, Driftholm's townsfolk and the Rustfang raiders. */
+/** Scavenger cast (creative/3d-characters): the captain, Driftholm's townsfolk and the Rustfang raiders. */
 export const CHARACTER_FILES = ['tb_captain', 'tb_npc_trader', 'tb_npc_elder', 'tb_npc_dockhand', 'tb_raider'] as const;
 
 const gltfs = new Map<string, GLTF>();
