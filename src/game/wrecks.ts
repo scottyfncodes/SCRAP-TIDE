@@ -20,6 +20,8 @@ export interface Wreck {
   sinkIn?: number;
   /** a rival scavenger got to it first (Phase 3) */
   taken?: boolean;
+  /** wedged in the shallows: only the balloon's winch can lift it (Phase 4) */
+  heavyLift?: boolean;
 }
 
 const NAMES: Record<WreckTier, string[]> = {
@@ -178,6 +180,20 @@ export class Wrecks {
     // a few wrecks per trip, ahead and to the sides, in open water
     if (!g.store.data.trip.on || b.docked || g.mode !== 'sail') return;
     if (g.store.data.daily.active) return; // the Daily Tide's wrecks are fixed by its seed
+    // with the balloon's winch: a heavy wreck wedged in the shallows, where no hull and no crane can work it
+    if (g.store.has('bl_winch') && !this.list.some((w) => w.heavyLift && !w.hauled)) {
+      for (let k = 0; k < 30; k++) {
+        const a = Math.random() * Math.PI * 2, d = 120 + Math.random() * 260;
+        const x = b.x + Math.sin(a) * d, z = b.z + Math.cos(a) * d;
+        const h = heightAt(x, z);
+        if (h < -1.6 || h > -0.5) continue;
+        const w = this.spawnAt(x, z, Math.random() < 0.5 ? 'rare' : 'legendary', { name: 'Heavy Wreck in the Shallows' });
+        w.heavyLift = true;
+        w.site.requiresFlag = 'never';
+        w.site.lockedText = 'Wedged in the shallows: no hull gets close and no crane reaches. Lift her with the balloon’s winch.';
+        break;
+      }
+    }
     this.timer -= dt;
     if (this.timer > 0) return;
     this.timer = 45;
@@ -191,7 +207,7 @@ export class Wrecks {
       if (this.list.some((w) => Math.hypot(w.site.x - x, w.site.z - z) < 60)) continue;
       const risk = spotRisk(x, z, g.atmo.stormAt(x, z));
       const tier = rollWreckTier(Math.random, risk);
-      if (tier !== 'common' && !g.crossOk(x, z)) continue; // never tease a tier the boat can't reach
+      if (!g.crossOk(x, z)) continue; // never tease a wreck the boat can't reach
       this.spawnAt(x, z, tier);
       break;
     }

@@ -69,6 +69,12 @@ const SCENES = {
   rival: { q: '?ship=trimaran', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.tripStart(); g.events.trigger('rival'); const a = g.events.active[0]; if (a) { a.data.speed = 0.01; const w = a.data.wreck.site; const h = Math.atan2(w.x - (w.x - 30), w.z - (w.z - 40)); (window.__hold)(g, { x: w.x - 14, z: w.z - 20, h, yaw: -0.5, pitch: 0.22 }); a.data.x = w.x + 6; a.data.z = w.z - 2; g.zoom = 0.75; } } },
   creature: { q: '?ship=trimaran&upgrades=radar_mast,compass_brass', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.tripStart(); g.events.trigger('creature'); const a = g.events.active[0]; if (a) { const w = a.data.wreck.site; (window.__hold)(g, { x: w.x - 30, z: w.z - 45, h: Math.atan2(30, 45), yaw: 0.15, pitch: 0.3 }); } } },
   daily_end: { q: '?ship=trimaran', run: () => { const g = window.__game; (window.__hold)(g, { x: 20, z: 150, h: 3.0 }); g.ui.dailyEnd?.('2026-11-09', { banked: 214, perfects: 4, events: 2, legendary: 1, sunk: false, total: 404 }, 3, 'SCRAP TIDE · Daily Tide 2026-11-09\n💰 404 pts · banked 214g\n🎯 🟨🟨🟨🟨⬛\n🌊⛵🐙 2/3 events beaten · 👑 legendary\n🔥 3-day streak', true); } },
+  // Phase 4 (the ?vehicle= previews launch the vehicle by themselves)
+  docked: { q: '?ship=trimaran&upgrades=all&vehicle=all', run: () => { const g = window.__game; g.started = true; g.ui.closePanel(); (window.__hold)(g, { x: 40, z: 112, h: 0.6, yaw: -2.1, pitch: 0.22 }); g.zoom = 0.75; } },
+  runner_jump: { q: '?vehicle=waverunner', run: () => { const g = window.__game; clearInterval(window.__pin); setTimeout(() => { const v = g.vehicles; v.rSpeed = 18; v.rY = 1.6; v.rVy = 0.5; window.__pin2 = setInterval(() => { v.rY = Math.max(v.rY, 1.4); v.rVy = Math.max(v.rVy, 0.2); v.rSpeed = 18; g.ui.joy.x = 0; g.ui.joy.y = 0.9; g.camYaw = v.rHeading + 0.5; }, 10); }, 1700); } },
+  raider_chase: { q: '?vehicle=waverunner&upgrades=harpoon_turret', run: () => { const g = window.__game; clearInterval(window.__pin); setTimeout(() => { g.store.addCargo('gold_watch', 2); g.store.addCargo('scrap_metal', 4); g.events.trigger('raiders'); for (const [i, r] of g.raiderRun.riders.entries()) { r.r = 16; r.ang = i * 2.1; } const v = g.vehicles; window.__pin2 = setInterval(() => { v.rx = g.boat.x - 14; v.rz = g.boat.z - 10; v.rHeading = 0.9; v.rSpeed = 12; g.camYaw = 0.9; g.zoom = 2.2; }, 10); }, 1700); } },
+  balloon_high: { q: '?vehicle=balloon', run: () => { const g = window.__game; clearInterval(window.__pin); setTimeout(() => { g.wrecks.spawnAt(g.boat.x + 120, g.boat.z + 160, 'legendary'); g.wrecks.spawnAt(g.boat.x - 150, g.boat.z + 60, 'rare'); g.wrecks.spawnAt(g.boat.x + 40, g.boat.z - 140, 'common'); g.events.trigger('rogue_wave'); window.__pin2 = setInterval(() => { g.vehicles.alt = 110; g.vehicles.burning = true; }, 20); document.querySelector('.radar')?.classList.add('big'); }, 1700); } },
+  winch_lift: { q: '?vehicle=balloon', run: () => { const g = window.__game; clearInterval(window.__pin); setTimeout(() => { const v = g.vehicles; const w = g.wrecks.spawnAt(v.bx + 4, v.bz + 4, 'legendary', { name: 'Heavy Wreck in the Shallows' }); v.alt = 20; v.winchLift(); window.__pin2 = setInterval(() => { v.alt = 22; g.camYaw = 0.7; }, 20); }, 1900); } },
 };
 
 const browser = await playwright.chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -100,7 +106,11 @@ for (const [vid, vp] of Object.entries(VIEWS)) {
     if (['harpoon', 'bank', 'loot_reveal', 'daily_end'].includes(name)) await page.evaluate(`(${sc.run.toString()})()`);
     await page.waitForTimeout(name === 'bank' ? 250 : name === 'harpoon' ? 120 : name === 'loot_reveal' ? 1600 : name === 'daily_end' ? 900 : 500);
     await page.screenshot({ path: `${out}/${name}-${vid}.png`, timeout: 120000 });
-    report.scenes[`${name}-${vid}`] = 'ok';
+    // thumb reach (Phase 4): where the vehicle controls sit on this screen
+    report.scenes[`${name}-${vid}`] = await page.evaluate(() => {
+      const r = (e) => { const b = e.getBoundingClientRect(); return { label: e.textContent.trim().slice(0, 24), x: Math.round(b.left), y: Math.round(b.top), w: Math.round(b.width), h: Math.round(b.height) }; };
+      return { vw: innerWidth, vh: innerHeight, actions: [...document.querySelectorAll('.actions .act')].map(r), hold: [...document.querySelectorAll('.hold-btn')].map(r), stick: [...document.querySelectorAll('.stick')].map(r) };
+    });
     await ctx.close();
   }
 }

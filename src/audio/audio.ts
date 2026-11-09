@@ -596,6 +596,62 @@ export class Audio {
     this.tone(330, t + 0.2, 1.4, 'sine', 0.08, undefined, 4);
     this.tone(311, t + 0.9, 1.4, 'sine', 0.07, undefined, 4);
   }
+  // ── the vehicles (loop pass Phase 4) ──
+  private runnerGain: GainNode | null = null;
+  private runnerOsc: OscillatorNode | null = null;
+  private burnerGain: GainNode | null = null;
+  /** The Wave Runner's two-stroke: a high, buzzy whine that climbs with speed (boost: higher). */
+  runner(level: number, boost = false) {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    if (!this.runnerGain) {
+      this.runnerGain = ctx.createGain();
+      this.runnerGain.gain.value = 0;
+      const f = ctx.createBiquadFilter();
+      f.type = 'lowpass';
+      f.frequency.value = 1400;
+      this.runnerOsc = ctx.createOscillator();
+      this.runnerOsc.type = 'sawtooth';
+      this.runnerOsc.frequency.value = 90;
+      const lfo = ctx.createOscillator();
+      lfo.frequency.value = 23;
+      const lg = ctx.createGain();
+      lg.gain.value = 18;
+      lfo.connect(lg).connect(this.runnerOsc.frequency);
+      this.runnerOsc.connect(f).connect(this.runnerGain).connect(this.sfxBus);
+      this.runnerOsc.start();
+      lfo.start();
+    }
+    const t = ctx.currentTime;
+    this.runnerGain.gain.setTargetAtTime(level * 0.09, t, 0.08);
+    this.runnerOsc!.frequency.setTargetAtTime(80 + level * 140 + (boost ? 70 : 0), t, 0.1);
+  }
+  /** The balloon's burner: a roar of filtered noise while you hold BURN. */
+  burner(on: boolean) {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    if (!this.burnerGain) {
+      this.burnerGain = ctx.createGain();
+      this.burnerGain.gain.value = 0;
+      const n = ctx.createBufferSource();
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      n.buffer = buf;
+      n.loop = true;
+      const f = ctx.createBiquadFilter();
+      f.type = 'bandpass';
+      f.frequency.value = 320;
+      f.Q.value = 0.7;
+      n.connect(f).connect(this.burnerGain).connect(this.sfxBus);
+      n.start();
+    }
+    if (!on) this.burnerLevel(0);
+  }
+  burnerLevel(k: number) {
+    if (!this.ctx || !this.burnerGain) return;
+    this.burnerGain.gain.setTargetAtTime(k * 0.35, this.ctx.currentTime, 0.06);
+  }
   /** Short, sparse melodic phrase flavored by region. */
   phrase(region: string) {
     if (!this.ctx || this.musicVol <= 0 || this.themeOn) return;

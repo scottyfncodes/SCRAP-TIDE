@@ -26,6 +26,9 @@ const NEEDED: Record<string, string[]> = {
   tb_boat_kit: ['engine_outboard', 'engine_twin', 'radar_mast', 'salvage_crane', 'harpoon_turret', 'deck_turbine', 'deck_turbine_rotor', 'solar_array',
     'cabin_container', 'fuel_drums', 'spotlight', 'fishing_rig', 'outrigger', 'deck_lights', 'armor_plate', 'nav_console'],
   tb_raider_skiff: ['raider_body'],
+  // the vehicles (loop pass Phase 4, creative/3d-vehicles): pivots the game turns or hides
+  tb_waverunner: ['tb_waverunner', 'waverunner_bars', 'waverunner_sled'],
+  tb_balloon: ['tb_balloon', 'balloon_envelope', 'balloon_burner', 'balloon_winch', 'balloon_stowed'],
   tb_debris_kit: ['cache_crate', 'buoy', 'debris_patch', 'oil_drum', 'castaway_raft'],
   tb_trawler_wreck: ['trawler_body'],
   tb_port_crane: ['crane_body'],

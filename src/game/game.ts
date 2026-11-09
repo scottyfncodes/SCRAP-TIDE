@@ -26,7 +26,7 @@ import { pack, VOICE_LINES, type VoiceId } from '../audio/pack';
 import { FlipFX } from './flipfx';
 import { goalTarget } from './goalHelp';
 import { Particles, pickupMesh, bottleMesh, chestMesh, crateFindMesh, digHole, crabMesh, plantFindMesh } from './fx';
-import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, OUTPOSTS, SEA_MARKS, STORMWALL, stormwallLee, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
+import { ISLANDS, ISLAND_MAP, WORLD, TREASURE_MAPS, TREASURE_MAP_MAP, FRAGMENT_MAP, BEACH_POOL, DIG_POOL, REGIONS, SETTLEMENTS, SETTLEMENT_MAP, SALVAGE_SITES, CASTAWAYS, POIS, STRUCTURES, RAIDER_ZONES, OUTPOSTS, SEA_MARKS, STORMWALL, stormwallLee, CACHE_POOL, type IslandDef, type ScriptedFind, type SettlementDef } from '../data/world';
 import { item, RARITY_ORDER, LIVING_GREEN, isLiving } from '../data/items';
 import { UPGRADE_MAP, VESSELS, COSMETIC_MAP, type VesselId } from '../data/ship';
 import { RECIPE_MAP } from '../data/crafting';
@@ -44,6 +44,9 @@ import { WindStreaks } from '../world/windStreaks';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
 import { Wrecks, type Wreck } from './wrecks';
 import { SeaEvents } from './seaEvents';
+import { Vehicles } from './vehicles';
+import { RaiderRun } from './raiderRun';
+import { pagePreviewVehicle } from '../state/preview';
 import { dailyPlan, dayKey, scoreDaily, nextStreak, shareText, type SeaEventKind } from './daily';
 import { progressJobs, claimJobs, type JobEvent } from './dockJobs';
 import { completedSets, bonusText, TIER_LABEL, tierOf } from '../data/loot';
@@ -92,6 +95,8 @@ export class Game implements GameAPI {
   raiders!: Raiders;
   wrecks!: Wrecks;
   events!: SeaEvents;
+  vehicles!: Vehicles;
+  raiderRun!: RaiderRun;
   /** Phase 4 hook: the raider wave-runner event. */
   raiderEvent?: (a: any) => void;
   /** The last big hit was taken by the armour's once-a-trip shield. */
@@ -105,7 +110,7 @@ export class Game implements GameAPI {
   engineOn = false;
   private fishTimer = 0;
   private castawayObjs = new Map<string, THREE.Object3D>();
-  private caches: { obj: THREE.Object3D; x: number; z: number; region: string }[] = [];
+  private caches: { obj: THREE.Object3D; x: number; z: number; region: string; shallow?: boolean }[] = [];
   private cacheTimer = 0;
   private lastHullWarn = 0;
   private goalTimer = 0;
@@ -228,6 +233,8 @@ export class Game implements GameAPI {
     this.salvage = new Salvage(this);
     this.wrecks = new Wrecks(this);
     this.events = new SeaEvents(this);
+    this.vehicles = new Vehicles(this);
+    this.raiderRun = new RaiderRun(this);
     this.onWreckLost = (w) => this.events.wreckLost(w);
     this.raiders = new Raiders(this);
     this.placeCastaways();
@@ -304,7 +311,17 @@ export class Game implements GameAPI {
     } else {
       this.ui.toast('Welcome back, Captain. Your progress was restored.', { color: '#4f9a95', life: 3.5 });
     }
-    if (this.boat.docked) setTimeout(() => this.ui.toast('Push the wheel to cast off from the pier', { life: 3.5 }), 1200);
+    if (this.boat.docked && !pagePreviewVehicle()) setTimeout(() => this.ui.toast('Push the wheel to cast off from the pier', { life: 3.5 }), 1200);
+    // ?vehicle=waverunner | balloon: start out at sea with it launched (sandboxed preview, nothing is saved)
+    const pv = pagePreviewVehicle();
+    if (pv && this.store.sandbox) {
+      setTimeout(() => {
+        Object.assign(this.boat, { x: 40, z: 112, heading: 0.6, speed: 0, docked: false, anchored: false });
+        if (this.store.data.quest !== 'free') this.store.data.quest = 'free';
+        this.tripStart();
+        setTimeout(() => (pv === 'runner' ? this.vehicles.launchRunner() : this.vehicles.goUp()), 600);
+      }, 900);
+    }
   }
 
   private resize() {
@@ -410,6 +427,7 @@ export class Game implements GameAPI {
     this.store.data.hull = Math.min(this.store.data.hull, st.hullMax);
     this.store.data.fuel = Math.min(this.store.data.fuel, st.fuelCap);
     this.ensureUpgradeModels();
+    this.vehicles?.ensureModels();
   }
 
   /** Lazily loaded model files the current boat shows: the Trimaran's owned upgrades, or the Ironwake's own model. */
@@ -607,11 +625,12 @@ export class Game implements GameAPI {
   }
   private tripStart() {
     const d = this.store.data;
-    d.trip = { on: true, t: 0, hauls: 0, startGold: d.gold };
+    d.trip = { on: true, t: 0, hauls: 0, startGold: d.gold, marks: [] };
     this.tripSaid = 'calm';
     this.atmo.squall = 0;
     this.shieldUsed = false;
     this.wrecks?.onTripStart();
+    if (this.vehicles) this.vehicles.marks = [];
     // the Daily Tide: today's fixed wrecks and events; free play: a fresh random set
     const daily = d.daily.active ? dailyPlan(d.daily.active, this.events.pool) : null;
     this.events?.onTripStart(daily?.events);
@@ -726,6 +745,8 @@ export class Game implements GameAPI {
     if (n) this.jobEvent({ kind: 'bank', value, items });
     this.claimDockJobs();
     this.events?.clear();
+    this.vehicles?.reset();
+    this.raiderRun?.clear();
     if (d.daily.active) {
       d.daily.legendary += items.filter((i) => tierOf(i.id) === 'legendary').reduce((a, b) => a + b.n, 0);
       this.endDaily(value, false);
@@ -810,7 +831,7 @@ export class Game implements GameAPI {
     return false;
   }
 
-  private say(key: string, text: string, cool = 4, opts: { icon?: string; color?: string; life?: number } = {}) {
+  say(key: string, text: string, cool = 4, opts: { icon?: string; color?: string; life?: number } = {}) {
     if ((this.msgCooldown[key] ?? 0) > this.t) return;
     this.msgCooldown[key] = this.t + cool;
     this.ui.toast(text, opts);
@@ -1300,6 +1321,30 @@ export class Game implements GameAPI {
       case 'harpoon':
         this.harpoonShot();
         break;
+      case 'launch_runner':
+        this.vehicles.launchRunner();
+        break;
+      case 'return_runner':
+        this.vehicles.returnRunner();
+        break;
+      case 'respawn':
+        this.vehicles.respawn();
+        break;
+      case 'boost':
+        this.vehicles.boost();
+        break;
+      case 'runner_haul':
+        this.salvage.runnerHaul();
+        break;
+      case 'go_up':
+        this.vehicles.goUp();
+        break;
+      case 'land':
+        this.vehicles.land();
+        break;
+      case 'winch':
+        this.vehicles.winchLift();
+        break;
       default:
         if (id.startsWith('dock:')) this.dockAt(id.slice(5));
         else if (id.startsWith('rescue:')) this.rescue(id.slice(7));
@@ -1550,6 +1595,8 @@ export class Game implements GameAPI {
       const lostValue = value - holdValue(s.data.cargo);
       if (s.data.trip.on) s.data.loop.tripsLost++;
       this.events.clear();
+      this.vehicles.reset();
+      this.raiderRun.clear();
       if (s.data.daily.active) this.endDaily(0, true);
       s.data.trip.on = false;
       s.data.trip.t = 0;
@@ -1904,6 +1951,58 @@ export class Game implements GameAPI {
     }
   }
 
+  /** The action column while a vehicle is out: RETURN/LAND first (bottom, under the thumb), then the rest. */
+  private vehicleActions(): Action[] {
+    const v = this.vehicles;
+    const acts: Action[] = [];
+    if (v.active === 'runner') {
+      if (v.thrown > 0) return [{ id: 'respawn', label: '↩ RESPAWN AT BOAT', glow: true }];
+      // the column grows upward from the thumb: RETURN at the bottom, then BOOST, then GRAB
+      acts.push({ id: 'return_runner', label: `↩ RETURN${v.carried.length ? ` · ${v.carried.length}/${v.runner.cargo}` : ''}`, glow: v.carried.length >= v.runner.cargo });
+      if (v.runner.boost) acts.push({ id: 'boost', label: v.boostCool > 0 ? '⚡ BOOST…' : '⚡ BOOST', disabled: v.boostCool > 0 });
+      const near = this.salvage.runnerSite();
+      if (near) acts.push({ id: 'runner_haul', label: `\u{1FA9D} GRAB ${near.name.replace(/^(Rare|Legendary) Wreck: /, '').toUpperCase()}`, glow: v.room() > 0, disabled: v.room() <= 0 || v.rSpeed > 6 });
+      // the boat's turret still harpoons raiders closing on her
+      if (this.store.stats.harpoon && !this.harpoonBusy && this.raiderRun.nearest(this.store.stats.harpoon * 1.4)) acts.push({ id: 'harpoon', label: '🎯 HARPOON RAIDER' });
+    } else if (v.active === 'balloon') {
+      acts.push({ id: 'land', label: v.lifting ? '⬇ LAND (bring her in)' : '⬇ LAND' });
+      if (v.winchTarget()) acts.push({ id: 'winch', label: '🪝 WINCH LIFT', glow: true });
+    }
+    return acts;
+  }
+
+  /** The Wave Runner rides over a drifting cache: one load (loop pass Phase 4). Shallow caches only it can reach. */
+  runnerPickups(x: number, z: number, dt = 1 / 30) {
+    for (let i = this.caches.length - 1; i >= 0; i--) {
+      const c = this.caches[i];
+      if (Math.hypot(c.x - x, c.z - z) > 2.6) continue;
+      const pool = CACHE_POOL[(c.region as 'shallows') ?? 'shallows'] ?? CACHE_POOL.shallows;
+      const r = weighted(() => this.rng.next(), pool.filter((p) => p.id !== 'fuel_can'));
+      if (!this.vehicles.take({ id: r.id, n: r.n[0] })) return;
+      this.scene.remove(c.obj);
+      this.caches.splice(i, 1);
+      audio.pickup();
+      this.ui.toast(`On the runner: ${item(r.id).name}${r.n[0] > 1 ? ` ×${r.n[0]}` : ''}`, { icon: r.id, color: '#9fd0c8', life: 2 });
+    }
+    // the shallows: caches wash into water too thin for any hull, only the runner gets there
+    this.shallowTimer -= dt;
+    if (this.shallowTimer > 0 || this.caches.filter((c) => c.shallow).length >= 2) return;
+    this.shallowTimer = 6;
+    for (let k = 0; k < 20; k++) {
+      const a = this.rng.range(0, Math.PI * 2), d = this.rng.range(40, 170);
+      const cx = x + Math.sin(a) * d, cz = z + Math.cos(a) * d;
+      const h = heightAt(cx, cz);
+      if (h < -1.0 || h > -0.4) continue;
+      const obj = model('tb_debris_kit', 'cache_crate', { shadows: true });
+      if (!obj) return;
+      obj.position.set(cx, 0, cz);
+      this.scene.add(obj);
+      this.caches.push({ obj, x: cx, z: cz, region: 'shallows', shallow: true });
+      break;
+    }
+  }
+  private shallowTimer = 0;
+
   private harpoonBusy = false;
   /** Harpoon reach for drifting caches: twice the hook's, a bit more with the Trimaran's beam-mounted turret. */
   harpoonReach() {
@@ -1925,11 +2024,12 @@ export class Game implements GameAPI {
   private harpoonShot() {
     if (this.harpoonBusy) return;
     const raider = this.raiders.inRange();
-    const cache = raider ? null : this.harpoonCache();
-    if (!raider && !cache) return;
+    const rider = raider ? null : this.raiderRun.nearest((this.store.stats.harpoon || 0) * 1.4);
+    const cache = raider || rider ? null : this.harpoonCache();
+    if (!raider && !rider && !cache) return;
     this.harpoonBusy = true;
     audio.ui();
-    this.ui.harpoonRing(raider ? 'RAIDER' : 'CACHE').then((grade) => {
+    this.ui.harpoonRing(raider || rider ? 'RAIDER' : 'CACHE').then((grade) => {
       this.harpoonBusy = false;
       if (grade === 'miss') {
         audio.splash();
@@ -1940,6 +2040,7 @@ export class Game implements GameAPI {
       this.haptic(grade === 'perfect' ? [30, 30, 70] : 40);
       this.jobEvent({ kind: 'harpoon' });
       if (raider) return this.raiders.shoot(raider, grade);
+      if (rider) return this.raiderRun.knockOut(rider, grade === 'perfect' ? 'Perfect harpoon' : 'Harpooned');
       if (!cache || !this.caches.includes(cache)) return;
       this.scene.remove(cache.obj);
       this.caches.splice(this.caches.indexOf(cache), 1);
@@ -2007,10 +2108,15 @@ export class Game implements GameAPI {
       fuel: s.fuel, fuelCap: st.fuelCap, hull: s.hull, hullMax: st.hullMax,
       clock: lbl.clock, phase: lbl.phase, weather: lbl.weather, engine: st.engine > 0, engineOn: this.engineOn, sailing: this.mode === 'sail',
     });
-    const px = this.mode === 'sail' ? this.boat.x : this.foot.x, pz = this.mode === 'sail' ? this.boat.z : this.foot.z;
+    const veh = this.vehicles.active === 'runner' ? { x: this.vehicles.rx, z: this.vehicles.rz } : this.vehicles.active === 'balloon' ? { x: this.vehicles.bx, z: this.vehicles.bz } : null;
+    const px = veh ? veh.x : this.mode === 'sail' ? this.boat.x : this.foot.x, pz = veh ? veh.z : this.mode === 'sail' ? this.boat.z : this.foot.z;
     const range = st.radar || 160;
     const blips: { x: number; z: number; kind: string }[] = [];
     for (const site of SALVAGE_SITES) if (Math.hypot(site.x - px, site.z - pz) < range * 1.4) blips.push({ x: site.x - px, z: site.z - pz, kind: this.salvage.ready(site) ? 'site' : 'site_done' });
+    // balloon marks stay on the radar after you land (loop pass Phase 4), at any distance
+    for (const m of this.vehicles.marks) blips.push({ x: m.x - px, z: m.z - pz, kind: m.kind.startsWith('wreck') ? m.kind : `mark_${m.kind}` });
+    if (veh) blips.push({ x: this.boat.x - px, z: this.boat.z - pz, kind: 'boat' });
+    for (const r of this.raiderRun.riders) if (r.state !== 'out') blips.push({ x: r.x - px, z: r.z - pz, kind: 'raider' });
     // drifting wrecks: the Salvage Radar shows Rare and Legendary ones in colour, at full radar range
     for (const w of this.wrecks.list) {
       if (w.hauled || w.taken) continue;
@@ -2338,6 +2444,7 @@ export class Game implements GameAPI {
     if (this.started) {
       this.wrecks.update(dt);
       this.events.update(dt);
+      this.vehicles.update(dt);
     }
     this.raiders.update(dt);
     for (const c of this.ship.crew) c.mixer.update(dt);
@@ -2496,7 +2603,7 @@ export class Game implements GameAPI {
     const mag = Math.min(1, Math.hypot(j.x, j.y));
     let throttle = 0;
     let target = b.heading;
-    const canInput = this.started && !this.ui.panelOpen;
+    const canInput = this.started && !this.ui.panelOpen && !this.vehicles?.active; // a vehicle out: the boat holds position
     if (canInput && mag > 0.18) {
       if (b.docked) {
         b.docked = false;
@@ -2732,6 +2839,7 @@ export class Game implements GameAPI {
     // contextual actions
     if (!this.started) return this.ui.setActions([]);
     const acts: Action[] = [];
+    if (this.vehicles.active) return this.ui.setActions(this.vehicleActions());
     const q = this.store.data.quest;
     if (b.docked) {
       const sett = SETTLEMENT_MAP[b.dockedAt];
@@ -2743,8 +2851,12 @@ export class Game implements GameAPI {
         if (st2.id === 'driftholm') continue;
         if (Math.hypot(b.x - st2.x, b.z - st2.z) < st2.dockR + this.ship.beam) acts.push({ id: `dock:${st2.id}`, label: `⚓ DOCK AT ${st2.name.toUpperCase()}`, glow: true });
       }
+      // the vehicles (loop pass Phase 4): one button out, one button back
+      if (this.vehicles.canLaunchRunner()) acts.push({ id: 'launch_runner', label: '🚤 LAUNCH RUNNER' });
+      if (this.vehicles.canLaunchBalloon()) acts.push({ id: 'go_up', label: '🎈 GO UP' });
       // the harpoon (loop pass Phase 1): a timing ring at a chasing raider, or a drifting cache out of hook reach
-      if (st.harpoon && !this.harpoonBusy && (this.raiders.inRange() || this.harpoonCache())) acts.push({ id: 'harpoon', label: this.raiders.inRange() ? '🎯 HARPOON RAIDER' : '🎯 HARPOON CACHE', glow: true });
+      const riderNear = this.raiderRun.nearest(st.harpoon * 1.4);
+      if (st.harpoon && !this.harpoonBusy && (this.raiders.inRange() || riderNear || this.harpoonCache())) acts.push({ id: 'harpoon', label: this.raiders.inRange() || riderNear ? '🎯 HARPOON RAIDER' : '🎯 HARPOON CACHE', glow: true });
       const site = this.salvage.siteInReach();
       if (site && !b.anchored) {
         const ready = this.salvage.ready(site);
@@ -2940,6 +3052,11 @@ export class Game implements GameAPI {
       pitch = 0.36;
       // drop the look-at point so the ship sits above the half-height sheet
       target.y -= dist * 0.3;
+    } else if (this.mode === 'sail' && this.vehicles?.camera()) {
+      const c = this.vehicles.camera()!;
+      target.set(c.x, c.y, c.z);
+      dist = c.dist;
+      pitch = c.pitch;
     } else if (this.mode === 'sail') {
       target.set(this.boat.x, 1.5, this.boat.z);
       dist = this.camDist * this.zoom;

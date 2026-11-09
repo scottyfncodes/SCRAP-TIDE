@@ -12,7 +12,7 @@ import { dealBoard, type Job } from '../game/dockJobs';
 
 const KEY = 'tidebreakers.save.v1';
 const BACKUP_KEY = 'tidebreakers.save.v1.bak';
-export const SAVE_VERSION = 8;
+export const SAVE_VERSION = 9;
 
 export interface Stack {
   id: string;
@@ -79,7 +79,7 @@ export interface SaveData {
   garden: Partial<Record<'driftholm' | 'hollow' | 'helios', number>>;
   beats: string[]; // character arc beats seen (data/arcs.ts, PR 2.3)
   // v6: push-your-luck trips (loop pass, game/trip.ts)
-  trip: { on: boolean; t: number; hauls: number; startGold: number };
+  trip: { on: boolean; t: number; hauls: number; startGold: number; marks?: { kind: string; x: number; z: number; id?: string }[] };
   loop: { banked: number; bestHold: number; tripsBanked: number; tripsLost: number; perfects: number };
   // v7: loot and progression (loop pass Phase 2)
   jobs: { board: Job[]; seed: number; serial: number; done: number };
@@ -141,7 +141,7 @@ export function freshSave(): SaveData {
     standing: {},
     garden: {},
     beats: [],
-    trip: { on: false, t: 0, hauls: 0, startGold: 0 },
+    trip: { on: false, t: 0, hauls: 0, startGold: 0, marks: [] },
     loop: { banked: 0, bestHold: 0, tripsBanked: 0, tripsLost: 0, perfects: 0 },
     jobs: freshJobs(now),
     setsDone: [],
@@ -190,6 +190,8 @@ function migrate(raw: any): SaveData {
     t: Number.isFinite(t.t) ? Math.max(0, t.t) : 0,
     hauls: Number.isFinite(t.hauls) ? t.hauls : 0,
     startGold: Number.isFinite(t.startGold) ? t.startGold : merged.gold,
+    // v9: balloon marks of the trip in progress (loop pass Phase 4)
+    marks: Array.isArray(t.marks) ? t.marks.filter((m: any) => m && typeof m.kind === 'string' && Number.isFinite(m.x) && Number.isFinite(m.z)) : [],
   };
   merged.loop = { ...base.loop, ...(raw.loop ?? {}) };
   // v7: the dock board, Salvage Log sets and tier counts. Sets an older save already completed are announced quietly

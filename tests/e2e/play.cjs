@@ -549,12 +549,85 @@ const check = (name, ok, detail = '') => {
     await g(() => { const G = window.__game; G.store.data.daily.active = null; G.events.clear(); });
   }
 
+  // ── loop pass Phase 4: the Wave Runner and the Hot Air Balloon
+  {
+    if (await page.$('.reveal')) await dismiss();
+    await g(() => { const G = window.__game; for (const u of ['wr_runner', 'wr_sled', 'wr_boost', 'compass_brass', 'radar_mast', 'bl_balloon', 'bl_winch']) if (!G.store.data.upgrades.includes(u)) G.store.data.upgrades.push(u); G.rebuildShip(); });
+    await teleport({ x: 40, z: 112, h: 0.6 });
+    await g(() => window.__game.tripStart());
+    await page.waitForTimeout(600);
+    const a0 = await actions();
+    check('at sea the Wave Runner and the balloon each launch with one button', a0.some((a) => /LAUNCH RUNNER/.test(a)) && a0.some((a) => /GO UP/.test(a)), a0.join(' | '));
+    await click(/LAUNCH RUNNER/);
+    await page.waitForTimeout(400);
+    const l = await g(() => ({ active: window.__game.vehicles.active, docked: window.__game.vehicles.dockedRunner?.visible }));
+    check('LAUNCH hands the controls straight to the runner', l.active === 'runner', JSON.stringify(l));
+    // a cache under the runner: one load
+    await g(() => { const G = window.__game, v = G.vehicles; const obj = new G.shipRoot.constructor(); G.scene.add(obj); G.caches.push({ obj, x: v.rx, z: v.rz, region: 'shallows' }); });
+    await playFor(0.6);
+    const c1 = await g(() => window.__game.vehicles.carried.length);
+    // drive it fast: it is much quicker than the boat
+    await joy(0, 1);
+    await playFor(3);
+    const sp = await g(() => ({ runner: window.__game.vehicles.rSpeed, boatMax: Math.max(window.__game.store.stats.speed, window.__game.store.stats.engine) }));
+    await joy(0, 0);
+    check('the runner picks up a load and is much faster than any hull', c1 === 1 && sp.runner > sp.boatMax, JSON.stringify({ c1, ...sp }));
+    await page.screenshot({ path: `${out}/loop_runner.png` });
+    // crash: the load drops into the water
+    const cr = await g(() => { const v = window.__game.vehicles; v.crash('test'); return { carried: v.carried.length, dropped: v.dropped.length, thrown: v.thrown > 0 }; });
+    await page.waitForTimeout(300);
+    const ra = await actions();
+    check('a crash throws you off and drops the load; you can respawn at the boat', cr.carried === 0 && cr.dropped === 1 && cr.thrown && ra.some((a) => /RESPAWN/.test(a)), JSON.stringify({ ...cr, ra }));
+    // swim back: ride over the dropped load to get it, then RETURN beside the boat unloads into the hold
+    await g(() => { const v = window.__game.vehicles; v.thrown = 0; const d = v.dropped[0]; v.rx = d.x; v.rz = d.z; });
+    await playFor(0.5);
+    const got = await g(() => window.__game.vehicles.carried.length);
+    const hold0 = await g(() => window.__game.store.data.cargo.reduce((a, c) => a + c.n, 0));
+    await g(() => { const G = window.__game, v = G.vehicles; v.rx = G.boat.x + 6; v.rz = G.boat.z; });
+    await click(/RETURN/);
+    await page.waitForTimeout(300);
+    const un = await g(() => ({ active: window.__game.vehicles.active, carried: window.__game.vehicles.carried.length, hold: window.__game.store.data.cargo.reduce((a, c) => a + c.n, 0) }));
+    check('the dropped load can be recovered; RETURN beside the boat unloads it into the hold and docks the runner', got === 1 && un.active === null && un.carried === 0 && un.hold > hold0, JSON.stringify({ got, hold0, ...un }));
+    // raiders: one darts in and snatches from the hold
+    await g(() => { const G = window.__game; G.store.addCargo('gold_watch', 1); G.events.trigger('raiders'); const r = G.raiderRun.riders[0]; r.state = 'dart'; r.x = G.boat.x + 1; r.z = G.boat.z + 1; window.__n0 = G.store.data.cargo.reduce((a, c) => a + c.n, 0); });
+    await playFor(0.5);
+    const st = await g(() => ({ stolen: window.__game.raiderRun.stolen, n: window.__game.store.data.cargo.reduce((a, c) => a + c.n, 0), n0: window.__n0 }));
+    check('a raider on a wave runner that reaches the boat snatches one thing from the hold', st.stolen === 1 && st.n === st.n0 - 1, JSON.stringify(st));
+    await g(() => { const G = window.__game; for (const r of G.raiderRun.riders) G.raiderRun.knockOut(r, 'test'); });
+    await playFor(0.5);
+    // the balloon: up high, marks go on the radar and stay after landing
+    await click(/GO UP/);
+    await page.waitForTimeout(300);
+    await g(() => { const G = window.__game; G.wrecks.spawnAt(G.boat.x + 150, G.boat.z + 100, 'legendary'); G.vehicles.alt = 110; });
+    await playFor(1.2);
+    const up = await g(() => ({ active: window.__game.vehicles.active, marks: window.__game.vehicles.marks.map((m) => m.kind), hold: !!document.querySelector('.hold-btn') }));
+    await page.screenshot({ path: `${out}/loop_balloon.png` });
+    await click(/LAND/);
+    await page.waitForTimeout(300);
+    const down = await g(() => ({ active: window.__game.vehicles.active, marks: window.__game.vehicles.marks.length, saved: (window.__game.store.data.trip.marks ?? []).length }));
+    check('from the balloon a Legendary wreck is marked (tier shown with radar) and the marks stay after landing', up.active === 'balloon' && up.hold && up.marks.includes('wreck_legendary') && down.active === null && down.marks >= 1 && down.saved >= 1, JSON.stringify({ up, down }));
+    // the winch: hook a heavy wreck and fly it home
+    await click(/GO UP/);
+    await page.waitForTimeout(300);
+    await g(() => { const G = window.__game, v = G.vehicles; v.alt = 20; const w = G.wrecks.spawnAt(v.bx + 3, v.bz + 3, 'rare', { name: 'Heavy Wreck in the Shallows' }); window.__h = G.store.data.hauls; });
+    const wa = await actions();
+    await click(/WINCH LIFT/);
+    await page.waitForTimeout(300);
+    await g(() => { const G = window.__game, v = G.vehicles; v.bx = G.boat.x + 2; v.bz = G.boat.z + 2; });
+    await playFor(0.6);
+    await page.waitForTimeout(800);
+    const lift = await g(() => ({ hauls: window.__game.store.data.hauls - window.__h, lifting: !!window.__game.vehicles.lifting }));
+    check('the balloon winch lifts a heavy wreck and hauls it aboard at the boat', wa.some((a) => /WINCH LIFT/.test(a)) && lift.hauls === 1 && !lift.lifting, JSON.stringify({ wa, ...lift }));
+    await dismiss();
+    await click(/LAND/);
+  }
+
   // ── save & reload
   await g(() => { window.__game.persistShip?.(); window.__game.store.saveNow(); });
   await page.reload();
   await page.waitForSelector('.title-screen .act', { timeout: 180000 });
   const after = await g(() => ({ crew: window.__game.store.data.crew, hauls: window.__game.store.data.hauls, v: window.__game.store.data.version, ups: window.__game.store.data.upgrades.length }));
-  check('progress survives a reload (save v8)', after.v === 8 && after.crew.includes('kai') && after.hauls >= 1 && after.ups >= 2, JSON.stringify(after));
+  check('progress survives a reload (save v9)', after.v === 9 && after.crew.includes('kai') && after.hauls >= 1 && after.ups >= 2, JSON.stringify(after));
 
   check('no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   const fails = results.filter((r) => !r.ok).length;

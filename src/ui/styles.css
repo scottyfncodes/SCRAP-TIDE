@@ -688,3 +688,10 @@ body.calm .quest.pulse { animation: none; }
 .daily-end .d-share { white-space: pre-wrap; text-align: left; font-size: 12.5px; line-height: 1.45; background: rgba(13,17,19,.08); border-radius: 8px; padding: 8px 10px; margin: 6px 0; user-select: text; -webkit-user-select: text; }
 .daily-end .d-btns { display: flex; gap: 8px; justify-content: center; }
 .daily-end .best { font-size: 12px; background: #f0c445; color: #14110d; border-radius: 4px; padding: 2px 6px; vertical-align: middle; }
+
+/* ── loop pass, Phase 4: the vehicles ── */
+/* the hold button (BURN) sits in the right thumb's arc, above the action column, clear of the radar */
+.hold-btn { position: absolute; right: calc(14px + env(safe-area-inset-right)); bottom: calc(150px + env(safe-area-inset-bottom)); width: 132px; height: 132px; border-radius: 50%; pointer-events: auto; touch-action: none;
+  background: radial-gradient(circle at 50% 40%, #f6c35a, #c0503a); color: #14110d; font-family: var(--label); font-weight: 900; font-size: 14px; letter-spacing: 1px; line-height: 1.15; box-shadow: 0 6px 0 rgba(0,0,0,.35), 0 0 0 3px rgba(20,17,13,.5); user-select: none; -webkit-user-select: none; z-index: 20; }
+.hold-btn.on { transform: translateY(3px) scale(.97); box-shadow: 0 3px 0 rgba(0,0,0,.35), 0 0 22px rgba(240,160,70,.9); }
+@media (min-width: 900px) { .hold-btn { bottom: 170px; right: 30px; } }
