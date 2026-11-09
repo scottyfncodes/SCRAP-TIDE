@@ -9,7 +9,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { parseLook } from '../src/state/look';
 import { PLASTIC_ACCENTS, ACCENT_BUDGET, WORLD_PALETTE } from '../src/world/style';
 import { merge, paint } from '../src/world/materials';
-import { WALK, RUN, captureRest, buildGaitClip, legPhase, retune, BASE_LEG, BASE_FOOT, type GaitParams } from '../src/player/gait';
+import { WALK, RUN, captureRest, buildGaitClip, legPhase, retune, BASE_LEG, GaitSolver, type GaitParams } from '../src/player/gait';
 
 /** hue in degrees and chroma (max − min of sRGB, 0..1): HSL saturation overstates near-whites, chroma does not */
 const hueChroma = (hex: string) => {
@@ -109,19 +109,37 @@ function slip(g: GaitParams, root: THREE.Object3D, clip: THREE.AnimationClip, le
   return { worst, n: pts.length };
 }
 
+/** how far the ankle rises between the start of toe-off and the end of stance */
+function heelLift(g: GaitParams, root: THREE.Object3D, clip: THREE.AnimationClip, leg: 0 | 1, sT: number) {
+  const mixer = new THREE.AnimationMixer(root);
+  mixer.clipAction(clip).play();
+  const b = root.getObjectByName('mixamorig' + (leg ? 'Right' : 'Left') + 'Foot')!;
+  let lo = Infinity, hi = -Infinity;
+  for (let i = 0; i < 160; i++) {
+    const l = legPhase(g, i / 160, leg === 0 ? 1 : -1);
+    if (!l.stance || l.s < sT) continue;
+    mixer.setTime((i / 160) * clip.duration);
+    root.updateMatrixWorld(true);
+    const y = b.getWorldPosition(new THREE.Vector3()).y;
+    lo = Math.min(lo, y);
+    hi = Math.max(hi, y);
+  }
+  return hi - lo;
+}
+
 describe.skipIf(!existsSync(JURY_CAPTAIN))('the 5.5-head captain walks on planted feet (C5)', () => {
   for (const base of [WALK, RUN]) {
-    // C5 asks for ≤ 1 cm. The flat foot meets it. At toe-off the solver rocks the foot over the ground contact under
-    // the ball, so the toe JOINT (a few cm above the sole) travels with the roll: today's 7.3-head captain measures
-    // 1.72 cm walking / 2.77 cm running by this same method, so the bar there is "no worse than today" (the existing
-    // gait test's 3 cm), and docs/jury-rigged/README.md reports C5's slip clause as missed at toe-off.
-    it(`${base.name}, retuned: flat foot ≤ 1 cm, toe-off no worse than today's rig`, async () => {
+    // C5: ≤ 1 cm in both stance phases. retune() hinges toe-off on the toe joint (GaitParams.toeHinge); the original
+    // cast's ground pivot let the joint travel 1.72 cm walking / 2.77 cm running by this same measurement.
+    it(`${base.name}, retuned: flat foot and toe-off both ≤ 1 cm, and the heel still lifts through toe-off`, async () => {
       const root = await loadRig(JURY_CAPTAIN);
       const rest = captureRest(root)!;
       const k = (rest.thigh + rest.shin) / BASE_LEG;
       expect(k).toBeLessThan(0.85); // shorter legs than the 7.3-head cast
-      const foot = rest.p.LeftToeBase.distanceTo(rest.p.LeftFoot) / BASE_FOOT;
-      const g = retune(base, k, rest.p.Hips.y * (base.hipHeight / 0.95), 1.14, base === WALK ? 1.3 : 1.15, foot);
+      // exactly what captain.ts does
+      const g = retune(base, k, rest.p.Hips.y * (base.hipHeight / 0.95), 1.14, base === WALK ? 1.3 : 1.15, base === WALK ? Math.sqrt(k) : k);
+      expect(g.toeHinge).toBe(true);
+      expect(g.toeOff).toBe(base.toeOff); // the full roll, not a reduced one
       const clip = buildGaitClip(rest, g);
       const sT = g.duty > 0.5 ? 0.55 : 0.42;
       for (const leg of [0, 1] as const) {
@@ -131,8 +149,19 @@ describe.skipIf(!existsSync(JURY_CAPTAIN))('the 5.5-head captain walks on plante
         expect(ball.n).toBeGreaterThan(2);
         console.log(`[jury] ${base.name} leg ${leg}: flat ${(flat.worst * 100).toFixed(2)} cm, ball ${(ball.worst * 100).toFixed(2)} cm`);
         expect(flat.worst).toBeLessThanOrEqual(0.01);
-        expect(ball.worst).toBeLessThan(0.03);
+        expect(ball.worst).toBeLessThanOrEqual(0.01);
+        // the foot really rolls: the ankle rises over toe-off (no "fix" by keeping the foot flat)
+        const lift = heelLift(g, root, clip, leg, sT);
+        console.log(`[jury] ${base.name} leg ${leg}: ankle lift over toe-off ${(lift * 100).toFixed(1)} cm`);
+        expect(lift).toBeGreaterThan(0.03);
       }
+      // the pelvis still moves like a body: the gait suite's human ranges (walk 2–5 cm, high at mid-stance; run 5–10 cm)
+      const sol = new GaitSolver(rest, g);
+      const ys = Array.from({ length: 96 }, (_, i) => sol.hips(i / 96).y);
+      const bob = Math.max(...ys) - Math.min(...ys);
+      console.log(`[jury] ${base.name}: pelvis bob ${(bob * 100).toFixed(1)} cm`);
+      if (base === WALK) expect(bob).toBeGreaterThan(0.02), expect(bob).toBeLessThan(0.05);
+      else expect(bob).toBeGreaterThan(0.05), expect(bob).toBeLessThan(0.1);
     });
   }
 });
