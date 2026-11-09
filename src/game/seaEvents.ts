@@ -189,7 +189,13 @@ export class SeaEvents {
     const fx = Math.sin(a.data.from), fz = Math.cos(a.data.from);
     const w = a.data.wall as THREE.Object3D;
     w.position.set(b.x + fx * a.data.dist, 0, b.z + fz * a.data.dist);
-    w.rotation.y = a.data.from;
+    w.rotation.y = a.data.from; // the face (local -z) looks back at the boat
+    // spray blowing off the lip
+    if (Math.random() < 0.7) {
+      const along = (Math.random() - 0.5) * 80;
+      const rx = Math.cos(a.data.from), rz = -Math.sin(a.data.from);
+      g.foam.emit(new THREE.Vector3(w.position.x + rx * along - fx * 2, 6 * w.scale.y, w.position.z + rz * along - fz * 2), 2, '#ffffff', 1.4, 1.5, 1.1, 4, 1.2);
+    }
     const rise = Math.min(1, (150 - a.data.dist) / 40);
     w.scale.set(1, 0.4 + rise * 0.8, 1);
     if (a.data.dist < 60 && !a.data.warned) {
@@ -263,17 +269,33 @@ export class SeaEvents {
   }
 }
 
-/** A long curling wall of water with a white crest (code-built; translucent so the sea reads through). */
+/**
+ * A rogue wave: a long ridge of sea-coloured water that steepens into a curling lip, with a white foam crest
+ * (extruded profile, code-built; the foam spray along the lip is emitted every frame by updateWave).
+ */
 function waveMesh(): THREE.Object3D {
   const g = new THREE.Group();
-  const geo = new THREE.CylinderGeometry(6, 6, 90, 16, 1, true, 0, Math.PI);
-  geo.rotateZ(Math.PI / 2);
-  const body = new THREE.Mesh(geo, new THREE.MeshToonMaterial({ color: 0x2c6a78, transparent: true, opacity: 0.85 }));
-  body.position.y = 1.5;
+  const sh = new THREE.Shape();
+  // cross-section in (forward, up): long back slope, steep face, a lip curling over the face
+  sh.moveTo(-14, -1);
+  sh.quadraticCurveTo(-6, 1.5, -1, 5.2);
+  sh.quadraticCurveTo(0.6, 6.6, 2.4, 6.1);
+  sh.quadraticCurveTo(3.4, 5.6, 2.6, 4.7);
+  sh.quadraticCurveTo(2.2, 2.4, 4, -1);
+  sh.lineTo(-14, -1);
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: 90, bevelEnabled: false, curveSegments: 10 });
+  geo.translate(0, 0, -45);
+  geo.rotateY(Math.PI / 2); // the profile's forward axis becomes local -z: the face points along -z
+  const body = new THREE.Mesh(geo, new THREE.MeshToonMaterial({ color: 0x1f6474, transparent: true, opacity: 0.94 }));
   g.add(body);
-  const crest = new THREE.Mesh(new THREE.BoxGeometry(90, 0.9, 2.4), new THREE.MeshBasicMaterial({ color: 0xe9fbf6 }));
-  crest.position.set(0, 7.2, 1.2);
-  g.add(crest);
+  const lip = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 90, 8), new THREE.MeshBasicMaterial({ color: 0xe9fbf6 }));
+  lip.rotation.z = Math.PI / 2;
+  lip.position.set(0, 5.9, -1.9);
+  g.add(lip);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(90, 3.2), new THREE.MeshBasicMaterial({ color: 0xcfeef0, transparent: true, opacity: 0.35, side: THREE.DoubleSide, depthWrite: false }));
+  face.position.set(0, 3.3, -3.2);
+  face.rotation.x = 0.35;
+  g.add(face);
   return g;
 }
 
