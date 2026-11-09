@@ -54,9 +54,10 @@ squared corners and stencilled labels; the objective is a sun-bleached painted t
 the radar sits in a bolted bezel. Primary actions are stamped Sun Gold plates; panels are bleached-sand journal pages
 under a steel header strip. Stencil for names, condensed grotesk for labels, mono for readouts.
 
-The steering control is salvaged machinery, one per vessel (gate-valve handwheel, turbine housing, aluminium direction
-dial, riveted hazard ring), each with a hazard tab at 12 o'clock and a knurled thumb cap. Never a wooden ship's wheel,
-brass bosses, Jolly Roger, colonial costume or treasure-map parchment. See `docs/art-pass/`.
+The helm keeps the classic ship's-wheel shape (rim, spokes, grip handles) but every wheel is built from salvage: pipe,
+copper, bolted aluminium or riveted steel, with taped, rope-whipped or rubber grips and a hazard-yellow top grip, and a
+knurled steel thumb cap instead of a brass boss. Never timber-and-brass, Jolly Roger, colonial costume or treasure-map
+parchment. See `docs/art-pass/`.
 
 ## Naming
 
