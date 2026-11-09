@@ -402,7 +402,10 @@ const check = (name, ok, detail = '') => {
     // swamped: the hold is lost, gold, vault and upgrades never
     await teleport({ x: 40, z: 110, h: 0 });
     await g(() => { const G = window.__game; G.tripStart(); G.store.addCargo('wire', 3); G.store.addCargo('sun_mask', 1); window.__keep = { gold: G.store.data.gold, vault: JSON.stringify(G.store.data.vault), ups: G.store.data.upgrades.join() }; G.store.data.hull = 1; G.damage(50, null); });
-    await page.waitForTimeout(1500);
+    // the tow home runs behind a fade on a timer: on CI's slow renderer it can land seconds later, so wait for it
+    // (otherwise it re-docks the boat after the next step has already put her back to sea)
+    await page.waitForFunction(() => { const G = window.__game; return G.boat.docked && !G.store.data.trip.on; }, null, { timeout: 60000, polling: 100 }).catch(() => {});
+    await page.waitForTimeout(400);
     const sunk = await g(() => { const d = window.__game.store.data; return { cargo: d.cargo.map((c) => c.id), gold: d.gold === window.__keep.gold, vault: JSON.stringify(d.vault) === window.__keep.vault, ups: d.upgrades.join() === window.__keep.ups, lost: d.loop.tripsLost }; });
     check('swamped: the hold goes over the side (story finds stay); gold, vault and upgrades are untouched', sunk.cargo.join() === 'sun_mask' && sunk.gold && sunk.vault && sunk.ups && sunk.lost >= 1, JSON.stringify(sunk));
     await dismiss();
