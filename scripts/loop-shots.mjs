@@ -64,6 +64,11 @@ const SCENES = {
   salvage_log: { q: '?ship=trimaran', run: () => { const g = window.__game; for (const id of ['conch', 'spiral_shell', 'sand_dollar', 'starfish', 'sea_glass', 'coral_branch', 'transistor_radio', 'vinyl_record', 'sextant', 'ship_bell', 'rubber_duck', 'pearl', 'gold_watch']) g.store.discover(id, 'the Drift'); (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.openPanel('catalog', 'sets'); } },
   shop: { q: '?ship=trimaran&upgrades=sail_canvas,cargo_crate,rudder_ash', run: () => { const g = window.__game; g.store.data.gold = 900; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.openPanel('shipwright'); setTimeout(() => { const b = document.querySelector('.sheet-body, .sheet .body'); const t = [...document.querySelectorAll('.section-title')].find((e) => /Salvage Gear|Navigation/.test(e.textContent)); t?.scrollIntoView(); }, 200); } },
   dock_board: { q: '?ship=trimaran', run: () => { const g = window.__game; const j = g.store.data.jobs.board; j[0].progress = Math.ceil(j[0].n / 2); j[1].progress = j[1].n; j[1].done = true; (window.__hold)(g, { x: 60, z: 120, h: 0.9 }); g.ui.openPanel('harbor'); setTimeout(() => [...document.querySelectorAll('.section-title')].find((e) => /Dock board/.test(e.textContent))?.scrollIntoView(), 200); } },
+  // Phase 3
+  rogue_wave: { q: '?ship=trimaran', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.tripStart(); g.events.trigger('rogue_wave'); g.events.active[0].data.dist = 60; g.events.active[0].data.from = 2.4; (window.__hold)(g, { x: 60, z: 120, h: 0.9, yaw: 1.2, pitch: 0.24 }); setInterval(() => { const a = g.events.active[0]; if (a) a.data.dist = Math.max(a.data.dist, 34); }, 20); } },
+  rival: { q: '?ship=trimaran', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.tripStart(); g.events.trigger('rival'); const a = g.events.active[0]; if (a) { a.data.speed = 0.01; const w = a.data.wreck.site; (window.__hold)(g, { x: w.x - 40, z: w.z - 30, h: Math.atan2(40, 30), yaw: 0.25, pitch: 0.3 }); a.data.x = w.x + 35; a.data.z = w.z + 15; } } },
+  creature: { q: '?ship=trimaran&upgrades=radar_mast,compass_brass', run: () => { const g = window.__game; g.store.data.quest = 'free'; g.tripStart(); g.events.trigger('creature'); const a = g.events.active[0]; if (a) { const w = a.data.wreck.site; (window.__hold)(g, { x: w.x - 30, z: w.z - 45, h: Math.atan2(30, 45), yaw: 0.15, pitch: 0.3 }); } } },
+  daily_end: { q: '?ship=trimaran', run: () => { const g = window.__game; (window.__hold)(g, { x: 20, z: 150, h: 3.0 }); g.ui.dailyEnd?.('2026-11-09', { banked: 214, perfects: 4, events: 2, legendary: 1, sunk: false, total: 404 }, 3, 'SCRAP TIDE · Daily Tide 2026-11-09\n💰 404 pts · banked 214g\n🎯 🟨🟨🟨🟨⬛\n🌊⛵🐙 2/3 events beaten · 👑 legendary\n🔥 3-day streak', true); } },
 };
 
 const browser = await playwright.chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -92,7 +97,7 @@ for (const [vid, vp] of Object.entries(VIEWS)) {
     await page.waitForFunction((t) => window.__game.renderT >= t, t0 + 1.5, { timeout: 120000, polling: 100 }).catch(() => {});
     if (name === want[0]) report.fps[vid] = await page.evaluate(() => new Promise((r) => { let n = 0; const t = performance.now(); const f = () => { n++; if (performance.now() - t < 4000) requestAnimationFrame(f); else r(+(n / ((performance.now() - t) / 1000)).toFixed(2)); }; requestAnimationFrame(f); }));
     await clear();
-    if (['harpoon', 'bank', 'loot_reveal'].includes(name)) await page.evaluate(`(${sc.run.toString()})()`);
+    if (['harpoon', 'bank', 'loot_reveal', 'daily_end'].includes(name)) await page.evaluate(`(${sc.run.toString()})()`);
     await page.waitForTimeout(name === 'bank' ? 250 : name === 'harpoon' ? 120 : name === 'loot_reveal' ? 1600 : 500);
     await page.screenshot({ path: `${out}/${name}-${vid}.png`, timeout: 120000 });
     report.scenes[`${name}-${vid}`] = 'ok';

@@ -157,7 +157,11 @@ export class Salvage {
     const merged = new Map<string, number>();
     for (const l of loot) merged.set(l.id, (merged.get(l.id) ?? 0) + l.n);
     loot.splice(0, loot.length, ...[...merged].map(([id, n]) => ({ id, n })));
-    if (wreck) g.wrecks.hauled(site.id);
+    if (wreck) {
+      g.wrecks.hauled(site.id);
+      g.events.wreckHauled(site.id);
+    }
+    if (s.data.daily.active) s.data.daily.perfects += perfects;
     else s.data.salvaged[site.id] = s.seaNow();
     // tiers (loop pass Phase 2): count every find by tier; the best one drives the reveal
     for (const l of loot) s.data.tiers[tierOf(l.id)] += l.n;

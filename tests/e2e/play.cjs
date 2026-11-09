@@ -493,12 +493,58 @@ const check = (name, ok, detail = '') => {
     await g(() => window.__game.ui.closePanel());
   }
 
+  // ── loop pass Phase 3: sea events and the Daily Tide
+  {
+    if (await page.$('.reveal')) await dismiss();
+    // rogue wave on the beam: hits (no armour), bow-on: rides it
+    await teleport({ x: 40, z: 100, h: 0 });
+    await g(() => { const G = window.__game; G.store.data.upgrades = G.store.data.upgrades.filter((u) => u !== 'hull_armor'); G.tripStart(); G.store.data.hull = G.store.stats.hullMax; window.__h0 = G.store.data.hull; G.events.trigger('rogue_wave'); G.events.active[0].data.from = G.boat.heading + Math.PI / 2; });
+    await page.waitForFunction(() => window.__game.events.active.length === 0, null, { timeout: 120000, polling: 200 }).catch(() => {});
+    const wave = await g(() => ({ hull: window.__game.store.data.hull, h0: window.__h0, seen: window.__game.events.seen }));
+    check('a rogue wave caught on the beam hits the hull', wave.hull < wave.h0 - 5 && wave.seen.includes('rogue_wave'), JSON.stringify(wave));
+    await g(() => { const G = window.__game; G.events.trigger('rogue_wave'); G.events.active[0].data.from = G.boat.heading; G.boat.speed = 6; window.__pinSpeed = setInterval(() => (G.boat.speed = 6), 30); });
+    await page.waitForFunction(() => window.__game.events.active.length === 0, null, { timeout: 120000, polling: 200 }).catch(() => {});
+    const rode = await g(() => { clearInterval(window.__pinSpeed); return window.__game.events.beaten; });
+    check('turning the bow into a rogue wave rides over it', rode >= 1, `beaten ${rode}`);
+    // surfacing wreck sinks after 30 s if nobody hauls it
+    await g(() => { const G = window.__game; G.events.trigger('surfacing_wreck'); window.__sw = G.wrecks.list.find((w) => w.sinkIn !== undefined)?.site.id; G.wrecks.byId(window.__sw).sinkIn = 1; });
+    await playFor(2);
+    check('a surfacing wreck goes back under when its time runs out', await g(() => !!window.__sw && !window.__game.wrecks.byId(window.__sw)), '');
+    // Daily Tide: same wrecks twice for the same date, end card with score, share text and streak
+    const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
+    const dailyRun = async () => {
+      await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
+      await click(/^⚓ DOCK$/);
+      await page.waitForTimeout(1500);
+      await dismiss();
+      await g(() => window.__game.ui.openPanel('harbor'));
+      await page.waitForSelector('.daily-btn', { timeout: 5000 });
+      await page.click('.daily-btn');
+      await page.waitForTimeout(500);
+      return g(() => window.__game.wrecks.list.map((w) => `${w.tier}@${w.site.x.toFixed(1)},${w.site.z.toFixed(1)}`).join(' '));
+    };
+    const a = await dailyRun();
+    const active = await g(() => window.__game.store.data.daily.active);
+    await g(() => { const G = window.__game; G.store.addCargo('gold_watch', 2); });
+    await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
+    await click(/^⚓ DOCK$/);
+    await page.waitForSelector('.daily-end', { timeout: 60000 }).catch(() => {});
+    const end = await g(() => ({ card: !!document.querySelector('.daily-end'), share: document.querySelector('.daily-end .d-share')?.textContent ?? '', streak: window.__game.store.data.daily.streak, best: window.__game.store.data.daily.best }));
+    await page.screenshot({ path: `${out}/loop_daily_end.png` });
+    check('the Daily Tide ends at the dock with a score breakdown, a shareable result and a streak', end.card && /Daily Tide/.test(end.share) && /streak/.test(end.share) && end.streak >= 1, JSON.stringify(end));
+    await g(() => document.querySelector('.daily-end .r-ok')?.click());
+    await dismiss();
+    const b2 = await dailyRun();
+    check('the Daily Tide puts the same wrecks in the same places for the same date', !!active && a.length > 0 && a === b2, `${a} | ${b2}`);
+    await g(() => { const G = window.__game; G.store.data.daily.active = null; G.events.clear(); });
+  }
+
   // ── save & reload
   await g(() => { window.__game.persistShip?.(); window.__game.store.saveNow(); });
   await page.reload();
   await page.waitForSelector('.title-screen .act', { timeout: 180000 });
   const after = await g(() => ({ crew: window.__game.store.data.crew, hauls: window.__game.store.data.hauls, v: window.__game.store.data.version, ups: window.__game.store.data.upgrades.length }));
-  check('progress survives a reload (save v7)', after.v === 7 && after.crew.includes('kai') && after.hauls >= 1 && after.ups >= 2, JSON.stringify(after));
+  check('progress survives a reload (save v8)', after.v === 8 && after.crew.includes('kai') && after.hauls >= 1 && after.ups >= 2, JSON.stringify(after));
 
   check('no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   const fails = results.filter((r) => !r.ok).length;
