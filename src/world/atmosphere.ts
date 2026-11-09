@@ -72,6 +72,8 @@ export class Atmosphere {
   wall = 0; // Stormwall part of storm
   night = 0; // 0 day .. 1 deep night
   lightning = 0; // flash 0..1
+  /** The trip squall (game/trip.ts) at the player, 0..1: it rides on top of the roaming cells. */
+  squall = 0;
   /** Calm effects: lightning lights the world at a third of its strength. */
   calm = false;
   get flash() {
@@ -125,7 +127,7 @@ export class Atmosphere {
     this.sunDir.copy(day).lerp(moon, this.night).normalize();
 
     // weather
-    const s = this.stormAt(px, pz);
+    const s = Math.max(this.stormAt(px, pz), this.squall);
     this.storm += (s - this.storm) * Math.min(1, dt * 0.8);
     this.wall = this.wallAt(px, pz);
     const st = this.storm;

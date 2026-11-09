@@ -32,6 +32,8 @@ export const MILESTONES: MilestoneDef[] = [
 export type QuestStepId =
   | 'steer'
   | 'leave_dock'
+  | 'first_haul'
+  | 'bank_haul'
   | 'reach_turtle'
   | 'anchor'
   | 'ashore'
@@ -56,13 +58,17 @@ export interface QuestStep {
  * and the first salvage happens on the way home. Retired ids stay in QuestStepId so old saves load: see liveStep().
  */
 export const FIRST_VOYAGE: QuestStep[] = [
-  { id: 'leave_dock', text: 'Cast off from Driftholm', hint: 'Old Wren wants the bottle from Turtle Atoll. Drag the wheel (bottom-left) toward where you want to go; push further for more sail. Head north, clear of the rafts.' },
-  { id: 'reach_turtle', text: 'Sail to Turtle Atoll', hint: 'Follow the gold marker west: a ring of dead coral on top of a drowned hill. Old Wren says something washed up there.' },
+  // loop pass (Phase 1): the first haul comes first, in sight of the pier, then home to bank it and buy a part.
+  // Turtle Atoll and the bottle follow with a better boat.
+  { id: 'leave_dock', text: 'Cast off from Driftholm', hint: 'Drag the wheel (bottom-left) toward where you want to go. The drowned tower east of the pier is worth a look.' },
+  { id: 'first_haul', text: 'Salvage the Sunken Tower', hint: 'Steer to the gold marker, slow down beside the tower and tap SALVAGE.' },
+  { id: 'bank_haul', text: 'Bank it: dock at the pier', hint: 'Loot only counts once you dock. Steer back to the raft pier and tap DOCK.' },
+  { id: 'upgrade', text: 'Sell to Pip, refit with Marlo', hint: 'Sell your haul, then pick your first part: Marlo fits it at his welcome price.' },
+  { id: 'reach_turtle', text: 'Sail to Turtle Atoll', hint: 'Old Wren wants the bottle from Turtle Atoll. Follow the gold marker west.' },
   { id: 'ashore', text: 'Anchor and go ashore', hint: 'Ease off the wheel in the turquoise shallows, tap ANCHOR, then GO ASHORE.' },
   { id: 'find_bottle', text: 'Search the beach', hint: 'Something is glinting on the south beach.' },
   { id: 'dig_x', text: 'Read the scrap, find the X, dig', hint: 'Study the map: the landmarks are real. Stand where the clue says. Your shovel tells you when the sand is loose.' },
-  { id: 'return_harbor', text: 'Sail home. Salvage the Sunken Tower on the way', hint: 'Pick up the raft if you said you would. The drowned office block east of the pier: slow down beside it and tap SALVAGE. Then dock at the raft pier.' },
-  { id: 'upgrade', text: 'Trade with Pip, refit with Marlo', hint: 'Sell what you dug up to Pip, then have Marlo fit your first part: the one you chose gets his welcome price.' },
+  { id: 'return_harbor', text: 'Sail home and bank the find', hint: 'Dock at the raft pier before the squall catches you.' },
   { id: 'free', text: 'The world drowned. You didn’t.', hint: 'Follow the Captain’s Log: salvage, refit, push further out.' },
 ];
 

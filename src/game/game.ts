@@ -42,6 +42,7 @@ import { GOALS } from '../data/progress';
 import { windEff, offWind, luffAmount, pointOfSail, bearAwaySide, luffLine, drawingLine, LUFF_WARN_AFTER, LUFF_WARN_COOLDOWN, NO_GO } from './pointOfSail';
 import { WindStreaks } from '../world/windStreaks';
 import { angleDiff, clamp, lerp, RNG } from '../core/noise';
+import { tripLength, squallLevel, squallDamage, tripLeft, tripPhase, holdValue, keepsOnSink, SQUALL_WARN, type TripPhase } from './trip';
 
 type Mode = 'sail' | 'foot';
 
@@ -153,6 +154,9 @@ export class Game implements GameAPI {
   private flapTimer = 0;
   private windStreaks = new WindStreaks();
   private titleYawSet = false;
+  /** Hit-stop: real seconds left of a near-freeze after a big catch (loop pass Phase 1). */
+  private hitStopT = 0;
+  private tripSaid: TripPhase = 'calm';
 
   constructor(private canvas: HTMLCanvasElement, private progress: (p: number, msg: string) => Promise<void>) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -232,8 +236,12 @@ export class Game implements GameAPI {
     let last = performance.now();
     let frame = 0;
     const loop = (now: number) => {
-      const dt = Math.min(0.05, (now - last) / 1000);
+      let dt = Math.min(0.05, (now - last) / 1000);
       last = now;
+      if (this.hitStopT > 0) {
+        this.hitStopT -= dt;
+        dt *= 0.06;
+      }
       this.update(dt);
       // behind the Maps panel the scene is only a dimmed backdrop: draw it every other frame so the map's
       // pinch and pan keep the GPU on a phone
@@ -470,9 +478,7 @@ export class Game implements GameAPI {
       setTimeout(() => this.ui.revealInfo('Her refit', `${s.data.shipName || 'She'} is ${stageNow.name}`, `${stageNow.look} Every part you fit shows on her.`, 'Looks mean'), 1200);
     }
     if (s.data.upgrades.length === 1 && !s.data.shipName) setTimeout(() => this.nameShip(), 700);
-    if (s.data.quest === 'free' && s.data.upgrades.length === 1 && !s.data.flags.includes('voyage_finale')) {
-      setTimeout(() => this.voyageFinale(), 900);
-    }
+    if (s.data.quest === 'free' && !s.data.flags.includes('voyage_finale')) setTimeout(() => this.voyageFinale(), 900);
   }
 
   buyVessel(id: string) {
@@ -548,8 +554,100 @@ export class Game implements GameAPI {
     location.reload();
   }
 
-  haptic(ms: number) {
-    if (this.store.data.settings.haptics && navigator.vibrate) navigator.vibrate(ms);
+  haptic(ms: number | number[]) {
+    if (!this.store.data.settings.haptics || typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function') return;
+    try {
+      navigator.vibrate(ms);
+    } catch {
+      /* unsupported: do nothing */
+    }
+  }
+
+  /** A short near-freeze of the world on a big moment (skipped with Calm effects). */
+  hitStop(ms: number) {
+    if (this.store.data.settings.calm) return;
+    this.hitStopT = Math.max(this.hitStopT, ms / 1000);
+  }
+
+  /** A light camera kick (0..1). */
+  kick(k: number) {
+    if (this.store.data.settings.calm) return;
+    this.shake = Math.min(1, this.shake + k);
+  }
+
+  // ───────── trips (loop pass Phase 1, game/trip.ts) ─────────
+  /** Does the squall clock run? Not on the First Voyage: that trip teaches the hold and the dock first. */
+  tripClock() {
+    return this.store.data.quest === 'free';
+  }
+  get tripLen() {
+    return tripLength(this.store.stats);
+  }
+  private tripStart() {
+    const d = this.store.data;
+    d.trip = { on: true, t: 0, hauls: 0, startGold: d.gold };
+    this.tripSaid = 'calm';
+    this.atmo.squall = 0;
+  }
+  /** Dock anywhere: the hold is banked into the vault. Returns what it was worth. */
+  private bankHold(where: string) {
+    const s = this.store, d = s.data;
+    const value = holdValue(d.cargo);
+    const n = s.unloadToVault();
+    const wasOn = d.trip.on;
+    d.trip.on = false;
+    d.trip.t = 0;
+    this.atmo.squall = 0;
+    this.tripSaid = 'calm';
+    if (wasOn) d.loop.tripsBanked++;
+    if (n) {
+      d.loop.banked += value;
+      d.loop.bestHold = Math.max(d.loop.bestHold, value);
+      audio.bank(value);
+      this.haptic([30, 40, 60]);
+      setTimeout(() => this.ui.stamp('BANKED', `${n} item${n > 1 ? 's' : ''} · worth ${value}g · ${where}`), 500);
+      this.sparkle.emit(new THREE.Vector3(this.boat.x, 2, this.boat.z), 36, '#f0c445', 3, 4, 1.2, 4, 1);
+    }
+    return { n, value };
+  }
+  private updateTrip(dt: number) {
+    const d = this.store.data, b = this.boat;
+    if (!d.trip.on || b.docked) {
+      this.atmo.squall = Math.max(0, this.atmo.squall - dt * 0.5);
+      return;
+    }
+    const L = this.tripLen;
+    if (this.tripClock() && this.mode === 'sail' && !this.ui.panelOpen && !b.busy) d.trip.t += dt;
+    const lvl = this.tripClock() ? squallLevel(d.trip.t, L) : 0;
+    this.atmo.squall = lvl;
+    if (lvl > 0 && this.mode === 'sail') this.damage(squallDamage(lvl, d.trip.t, L) * dt, null);
+    const ph = this.tripClock() ? tripPhase(d.trip.t, L) : 'calm';
+    if (ph !== this.tripSaid) {
+      this.tripSaid = ph;
+      if (ph === 'warn') {
+        audio.squallWarn();
+        this.haptic([40, 60, 40]);
+        this.ui.toast(`Squall in ${SQUALL_WARN}s! Dock anywhere to bank your hold.`, { color: '#f0a050', life: 3.5 });
+      } else if (ph === 'squall') {
+        audio.squallWarn();
+        audio.thunder(1);
+        this.kick(0.5);
+        this.haptic([80, 40, 120]);
+        this.ui.stamp('SQUALL!', 'It eats your hull. Dock to save the hold.', '#ff7a5c');
+      }
+    }
+  }
+  /** Nearest dock for the trip strip: distance and a camera-relative bearing. */
+  private nearestDock() {
+    const b = this.boat;
+    let best = { x: this.env.pierTip.x, z: this.env.pierTip.z, d: Math.hypot(b.x - this.env.pierTip.x, b.z - this.env.pierTip.z) };
+    for (const st of SETTLEMENTS) {
+      if (st.id === 'driftholm') continue;
+      const dd = Math.hypot(b.x - st.x, b.z - st.z) - st.dockR;
+      if (dd < best.d) best = { x: st.x, z: st.z, d: Math.max(0, dd) };
+    }
+    const ang = Math.atan2(best.x - b.x, best.z - b.z);
+    return { d: best.d, angle: -angleDiff(this.camYaw, ang) };
   }
 
   /**
@@ -1062,6 +1160,9 @@ export class Game implements GameAPI {
       case 'salvage':
         this.salvage.begin();
         break;
+      case 'harpoon':
+        this.harpoonShot();
+        break;
       default:
         if (id.startsWith('dock:')) this.dockAt(id.slice(5));
         else if (id.startsWith('rescue:')) this.rescue(id.slice(7));
@@ -1288,14 +1389,16 @@ export class Game implements GameAPI {
     const s = this.store;
     this.engineOn = false;
     this.ui.fade(() => {
-      // lose half of everything that isn't story loot
-      let lost = 0;
-      for (const st of [...s.data.cargo]) {
-        const d = item(st.id);
-        if (d.rarity === 'legendary' || d.rarity === 'epic') continue;
-        const n = Math.ceil(st.n / 2);
-        lost += s.removeFrom(s.data.cargo, st.id, n);
-      }
+      // push-your-luck (loop pass Phase 1): the whole hold goes over the side, except one-of-a-kind story finds.
+      // Gold, upgrades, vessels and everything already banked in the vault are never touched.
+      const value = holdValue(s.data.cargo);
+      const gone = s.loseHold(keepsOnSink);
+      const lost = gone.reduce((a, b) => a + b.n, 0);
+      const lostValue = value - holdValue(s.data.cargo);
+      if (s.data.trip.on) s.data.loop.tripsLost++;
+      s.data.trip.on = false;
+      s.data.trip.t = 0;
+      this.atmo.squall = 0;
       this.mode = 'sail';
       this.dockPose();
       s.data.hull = Math.round(s.stats.hullMax * 0.4);
@@ -1303,7 +1406,7 @@ export class Game implements GameAPI {
       this.clearPickups();
       this.persistShip();
       s.commit();
-      this.ui.revealInfo('Swamped', 'Towed home to Driftholm', `The sea came over the rails. A Driftholm tug found you and towed you home${lost ? `, but ${lost} items went over the side` : ''}. Marlo patched the worst of it.<br><br>Armour plating, a Mechanic and hull patch kits keep you afloat in storms.`, 'Never again');
+      this.ui.revealInfo('Swamped', 'Towed home to Driftholm', `The sea came over the rails. A Driftholm tug found you and towed you home${lost ? `. The hold went over the side: <b>${lost} items, ${lostValue}g</b>` : ''}. Your gold, your boat and your vault are safe.<br><br>Dock before the squall to bank your hold.`, 'Never again');
     });
   }
 
@@ -1483,6 +1586,8 @@ export class Game implements GameAPI {
     this.boat.speed = 0;
     this.engineOn = false;
     const s = this.store.data;
+    this.bankHold(sett.name); // docking anywhere banks the hold (loop pass Phase 1)
+    s.stats.trips++;
     if (!s.settlementsVisited.includes(id)) s.settlementsVisited.push(id);
     const flag = `docked_${id}`;
     if (!s.flags.includes(flag)) s.flags.push(flag);
@@ -1644,6 +1749,53 @@ export class Game implements GameAPI {
     }
   }
 
+  private harpoonBusy = false;
+  /** Harpoon reach for drifting caches: twice the hook's, a bit more with the Trimaran's beam-mounted turret. */
+  harpoonReach() {
+    return this.store.stats.harpoon ? 44 : 0;
+  }
+  private harpoonCache() {
+    const b = this.boat, R = this.harpoonReach();
+    if (!R) return null;
+    let best: (typeof this.caches)[number] | null = null, bd = Infinity;
+    for (const c of this.caches) {
+      const d = Math.hypot(c.x - b.x, c.z - b.z);
+      if (d < R && d > this.ship.beam + 3.2 && d < bd) {
+        bd = d;
+        best = c;
+      }
+    }
+    return best;
+  }
+  private harpoonShot() {
+    if (this.harpoonBusy) return;
+    const raider = this.raiders.inRange();
+    const cache = raider ? null : this.harpoonCache();
+    if (!raider && !cache) return;
+    this.harpoonBusy = true;
+    audio.ui();
+    this.ui.harpoonRing(raider ? 'RAIDER' : 'CACHE').then((grade) => {
+      this.harpoonBusy = false;
+      if (grade === 'miss') {
+        audio.splash();
+        this.haptic([10, 30, 10]);
+        return this.say('hmiss', 'Missed! Reel in and try again.', 1.5, { color: '#c9b48a' });
+      }
+      audio.harpoon();
+      this.haptic(grade === 'perfect' ? [30, 30, 70] : 40);
+      if (raider) return this.raiders.shoot(raider, grade);
+      if (!cache || !this.caches.includes(cache)) return;
+      this.scene.remove(cache.obj);
+      this.caches.splice(this.caches.indexOf(cache), 1);
+      this.foam.emit(new THREE.Vector3(cache.x, 0.4, cache.z), 18, '#ffffff', 2, 3, 1, 6, 0.6);
+      this.salvage.openCache(cache.region as 'shallows', grade === 'perfect' ? 1 : 0);
+      if (grade === 'perfect') {
+        this.ui.stamp('PERFECT SHOT!', '+1 bonus find');
+        this.kick(0.12);
+      }
+    });
+  }
+
   chartExtras() {
     const d = this.store.data;
     return {
@@ -1713,12 +1865,19 @@ export class Game implements GameAPI {
     for (const cw of CASTAWAYS) if (!s.castaways.includes(cw.id) && Math.hypot(cw.x - px, cw.z - pz) < range * 1.4) blips.push({ x: cw.x - px, z: cw.z - pz, kind: 'castaway' });
     this.ui.setRadar(blips, range, this.mode === 'sail' ? this.boat.heading : this.foot.heading, this.camYaw, !!st.radar);
     this.ui.setCritical(this.mode === 'sail' && s.hull < st.hullMax * 0.25);
+    const atSea = this.mode === 'sail' && !this.boat.docked;
+    if (atSea) {
+      const dock = this.nearestDock();
+      const clock = this.tripClock() && s.trip.on;
+      const L = this.tripLen;
+      this.ui.setTrip({ show: true, hold: holdValue(s.cargo), dock: dock.d, dockAngle: dock.angle, left: clock ? tripLeft(s.trip.t, L) : null, frac: s.trip.t / L, phase: clock ? tripPhase(s.trip.t, L) : 'calm' });
+    } else this.ui.setTrip({ show: this.mode === 'foot', hold: holdValue(s.cargo), dock: 0, dockAngle: 0, left: null, frac: 0, phase: 'calm' });
   }
 
   private dock() {
     this.ui.fade(() => {
       this.dockPose();
-      const n = this.store.unloadToVault();
+      const { n } = this.bankHold('Driftholm');
       this.store.data.stats.trips++;
       this.clearPickups();
       this.store.advanceQuest('return_harbor');
@@ -1726,6 +1885,7 @@ export class Game implements GameAPI {
       this.store.commit();
       this.camYaw = 0.35; // look back at the town
       if (n) this.ui.toast(`Unloaded ${n} item${n > 1 ? 's' : ''} into your harbor vault`, { color: '#4f9a95', life: 3 });
+      this.store.advanceQuest('bank_haul');
       audio.phrase('harbor');
       this.dockhandHail();
       setTimeout(() => this.crewBark('dock', { driftholm: true }, { specificOnly: true, cool: 120 }), 1400);
@@ -2001,6 +2161,7 @@ export class Game implements GameAPI {
     this.updateCamera(dt);
     const focus = this.camera.position;
     const pxz = this.mode === 'sail' ? this.boat : this.foot;
+    if (this.started) this.updateTrip(dt);
     this.atmo.update(dt * (this.ui.panelOpen ? 0.25 : 1), pxz.x, pxz.z);
     this.applyAtmosphere();
     this.ocean.update(this.t, dt, focus);
@@ -2135,6 +2296,7 @@ export class Game implements GameAPI {
     if (canInput && mag > 0.18) {
       if (b.docked) {
         b.docked = false;
+        this.tripStart();
         this.ui.toast('Cast off! ⚓', { life: 1.6 });
         audio.splash();
       }
@@ -2359,7 +2521,7 @@ export class Game implements GameAPI {
     const q = this.store.data.quest;
     if (b.docked) {
       const sett = SETTLEMENT_MAP[b.dockedAt];
-      acts.push({ id: 'harbor', label: `⚓ ${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['upgrade', 'return_harbor'].includes(q) });
+      acts.push({ id: 'harbor', label: `⚓ ${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['upgrade', 'return_harbor', 'bank_haul'].includes(q) });
     } else {
       const pierD = Math.hypot(b.x - this.env.pierTip.x, b.z - this.env.pierTip.z);
       if (pierD < 18) acts.push({ id: 'dock', label: '⚓ DOCK', glow: true });
@@ -2367,6 +2529,8 @@ export class Game implements GameAPI {
         if (st2.id === 'driftholm') continue;
         if (Math.hypot(b.x - st2.x, b.z - st2.z) < st2.dockR + this.ship.beam) acts.push({ id: `dock:${st2.id}`, label: `⚓ DOCK AT ${st2.name.toUpperCase()}`, glow: true });
       }
+      // the harpoon (loop pass Phase 1): a timing ring at a chasing raider, or a drifting cache out of hook reach
+      if (st.harpoon && !this.harpoonBusy && (this.raiders.inRange() || this.harpoonCache())) acts.push({ id: 'harpoon', label: this.raiders.inRange() ? '🎯 HARPOON RAIDER' : '🎯 HARPOON CACHE', glow: true });
       const site = this.salvage.siteInReach();
       if (site && !b.anchored) {
         const ready = this.salvage.ready(site);
@@ -2652,13 +2816,20 @@ export class Game implements GameAPI {
       let ok = false;
       switch (q) {
         case 'leave_dock':
-          ok = Math.hypot(this.boat.x - this.env.pierTip.x, this.boat.z - this.env.pierTip.z) > 35;
+          ok = Math.hypot(this.boat.x - this.env.pierTip.x, this.boat.z - this.env.pierTip.z) > 35 || s.data.hauls > 0;
           break;
+        case 'first_haul':
+          ok = s.data.hauls > 0;
+          break;
+        case 'bank_haul':
+          ok = this.boat.docked && this.mode === 'sail' && s.data.cargo.length === 0;
+          break;
+        // a save from before the loop pass may already have the bottle and the dig behind it
         case 'reach_turtle':
-          ok = Math.hypot(this.boat.x - turtle.x, this.boat.z - turtle.z) < turtle.r + 60;
+          ok = Math.hypot(this.boat.x - turtle.x, this.boat.z - turtle.z) < turtle.r + 60 || s.data.fragments.includes('turtle_scrap') || s.data.mapsCompleted.includes('turtle_map');
           break;
         case 'ashore':
-          ok = this.mode === 'foot' && this.foot.island.id === 'turtle';
+          ok = (this.mode === 'foot' && this.foot.island.id === 'turtle') || s.data.fragments.includes('turtle_scrap') || s.data.mapsCompleted.includes('turtle_map');
           break;
         case 'find_bottle':
           ok = s.data.fragments.includes('turtle_scrap');
@@ -2667,7 +2838,7 @@ export class Game implements GameAPI {
           ok = s.data.mapsCompleted.includes('turtle_map');
           break;
         case 'return_harbor':
-          ok = this.boat.docked && this.mode === 'sail';
+          ok = this.boat.docked && this.mode === 'sail' && s.data.mapsCompleted.includes('turtle_map');
           break;
         case 'upgrade':
           ok = s.data.upgrades.length > 0;
@@ -2676,6 +2847,8 @@ export class Game implements GameAPI {
       if (!ok) break;
       s.advanceQuest(q);
       changed = true;
+      if (s.data.quest === 'free' && !s.data.flags.includes('voyage_finale')) setTimeout(() => this.voyageFinale(), 1200);
+      if (s.data.quest === 'bank_haul') setTimeout(() => this.ui.toast('It only counts once you dock. Bank it at the pier!', { color: '#f0c445', life: 3.5 }), 1800);
     }
     if (changed) s.commit();
   }
@@ -2687,7 +2860,13 @@ export class Game implements GameAPI {
     let target: { x: number; z: number; y?: number } | null = null;
     switch (q) {
       case 'leave_dock':
-        target = { x: -40, z: 130 };
+      case 'first_haul': {
+        const tower = SALVAGE_SITES.find((x) => x.id === 'sv_stump')!;
+        target = { x: tower.x, z: tower.z, y: 8 };
+        break;
+      }
+      case 'bank_haul':
+        target = this.mode === 'sail' && !this.boat.docked ? { x: this.env.pierTip.x, z: this.env.pierTip.z, y: 3 } : null;
         break;
       case 'reach_turtle':
         target = { x: turtle.x, z: turtle.z, y: 10 };

@@ -562,6 +562,40 @@ export class Audio {
     setTimeout(() => this.discover(3), 300);
     setTimeout(() => this.coins(14), 450);
   }
+  /** A pull landed dead centre: a bright two-note ping (loop pass Phase 1). */
+  perfect() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.tone(1568, t, 0.16, 'triangle', 0.16);
+    this.tone(2093, t + 0.06, 0.28, 'triangle', 0.14);
+    this.tone(3136, t + 0.06, 0.2, 'sine', 0.05);
+  }
+  /** The haul breaks the surface: chain rattle, a heavy splash and a thud on deck. */
+  haulUp(big = false) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 6; i++) this.noiseBurst(t + i * 0.045, 0.035, 2600 + i * 300, 0.1);
+    this.noiseBurst(t + 0.25, big ? 0.6 : 0.4, 900, big ? 0.35 : 0.25);
+    this.tone(big ? 70 : 90, t + 0.5, 0.25, 'sine', big ? 0.35 : 0.25);
+  }
+  /** The hold is banked at a dock: a ship's bell, then a cash drawer of coins scaled to what it was worth. */
+  bank(value = 50) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.tone(988, t, 1.2, 'sine', 0.14, undefined, 5);
+    this.tone(1976, t, 0.6, 'sine', 0.04);
+    this.tone(740, t + 0.18, 1.0, 'sine', 0.1, undefined, 5);
+    setTimeout(() => this.coins(Math.min(18, 4 + Math.round(value / 25))), 260);
+    setTimeout(() => this.noiseBurst(this.ctx!.currentTime, 0.08, 4000, 0.15), 700);
+  }
+  /** The squall is coming: a low swell of wind and a far bell. */
+  squallWarn() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.noiseBurst(t, 1.4, 400, 0.22);
+    this.tone(330, t + 0.2, 1.4, 'sine', 0.08, undefined, 4);
+    this.tone(311, t + 0.9, 1.4, 'sine', 0.07, undefined, 4);
+  }
   /** Short, sparse melodic phrase flavored by region. */
   phrase(region: string) {
     if (!this.ctx || this.musicVol <= 0 || this.themeOn) return;

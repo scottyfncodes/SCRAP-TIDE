@@ -179,7 +179,7 @@ export class Raiders {
       // harpoon / defender drive them off
       const range = st.harpoon || (defender ? 14 : 0);
       if (range && dToP < range && this.harpoonCool <= 0) {
-        this.harpoonCool = (st.harpoon ? 5 : 8) / (defender && st.harpoon ? 2 : 1);
+        this.harpoonCool = (st.harpoon ? 7 : 8) / (defender && st.harpoon ? 2 : 1); // a manual HARPOON is quicker (shoot)
         this.fire(r);
         continue;
       }
@@ -202,7 +202,30 @@ export class Raiders {
     }
   }
 
-  private fire(r: Raider) {
+  /** The nearest chasing raider inside harpoon range (for the manual HARPOON action), or null. */
+  inRange(): Raider | null {
+    const g = this.g, b = g.boat, range = g.store.stats.harpoon;
+    if (!range) return null;
+    let best: Raider | null = null, bd = Infinity;
+    for (const r of this.list) {
+      if (r.state !== 'chase') continue;
+      const d = Math.hypot(r.x - b.x, r.z - b.z);
+      if (d < range * 1.25 && d < bd) {
+        bd = d;
+        best = r;
+      }
+    }
+    return best;
+  }
+
+  /** A manual harpoon shot from the timing ring: a hit drives the raider off, a perfect also tears loot off it. */
+  shoot(r: Raider, grade: 'perfect' | 'hit') {
+    if (r.state !== 'chase') return;
+    this.harpoonCool = 4;
+    this.fire(r, grade === 'perfect');
+  }
+
+  private fire(r: Raider, perfect = false) {
     const g = this.g;
     // fire from the turret itself (on the Trimaran it rides the starboard outrigger beam)
     const from = g.ship.harpoon ? g.ship.harpoon.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)) : g.shipRoot.localToWorld(new THREE.Vector3(0, 1.4, g.ship.length * 0.36));
@@ -221,7 +244,14 @@ export class Raiders {
     r.timer = 30;
     g.store.data.raidersRepelled++;
     if (!g.crewBark('repelled', {}, { prefer: 'defender', force: true, cool: 10 })) g.ui.toast('Harpoon hit! The raider veers away.', { color: '#4f9a95' });
-    if (Math.random() < 0.5) {
+    if (perfect) {
+      g.hitStop(90);
+      g.kick(0.2);
+      g.haptic([30, 30, 70]);
+      g.ui.stamp('PERFECT SHOT!', 'Tore a crate off her deck');
+      const n = g.gain(Math.random() < 0.5 ? 'engine_parts' : 'alloy_plate', 1, 'a Rustfang skiff', { reveal: 'none' }) + g.gain('scrap_metal', 2, 'Rustfang flotsam', { reveal: 'none' });
+      if (n) g.ui.toast(`+${n} salvage torn off the raider`, { icon: 'scrap_metal', color: '#f0c445', life: 2.5 });
+    } else if (Math.random() < 0.5) {
       const n = g.gain('scrap_metal', 1 + Math.floor(Math.random() * 2), 'Rustfang flotsam', { reveal: 'none' });
       if (n) g.ui.toast(`+${n} Scrap Metal from the raider’s plating`, { icon: 'scrap_metal', color: '#c9b48a', life: 2 });
     }

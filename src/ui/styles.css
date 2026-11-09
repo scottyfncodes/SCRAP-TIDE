@@ -593,3 +593,39 @@ body.calm .quest.pulse { animation: none; }
 .row.job.ready { border-color: var(--hazard); background: rgba(229,198,94,.12); }
 .section-title.green { color: var(--living); }
 .btn.plant { background: #2e5a31; color: #eaffe6; border-color: var(--living); }
+
+/* ── loop pass, Phase 1: trip strip, perfect winch zone, harpoon ring, stamps ── */
+.trip { display: flex; align-items: center; gap: 6px; margin-top: 4px; font: 700 12px/1 var(--label); color: #efe6d2; white-space: nowrap; }
+.trip .t-hold { background: rgba(240,196,69,.18); border: 1px solid rgba(240,196,69,.55); border-radius: 9px; padding: 3px 7px; color: #f6d77a; }
+.trip .t-hold.bump { animation: tbump .45s ease-out; }
+@keyframes tbump { 0% { transform: scale(1); } 35% { transform: scale(1.25); background: rgba(240,196,69,.5); } 100% { transform: scale(1); } }
+.trip .t-dock { display: inline-flex; align-items: center; gap: 3px; background: rgba(13,17,19,.45); border-radius: 9px; padding: 3px 7px; }
+.trip .t-dock svg { width: 10px; height: 10px; fill: #e5c65e; transition: transform .2s; }
+.trip .t-bar { flex: 1; min-width: 34px; height: 7px; border-radius: 4px; background: rgba(13,17,19,.5); overflow: hidden; }
+.trip .t-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #6f8d98, #9aa9b4); transition: width .5s linear; }
+.trip .t-clock { min-width: 44px; text-align: right; color: #c9d4d8; }
+.trip[data-phase="warn"] .t-bar i { background: linear-gradient(90deg, #d08a34, #f0a050); }
+.trip[data-phase="warn"] .t-clock { color: #f0a050; animation: tpulse 1s infinite; }
+.trip[data-phase="squall"] .t-bar i { background: #c8352a; }
+.trip[data-phase="squall"] .t-clock { color: #ff7a5c; animation: tpulse .5s infinite; }
+@keyframes tpulse { 50% { opacity: .45; } }
+.w-zone { position: absolute; }
+.w-perfect { position: absolute; top: 0; bottom: 0; background: linear-gradient(180deg, #ffe48a, #f0c445); box-shadow: 0 0 10px rgba(240,196,69,.8); border-radius: 3px; }
+.w-pips i.perfect { background: #f0c445; box-shadow: 0 0 8px #f0c445; }
+.winch.w-pop { animation: wpop .35s ease-out; }
+@keyframes wpop { 0% { transform: scale(1); } 40% { transform: scale(1.04); box-shadow: 0 0 0 4px rgba(240,196,69,.6); } 100% { transform: scale(1); } }
+.harpoon-ring { position: absolute; left: 50%; bottom: calc(150px + env(safe-area-inset-bottom)); width: 132px; margin-left: -66px; pointer-events: auto; text-align: center; touch-action: none; z-index: 30; }
+.harpoon-ring svg { width: 132px; height: 132px; display: block; }
+.harpoon-ring circle { fill: none; }
+.harpoon-ring .hr-band { stroke: rgba(13,17,19,.55); stroke-width: 22; }
+.harpoon-ring .hr-perfect { stroke: #f0c445; stroke-width: 8; }
+.harpoon-ring .hr-ring { stroke: #e9fbf6; stroke-width: 4; }
+.harpoon-ring .hr-x { stroke: #e9fbf6; stroke-width: 3; }
+.harpoon-ring .hr-label { font: 800 13px/1 var(--label); color: #fff; letter-spacing: 2px; text-shadow: 0 1px 3px #000; margin-top: -4px; }
+.harpoon-ring.hr-perfect .hr-ring, .harpoon-ring.hr-hit .hr-ring { stroke: #f0c445; stroke-width: 10; }
+.harpoon-ring.hr-miss { opacity: .4; transition: opacity .3s; }
+.stamp { position: absolute; left: 50%; top: 34%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; animation: stampin 2.1s ease-out forwards; z-index: 25; }
+.stamp b { display: block; font: 900 34px/1 var(--display); color: var(--sc); letter-spacing: 2px; text-shadow: 0 3px 0 rgba(0,0,0,.45), 0 0 18px rgba(0,0,0,.5); }
+.stamp span { display: block; margin-top: 6px; font: 700 15px/1.2 var(--label); color: #efe6d2; text-shadow: 0 1px 3px #000; }
+@keyframes stampin { 0% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); } 12% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -60%) scale(1); } }
+@media (max-width: 480px) { .stamp b { font-size: 28px; } .trip { font-size: 11px; gap: 4px; } .harpoon-ring { bottom: calc(250px + env(safe-area-inset-bottom)); } }

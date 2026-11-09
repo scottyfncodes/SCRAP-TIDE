@@ -17,10 +17,10 @@ const at = (id: string) => GOALS.findIndex((g) => g.id === id);
 describe('save compatibility', () => {
   beforeEach(() => mem.clear());
 
-  it('a v1 save mid-way through the old 13-step voyage loads at v5 with every new field defaulted', () => {
+  it('a v1 save mid-way through the old 13-step voyage loads at the current version with every new field defaulted', () => {
     const d = load({ version: 1, gold: 80, quest: 'sell', upgrades: ['sail_canvas'], flags: ['sold'] });
     expect(d.version).toBe(SAVE_VERSION);
-    expect(SAVE_VERSION).toBe(5);
+    expect(SAVE_VERSION).toBe(6);
     expect(d.quest).toBe('upgrade'); // retired step continues from its successor (PR 1.2)
     expect(d.gold).toBe(80);
     expect(d.upgrades).toEqual(['sail_canvas']);

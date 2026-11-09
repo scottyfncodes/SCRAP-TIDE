@@ -24,6 +24,8 @@ import { audio } from '../audio/audio';
 import { SAIL_LABEL, type PointOfSail } from '../game/pointOfSail';
 import { pack } from '../audio/pack';
 import { wordmarkSVG } from './brand';
+import { PERFECT_SHARE, pullGrade } from '../game/haul';
+import { clockText } from '../game/trip';
 
 export interface GameAPI {
   store: Store;
@@ -58,6 +60,7 @@ export interface GameAPI {
   acceptContract(id: string): void;
   completeContract(id: string): void;
   plantGreen(id: string): void;
+  haptic(ms: number | number[]): void;
 }
 
 export interface StatusInfo {
@@ -186,6 +189,7 @@ export class UI {
         <div class="status-plate">
           <div class="sp-row"><span class="chip gold-pill" title="Gold"><span class="coin"></span><span class="gold">0</span></span><button class="chip cargo-pill" data-p="cargo" aria-label="Hold: open cargo">⛵ <span class="cargo">0/6</span></button><span class="clock"></span></div>
           <div class="status"><div class="gauge hull"><i></i><span>HULL</span></div><div class="gauge fuel"><i></i><span>FUEL</span></div></div>
+          <div class="trip" style="display:none"><span class="t-hold" title="Hold value: only counts once you dock">⛃ <b>0</b>g</span><span class="t-dock" title="Nearest dock"><svg viewBox="0 0 10 10"><path d="M5 0 L9 9 L5 7 L1 9Z"/></svg><b>0</b>m</span><span class="t-bar"><i></i></span><span class="t-clock"></span></div>
         </div>
         <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div><button class="q-side"></button></div>
       </div>
@@ -482,6 +486,42 @@ export class UI {
     void this.hitEl.offsetWidth;
     this.hitEl.classList.add('on');
   }
+  /**
+   * The trip strip (loop pass Phase 1): what the hold is worth, how far the nearest dock is (the arrow points at
+   * it, camera-relative), and the squall clock. `left` null = no clock on this trip (the First Voyage).
+   */
+  setTrip(t: { hold: number; dock: number; dockAngle: number; left: number | null; frac: number; phase: string; show: boolean }) {
+    const strip = this.hud.querySelector('.trip') as HTMLElement;
+    strip.style.display = t.show ? '' : 'none';
+    if (!t.show) return;
+    const key = `${t.hold}|${Math.round(t.dock / 5)}|${Math.round(t.dockAngle * 20)}|${t.left === null ? '-' : Math.ceil(t.left)}|${t.phase}`;
+    if (key === this.lastTrip) return;
+    this.lastTrip = key;
+    const hold = strip.querySelector('.t-hold b')!;
+    if (hold.textContent !== String(t.hold)) {
+      hold.textContent = String(t.hold);
+      strip.querySelector('.t-hold')!.classList.remove('bump');
+      void (strip.querySelector('.t-hold') as HTMLElement).offsetWidth;
+      strip.querySelector('.t-hold')!.classList.add('bump');
+    }
+    strip.querySelector('.t-dock b')!.textContent = t.dock >= 1000 ? `${(t.dock / 1000).toFixed(1)}k` : String(Math.round(t.dock / 5) * 5);
+    (strip.querySelector('.t-dock svg') as SVGElement).style.transform = `rotate(${t.dockAngle}rad)`;
+    const bar = strip.querySelector('.t-bar') as HTMLElement;
+    const clock = strip.querySelector('.t-clock') as HTMLElement;
+    bar.style.display = clock.style.display = t.left === null ? 'none' : '';
+    (bar.firstElementChild as HTMLElement).style.width = `${Math.round(Math.min(1, t.frac) * 100)}%`;
+    clock.textContent = t.left === null ? '' : t.phase === 'squall' ? 'SQUALL!' : `⛈ ${clockText(t.left)}`;
+    strip.dataset.phase = t.phase;
+  }
+  private lastTrip = '';
+
+  /** A big, short banner in the middle of the screen (banking a hold, a perfect haul). */
+  stamp(title: string, sub = '', color = '#f0c445') {
+    const n = el(`<div class="stamp" style="--sc:${color}"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>`);
+    this.hud.append(n);
+    setTimeout(() => n.remove(), 2100);
+  }
+
   setCritical(on: boolean) {
     this.hud.classList.toggle('hull-critical', on);
   }
@@ -577,20 +617,27 @@ export class UI {
   }
 
   /** Winch mini-game: tap REEL while the needle is in the green. Resolves hits (0..pulls), or -1 if cancelled. */
-  openWinch(o: { title: string; sub: string; window: number; speed: number; pulls: number }): Promise<number> {
+  /** Perfect pulls in the last winch game (read by Salvage after it resolves). */
+  lastPerfects = 0;
+
+  openWinch(o: { title: string; sub: string; window: number; speed: number; pulls: number; crane?: boolean }): Promise<number> {
     return new Promise((resolve) => {
       this.panelOpen = true;
-      const wrap = el(`<div class="winch-wrap"><div class="winch"><h3>${o.title}</h3><div class="w-sub">${o.sub}</div>
-        <div class="w-track"><div class="w-zone"></div><div class="w-needle"></div></div>
+      this.lastPerfects = 0;
+      const wrap = el(`<div class="winch-wrap"><div class="winch"><h3>${o.crane ? '🏗 ' : ''}${o.title}</h3><div class="w-sub">${o.sub}</div>
+        <div class="w-track"><div class="w-zone"><div class="w-perfect"></div></div><div class="w-needle"></div></div>
         <div class="w-pips">${'<i></i>'.repeat(o.pulls)}</div>
-        <button class="act w-reel">REEL IN!</button><div class="w-msg">Tap when the needle is in the green</div>
+        <button class="act w-reel">${o.crane ? 'LIFT!' : 'REEL IN!'}</button><div class="w-msg">Tap in the green. Gold centre = bonus loot</div>
         <button class="btn ghost w-cancel" style="margin-top:6px">Cut the line</button></div></div>`);
       this.root.append(wrap);
       const zone = wrap.querySelector('.w-zone') as HTMLElement;
+      const perfect = wrap.querySelector('.w-perfect') as HTMLElement;
       const needle = wrap.querySelector('.w-needle') as HTMLElement;
       const msg = wrap.querySelector('.w-msg') as HTMLElement;
       const pips = [...wrap.querySelectorAll('.w-pips i')] as HTMLElement[];
-      let zx = 0.5, hits = 0, pull = 0, t = Math.random() * 3, raf = 0, lock = false;
+      let zx = 0.5, hits = 0, perfects = 0, pull = 0, t = Math.random() * 3, raf = 0, lock = false;
+      perfect.style.width = `${PERFECT_SHARE * 100}%`;
+      perfect.style.left = `${((1 - PERFECT_SHARE) / 2) * 100}%`;
       const place = () => {
         zx = 0.15 + Math.random() * (0.7 - o.window);
         zone.style.left = `${zx * 100}%`;
@@ -610,30 +657,80 @@ export class UI {
         cancelAnimationFrame(raf);
         wrap.remove();
         this.panelOpen = false;
+        this.lastPerfects = v < 0 ? 0 : perfects;
         resolve(v);
       };
       wrap.querySelector('.w-reel')!.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
         if (lock) return;
-        const p = pos();
-        const ok = p >= zx && p <= zx + o.window;
-        pips[pull].classList.add(ok ? 'hit' : 'miss');
+        const grade = pullGrade(pos(), zx, o.window);
+        const ok = grade !== 'miss';
+        pips[pull].classList.add(grade === 'perfect' ? 'perfect' : ok ? 'hit' : 'miss');
         if (ok) hits++;
+        if (grade === 'perfect') perfects++;
         pull++;
         audio.reel(ok);
-        if (navigator.vibrate && this.store.data.settings.haptics) navigator.vibrate(ok ? 25 : [10, 30, 10]);
-        msg.textContent = ok ? ['Got a bite of steel!', 'It’s coming up!', 'Heavy… heavy… YES!'][hits - 1] ?? 'Hauled!' : 'Line slipped!';
-        msg.style.color = ok ? '#0e6670' : '#c8352a';
+        if (grade === 'perfect') audio.perfect();
+        this.game.haptic(grade === 'perfect' ? [20, 30, 40] : ok ? 25 : [10, 30, 10]);
+        msg.textContent = grade === 'perfect' ? 'PERFECT! Bonus loot!' : ok ? ['Got a bite of steel!', 'It’s coming up!', 'Heavy… heavy… YES!'][hits - 1] ?? 'Hauled!' : 'Slipped, but it’s still on the hook';
+        msg.style.color = grade === 'perfect' ? '#a87400' : ok ? '#0e6670' : '#8a5a2a';
+        wrap.querySelector('.winch')!.classList.remove('w-pop');
+        void (wrap.querySelector('.winch') as HTMLElement).offsetWidth;
+        if (grade === 'perfect') wrap.querySelector('.winch')!.classList.add('w-pop');
         lock = true;
         setTimeout(() => {
           lock = false;
           if (pull >= o.pulls) done(hits);
           else place();
-        }, 550);
+        }, 520);
       });
       wrap.querySelector('.w-cancel')!.addEventListener('click', () => done(-1));
     });
   }
+
+  /**
+   * The harpoon: a quick, non-blocking timing ring (loop pass Phase 1). A ring closes on the target; tap HARPOON when
+   * it lands on the gold band. Resolves 'perfect' | 'hit' | 'miss' (a miss just means try again).
+   */
+  harpoonRing(label: string): Promise<'perfect' | 'hit' | 'miss'> {
+    return new Promise((resolve) => {
+      this.harpoonEl?.remove();
+      const wrap = el(`<div class="harpoon-ring" role="button" aria-label="Harpoon: tap when the ring meets the band"><svg viewBox="0 0 120 120"><circle class="hr-band" cx="60" cy="60" r="24"/><circle class="hr-perfect" cx="60" cy="60" r="24"/><circle class="hr-ring" cx="60" cy="60" r="56"/><path class="hr-x" d="M60 50v20M50 60h20"/></svg><div class="hr-label">${label}</div></div>`);
+      this.harpoonEl = wrap;
+      this.hud.append(wrap);
+      const ring = wrap.querySelector('.hr-ring') as SVGCircleElement;
+      const DUR = 1.3;
+      const t0 = performance.now();
+      wrap.dataset.t0 = String(t0); // tests time their tap from the ring's own clock
+      let raf = 0, over = false;
+      const radius = () => {
+        const k = ((performance.now() - t0) / 1000) / DUR;
+        return 56 - k * 50; // 56 → 6
+      };
+      const finish = (g: 'perfect' | 'hit' | 'miss') => {
+        if (over) return;
+        over = true;
+        cancelAnimationFrame(raf);
+        wrap.classList.add(`hr-${g}`);
+        setTimeout(() => wrap.remove(), 380);
+        if (this.harpoonEl === wrap) this.harpoonEl = null;
+        resolve(g);
+      };
+      const tick = () => {
+        const r = radius();
+        if (r <= 6) return finish('miss');
+        ring.setAttribute('r', String(r));
+        raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+      wrap.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        const d = Math.abs(radius() - 24);
+        finish(d <= 4 ? 'perfect' : d <= 11 ? 'hit' : 'miss');
+      });
+    });
+  }
+  private harpoonEl: HTMLElement | null = null;
 
   setDigMeter(heat: number | null, text = '') {
     if (heat === null) {
