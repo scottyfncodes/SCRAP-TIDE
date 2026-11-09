@@ -77,9 +77,11 @@ export const RUN: GaitParams = {
  * ground speed a shorter stride means a quicker cadence, which is most of what makes short legs read as short.
  * `expr` scales the expressive swings (pelvis roll, arm swing, bounce) for a livelier walk.
  */
-export function retune(g: GaitParams, legScale: number, hipHeight: number, width = 1, expr = 1): GaitParams {
+export function retune(g: GaitParams, legScale: number, hipHeight: number, width = 1, expr = 1, foot = 1): GaitParams {
   return {
     ...g,
+    // toe-off rocks the foot over the ball; the toe joint's travel grows with foot size, so bigger boots roll less
+    toeOff: Math.asin(Math.min(1, Math.sin(g.toeOff) / foot)),
     name: g.name,
     speed: g.speed * legScale,
     hipHeight,
@@ -98,6 +100,8 @@ export function retune(g: GaitParams, legScale: number, hipHeight: number, width
 
 /** Rest leg length (thigh + shin) of the original 7.3-head survivor rig, which WALK and RUN were tuned on. */
 export const BASE_LEG = 0.82;
+/** Rest ankle-to-toe-joint distance of that rig (MeshCraft skeleton: 0.12 forward, 0.07 down). */
+export const BASE_FOOT = Math.hypot(0.12, 0.07);
 
 const BONES = ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head', 'LeftShoulder', 'LeftArm', 'LeftForeArm', 'LeftHand', 'RightShoulder',
   'RightArm', 'RightForeArm', 'RightHand', 'LeftUpLeg', 'LeftLeg', 'LeftFoot', 'LeftToeBase', 'RightUpLeg', 'RightLeg', 'RightFoot', 'RightToeBase'] as const;

@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat } from '../world/materials';
 import { part, type Character } from '../world/assets';
-import { WALK, RUN, captureRest, buildGaitClip, strideAt, retune, BASE_LEG, type GaitParams } from './gait';
+import { WALK, RUN, captureRest, buildGaitClip, strideAt, retune, BASE_LEG, BASE_FOOT, type GaitParams } from './gait';
 
 const CLIP_FOR: Record<string, string> = { idle: 'Idle', sit: 'Sit', dig: 'Dig', cheer: 'Cheer' };
 
@@ -79,9 +79,10 @@ export class Captain {
         // same gait engine, retuned to this rig: lengths follow the leg, hip height follows the rest pose
         const k = (rest.thigh + rest.shin) / BASE_LEG;
         const hip = rest.p.Hips.y; // captureRest measures in the character root's own (unscaled) space
+        const foot = rest.p.LeftToeBase.distanceTo(rest.p.LeftFoot) / BASE_FOOT;
         this.gaits = {
-          walk: retune(WALK, k, hip * (WALK.hipHeight / 0.95), 1.14, 1.3),
-          run: retune(RUN, k, hip * (RUN.hipHeight / 0.95), 1.14, 1.15),
+          walk: retune(WALK, k, hip * (WALK.hipHeight / 0.95), 1.14, 1.3, foot),
+          run: retune(RUN, k, hip * (RUN.hipHeight / 0.95), 1.14, 1.15, foot),
         };
       }
       const walk = c.mixer.clipAction(buildGaitClip(rest, this.gaits.walk));

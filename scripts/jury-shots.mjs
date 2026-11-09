@@ -41,10 +41,10 @@ const url = `http://127.0.0.1:${server.address().port}`;
 // The toll sits at (46, 128) (src/world/jury.ts TOLL). Boat frames: x, z parked; h heading (0 = +z); yaw camera offset
 // from the heading; pitch. raiders: where to pin up to two raider boats (x, z, heading). foot: the captain on foot.
 const SHOTS = [
-  { id: 'toll', x: 38, z: 146, h: 2.45, yaw: 0.0, pitch: 0.24, raiders: [[52, 124, -0.9], [70, 118, -1.9]] },
+  { id: 'toll', x: 47, z: 133, h: 2.5, yaw: 0.0, pitch: 0.22, raiders: [[57, 118, -0.6], [73, 113, -2.0]] },
   { id: 'driftholm', x: 4, z: 128, h: 0, yaw: 0.18, pitch: 0.3 },
   { id: 'raiders', x: 236, z: 560, h: 0.75, yaw: 0.0, pitch: 0.26, raiders: [[248, 580, -2.3], [258, 572, -2.0]] },
-  { id: 'foot', foot: { x: 5, dz: 7, heading: Math.PI + 0.5 }, yaw: 0, pitch: 0.3 }, // dz: metres inland of the shore at the pier root
+  { id: 'foot', foot: { x: 3, dz: 9, heading: 2.55 }, yaw: 0, pitch: 0.3 }, // dz: metres inland of the shore at the pier root
 ];
 const CONDS = [
   { id: 'noon', tod: 0.5, storm: 0 },
@@ -113,6 +113,8 @@ for (const look of LOOKS) {
         }
         // raiders: pinned in place, patrolling (never chasing, so nothing rams or steals mid-capture)
         const rs = g.raiders.list;
+        for (const q of rs) if (q.state === 'chase') Object.assign(q, { state: 'patrol', timer: 99 });
+        g.store.data.hull = g.store.stats.hullMax;
         (s.raiders ?? []).forEach(([x, z, h], i) => {
           const r = rs.find((q) => Math.hypot(q.zone.x - x, q.zone.z - z) < q.zone.r + 120 && rs.filter((o) => o.zone === q.zone).indexOf(q) === i);
           if (!r) return;

@@ -1,0 +1,38 @@
+{
+  "C1": {
+    "tb_captain": {
+      "heads": 7.61,
+      "height": 1.958,
+      "head": 0.257,
+      "skinVerts": 715
+    },
+    "tb_raider": {
+      "heads": 7.61,
+      "height": 1.969,
+      "head": 0.259,
+      "skinVerts": 741
+    },
+    "tb_jury_captain": {
+      "heads": 5.63,
+      "height": 1.723,
+      "head": 0.306,
+      "skinVerts": 706
+    },
+    "tb_jury_raider": {
+      "heads": 5.71,
+      "height": 1.475,
+      "head": 0.258,
+      "skinVerts": 700
+    }
+  },
+  "C2": {
+    "characters": {
+      "today": 0.738,
+      "jury": 0.642
+    },
+    "boats": {
+      "today": 0.334,
+      "jury": 0.34
+    }
+  }
+}
