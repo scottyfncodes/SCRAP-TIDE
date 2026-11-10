@@ -410,8 +410,8 @@ export class Game implements GameAPI {
     gl.flush();
   }
 
-  /** `grain`: how far the lens-grain overlay (#app::after) lifts an edge toward its grey, measured against the
-   *  composited screen (it barely shows against the bright sky, clearly against the dark sea). */
+  /** `grain`: how far the lens-grain overlay (#app::after) moves an edge toward its grey, measured against the
+   *  composited screen (since the grain became dark specks only, not measurably). */
   private applyPageEdges(px: Uint8Array) {
     const avg = (from: number, grain: number) => {
       let r = 0, g = 0, b = 0;
@@ -423,7 +423,7 @@ export class Game implements GameAPI {
       const mix = (c: number, to: number) => Math.round(c / 3 + (to - c / 3) * grain);
       return `rgb(${mix(r, 128)},${mix(g, 122)},${mix(b, 130)})`;
     };
-    const top = avg(0, 0), bottom = avg(12, 0.14);
+    const top = avg(0, 0), bottom = avg(12, 0); // the dark-speck grain barely moves either edge (measured)
     const css = `linear-gradient(${top} 50%, ${bottom} 50%) center / 100% 300% no-repeat, ${bottom}`;
     if (css === this.edgeCss) return;
     this.edgeCss = css;

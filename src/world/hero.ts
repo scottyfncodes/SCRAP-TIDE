@@ -14,6 +14,12 @@ export const heroRim = { value: new THREE.Color(0, 0, 0) };
 /** The sun's direction in view space, so the rim only lights edges on the sunward side. */
 export const heroSunView = { value: new THREE.Vector3(0, 1, 0) };
 const outlineColor = { value: new THREE.Color(OUTLINE.ink) };
+/**
+ * The player's own boat, crew and captain keep more of their colour than the bleached world around them: half the
+ * sun-and-salt bleaching, and a gentle saturation lift after lighting, so the hero reads as painted wood and canvas
+ * next to the vivid HUD instead of a grey-washed model.
+ */
+export const HERO_COLOR = { bleach: 0.45, saturation: 1.18 };
 
 const heroCache = new WeakMap<THREE.Material, THREE.Material>();
 
@@ -24,7 +30,7 @@ function heroMaterial(src: THREE.Material): THREE.Material {
   const c = (src as THREE.MeshToonMaterial).clone();
   const amount = (src.userData.weather as { value: number } | undefined)?.value ?? 0;
   if (src.userData.weather) {
-    weather(c, amount);
+    weather(c, amount * HERO_COLOR.bleach);
     c.defines = { ...(c.defines ?? {}), WX_LOCAL: '' };
   }
   const inner = c.onBeforeCompile;
@@ -45,6 +51,9 @@ function heroMaterial(src: THREE.Material): THREE.Material {
           outgoingLight += uRim * smoothstep(0.62, 0.95, fr) * sunward;
           // form, not ink: the shadow-side edges fall off softly (a gradient a few pixels wide, at most 12%)
           outgoingLight *= 1.0 - 0.12 * smoothstep(0.5, 1.0, fr) * (1.0 - sunward);
+          // the hero keeps its paint: a gentle saturation lift (HERO_COLOR)
+          float hl = dot(outgoingLight, vec3(0.299, 0.587, 0.114));
+          outgoingLight = max(mix(vec3(hl), outgoingLight, ${HERO_COLOR.saturation.toFixed(3)}), 0.0);
         }
         #include <opaque_fragment>`
       );

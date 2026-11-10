@@ -323,11 +323,11 @@ export class UI {
       }
     });
     top.querySelector('.hud-right')!.append(this.radarEl, this.compassEl);
-    // the helm: one bottom-left cluster (wind dial + speed and the engine toggle above the wheel); actions bottom-right
+    // the helm instruments: one bottom-left cluster (wind dial + speed, and the engine toggle); actions bottom-right
     const helm = el(`<div class="helm"><div class="helm-row"></div></div>`);
     helm.firstElementChild!.append(this.speedEl, this.engineEl);
-    helm.append(stick);
-    this.hud.append(this.hitEl, helm, this.actionsEl, this.toastsEl, this.wpEl, this.digEl, this.bannerEl);
+    // the wheel sits dead centre at the bottom; instruments to its left, the action plate to its right
+    this.hud.append(this.hitEl, helm, stick, this.actionsEl, this.toastsEl, this.wpEl, this.digEl, this.bannerEl);
     this.root.append(this.hud, this.fadeEl);
 
     // keyboard for desktop testing
