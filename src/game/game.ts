@@ -271,6 +271,7 @@ export class Game implements GameAPI {
     this.renderer.compile(this.scene, this.camera);
     let last = performance.now();
     let frame = 0;
+    let edgeAt = 0;
     const loop = (now: number) => {
       let dt = Math.min(0.05, (now - last) / 1000);
       last = now;
@@ -281,7 +282,13 @@ export class Game implements GameAPI {
       this.update(dt);
       // behind the Maps panel the scene is only a dimmed backdrop: draw it every other frame so the map's
       // pinch and pan keep the GPU on a phone
-      if (!this.ui.mapOpen || (frame++ & 1) === 0) this.renderer.render(this.scene, this.camera);
+      if (!this.ui.mapOpen || (frame++ & 1) === 0) {
+        this.renderer.render(this.scene, this.camera);
+        if (now - edgeAt > 400) {
+          edgeAt = now;
+          this.matchPageEdges();
+        }
+      }
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
@@ -340,6 +347,36 @@ export class Game implements GameAPI {
   private viewSize() {
     const c = this.renderer.domElement;
     return { w: c.clientWidth || window.innerWidth, h: c.clientHeight || window.innerHeight };
+  }
+
+  /**
+   * iOS can keep the page out of the strips above and below it (the status bar and home-indicator areas of a Home
+   * Screen app, Safari's tinted bars): nothing but the page background ever paints there, however big the canvas is.
+   * So that background copies the world's own top and bottom edge colours (sampled from the frame just drawn, a few
+   * pixels, a couple of times a second) and the strips read as more sky and more sea instead of dead bands.
+   */
+  private edgePx = new Uint8Array(4);
+  private edgeCss = '';
+  private matchPageEdges() {
+    const gl = this.renderer.getContext();
+    const W = gl.drawingBufferWidth, H = gl.drawingBufferHeight;
+    if (!W || !H) return;
+    // `grain`: how far the lens-grain overlay (#app::after) lifts the edge toward its grey, measured against the
+    // composited screen (it barely shows against the bright sky, clearly against the dark sea)
+    const avg = (y: number, grain: number) => {
+      let r = 0, g = 0, b = 0;
+      for (const fx of [0.2, 0.5, 0.8]) {
+        gl.readPixels(Math.floor(W * fx), y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this.edgePx);
+        r += this.edgePx[0]; g += this.edgePx[1]; b += this.edgePx[2];
+      }
+      const mix = (c: number, to: number) => Math.round(c / 3 + (to - c / 3) * grain);
+      return `rgb(${mix(r, 128)},${mix(g, 122)},${mix(b, 130)})`;
+    };
+    const top = avg(H - 2, 0), bottom = avg(1, 0.14); // GL rows count up from the bottom
+    const css = `linear-gradient(${top} 50%, ${bottom} 50%) center / 100% 300% no-repeat, ${bottom}`;
+    if (css === this.edgeCss) return;
+    this.edgeCss = css;
+    document.documentElement.style.background = css;
   }
 
   private resize() {
