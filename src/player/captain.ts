@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { paint, xf, merge, vcMat } from '../world/materials';
 import { part, type Character } from '../world/assets';
+import { SeatRider, type SeatMotion } from './ride';
 import { WALK, RUN, captureRest, buildGaitClip, strideAt, retune, BASE_LEG, type GaitParams } from './gait';
 
 const CLIP_FOR: Record<string, string> = { idle: 'Idle', sit: 'Sit', dig: 'Dig', cheer: 'Cheer' };
@@ -36,6 +37,11 @@ export class Captain {
   private lastYaw = 0;
   private lastSpeed = 0;
   private lean = new THREE.Vector2();
+  /** seated at the helm: how the seat is moving this frame (set by the game before update), and the body riding it */
+  seat: SeatMotion | null = null;
+  seatAmount = 1;
+  private rider: SeatRider | null = null;
+  private charY = 0;
   /** current walk↔run mix (0..1), for footstep weight */
   runMix = 0;
   /** heel strike: side +1 left / -1 right, run mix 0..1 */
@@ -49,6 +55,9 @@ export class Captain {
   useCharacter(c: Character, stylised = false) {
     this.char = c;
     this.body.visible = false;
+    this.charY = c.root.position.y;
+    const rider = new SeatRider(c.root);
+    this.rider = rider.ok ? rider : null;
     c.root.scale.setScalar(stylised ? 1.16 : 1.08);
     this.root.add(c.root);
     // a salvaged shovel in the right hand, shown while digging
@@ -166,7 +175,11 @@ export class Captain {
     this.lean.x += (accLean - this.lean.x) * lk;
     this.lean.y += (turnLean - this.lean.y) * lk;
     c.root.rotation.set(this.lean.x, 0, this.lean.y);
+    this.rider?.undo(); // last frame's balance layer comes off before the clips write this frame's pose
     c.mixer.update(dt);
+    const riding = this.pose === 'sit' && !!this.seat && !!this.rider;
+    if (riding) this.rider!.update(dt, this.seat!, this.seatAmount);
+    c.root.position.y = this.charY + (riding ? this.rider!.dropY : 0);
   }
 
   constructor() {
@@ -243,6 +256,11 @@ export class Captain {
   dig() {
     this.digT = this.char ? 1.1 : 0.7;
     this.pose = 'dig';
+  }
+
+  /** true when the rigged body balances itself on the seat (the stand-in doesn't) */
+  get rides() {
+    return !!this.rider && !!this.char;
   }
 
   update(dt: number, speed: number) {

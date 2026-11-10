@@ -2623,9 +2623,19 @@ export class Game implements GameAPI {
       r.rotation.x = base.rx + (-pitch * 0.5 + Math.sin(t * 0.85 + base.ph) * 0.02 - sw.accel * 0.012) * calm;
       r.position.y = base.y + (clamp(-sw.vy * 0.025, -0.07, 0.07) + Math.sin(t * 2.1 + base.ph) * 0.01) * calm;
     });
-    // the captain sits on the boat (she carries him through her motion), braced a little against it, swaying at the wheel
     const cap = this.captain.root;
     cap.rotation.order = 'YXZ';
+    if (this.captain.rides) {
+      // the hips ride the seat exactly (she carries him through all her motion); his spine, neck and head balance
+      // on top of it (player/ride.ts): lagging, swaying through and settling, the head steadying toward level
+      cap.rotation.x = pitch;
+      cap.rotation.z = roll;
+      const seat = (this.captain.seat ??= { roll: 0, pitch: 0, heaveV: 0, turn: 0, surge: 0, speed: 0 });
+      Object.assign(seat, { roll, pitch, heaveV: sw.vy, turn: sw.turn, surge: sw.accel, speed: b.speed });
+      this.captain.seatAmount = calm;
+      return;
+    }
+    // the stand-in: braced a little against the boat as one piece
     cap.rotation.x = (pitch * 0.55 + Math.sin(t * 0.8) * 0.02 - sw.accel * 0.01) * calm;
     cap.rotation.z = (roll * 0.55 + Math.sin(t * 1.1 + 1.3) * 0.03 + sw.turn * 0.08) * calm;
     cap.position.y += clamp(-sw.vy * 0.02, -0.05, 0.05) * calm;
@@ -2843,8 +2853,8 @@ export class Game implements GameAPI {
     this.shipRoot.localToWorld(seat);
     this.captain.root.position.copy(seat);
     this.captain.root.rotation.y = b.heading;
+    this.swayAboard(dt); // sets how the seat moves before the captain balances on it
     this.captain.update(dt, 0);
-    this.swayAboard(dt);
 
     const wl = this.ship.waterline;
     this.ocean.setHull(b.x, b.z, b.heading, wl.halfLen, wl.halfBeam, wl.twin, clamp(b.speed / 9, 0, 1));
