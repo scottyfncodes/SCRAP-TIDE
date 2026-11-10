@@ -65,6 +65,10 @@ const check = (name, ok, detail = '') => {
   const waitGame = (target) => page.waitForFunction((t) => window.__game.renderT >= t, target, { timeout: 240000, polling: 100 })
     .catch(() => {});
   const gameT = () => g(() => window.__game.renderT);
+  // The action buttons are rebuilt by the game's own frame loop: after moving the boat, read them only once the game has
+  // run on a little (on CI's software renderer a fixed wall-clock wait can pass with no new frame, leaving the buttons
+  // from before the move: the HARBOR / DOCK seen in the harpoon and Wave Runner steps).
+  const freshActions = async (s = 0.3) => { await waitGame((await gameT()) + s); return actions(); };
   // Dock at Driftholm's pier tip, waiting on the game instead of the clock. On a slow software renderer the action list
   // only refreshes on the next game frame, so a DOCK click after a fixed delay could find the old HARBOR button, return
   // false and never dock (the intermittent Daily Tide / dock-job / banking failures in CI). Wait for DOCK to be offered,
@@ -125,7 +129,7 @@ const check = (name, ok, detail = '') => {
   // ── salvage loop
   await teleport({ x: 92, z: 128, h: 0 });
   await page.waitForTimeout(1200);
-  const acts = await actions();
+  const acts = await freshActions();
   check('SALVAGE appears beside the Sunken Tower', acts.some((a) => /SALVAGE/.test(a)), acts.join(' | '));
   await click(/SALVAGE/);
   await page.waitForSelector('.winch', { timeout: 5000 });
@@ -442,7 +446,7 @@ const check = (name, ok, detail = '') => {
     await teleport({ x: 40, z: 100, h: 0 });
     await g(() => { const G = window.__game; for (const c of G.caches) G.scene.remove(c.obj); G.caches.length = 0; const obj = new G.shipRoot.constructor(); /* a THREE.Group stands in for the crate */ obj.position.set(40, 0, 130); G.scene.add(obj); G.caches.push({ obj, x: 40, z: 130, region: 'shallows' }); G.cacheTimer = 999; });
     await page.waitForTimeout(800);
-    const hacts = await actions();
+    const hacts = await freshActions();
     check('with a Harpoon Turret, a cache out of hook reach offers HARPOON', hacts.some((a) => /HARPOON CACHE/.test(a)), hacts.join(' | '));
     // fire and tap inside the page, on the ring's own clock (CI's headless GL is too slow for a round trip per frame);
     // a miss just means "try again", as for a player
@@ -581,7 +585,7 @@ const check = (name, ok, detail = '') => {
     await teleport({ x: 40, z: 112, h: 0.6 });
     await g(() => window.__game.tripStart());
     await page.waitForTimeout(600);
-    const a0 = await actions();
+    const a0 = await freshActions();
     check('at sea the Wave Runner and the balloon each launch with one button', a0.some((a) => /LAUNCH RUNNER/.test(a)) && a0.some((a) => /GO UP/.test(a)), a0.join(' | '));
     await click(/LAUNCH RUNNER/);
     await page.waitForTimeout(400);
@@ -601,7 +605,7 @@ const check = (name, ok, detail = '') => {
     // crash: the load drops into the water
     const cr = await g(() => { const v = window.__game.vehicles; v.crash('test'); return { carried: v.carried.length, dropped: v.dropped.length, thrown: v.thrown > 0 }; });
     await page.waitForTimeout(300);
-    const ra = await actions();
+    const ra = await freshActions();
     check('a crash throws you off and drops the load; you can respawn at the boat', cr.carried === 0 && cr.dropped === 1 && cr.thrown && ra.some((a) => /RESPAWN/.test(a)), JSON.stringify({ ...cr, ra }));
     // swim back: ride over the dropped load to get it, then RETURN beside the boat unloads into the hold
     await g(() => { const v = window.__game.vehicles; v.thrown = 0; const d = v.dropped[0]; v.rx = d.x; v.rz = d.z; });
@@ -638,7 +642,7 @@ const check = (name, ok, detail = '') => {
     await g(() => { const v = window.__game.vehicles; if (v.active !== 'balloon') v.goUp(); }); // a late card can swallow the tap
     await g(() => { const G = window.__game, v = G.vehicles; v.alt = 20; const w = G.wrecks.spawnAt(v.bx + 3, v.bz + 3, 'rare', { name: 'Heavy Wreck in the Shallows' }); window.__h = G.store.data.hauls; });
     await page.waitForTimeout(600);
-    const wa = await actions();
+    const wa = await freshActions();
     await click(/WINCH LIFT/);
     await page.waitForTimeout(300);
     await g(() => { const G = window.__game, v = G.vehicles; v.bx = G.boat.x + 2; v.bz = G.boat.z + 2; });
