@@ -54,6 +54,7 @@ import { clockRate } from './trip';
 import { tripLength, squallLevel, squallDamage, tripLeft, tripPhase, holdValue, keepsOnSink, SQUALL_WARN, type TripPhase } from './trip';
 import { LOOK, jury } from '../state/look';
 import { TOLL, jawboat } from '../world/jury';
+import { guardFrame } from '../core/crashGuard';
 
 type Mode = 'sail' | 'foot';
 
@@ -275,7 +276,11 @@ export class Game implements GameAPI {
     let last = performance.now();
     let frame = 0;
     let edgeAt = 0;
+    const frameGuard = { fails: 0 };
     const loop = (now: number) => {
+      if (guardFrame(() => step(now), frameGuard)) requestAnimationFrame(loop);
+    };
+    const step = (now: number) => {
       let dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       if (this.hitStopT > 0) {
@@ -292,7 +297,6 @@ export class Game implements GameAPI {
           this.matchPageEdges();
         }
       }
-      requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
     const save = () => {
