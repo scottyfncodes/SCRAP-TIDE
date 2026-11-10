@@ -2266,8 +2266,12 @@ export class Game implements GameAPI {
     } else this.ui.setTrip({ show: this.mode === 'foot', hold: holdValue(s.cargo), dock: 0, dockAngle: 0, left: null, frac: 0, phase: 'calm' });
   }
 
+  /** a dock is under way: DOCK stays on screen through the fade, and a second tap must not dock (and bank) twice */
+  private docking = false;
   private dock() {
-    this.ui.fade(() => {
+    if (this.docking || this.boat.docked) return;
+    this.docking = true;
+    void this.ui.fade(() => {
       this.dockPose();
       const { n } = this.bankHold('Driftholm');
       this.store.data.stats.trips++;
@@ -2283,7 +2287,7 @@ export class Game implements GameAPI {
       setTimeout(() => this.crewBark('dock', { driftholm: true }, { specificOnly: true, cool: 120 }), 1400);
       setTimeout(() => this.voyageStarterOffer(), 700);
       setTimeout(() => this.ui.openPanel('harbor'), 300);
-    });
+    }).finally(() => (this.docking = false));
   }
 
   private goAshore() {
