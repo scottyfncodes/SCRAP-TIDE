@@ -234,6 +234,53 @@ if (PROFILE.includes('harness')) {
     await ctx.close();
   }
 }
+if (PROFILE.includes('ms')) {
+  // default-look frame time, same machine, fresh page per build per run, order rotated: BUILDS="name=dir,name=dir"
+  // (software GL: relative only; never a real-device number)
+  const builds = [];
+  for (const spec of (process.env.BUILDS ?? '').split(',').filter(Boolean)) {
+    const [name, dir] = spec.split('=');
+    const root = resolve(dir);
+    const srv = createServer(async (req, res) => {
+      let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+      if (p.endsWith('/')) p += 'index.html';
+      try {
+        const body = await readFile(join(root, p));
+        res.writeHead(200, { 'content-type': TYPES[extname(p)] ?? 'application/octet-stream' });
+        res.end(body);
+      } catch {
+        res.writeHead(404);
+        res.end();
+      }
+    });
+    await new Promise((r) => srv.listen(0, r));
+    builds.push({ name, base: `http://127.0.0.1:${srv.address().port}` });
+  }
+  report.ms = {};
+  for (const b of builds) report.ms[b.name] = [];
+  const FRAME = { ...STORM, storm: 0, id: 'driftholm-noon' };
+  for (let i = 0; i < RUNS; i++) {
+    for (const b of builds.map((_, k) => builds[(k + i) % builds.length])) {
+      console.log('opening', b.name);
+      const { ctx, page, clear } = await open('default', b.base);
+      console.log('opened', b.name);
+      await settle(page, clear, FRAME);
+      const ms = await page.evaluate(
+        () =>
+          new Promise((r) => {
+            let n = 0;
+            const a = performance.now();
+            const f = () => (++n < 30 ? requestAnimationFrame(f) : r((performance.now() - a) / n));
+            requestAnimationFrame(f);
+          })
+      );
+      report.ms[b.name].push(+ms.toFixed(1));
+      console.log(b.name, 'run', i, ms.toFixed(1));
+      await ctx.close();
+    }
+  }
+}
 writeFileSync(`${out}/profile.json`, JSON.stringify(report, null, 1));
 await browser.close();
 server.close();
+process.exit(0); // the extra build servers would otherwise keep the process alive

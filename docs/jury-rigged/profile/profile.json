@@ -1,5 +1,5 @@
 {
- "note": "scripts/jury-profile.mjs on the correction build. toll: per-draw attribution summed over two consecutive frames (main and shadow passes); info.calls is the C5 metric (main pass of the last frame). storm: Driftholm approach in a full squall, 5 runs x 5 frames per variant, fresh page each, order rotated; 'main' is a build of origin/main 751a921.",
+ "note": "scripts/jury-profile.mjs. toll: per-draw attribution over two consecutive frames, main and shadow passes (fresh page). storm: Driftholm approach in a full squall, 5 runs x 5 frames per variant, fresh page each, order rotated, 'main' = a build of origin/main 751a921. sequence/harness: the capture harness's frame order on one page. ms: default-look frame time (software GL, relative only), 5 fresh-page runs per build, rotated.",
  "toll": {
   "default": {
    "draws": 300,
@@ -1156,6 +1156,176 @@
      }
     }
    ]
+  ]
+ },
+ "sequence": {
+  "default": {
+   "calls": 69,
+   "mainByCategory": {
+    "other: Mesh": 66,
+    "player boat": 44,
+    "captain": 2,
+    "townsfolk / other character": 16,
+    "other: LineSegments": 2,
+    "other: wind_streaks": 4,
+    "other: Points": 8
+   },
+   "raiders": []
+  },
+  "jury": {
+   "calls": 69,
+   "mainByCategory": {
+    "other: Mesh": 66,
+    "player boat": 44,
+    "captain": 2,
+    "townsfolk / other character": 16,
+    "other: LineSegments": 2,
+    "other: wind_streaks": 4,
+    "other: Points": 8
+   },
+   "raiders": [
+    {
+     "zone": "rz_toll",
+     "x": 57.9,
+     "z": 119.4,
+     "ndc": [
+      -10.95,
+      -0.01,
+      0.963
+     ],
+     "onScreen": false
+    },
+    {
+     "zone": "rz_toll",
+     "x": 71.2,
+     "z": 112.6,
+     "ndc": [
+      -19.25,
+      -0.02,
+      0.948
+     ],
+     "onScreen": false
+    }
+   ]
+  }
+ },
+ "harness": {
+  "default": {
+   "noon": {
+    "calls": 72,
+    "mainByCategory": {
+     "other: Mesh": 74,
+     "player boat": 44,
+     "captain": 2,
+     "townsfolk / other character": 16,
+     "other: wind_streaks": 4,
+     "other: Points": 8
+    }
+   },
+   "dusk": {
+    "calls": 66,
+    "mainByCategory": {
+     "other: Mesh": 62,
+     "player boat": 44,
+     "captain": 2,
+     "townsfolk / other character": 16,
+     "other: wind_streaks": 4,
+     "other: Points": 8
+    }
+   },
+   "night": {
+    "calls": 67,
+    "mainByCategory": {
+     "other: Mesh": 64,
+     "player boat": 44,
+     "captain": 2,
+     "townsfolk / other character": 16,
+     "other: wind_streaks": 4,
+     "other: Points": 8
+    }
+   },
+   "storm": {
+    "calls": 67,
+    "mainByCategory": {
+     "other: Mesh": 62,
+     "player boat": 44,
+     "captain": 2,
+     "townsfolk / other character": 16,
+     "other: LineSegments": 2,
+     "other: wind_streaks": 4,
+     "other: Points": 8
+    }
+   }
+  },
+  "jury": {
+   "noon": {
+    "calls": 72,
+    "mainByCategory": {
+     "other: Mesh": 74,
+     "player boat": 44,
+     "captain": 2,
+     "townsfolk / other character": 16,
+     "other: wind_streaks": 4,
+     "other: Points": 8
+    }
+   },
+   "dusk": {
+    "calls": 66,
+    "mainByCategory": {
+     "other: Mesh": 62,
+     "player boat": 44,
+     "captain": 2,
+     "townsfolk / other character": 16,
+     "other: wind_streaks": 4,
+     "other: Points": 8
+    }
+   },
+   "night": {
+    "calls": 67,
+    "mainByCategory": {
+     "other: Mesh": 64,
+     "player boat": 44,
+     "captain": 2,
+     "townsfolk / other character": 16,
+     "other: wind_streaks": 4,
+     "other: Points": 8
+    }
+   },
+   "storm": {
+    "calls": 67,
+    "mainByCategory": {
+     "other: Mesh": 62,
+     "player boat": 44,
+     "captain": 2,
+     "townsfolk / other character": 16,
+     "other: LineSegments": 2,
+     "other: wind_streaks": 4,
+     "other: Points": 8
+    }
+   }
+  }
+ },
+ "ms": {
+  "main": [
+   949.6,
+   890.8,
+   894.8,
+   881.9,
+   807.8
+  ],
+  "pr-before-fix": [
+   869.3,
+   957.5,
+   919.4,
+   863.7,
+   1020.2
+  ],
+  "pr-after-fix": [
+   955.3,
+   959.8,
+   891.8,
+   911.8,
+   875.1
   ]
  }
 }
