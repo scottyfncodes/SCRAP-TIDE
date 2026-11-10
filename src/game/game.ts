@@ -73,6 +73,8 @@ function weighted<T extends { w: number }>(rng: () => number, list: T[]): T {
 
 /** World size of a wake puff on a wide screen (it was 0.7, shared with every other splash). */
 const WAKE_PUFF = 0.55;
+/** spray is salt-scum bone like the shader's foam, never paper white */
+const SPRAY = '#e6e1d3';
 // on foot (world m/s, m/s²): a brisk run tops out where the procedural Run's stride and cadence put it
 const FOOT_MIN = 0.7, FOOT_MAX = 5.0, FOOT_ACCEL = 9, FOOT_DECEL = 14;
 
@@ -2929,14 +2931,16 @@ export class Game implements GameAPI {
     if (motoring && Math.random() < 0.5) {
       const ex = this.ship.wake.clone().add(new THREE.Vector3(0, 0.4, -0.35 - clear));
       this.shipRoot.localToWorld(ex);
-      this.wakeFoam.emitVel(ex, 1, '#ffffff', new THREE.Vector3(-fx * 0.8, 0.9, -fz * 0.8), 0.4, 0.45, 2, 0.2);
+      this.wakeFoam.emitVel(ex, 1, SPRAY, new THREE.Vector3(-fx * 0.8, 0.9, -fz * 0.8), 0.4, 0.45, 2, 0.2);
     }
     // wake foam
     if (b.speed > 1) {
       const stern = this.ship.wake.clone().add(new THREE.Vector3(0, 0, -clear - 0.35)); // past the rudder blade too
       this.shipRoot.localToWorld(stern);
       if (Math.random() < b.speed * 0.25)
-        this.wakeFoam.emitVel(new THREE.Vector3(stern.x, w.y + 0.1, stern.z), 1, '#ffffff', new THREE.Vector3(-fx * 0.6, 0.6, -fz * 0.6), 0.35, 1.0, 1, 0.4);
+        // churn kicked up at the transom only: short-lived, so it never lies on the water as a string of white pearls
+        // (the trail itself is the ocean shader's foam ribbon)
+        this.wakeFoam.emitVel(new THREE.Vector3(stern.x, w.y + 0.1, stern.z), 1, SPRAY, new THREE.Vector3(-fx * 0.6, 0.6, -fz * 0.6), 0.35, 0.32, 1, 0.4);
       if (Math.random() < b.speed * 0.15) {
         // one side of the bow at a time, thrown outward; on the Ironwake, the outer side of a hull
         const side = Math.random() < 0.5 ? -1 : 1;
@@ -2945,7 +2949,7 @@ export class Game implements GameAPI {
         const bow = new THREE.Vector3(x, 0, L * 0.4);
         this.shipRoot.localToWorld(bow);
         const out = new THREE.Vector3(side, 0, 0).applyQuaternion(this.shipRoot.quaternion).setY(0).normalize(); // outward, world
-        this.wakeFoam.emitVel(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, '#ffffff', vel.clone().multiplyScalar(0.9).addScaledVector(out, 1.4).setY(1), 0.25, 0.6, 4, 0.2);
+        this.wakeFoam.emitVel(new THREE.Vector3(bow.x, w.y + 0.2, bow.z), 1, SPRAY, vel.clone().multiplyScalar(0.9).addScaledVector(out, 1.4).setY(1), 0.25, 0.6, 4, 0.2);
       }
       // bow slamming into a swell at speed: a flipbook sheet of spray thrown off one side, well clear of the hull
       const swell = Math.max(swellFactor(b.x, b.z), this.atmo.storm);

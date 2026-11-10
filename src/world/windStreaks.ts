@@ -29,7 +29,7 @@ export class WindStreaks {
 
   constructor() {
     // a thin ribbon 1 m long (scaled per streak), lying flat, long axis along +z, tapered by vertex colour at the ends
-    const g = new THREE.PlaneGeometry(0.14, 1, 1, 4);
+    const g = new THREE.PlaneGeometry(0.09, 1, 1, 6);
     g.rotateX(-Math.PI / 2);
     const pos = g.attributes.position;
     const col = new Float32Array(pos.count * 3);
@@ -71,7 +71,7 @@ export class WindStreaks {
       const ox = this.anchor[i * 2], oz = this.anchor[i * 2 + 1];
       const travel = (age - 0.5) * DRIFT * LIFE;
       this.p.set(ox + wx * travel, 1.4 + hash(seed + 2) * 3.2, oz + wz * travel);
-      const len = 3.5 + hash(seed + 3) * 4;
+      const len = 1.6 + hash(seed + 3) * 2.2; // wisps, not ruler lines
       this.s.set(1, 1, len);
       this.m.compose(this.p, this.q, this.s);
       this.mesh.setMatrixAt(i, this.m);
@@ -81,7 +81,7 @@ export class WindStreaks {
         const d = Math.hypot(this.p.x - cam.x, this.p.y - cam.y, this.p.z - cam.z);
         fade *= THREE.MathUtils.smoothstep(d, NEAR_FADE[0], NEAR_FADE[1]);
       }
-      this.mesh.setColorAt(i, this.c.setScalar(fade * fade * 0.3 * strength));
+      this.mesh.setColorAt(i, this.c.setScalar(fade * fade * 0.2 * strength));
     }
     this.mesh.instanceMatrix.needsUpdate = true;
     if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true;
