@@ -232,9 +232,11 @@ void main() {
   col = mix(col, sky * vec3(0.82, 0.86, 0.85), fr);
   vec3 H = normalize(uSunDir + V);
   float ndh = max(dot(N, H), 0.0);
-  // glints are crisp, cut-out highlights (the toon world's language), with a faint soft sheen under them
+  // glints: crisp cut-out highlights out on the water (the toon world's language), but close to the camera they would
+  // be big hard white flecks scattered over the foreground, so there they melt into the soft sheen
+  float crisp = smoothstep(10.0, 45.0, camD);
   float glint = pow(ndh, mix(1400.0, 200.0, uStorm));
-  float spec = smoothstep(0.12, 0.3, glint) * 0.75 + glint * 0.15 + pow(ndh, 90.0) * 0.03 + pow(ndh, 600.0) * oil * 0.8;
+  float spec = smoothstep(0.14, 0.34, glint) * 0.55 * crisp + glint * (0.12 + 0.1 * (1.0 - crisp)) + pow(ndh, 90.0) * 0.03 + pow(ndh, 600.0) * oil * 0.8;
   col += uSunColor * spec * mix(1.1, 0.45, uNight) * (1.0 - uStorm * 0.7);
 
   // foam: shoreline, reef breakers, wave crests (more in storms), and the boat's wake
@@ -246,17 +248,34 @@ void main() {
   // whitecaps: crests break into torn lace, never solid blobs of paint
   float lace = smoothstep(0.32, 0.78, noise(p * 2.3 + vec2(t * 0.9, t * 0.4)) * 0.7 + noise(p * 6.1 - t * 0.5) * 0.3);
   foam = max(foam, smoothstep(0.55 - uStorm * 0.25, 0.95, vWave + fn*0.35) * (0.2 + swell*0.5 + uStorm * 0.8) * (0.35 + 0.75 * lace));
+  // the wake: one continuous ribbon along the boat's track (uWake runs from the stern, newest first), a churned
+  // centre just behind the stern and two foam edges that spread and fray as they age, never a string of discs
   float wk = 0.0;
-  for (int i = 0; i < ${WAKE_N}; i++) {
-    vec4 w = uWake[i];
-    if (w.w <= 0.0) continue;
-    float d = length(p - w.xy);
-    float width = (1.1 + w.z * 0.78) * uWakeShape.x;
-    float fade = 1.0 - smoothstep(0.0, uWakeShape.y, w.z);
-    float ring = smoothstep(width, width * 0.35, d) * w.w * fade;
-    wk = max(wk, ring);
+  // as wide as the hull that made it (a twin hull spreads a broad wake; 0.55 m when the hull isn't known)
+  float wakeBase = max(0.55, (uHullSize.y + uHullSize.z) * 0.75);
+  for (int i = 0; i < ${WAKE_N} - 1; i++) {
+    vec4 a = uWake[i];
+    vec4 b = uWake[i + 1];
+    if (a.w <= 0.0 || b.w <= 0.0) continue;
+    vec2 ab = b.xy - a.xy;
+    float L2 = dot(ab, ab);
+    if (L2 > 64.0) continue; // a jump (teleport, respawn): no bridge across it
+    float hr = dot(p - a.xy, ab) / max(L2, 1e-4);
+    float h = clamp(hr, 0.0, 1.0);
+    // the edges run along each piece only: wrapped round its end caps they drew rungs across a fast boat's trail
+    float side = smoothstep(-0.16, -0.03, hr) * (1.0 - smoothstep(1.03, 1.16, hr)); // overlap: no gap at the joints
+    float d = length(p - a.xy - ab * h);
+    float age = mix(a.z, b.z, h);
+    float a01 = clamp(age / uWakeShape.y, 0.0, 1.0);
+    float w = (wakeBase + age * 0.55) * uWakeShape.x;
+    if (d > w * 1.3) continue;
+    float core = (1.0 - smoothstep(0.0, w * 0.7, d)) * (1.0 - smoothstep(0.0, 0.38, a01));
+    float arms = smoothstep(w * 0.5, w * 0.8, d) * (1.0 - smoothstep(w * 0.85, w * 1.2, d)) * (1.0 - smoothstep(0.45, 1.0, a01)) * side;
+    wk = max(wk, max(core * 0.95, arms * 0.9) * mix(a.w, b.w, h));
   }
-  foam = max(foam, wk * smoothstep(0.25, 0.7, fn + 0.35));
+  // torn lace: dense where the wake is strong, only the lace's peaks survive as it fades
+  float lace2 = noise(p * 4.6 + vec2(t * 0.5, -t * 0.35)) * 0.55 + noise(p * 12.5 - vec2(t * 0.9, t * 0.2)) * 0.45;
+  float softFoam = wk * smoothstep(0.3, 0.7, lace2 + wk * 0.55 - 0.2);
   // hull collar: water piles up and breaks into foam where it meets the hull, so the boat sits IN the sea; a bow
   // wave builds with speed
   if (uHullSize.x > 0.0) {
@@ -267,9 +286,11 @@ void main() {
     float dm = (e - 1.0) * uHullSize.y;
     float bow = smoothstep(0.2, 1.0, al) * uHullSize.w;
     float reach = 0.32 + bow * 0.9 + uHullSize.w * 0.25;
-    float collar = smoothstep(-0.12, 0.04, dm) * (1.0 - smoothstep(reach * 0.3, reach, dm));
-    float churn = 0.55 + 0.45 * noise(p * 3.1 + vec2(t * 1.3, -t * 0.9));
-    foam = max(foam, collar * churn * (0.75 + bow * 0.5));
+    // thickest against the hull and at the bow, thinning to lace along the sides and outward (not a solid ring)
+    float collar = smoothstep(-0.12, 0.02, dm) * (1.0 - smoothstep(0.0, reach, max(dm, 0.0)));
+    float churn = noise(p * 3.1 + vec2(t * 1.3, -t * 0.9)) * 0.55 + noise(p * 8.5 - vec2(t * 1.7, t * 0.6)) * 0.45;
+    float c = collar * (0.55 + bow * 0.7 + uHullSize.w * 0.15);
+    softFoam = max(softFoam, c * smoothstep(0.32, 0.72, churn + c * 0.45 - 0.15));
   }
   // spindrift: long scum lines blown along the wind, thicker in a blow
   vec2 wd = normalize(vec2(0.94, 0.34));
@@ -278,6 +299,8 @@ void main() {
   foam = max(foam, streaks * (0.35 + uStorm * 0.6) * smoothstep(2.0, 6.0, depth));
   foam *= 1.0 - oil * 0.7;
   foam = smoothstep(0.4, 0.72, foam);
+  // the boat's own foam keeps its torn, soft edge (the toon cut above would turn it back into a cut-out sticker)
+  foam = max(foam, softFoam * (1.0 - oil * 0.7) * 0.92);
   // foam here is never white: salt-scum the colour of old bone, stained by the water under it
   vec3 foamCol = mix(vec3(0.78, 0.76, 0.68), uSkyColor, 0.18) * (uAmbient * 0.6 + 0.4);
   foamCol *= 0.85 + 0.15 * fn;
@@ -311,6 +334,7 @@ export class Ocean {
     const tex = buildDepthTexture();
     const half = WORLD.size / 2;
     for (let i = 0; i < WAKE_N; i++) this.wake.push(new THREE.Vector4(0, 0, 0, 0));
+    for (let i = 0; i < WAKE_N; i++) this.wakeOrdered.push(new THREE.Vector4(0, 0, 0, 0));
     this.uniforms = {
       uTime: { value: 0 },
       uStorm: { value: 0 },
@@ -325,7 +349,7 @@ export class Ocean {
       uSkyColor: { value: new THREE.Color('#c4ebf4') },
       uSkyTop: { value: new THREE.Color('#2f86d8') },
       uAmbient: { value: new THREE.Color(1, 1, 1) },
-      uWake: { value: this.wake },
+      uWake: { value: this.wakeOrdered },
       uWakeShape: { value: new THREE.Vector2(1, WAKE_LIFE) },
       uHull: { value: new THREE.Vector4(0, 0, 0, 1) },
       uHullSize: { value: new THREE.Vector4(0, 1, 0, 0) },
@@ -385,15 +409,21 @@ export class Ocean {
     this.uniforms.uHullSize.value.set(halfLen, halfBeam, twinOffset, speed01);
   }
 
-  /** Drop a wake point (call while the boat moves). strength 0..1 */
+  /** Drop a wake point (call every frame while the boat moves). strength 0..1 */
   addWake(x: number, z: number, strength: number, dt: number) {
+    this.stern.set(x, z, 0, strength); // the ribbon always reaches the stern, between dropped points too
+    this.sternFresh = true;
     this.wakeTimer -= dt;
     if (this.wakeTimer > 0) return;
-    this.wakeTimer = 0.095; // close enough that the puffs overlap into one trail
+    this.wakeTimer = 0.11;
     const w = this.wake[this.wakeHead];
     w.set(x, z, 0, strength);
     this.wakeHead = (this.wakeHead + 1) % WAKE_N;
   }
+  private stern = new THREE.Vector4();
+  private sternFresh = false;
+  /** the shader's copy, in track order: the live stern first, then the dropped points newest to oldest */
+  private wakeOrdered: THREE.Vector4[] = [];
 
   update(t: number, dt: number, focus: THREE.Vector3) {
     this.uniforms.uTime.value = t;
@@ -401,6 +431,11 @@ export class Ocean {
       w.z += dt;
       if (w.z > this.uniforms.uWakeShape.value.y) w.w = 0;
     }
+    const out = this.wakeOrdered;
+    out[0].copy(this.stern);
+    if (!this.sternFresh) out[0].w = 0;
+    this.sternFresh = false;
+    for (let k = 1; k < WAKE_N; k++) out[k].copy(this.wake[(this.wakeHead - k + WAKE_N * 2) % WAKE_N]);
     this.mesh.position.x = Math.round(focus.x / this.step) * this.step;
     this.mesh.position.z = Math.round(focus.z / this.step) * this.step;
   }
