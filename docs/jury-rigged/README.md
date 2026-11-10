@@ -115,6 +115,22 @@ Reproducing the harness's own frame order on one page (the Toll in four keys, th
 72 / 66 / 67 / 67 for both looks, and in the final harness run the per-frame attribution shows **no** Jury-Rigged
 object drawn in any Driftholm key. The remaining harness differences there (−0 to +1) are ordinary scene meshes.
 
+### Pre-merge review
+
+- **Memory leak fixed (confirmed defect).** On a look visit every raider patrol despawn left its per-boat Jawboat
+  geometry, merged crew geometry and bone texture in GPU memory. Measured over 4 Rustfang Graveyard spawn/despawn
+  cycles in the browser: renderer geometries 166 → 172 → 178 (+6 per cycle). `releaseBoat()` now frees exactly those
+  on despawn (look visits only; a test checks the shared GLB geometry is never touched); after the fix geometries hold
+  at 141 near / 135 away and textures stay flat across cycles.
+- **Pre-existing, not this PR:** in the default look (and on `main`) each raider crew skeleton's bone texture is never
+  freed: +6 small textures per Graveyard cycle. Default behaviour is deliberately unchanged here; it's worth its own fix.
+- **Automated cost coverage.** No existing test measures mobile performance: `check:turn` checks frame-rate
+  *independence*, `perf-sail.mjs` is a manual software-GL timer, `models.test.ts` only sets minimum triangle counts.
+  Added cheap deterministic tripwires instead (`tests/jury.test.ts`, no browser or GPU, about a second): the Jawboat
+  stays one draw under 2,700 triangles, the harbour additions and both character GLBs stay inside their triangle, joint
+  and byte budgets, and default-look shaders stay byte-identical to `main`'s. They catch the encounter getting
+  heavier; they can't measure frame rate. That's the job of `IPHONE-CHECKLIST.md`.
+
 ### Remaining failures
 
 - **C5 draw calls, the Toll frame: +5 on phone (every key), +6 on desktop.** The attribution: **+4** is the encounter
@@ -149,7 +165,7 @@ triangles, which is `main`'s helmeted captain, not this PR. A default visit requ
 about 8 KB gzipped, ships dormant in the game bundle. On a look visit the only extra downloads are
 `tb_jury_captain.glb` (356 KB) and `tb_jury_raider.glb` (303 KB).
 
-**Not validated here:** frame times. Every number above comes from headless Chromium with SwiftShader (software
+**Not validated here:** frame times (see `IPHONE-CHECKLIST.md` for the real-device checks). Every number above comes from headless Chromium with SwiftShader (software
 GL); `msPerFrame` in `perf.json` is relative only. Frame rate, GPU time, thermals and memory on an iPhone have **not**
 been measured and need a real-device check before rollout.
 
