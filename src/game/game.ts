@@ -214,6 +214,8 @@ export class Game implements GameAPI {
     this.store.on(() => {});
     audio.setVolumes(this.store.data.settings.sfx, this.store.data.settings.music);
     window.addEventListener('resize', () => this.resize());
+    // iOS changes the large viewport without always firing resize (toolbars, Home Screen launch): watch the canvas too
+    if ('ResizeObserver' in window) new ResizeObserver(() => this.resize()).observe(this.renderer.domElement);
     this.resize();
     this.bindCameraGestures();
   }
@@ -331,8 +333,17 @@ export class Game implements GameAPI {
     }
   }
 
+  /**
+   * The canvas's CSS size. It fills the large viewport (behind Safari's toolbars, so no dead band at the bottom of an
+   * iPhone), which can be taller than window.innerHeight; the HUD shares its top-left origin.
+   */
+  private viewSize() {
+    const c = this.renderer.domElement;
+    return { w: c.clientWidth || window.innerWidth, h: c.clientHeight || window.innerHeight };
+  }
+
   private resize() {
-    const w = window.innerWidth, h = window.innerHeight;
+    const { w, h } = this.viewSize();
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.fov = w < h ? 68 : 55;
@@ -2465,7 +2476,7 @@ export class Game implements GameAPI {
     this.drowned.focus.copy(focus);
     this.drowned.update(this.t, dt, this.atmo.night);
     // wind you can see: faint streaks drifting downwind round the boat (fainter at night, stronger in a storm)
-    this.windStreaks.update(this.t, pxz.x, pxz.z, WORLD.wind.dir, this.started ? (1 - this.atmo.night * 0.6) * (1 + this.atmo.storm * 0.8) : 0);
+    this.windStreaks.update(this.t, pxz.x, pxz.z, WORLD.wind.dir, this.started ? (1 - this.atmo.night * 0.6) * (1 + this.atmo.storm * 0.8) : 0, this.camera.position);
     this.salvage.update(dt);
     if (this.started) {
       this.wrecks.update(dt);
@@ -2887,7 +2898,11 @@ export class Game implements GameAPI {
       if (site && !b.anchored) {
         const ready = this.salvage.ready(site);
         const heavyBlocked = (site.heavy && !st.salvage) || (!!site.requiresFlag && !this.store.data.flags.includes(site.requiresFlag));
-        acts.push({ id: 'salvage', label: `\u{1FA9D} SALVAGE ${site.name.toUpperCase()}`, glow: ready && !heavyBlocked && b.speed < 3, disabled: !ready || heavyBlocked || b.speed > 3 });
+        const note = !ready ? `Empty · back\u00a0in\u00a0${Math.max(1, Math.ceil(this.salvage.cooldown(site) / 60))}m`
+          : site.heavy && !st.salvage ? 'Needs a Salvage Crane'
+          : heavyBlocked ? 'Can’t get at it yet'
+          : b.speed > 3 ? 'Slow down first' : site.name;
+        acts.push({ id: 'salvage', label: '\u{1FA9D} SALVAGE', note, glow: ready && !heavyBlocked && b.speed < 3, disabled: !ready || heavyBlocked || b.speed > 3 });
       }
       for (const cw of CASTAWAYS) {
         if (this.store.data.castaways.includes(cw.id)) continue;
@@ -3298,22 +3313,23 @@ export class Game implements GameAPI {
       const pz = this.mode === 'sail' ? this.boat.z : this.foot.z;
       const dist = Math.hypot(target.x - px, target.z - pz);
       const ndc = v.clone().project(this.camera);
-      const w = window.innerWidth, h = window.innerHeight;
+      const { w, h } = this.viewSize();
       const behind = ndc.z > 1;
       let x = (ndc.x * 0.5 + 0.5) * w;
       let y = (-ndc.y * 0.5 + 0.5) * h;
-      const margin = 60;
-      const on = !behind && x > margin && x < w - margin && y > margin + 60 && y < h - margin - 80;
+      // the marker lives in the open sea between the top HUD and the bottom controls: never on a panel
+      const r = this.ui.playRect();
+      const on = !behind && x > r.l && x < r.r && y - 30 > r.t && y - 30 < r.b;
       let angle = Math.PI; // pointing down at target
       if (!on) {
-        const cx = w / 2, cy = h / 2;
+        const cx = (r.l + r.r) / 2, cy = (r.t + r.b) / 2;
         let dx = x - cx, dy = y - cy;
         if (behind) {
           dx = -dx;
           dy = -dy;
         }
         if (Math.abs(dx) < 1 && Math.abs(dy) < 1) dy = 1;
-        const sc = Math.min((w / 2 - margin) / Math.abs(dx || 0.001), (h / 2 - margin - 70) / Math.abs(dy || 0.001));
+        const sc = Math.min((r.r - r.l) / 2 / Math.abs(dx || 0.001), (r.b - r.t) / 2 / Math.abs(dy || 0.001));
         x = cx + dx * sc;
         y = cy + dy * sc;
         angle = Math.atan2(dy, dx) + Math.PI / 2;
