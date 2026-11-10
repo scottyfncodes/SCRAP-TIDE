@@ -1,5 +1,5 @@
 // DOM UI: HUD, touch controls, panels (harbor, catalog, maps, ship, cargo, settings), reveals.
-import { goalProgressText } from '../game/goalHelp';
+import { goalNeeds, goalProgressText } from '../game/goalHelp';
 import { pickLine, CHARACTER_MAP } from '../data/characters';
 import { ARCS } from '../data/arcs';
 import { openRumours, canReach } from '../game/leads';
@@ -80,6 +80,8 @@ export interface Action {
   primary?: boolean;
   glow?: boolean;
   disabled?: boolean;
+  /** a short second line: what the button acts on, or why it can't yet */
+  note?: string;
 }
 
 const ICON = {
@@ -186,11 +188,11 @@ export class UI {
     const top = el(`<div class="hud-top">
       <div class="hud-left">
         <div class="status-plate">
-          <div class="sp-row"><span class="chip gold-pill" title="Gold"><span class="coin"></span><span class="gold">0</span></span><button class="chip cargo-pill" data-p="cargo" aria-label="Hold: open cargo">⛵ <span class="cargo">0/6</span></button><span class="clock"></span></div>
+          <div class="sp-row"><span class="chip gold-pill" title="Gold"><span class="coin"></span><span class="gold">0</span></span><button class="chip cargo-pill" data-p="cargo" aria-label="Hold: open cargo">${ICON.cargo}<span class="cargo">0/6</span></button><span class="clock"></span></div>
           <div class="status"><div class="gauge hull"><i></i><span>HULL</span></div><div class="gauge fuel"><i></i><span>FUEL</span></div></div>
-          <div class="trip" style="display:none"><span class="t-hold" title="Hold value: only counts once you dock">⛃ <b>0</b>g</span><span class="t-dock" title="Nearest dock"><svg viewBox="0 0 10 10"><path d="M5 0 L9 9 L5 7 L1 9Z"/></svg><b>0</b>m</span><span class="t-bar"><i></i></span><span class="t-clock"></span></div>
+          <div class="trip" style="display:none"><span class="t-hold" title="What the hold is worth: it only counts once you dock"><small>CARGO</small>≈<b>0</b>g</span><span class="t-dock" title="Nearest dock"><small>DOCK</small><svg viewBox="0 0 10 10"><path d="M5 0 L9 9 L5 7 L1 9Z"/></svg><b>0</b>m</span><span class="t-bar"><i></i></span><span class="t-clock"><small>SQUALL</small><b></b></span></div>
         </div>
-        <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div><button class="q-side"></button></div>
+        <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div><button class="q-side"><span class="qs-tag"></span><span class="qs-text"></span></button></div>
       </div>
       <div class="hud-right">
         <div class="nav-btns">
@@ -393,16 +395,25 @@ export class UI {
     }
     this.questEl.querySelector('.q-hint')!.textContent = q.hint;
     // build goals: what's still needed, always visible (the hint only shows when the card is tapped open)
-    const raw = s.data.quest === 'free' ? goalProgressText(s, GOALS[s.data.goal]?.id ?? '') : null;
-    const need = raw && raw.includes(' · ') ? raw.split(' · ').map((p) => p.replace(/ /g, '\u00a0')).join(' · ') : raw; // never split an item across lines
+    // one chip per material (never a separator left dangling at a line end); met needs shrink to a tick and a name
+    const gid = GOALS[s.data.goal]?.id ?? '';
+    const needs = s.data.quest === 'free' ? goalNeeds(s, gid) : null;
+    const done = !!needs && needs.every((n) => n.have >= n.need);
+    const needHTML = !needs ? '' : done ? `<span class="qn done-all">${goalProgressText(s, gid)}</span>`
+      : needs.map((n) => (n.have >= n.need ? `<span class="qn met">✓ ${n.name}</span>` : `<span class="qn">${n.name} <b>${Math.min(n.have, n.need)}/${n.need}</b></span>`)).join('');
     const qn = this.questEl.querySelector('.q-need') as HTMLElement;
-    if (qn.textContent !== (need ?? '')) qn.textContent = need ?? '';
-    qn.style.display = need ? '' : 'none';
+    if (qn.innerHTML !== needHTML) qn.innerHTML = needHTML;
+    qn.style.display = needHTML ? '' : 'none';
     // the second road: one optional lead beside the main goal, tap to follow it instead
     const side = s.data.quest === 'free' ? this.game.sideLead() : null;
     const qs = this.questEl.querySelector('.q-side') as HTMLElement;
-    const sideText = side ? `${s.data.followSide ? '▶' : 'Side:'} ${side.label}` : '';
-    if (qs.textContent !== sideText) qs.textContent = sideText;
+    const tag = side ? (s.data.followSide ? 'FOLLOWING' : 'SIDE LEAD') : '';
+    const sideText = side ? side.label : '';
+    if (qs.textContent !== tag + sideText) {
+      qs.querySelector('.qs-tag')!.textContent = tag;
+      qs.querySelector('.qs-text')!.textContent = sideText;
+    }
+    qs.setAttribute('aria-label', side ? `${s.data.followSide ? 'Following side lead' : 'Side lead, tap to follow'}: ${side.label}` : '');
     qs.style.display = side ? '' : 'none';
     qs.classList.toggle('on', !!side && s.data.followSide);
     this.questEl.querySelector('.q-label')!.textContent = s.data.quest === 'free' ? `Captain’s Log · ${s.data.goal + 1}/${GOALS.length}` : `First Voyage · ${s.questIndex() + 1}/${FIRST_VOYAGE.length - 1}`;
@@ -418,7 +429,7 @@ export class UI {
     this.lastActionsKey = key;
     this.actionsEl.innerHTML = '';
     list.forEach((a, i) => {
-      const b = el(`<button class="act ${i > 0 ? 'secondary' : ''} ${a.glow ? 'glow' : ''} ${a.disabled ? 'disabled' : ''}">${a.label}</button>`);
+      const b = el(`<button class="act ${i > 0 ? 'secondary' : ''} ${a.glow ? 'glow' : ''} ${a.disabled ? 'disabled' : ''}"><span class="act-l">${a.label}</span>${a.note ? ` <small class="act-note">${a.note}</small>` : ''}</button>`);
       b.addEventListener('click', (e) => {
         e.stopPropagation();
         audio.unlock();
@@ -430,6 +441,33 @@ export class UI {
       this.actionsEl.append(b);
     });
   }
+
+  /**
+   * The open sea between the top HUD and the bottom controls, in CSS px: the waypoint marker (and its distance label)
+   * must stay inside it so it never sits on a panel. Measured at most 4× a second; the HUD only moves on layout changes.
+   */
+  playRect(): { l: number; t: number; r: number; b: number } {
+    const now = performance.now();
+    if (this.prCache && now - this.prAt < 250) return this.prCache;
+    const w = this.root.clientWidth || window.innerWidth, h = this.root.clientHeight || window.innerHeight;
+    let top = 0, bottom = h;
+    const vis = (e: Element | null) => !!e && (e as HTMLElement).offsetParent !== null;
+    for (const q of ['.hud-left', '.hud-right']) {
+      const e = this.hud.querySelector(q);
+      if (vis(e)) top = Math.max(top, e!.getBoundingClientRect().bottom);
+    }
+    for (const q of ['.helm', '.actions .act']) {
+      this.hud.querySelectorAll(q).forEach((e) => {
+        if (vis(e)) bottom = Math.min(bottom, e.getBoundingClientRect().top);
+      });
+    }
+    const R = 22; // marker radius
+    this.prCache = { l: R + 10, t: top + R + 8, r: w - R - 10, b: Math.max(top + 2 * R + 40, bottom - R - 30) };
+    this.prAt = now;
+    return this.prCache;
+  }
+  private prCache: { l: number; t: number; r: number; b: number } | null = null;
+  private prAt = 0;
 
   setWaypoint(screen: { x: number; y: number; angle: number; onScreen: boolean } | null, dist = 0) {
     if (!screen) {
@@ -510,7 +548,7 @@ export class UI {
     const clock = strip.querySelector('.t-clock') as HTMLElement;
     bar.style.display = clock.style.display = t.left === null ? 'none' : '';
     (bar.firstElementChild as HTMLElement).style.width = `${Math.round(Math.min(1, t.frac) * 100)}%`;
-    clock.textContent = t.left === null ? '' : t.phase === 'squall' ? 'SQUALL!' : `⛈ ${clockText(t.left)}`;
+    clock.querySelector('b')!.textContent = t.left === null ? '' : t.phase === 'squall' ? 'NOW' : clockText(t.left);
     strip.dataset.phase = t.phase;
   }
   private lastTrip = '';
@@ -586,12 +624,14 @@ export class UI {
     fuel.lastElementChild!.textContent = `FUEL ${Math.round(st.fuel)}/${Math.round(st.fuelCap)}`;
     hull.lastElementChild!.textContent = `HULL ${Math.round(st.hull)}/${Math.round(st.hullMax)}`;
     fuel.classList.toggle('low', fk < 0.2 && st.engine);
-    hull.classList.toggle('low', hk < 0.3);
+    hull.classList.toggle('low', hk < 0.35);
+    hull.classList.toggle('mid', hk >= 0.35 && hk < 0.6);
     fuel.style.display = st.engine ? '' : 'none';
     this.hud.querySelector('.clock')!.textContent = `${st.clock} · ${st.phase} · ${st.weather}`;
     this.engineEl.classList.toggle('on', st.engineOn);
     this.engineEl.classList.toggle('none', !st.engine);
-    this.engineEl.style.display = st.sailing ? '' : 'none';
+    // no engine fitted yet: no button (the Captain's Log already says how to get one)
+    this.engineEl.style.display = st.sailing && st.engine ? '' : 'none';
   }
 
   /** Minimap: blips relative to the player, rotated so "up" is the camera's forward. */

@@ -51,7 +51,7 @@ export const SAIL_LABEL: Record<PointOfSail, { label: string; cls: string }> = {
   close: { label: 'close-hauled', cls: 'bad' },
   beam: { label: 'beam reach', cls: 'good' },
   broad: { label: 'broad reach', cls: 'good' },
-  run: { label: 'running', cls: '' },
+  run: { label: 'downwind', cls: '' },
 };
 
 /**

@@ -473,8 +473,8 @@ const check = (name, ok, detail = '') => {
     await page.waitForTimeout(800);
     const radarHas = await g(() => { const G = window.__game; return G.wrecks.list.some((w) => w.tier === 'legendary' && !w.hauled); });
     const wacts = await actions();
-    check('a Legendary wreck drifts in and offers SALVAGE', radarHas && wacts.some((a) => /SALVAGE LEGENDARY WRECK/.test(a)), wacts.join(' | '));
-    await click(/SALVAGE LEGENDARY/);
+    check('a Legendary wreck drifts in and offers SALVAGE', radarHas && wacts.some((a) => /SALVAGE LEGENDARY WRECK/i.test(a)), wacts.join(' | '));
+    await click(/SALVAGE LEGENDARY/i);
     await page.waitForSelector('.winch', { timeout: 5000 }).catch(() => {});
     const pulls = await g(() => document.querySelectorAll('.w-pips i').length);
     for (let i = 0; i < pulls; i++) {
