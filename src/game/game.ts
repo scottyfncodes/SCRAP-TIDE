@@ -78,6 +78,9 @@ const FOOT_MIN = 0.7, FOOT_MAX = 5.0, FOOT_ACCEL = 9, FOOT_DECEL = 14;
 const _white = new THREE.Color(1, 1, 1);
 const _shade = new THREE.Color();
 
+/** iPhone / iPad (iPadOS reports itself as a Mac, but with touch): the only screens with iOS's unpaintable strips. */
+const APPLE_TOUCH = typeof navigator !== 'undefined' && (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
 export class Game implements GameAPI {
   store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades(), experiments: pageExperiments(), fresh: pageFresh(), look: LOOK });
   ui: UI;
@@ -284,7 +287,7 @@ export class Game implements GameAPI {
       // pinch and pan keep the GPU on a phone
       if (!this.ui.mapOpen || (frame++ & 1) === 0) {
         this.renderer.render(this.scene, this.camera);
-        if (now - edgeAt > 400) {
+        if (APPLE_TOUCH && now - edgeAt > 400) {
           edgeAt = now;
           this.matchPageEdges();
         }
@@ -355,6 +358,7 @@ export class Game implements GameAPI {
    * So that background copies the world's own top and bottom edge colours (sampled from the frame just drawn, a few
    * pixels, a couple of times a second) and the strips read as more sky and more sea instead of dead bands.
    */
+  // (only on iPhone/iPad, the one place those strips exist: reading pixels back stalls the GPU, so nowhere else pays)
   private edgePx = new Uint8Array(4);
   private edgeCss = '';
   private matchPageEdges() {
