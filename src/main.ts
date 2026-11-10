@@ -1,5 +1,8 @@
 import './ui/styles.css';
 import { wordmarkSVG } from './ui/brand';
+import { installCrashGuard, reportWreck } from './core/crashGuard';
+
+installCrashGuard();
 
 const loadTitle = document.querySelector('.load-title');
 if (loadTitle) loadTitle.innerHTML = wordmarkSVG();
@@ -16,8 +19,7 @@ const progress = async (p: number, m: string) => {
 };
 
 function fail(e: unknown) {
-  console.error(e);
-  msg.innerHTML = `Something went wrong while setting sail.<br><small>${String((e as Error)?.message ?? e)}</small><br><br><button onclick="location.reload()" style="padding:10px 18px;border-radius:10px;border:none;font-weight:800">Try again</button>`;
+  reportWreck(e, 'Couldn’t set sail', 'The game hit a snag while loading. Your saved progress is safe. Reloading usually fixes it.');
 }
 
 async function boot() {
