@@ -251,6 +251,8 @@ void main() {
   // the wake: one continuous ribbon along the boat's track (uWake runs from the stern, newest first), a churned
   // centre just behind the stern and two foam edges that spread and fray as they age, never a string of discs
   float wk = 0.0;
+  // as wide as the hull that made it (a twin hull spreads a broad wake; 0.55 m when the hull isn't known)
+  float wakeBase = max(0.55, (uHullSize.y + uHullSize.z) * 0.75);
   for (int i = 0; i < ${WAKE_N} - 1; i++) {
     vec4 a = uWake[i];
     vec4 b = uWake[i + 1];
@@ -258,14 +260,17 @@ void main() {
     vec2 ab = b.xy - a.xy;
     float L2 = dot(ab, ab);
     if (L2 > 64.0) continue; // a jump (teleport, respawn): no bridge across it
-    float h = clamp(dot(p - a.xy, ab) / max(L2, 1e-4), 0.0, 1.0);
+    float hr = dot(p - a.xy, ab) / max(L2, 1e-4);
+    float h = clamp(hr, 0.0, 1.0);
+    // the edges run along each piece only: wrapped round its end caps they drew rungs across a fast boat's trail
+    float side = smoothstep(-0.16, -0.03, hr) * (1.0 - smoothstep(1.03, 1.16, hr)); // overlap: no gap at the joints
     float d = length(p - a.xy - ab * h);
     float age = mix(a.z, b.z, h);
     float a01 = clamp(age / uWakeShape.y, 0.0, 1.0);
-    float w = (0.55 + age * 0.55) * uWakeShape.x;
+    float w = (wakeBase + age * 0.55) * uWakeShape.x;
     if (d > w * 1.3) continue;
     float core = (1.0 - smoothstep(0.0, w * 0.7, d)) * (1.0 - smoothstep(0.0, 0.38, a01));
-    float arms = smoothstep(w * 0.5, w * 0.8, d) * (1.0 - smoothstep(w * 0.85, w * 1.2, d)) * (1.0 - smoothstep(0.45, 1.0, a01));
+    float arms = smoothstep(w * 0.5, w * 0.8, d) * (1.0 - smoothstep(w * 0.85, w * 1.2, d)) * (1.0 - smoothstep(0.45, 1.0, a01)) * side;
     wk = max(wk, max(core * 0.95, arms * 0.9) * mix(a.w, b.w, h));
   }
   // torn lace: dense where the wake is strong, only the lace's peaks survive as it fades
