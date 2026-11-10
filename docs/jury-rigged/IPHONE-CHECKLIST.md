@@ -4,6 +4,26 @@ Everything measured so far ran in headless Chromium with SwiftShader (software G
 memory counts are real, but frame times are CPU-rendered and say nothing about an iPhone GPU. This checklist is the
 part only a phone can answer. About 30 minutes per device.
 
+## What is already automated, and what only a phone can answer
+
+Reviewed item by item. "Automated" means it runs without a device and catches regressions; none of it is an iPhone
+measurement, and none of it verifies the thresholds below.
+
+| Checklist item | Covered without a device | Still needs the iPhone |
+|---|---|---|
+| §1 Toll FPS / frame pacing | Deterministic cost proxies: draw calls, triangles and their attribution per frame (`scripts/jury-shots.mjs`, `scripts/jury-profile.mjs`); triangle, joint and size budgets in CI (`tests/jury.test.ts`) | **All timing.** Software-GL `msPerFrame` is CPU-rendered and says nothing about an iPhone GPU |
+| §1 first-view hitch | No | Yes |
+| §2 crews animate independently, no popping | Exact: the batched crew skins identically to separate meshes in mismatched clips, and its cull sphere contains every vertex (`tests/jury.test.ts`) | Visual smoothness and jitter at distance (GPU float precision) |
+| §2 shadows | Captures in four lighting keys (`docs/jury-rigged/screens`) | On-device look |
+| §3 memory: leak loop | Renderer geometry/texture counts over spawn/despawn cycles (`scripts/jury-leak.mjs`); disposal is unit-tested | Total process memory, Safari reload or kill under pressure |
+| §3 memory: baseline vs default | Downloads are fixed and known (two GLBs, 356 + 303 KB) | The actual MB on device |
+| §4 walking feel | Foot slip, heel lift and pelvis bob on the shipped rig (`tests/jury.test.ts`, `tests/gait.test.ts`) | Feel, cadence, touch response |
+| §5 default regressions | Docking, dock jobs, banking, Daily Tide (CI e2e); default shaders byte-identical to `main` (`tests/jury.test.ts`); no extra default downloads (`scripts/jury-shots.mjs`) | Default frame pacing vs `main` on the phone |
+
+Not available in this repository or its CI: a real-device farm, Safari/WebKit automation on a phone, or GPU timing.
+Playwright's WebKit on Linux would exercise Safari's engine for errors (shader compiles, 44-bone skinning) but not
+iPhone performance; it isn't installed here and would be the next cheap addition if wanted.
+
 ## Setup
 
 - **Devices:** an iPhone 13 (the project's baseline profile) and the newest iPhone available. Same iOS for both.
