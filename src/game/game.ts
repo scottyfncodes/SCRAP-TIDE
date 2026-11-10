@@ -362,25 +362,66 @@ export class Game implements GameAPI {
    * So that background copies the world's own top and bottom edge colours (sampled from the frame just drawn, a few
    * pixels, a couple of times a second) and the strips read as more sky and more sea instead of dead bands.
    */
-  // (only on iPhone/iPad, the one place those strips exist: reading pixels back stalls the GPU, so nowhere else pays)
-  private edgePx = new Uint8Array(4);
+  // (only on iPhone/iPad, the one place those strips exist)
+  private edgeRead: { buf: WebGLBuffer; sync: WebGLSync | null; data: Uint8Array } | null = null;
   private edgeCss = '';
+  /**
+   * Asynchronous: the copy of six edge pixels is queued into a pixel buffer behind a fence and collected on a later
+   * call once the GPU has done it, so the page never waits for the GPU (a plain readPixels blocks until every queued
+   * draw has finished: ~450 ms a call on a software renderer, and a needless stall on a phone).
+   */
   private matchPageEdges() {
     const gl = this.renderer.getContext();
+    if (typeof WebGL2RenderingContext === 'undefined' || !(gl instanceof WebGL2RenderingContext)) return;
     const W = gl.drawingBufferWidth, H = gl.drawingBufferHeight;
     if (!W || !H) return;
-    // `grain`: how far the lens-grain overlay (#app::after) lifts the edge toward its grey, measured against the
-    // composited screen (it barely shows against the bright sky, clearly against the dark sea)
-    const avg = (y: number, grain: number) => {
-      let r = 0, g = 0, b = 0;
+    let e = this.edgeRead;
+    if (!e) {
+      const buf = gl.createBuffer();
+      if (!buf) return;
+      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buf);
+      gl.bufferData(gl.PIXEL_PACK_BUFFER, 24, gl.STREAM_READ);
+      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+      e = this.edgeRead = { buf, sync: null, data: new Uint8Array(24) };
+    }
+    if (e.sync) {
+      // not done yet: look again next time rather than wait
+      if (gl.clientWaitSync(e.sync, 0, 0) === gl.TIMEOUT_EXPIRED) return;
+      gl.deleteSync(e.sync);
+      e.sync = null;
+      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, e.buf);
+      gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, 0, e.data);
+      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+      this.applyPageEdges(e.data);
+    }
+    // queue the next copy: top row (GL rows count up from the bottom) then bottom row, three samples across each
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, e.buf);
+    let o = 0;
+    for (const y of [H - 2, 1]) {
       for (const fx of [0.2, 0.5, 0.8]) {
-        gl.readPixels(Math.floor(W * fx), y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this.edgePx);
-        r += this.edgePx[0]; g += this.edgePx[1]; b += this.edgePx[2];
+        gl.readPixels(Math.floor(W * fx), y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, o);
+        o += 4;
+      }
+    }
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    e.sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+    gl.flush();
+  }
+
+  /** `grain`: how far the lens-grain overlay (#app::after) lifts an edge toward its grey, measured against the
+   *  composited screen (it barely shows against the bright sky, clearly against the dark sea). */
+  private applyPageEdges(px: Uint8Array) {
+    const avg = (from: number, grain: number) => {
+      let r = 0, g = 0, b = 0;
+      for (let i = 0; i < 3; i++) {
+        r += px[from + i * 4];
+        g += px[from + i * 4 + 1];
+        b += px[from + i * 4 + 2];
       }
       const mix = (c: number, to: number) => Math.round(c / 3 + (to - c / 3) * grain);
       return `rgb(${mix(r, 128)},${mix(g, 122)},${mix(b, 130)})`;
     };
-    const top = avg(H - 2, 0), bottom = avg(1, 0.14); // GL rows count up from the bottom
+    const top = avg(0, 0), bottom = avg(12, 0.14);
     const css = `linear-gradient(${top} 50%, ${bottom} 50%) center / 100% 300% no-repeat, ${bottom}`;
     if (css === this.edgeCss) return;
     this.edgeCss = css;
@@ -2225,8 +2266,12 @@ export class Game implements GameAPI {
     } else this.ui.setTrip({ show: this.mode === 'foot', hold: holdValue(s.cargo), dock: 0, dockAngle: 0, left: null, frac: 0, phase: 'calm' });
   }
 
+  /** a dock is under way: DOCK stays on screen through the fade, and a second tap must not dock (and bank) twice */
+  private docking = false;
   private dock() {
-    this.ui.fade(() => {
+    if (this.docking || this.boat.docked) return;
+    this.docking = true;
+    void this.ui.fade(() => {
       this.dockPose();
       const { n } = this.bankHold('Driftholm');
       this.store.data.stats.trips++;
@@ -2242,7 +2287,7 @@ export class Game implements GameAPI {
       setTimeout(() => this.crewBark('dock', { driftholm: true }, { specificOnly: true, cool: 120 }), 1400);
       setTimeout(() => this.voyageStarterOffer(), 700);
       setTimeout(() => this.ui.openPanel('harbor'), 300);
-    });
+    }).finally(() => (this.docking = false));
   }
 
   private goAshore() {
