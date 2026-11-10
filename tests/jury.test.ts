@@ -253,3 +253,71 @@ describe('the default look compiles the default shaders', () => {
     expect(a.key).toBe('weather-0-acc');
   });
 });
+
+// Cost tripwires (docs/jury-rigged/IPHONE-CHECKLIST.md). No browser and no GPU: draw-call structure, triangles,
+// bones and bytes are deterministic, so these fail in a second if the encounter gets heavier. They are proxies for
+// mobile cost, NOT a frame-rate test; real-device timing is a manual check. Budgets are today's values + ~15 %.
+describe('Jury-Rigged cost budgets', () => {
+  const tri = (g: THREE.BufferGeometry) => (g.index ? g.index.count : g.attributes.position.count) / 3;
+  it('a Jawboat is one draw of at most 2,700 triangles (two on screen = two hull draws)', async () => {
+    const { jawboat } = await import('../src/world/jury');
+    for (const seed of [1, 2]) {
+      const meshes: THREE.Mesh[] = [];
+      jawboat(seed).traverse((o) => (o as THREE.Mesh).isMesh && meshes.push(o as THREE.Mesh));
+      expect(meshes).toHaveLength(1);
+      expect(tri(meshes[0].geometry)).toBeLessThanOrEqual(2700);
+    }
+  });
+  it('the harbour additions stay inside their triangle budget (merged into the existing harbour batches)', async () => {
+    const { Kit, signalStack, bathtubLifeboat, trolleyPots, tollGate } = await import('../src/world/jury');
+    const k = new Kit();
+    signalStack(k);
+    expect(k.geos.reduce((s, g) => s + tri(g), 0)).toBeLessThanOrEqual(3000);
+    expect(k.glows.reduce((s, g) => s + tri(g), 0)).toBeLessThanOrEqual(1100);
+    const k2 = new Kit();
+    bathtubLifeboat(k2, 1);
+    trolleyPots(k2);
+    tollGate(k2);
+    expect(k2.geos.reduce((s, g) => s + tri(g), 0)).toBeLessThanOrEqual(3500);
+  });
+  for (const f of ['tb_jury_captain', 'tb_jury_raider']) {
+    it(`${f}: one primitive, ≤ 8,000 triangles, 22 joints, ≤ 420 KB`, () => {
+      const path = `public/models/${f}.glb`;
+      const buf = readFileSync(path);
+      const j = JSON.parse(buf.subarray(20, 20 + buf.readUInt32LE(12)).toString());
+      expect(j.meshes.reduce((s: number, m: { primitives: unknown[] }) => s + m.primitives.length, 0)).toBe(1);
+      expect(j.accessors[j.meshes[0].primitives[0].indices].count / 3).toBeLessThanOrEqual(8000);
+      expect(j.skins[0].joints).toHaveLength(22); // a batched crew of two is 44 bones (checked above)
+      expect(buf.byteLength).toBeLessThanOrEqual(420 * 1024);
+    });
+  }
+});
+
+describe.skipIf(!existsSync(JURY_RAIDER))('despawning a look-visit raider boat frees what it built', () => {
+  it('disposes the Jawboat hull, the merged crew geometry and its bone texture, never the shared GLB geometry', async () => {
+    const { batchCrew, releaseBoat } = await import('../src/world/crewBatch');
+    const { jawboat } = await import('../src/world/jury');
+    const SkeletonUtils = await import('three/examples/jsm/utils/SkeletonUtils.js');
+    await MeshoptDecoder.ready;
+    const buf = readFileSync(JURY_RAIDER);
+    const gl = await new Promise<{ scene: THREE.Group }>((res, rej) => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength), '', res as never, rej));
+    const boat = jawboat(1);
+    const crew = [0, 1].map(() => {
+      const root = SkeletonUtils.clone(gl.scene);
+      boat.add(root);
+      return { root };
+    });
+    let shared!: THREE.BufferGeometry;
+    crew[0].root.traverse((o) => (o as THREE.SkinnedMesh).isSkinnedMesh && (shared = (o as THREE.SkinnedMesh).geometry));
+    const batch = batchCrew(boat, crew)!;
+    const hull = boat.children.find((o) => (o as THREE.Mesh).isMesh && !(o as THREE.SkinnedMesh).isSkinnedMesh) as THREE.Mesh;
+    batch.skeleton.computeBoneTexture();
+    const disposed = new Set<string>();
+    hull.geometry.addEventListener('dispose', () => disposed.add('hull'));
+    batch.geometry.addEventListener('dispose', () => disposed.add('crew batch'));
+    batch.skeleton.boneTexture!.addEventListener('dispose', () => disposed.add('bone texture'));
+    shared.addEventListener('dispose', () => disposed.add('SHARED GLB GEOMETRY'));
+    releaseBoat(boat);
+    expect([...disposed].sort()).toEqual(['bone texture', 'crew batch', 'hull']);
+  });
+});

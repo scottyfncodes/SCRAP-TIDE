@@ -78,3 +78,21 @@ export function batchCrew(boat: THREE.Object3D, crew: CrewMember[]): THREE.Skinn
   return sm;
 }
 const IDENTITY = new THREE.Matrix4();
+
+/**
+ * Free what a look visit built for one raider boat when its patrol despawns (sailing ~650 m+ away). Without this,
+ * every spawn/despawn cycle leaked the boat's own Jawboat geometry, its merged crew geometry and the merged
+ * skeleton's bone texture (measured: +6 geometries per Rustfang Graveyard cycle). Only per-boat resources are
+ * disposed: the shared GLB geometry and the materials stay cached for the next spawn.
+ */
+export function releaseBoat(boat: THREE.Object3D) {
+  boat.traverse((o) => {
+    const m = o as THREE.SkinnedMesh;
+    if (m.isSkinnedMesh) {
+      m.skeleton.dispose(); // per-clone skeleton (or the merged one): only its bone texture
+      if (m.name === 'jury_crew_batch') m.geometry.dispose(); // built by batchCrew for this boat alone
+    } else if ((m as THREE.Mesh).isMesh && m.parent === boat && boat.userData.jury === 'jawboat') {
+      m.geometry.dispose(); // the Jawboat hull, built per boat by jury.ts jawboat()
+    }
+  });
+}

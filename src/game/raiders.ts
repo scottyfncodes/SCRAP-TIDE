@@ -5,7 +5,7 @@ import type { Game } from './game';
 import { RAIDER_ZONES, type RaiderZone } from '../data/world';
 import { item } from '../data/items';
 import { model, characterModel, type Character } from '../world/assets';
-import { batchCrew } from '../world/crewBatch';
+import { batchCrew, releaseBoat } from '../world/crewBatch';
 import { angleDiff, clamp } from '../core/noise';
 import { audio } from '../audio/audio';
 import { pack } from '../audio/pack';
@@ -97,7 +97,10 @@ export class Raiders {
   }
 
   private despawn(z: RaiderZone) {
-    for (const r of this.list.filter((r) => r.zone === z)) this.g.scene.remove(r.obj);
+    for (const r of this.list.filter((r) => r.zone === z)) {
+      this.g.scene.remove(r.obj);
+      if (jury()) releaseBoat(r.obj); // look visits build per-boat geometry; the default look's is shared and cached
+    }
     this.list = this.list.filter((r) => r.zone !== z);
     this.spawned.delete(z.id);
   }
