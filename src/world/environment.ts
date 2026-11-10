@@ -7,6 +7,8 @@ import * as P from './props';
 import { kitGeo, glowMat, model, characterModel, type Character } from './assets';
 import { RNG, fbm } from '../core/noise';
 import { Shanty } from './shanty';
+import { Kit, signalStack, bathtubLifeboat, trolleyPots, tollGate, TOLL } from './jury';
+import { jury } from '../state/look';
 import { inkWorld } from './hero';
 
 export interface Collider { x: number; z: number; r: number }
@@ -559,7 +561,11 @@ export class Environment {
       });
     });
 
-    const m = new THREE.Mesh(merge(geos), vcMat());
+    // Jury-Rigged (?look=jury): the Signal Stack, the pier's lifeboat and lobster pots, and the Rustfang Toll outside
+    // the harbour, merged into this same batch (src/world/jury.ts). Nothing here runs in the default look.
+    if (jury()) this.buildJury(geos, glows, shoreZ, pierEnd, deckY);
+    const merged = merge(geos);
+    const m = new THREE.Mesh(merged, vcMat({ accent: !!merged.attributes.accent }));
     m.castShadow = true;
     m.receiveShadow = true;
     this.scene.add(m);
@@ -570,6 +576,35 @@ export class Environment {
       s.castShadow = true;
       this.scene.add(s);
     }
+  }
+
+  /** Measurement hooks for docs/jury-rigged (scripts/jury-shots.mjs): the Signal Stack and the rest of the town. */
+  juryProbe: { stackBase: THREE.Vector3; stackTop: THREE.Vector3; town: THREE.Box3[] } | null = null;
+
+  private buildJury(geos: THREE.BufferGeometry[], glows: THREE.BufferGeometry[], shoreZ: number, pierEnd: number, deckY: number) {
+    const town = geos.map((g) => (g.computeBoundingBox(), g.boundingBox!.clone()));
+    const k = new Kit();
+    // the Signal Stack on the beach east of the pier root, centre stage from the harbour mouth
+    const sx = 12, sz = shoreZ - 1;
+    const sy = Math.max(heightAt(sx, sz), 0.2) - 0.15;
+    const st = signalStack(k);
+    k.place(st.start, sx, sy, sz, 0.12);
+    const mGlow = new THREE.Matrix4().compose(new THREE.Vector3(sx, sy, sz), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0.12, 0)), new THREE.Vector3(1, 1, 1));
+    for (const g of k.glows.slice(st.startGlow)) g.applyMatrix4(mGlow);
+    this.colliders.push({ x: sx, z: sz, r: 5 });
+    // the pier: a bath for a lifeboat on the east side, trolley lobster pots on the west edge
+    const bt = bathtubLifeboat(k, 1);
+    k.place(bt, 1.9, deckY + 0.1, pierEnd + 14, 0);
+    const tp = trolleyPots(k);
+    k.place(tp, -1.55, deckY + 0.11, pierEnd + 23, 0);
+    // the toll, out on the approach
+    const tg = tollGate(k);
+    k.place(tg.start, TOLL.x, 0.1, TOLL.z, TOLL.ry);
+    const mT = new THREE.Matrix4().compose(new THREE.Vector3(TOLL.x, 0.1, TOLL.z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, TOLL.ry, 0)), new THREE.Vector3(1, 1, 1));
+    for (const g of k.glows.slice(tg.startGlow)) g.applyMatrix4(mT);
+    geos.push(...k.geos);
+    glows.push(...k.glows);
+    this.juryProbe = { stackBase: new THREE.Vector3(sx, sy, sz), stackTop: new THREE.Vector3(sx, sy + st.height, sz), town };
   }
 
   /** A hand-painted board nailed to the front: stencil letters on scrap, paint runs, a coloured stripe. */

@@ -1,0 +1,560 @@
+{
+ "default/desktop/driftholm/noon": {
+  "calls": 102,
+  "tris": 401332,
+  "draws": {
+   "meshes": 178,
+   "characters": 18,
+   "fx": 10
+  },
+  "msPerFrame": 815.4
+ },
+ "default/desktop/foot/noon": {
+  "calls": 159,
+  "tris": 573252,
+  "draws": {
+   "meshes": 278,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 14
+  },
+  "msPerFrame": 1264
+ },
+ "default/desktop/raiders/noon": {
+  "calls": 84,
+  "tris": 356200,
+  "draws": {
+   "meshes": 120,
+   "raiderSkiff": 8,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 14
+  },
+  "msPerFrame": 767.7
+ },
+ "default/desktop/toll/noon": {
+  "calls": 144,
+  "tris": 469414,
+  "draws": {
+   "meshes": 265,
+   "characters": 18,
+   "fx": 12
+  },
+  "msPerFrame": 744
+ },
+ "default/phone/driftholm/dusk": {
+  "calls": 66,
+  "tris": 376802,
+  "draws": {
+   "meshes": 110,
+   "characters": 18,
+   "fx": 8
+  },
+  "msPerFrame": 1047.5
+ },
+ "default/phone/driftholm/night": {
+  "calls": 66,
+  "tris": 376802,
+  "draws": {
+   "meshes": 112,
+   "characters": 18,
+   "fx": 8
+  },
+  "msPerFrame": 1104
+ },
+ "default/phone/driftholm/noon": {
+  "calls": 73,
+  "tris": 377182,
+  "draws": {
+   "meshes": 124,
+   "characters": 18,
+   "fx": 8
+  },
+  "msPerFrame": 1007.5
+ },
+ "default/phone/driftholm/storm": {
+  "calls": 68,
+  "tris": 376830,
+  "draws": {
+   "meshes": 112,
+   "characters": 18,
+   "fx": 10
+  },
+  "msPerFrame": 1000.4
+ },
+ "default/phone/foot/dusk": {
+  "calls": 97,
+  "tris": 499662,
+  "draws": {
+   "meshes": 152,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 12
+  },
+  "msPerFrame": 1323.3
+ },
+ "default/phone/foot/night": {
+  "calls": 96,
+  "tris": 499634,
+  "draws": {
+   "meshes": 150,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 12
+  },
+  "msPerFrame": 1092.4
+ },
+ "default/phone/foot/noon": {
+  "calls": 109,
+  "tris": 499904,
+  "draws": {
+   "meshes": 178,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 10
+  },
+  "msPerFrame": 968
+ },
+ "default/phone/foot/storm": {
+  "calls": 95,
+  "tris": 499578,
+  "draws": {
+   "meshes": 148,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 14
+  },
+  "msPerFrame": 1411.6
+ },
+ "default/phone/raiders/dusk": {
+  "calls": 73,
+  "tris": 353446,
+  "draws": {
+   "meshes": 96,
+   "raiderSkiff": 10,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 10
+  },
+  "msPerFrame": 1158.4
+ },
+ "default/phone/raiders/night": {
+  "calls": 72,
+  "tris": 353076,
+  "draws": {
+   "meshes": 97,
+   "raiderSkiff": 8,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 10
+  },
+  "msPerFrame": 1116.1
+ },
+ "default/phone/raiders/noon": {
+  "calls": 71,
+  "tris": 353048,
+  "draws": {
+   "meshes": 94,
+   "raiderSkiff": 8,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 10
+  },
+  "msPerFrame": 934.3
+ },
+ "default/phone/raiders/storm": {
+  "calls": 71,
+  "tris": 353020,
+  "draws": {
+   "meshes": 92,
+   "raiderSkiff": 8,
+   "characters": 18,
+   "raiderCrew": 12,
+   "fx": 12
+  },
+  "msPerFrame": 1469.5
+ },
+ "default/phone/toll/dusk": {
+  "calls": 96,
+  "tris": 451682,
+  "draws": {
+   "meshes": 166,
+   "characters": 18,
+   "fx": 12
+  },
+  "msPerFrame": 882.8
+ },
+ "default/phone/toll/night": {
+  "calls": 96,
+  "tris": 451926,
+  "draws": {
+   "meshes": 168,
+   "characters": 18,
+   "fx": 12
+  },
+  "msPerFrame": 903
+ },
+ "default/phone/toll/noon": {
+  "calls": 107,
+  "tris": 452358,
+  "draws": {
+   "meshes": 189,
+   "characters": 18,
+   "fx": 12
+  },
+  "msPerFrame": 1192.9
+ },
+ "default/phone/toll/storm": {
+  "calls": 98,
+  "tris": 451954,
+  "draws": {
+   "meshes": 167,
+   "characters": 18,
+   "fx": 14
+  },
+  "msPerFrame": 943.7
+ },
+ "isolation": {
+  "defaultFetchedJuryFiles": [],
+  "juryFetchedJuryFiles": [
+   "/models/tb_jury_captain.glb",
+   "/models/tb_jury_raider.glb"
+  ]
+ },
+ "jury/desktop/driftholm/noon": {
+  "calls": 100,
+  "tris": 407578,
+  "draws": {
+   "meshes": 176,
+   "characters": 18,
+   "fx": 10
+  },
+  "msPerFrame": 926.6,
+  "accentShare": 0.0007,
+  "skyline": {
+   "stackPx": 167.1,
+   "stackX": 699.4,
+   "stackInView": true,
+   "stackTopY": 20.5,
+   "townTopY": 62.1,
+   "tallest": true,
+   "viewport": [
+    1280,
+    720
+   ],
+   "stackWorld": [
+    12,
+    0.2,
+    217
+   ]
+  }
+ },
+ "jury/desktop/foot/noon": {
+  "calls": 154,
+  "tris": 572034,
+  "draws": {
+   "meshes": 274,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 14
+  },
+  "msPerFrame": 1139.3,
+  "accentShare": 0.0098
+ },
+ "jury/desktop/raiders/noon": {
+  "calls": 78,
+  "tris": 348132,
+  "draws": {
+   "meshes": 120,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 14
+  },
+  "msPerFrame": 802.1,
+  "accentShare": 0.0012
+ },
+ "jury/desktop/toll/noon": {
+  "calls": 150,
+  "tris": 507092,
+  "draws": {
+   "meshes": 271,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 12
+  },
+  "msPerFrame": 690.3,
+  "accentShare": 0.0015
+ },
+ "jury/phone/driftholm/dusk": {
+  "calls": 66,
+  "tris": 383104,
+  "draws": {
+   "meshes": 110,
+   "characters": 18,
+   "fx": 8
+  },
+  "msPerFrame": 1099.4,
+  "accentShare": 0.0017,
+  "skyline": {
+   "stackPx": 156.6,
+   "stackX": 256.6,
+   "stackInView": true,
+   "stackTopY": 118.9,
+   "townTopY": 157.9,
+   "tallest": true,
+   "viewport": [
+    402,
+    874
+   ],
+   "stackWorld": [
+    12,
+    0.2,
+    217
+   ]
+  }
+ },
+ "jury/phone/driftholm/night": {
+  "calls": 67,
+  "tris": 383132,
+  "draws": {
+   "meshes": 112,
+   "characters": 18,
+   "fx": 8
+  },
+  "msPerFrame": 1100.9,
+  "accentShare": 0.0017,
+  "skyline": {
+   "stackPx": 156.6,
+   "stackX": 256.6,
+   "stackInView": true,
+   "stackTopY": 118.9,
+   "townTopY": 157.9,
+   "tallest": true,
+   "viewport": [
+    402,
+    874
+   ],
+   "stackWorld": [
+    12,
+    0.2,
+    217
+   ]
+  }
+ },
+ "jury/phone/driftholm/noon": {
+  "calls": 74,
+  "tris": 383520,
+  "draws": {
+   "meshes": 124,
+   "characters": 18,
+   "fx": 8
+  },
+  "msPerFrame": 1231.9,
+  "accentShare": 0.0017,
+  "skyline": {
+   "stackPx": 156.6,
+   "stackX": 256.6,
+   "stackInView": true,
+   "stackTopY": 118.9,
+   "townTopY": 157.9,
+   "tallest": true,
+   "viewport": [
+    402,
+    874
+   ],
+   "stackWorld": [
+    12,
+    0.2,
+    217
+   ]
+  }
+ },
+ "jury/phone/driftholm/storm": {
+  "calls": 69,
+  "tris": 383140,
+  "draws": {
+   "meshes": 110,
+   "characters": 18,
+   "fx": 10
+  },
+  "msPerFrame": 1139.2,
+  "accentShare": 0.0017,
+  "skyline": {
+   "stackPx": 156.6,
+   "stackX": 256.6,
+   "stackInView": true,
+   "stackTopY": 118.9,
+   "townTopY": 157.9,
+   "tallest": true,
+   "viewport": [
+    402,
+    874
+   ],
+   "stackWorld": [
+    12,
+    0.2,
+    217
+   ]
+  }
+ },
+ "jury/phone/foot/dusk": {
+  "calls": 95,
+  "tris": 499220,
+  "draws": {
+   "meshes": 152,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 12
+  },
+  "msPerFrame": 1032,
+  "accentShare": 0.0303
+ },
+ "jury/phone/foot/night": {
+  "calls": 92,
+  "tris": 499136,
+  "draws": {
+   "meshes": 146,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 12
+  },
+  "msPerFrame": 835.6,
+  "accentShare": 0.0303
+ },
+ "jury/phone/foot/noon": {
+  "calls": 107,
+  "tris": 499436,
+  "draws": {
+   "meshes": 177,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 12
+  },
+  "msPerFrame": 1089.4,
+  "accentShare": 0.0303
+ },
+ "jury/phone/foot/storm": {
+  "calls": 97,
+  "tris": 499222,
+  "draws": {
+   "meshes": 154,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 14
+  },
+  "msPerFrame": 1079,
+  "accentShare": 0.0301
+ },
+ "jury/phone/raiders/dusk": {
+  "calls": 69,
+  "tris": 360668,
+  "draws": {
+   "meshes": 96,
+   "jawboat": 6,
+   "characters": 18,
+   "jawboatCrew": 6,
+   "fx": 10
+  },
+  "msPerFrame": 1485.1,
+  "accentShare": 0.006
+ },
+ "jury/phone/raiders/night": {
+  "calls": 64,
+  "tris": 345212,
+  "draws": {
+   "meshes": 92,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 10
+  },
+  "msPerFrame": 1221.7,
+  "accentShare": 0.0028
+ },
+ "jury/phone/raiders/noon": {
+  "calls": 65,
+  "tris": 345240,
+  "draws": {
+   "meshes": 94,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 10
+  },
+  "msPerFrame": 1078.5,
+  "accentShare": 0.0025
+ },
+ "jury/phone/raiders/storm": {
+  "calls": 67,
+  "tris": 345268,
+  "draws": {
+   "meshes": 96,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 12
+  },
+  "msPerFrame": 1343.8,
+  "accentShare": 0
+ },
+ "jury/phone/toll/dusk": {
+  "calls": 101,
+  "tris": 489088,
+  "draws": {
+   "meshes": 168,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 12
+  },
+  "msPerFrame": 1176.9,
+  "accentShare": 0.0037
+ },
+ "jury/phone/toll/night": {
+  "calls": 101,
+  "tris": 489088,
+  "draws": {
+   "meshes": 168,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 12
+  },
+  "msPerFrame": 1284.2,
+  "accentShare": 0.0038
+ },
+ "jury/phone/toll/noon": {
+  "calls": 112,
+  "tris": 489764,
+  "draws": {
+   "meshes": 191,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 12
+  },
+  "msPerFrame": 1108.4,
+  "accentShare": 0.0034
+ },
+ "jury/phone/toll/storm": {
+  "calls": 103,
+  "tris": 489116,
+  "draws": {
+   "meshes": 170,
+   "jawboat": 4,
+   "characters": 18,
+   "jawboatCrew": 4,
+   "fx": 14
+  },
+  "msPerFrame": 1154.1,
+  "accentShare": 0.002
+ },
+ "note": "scripts/jury-shots.mjs on the final build. calls/tris: renderer.info (main pass, last frame). draws: main-pass draws by kind summed over the next two frames."
+}

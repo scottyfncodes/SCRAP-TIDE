@@ -41,10 +41,13 @@ async function boot() {
     const exps = game.store.experiments.map((id) => EXPERIMENTS[id].title);
     const tag = document.createElement('div');
     tag.className = 'preview-tag';
-    tag.textContent = exps.length ? `EXPERIMENT · ${exps.join(' + ')} · NOT SAVED` : 'PREVIEW · NOT SAVED';
+    const look = game.store.look === 'jury' ? 'JURY-RIGGED' : null;
+    tag.textContent = exps.length ? `EXPERIMENT · ${exps.join(' + ')} · NOT SAVED` : look ? `LOOK · ${look} · NOT SAVED` : 'PREVIEW · NOT SAVED';
     tag.title = exps.length
       ? `Phase 3 experiment preview. Nothing from this visit is saved.`
-      : `Previewing the ${VESSELS[game.store.preview!].name}. Nothing from this visit is saved.`;
+      : look || !game.store.preview
+        ? `Art-direction preview (docs/jury-rigged). Nothing from this visit is saved.`
+        : `Previewing the ${VESSELS[game.store.preview].name}. Nothing from this visit is saved.`;
     document.body.append(tag);
   }
   loading.classList.add('done');

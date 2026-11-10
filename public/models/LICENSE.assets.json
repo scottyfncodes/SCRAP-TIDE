@@ -273,5 +273,15 @@
   "license": "LicenseRef-Project-Owned",
   "attribution": null,
   "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-drowned, creative/3d-characters; docs/drowned-world/PRODUCTION-REPORT.md)"
+ },
+ "tb_jury_captain.glb": {
+  "license": "LicenseRef-Project-Owned",
+  "attribution": null,
+  "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-characters/scripts/survivors.py JURY pass; docs/jury-rigged)"
+ },
+ "tb_jury_raider.glb": {
+  "license": "LicenseRef-Project-Owned",
+  "attribution": null,
+  "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-characters/scripts/survivors.py JURY pass; docs/jury-rigged)"
  }
 }

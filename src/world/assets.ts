@@ -9,7 +9,8 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 // the ship models ship Meshopt-compressed (EXT_meshopt_compression + KHR_mesh_quantization); the decoder comes with three
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { merge, vcMat, toonGradient, weather, paint } from './materials';
-import { CHARACTER_FORM, FORM_SHADE, FORM_SHADED_CHARACTERS, WORLD_PALETTE, isFormShaded, type FormShadeParams } from './style';
+import { CHARACTER_FORM, FORM_SHADE, FORM_SHADED_CHARACTERS, WORLD_PALETTE, PLASTIC_ACCENTS, isFormShaded, type FormShadeParams } from './style';
+import { jury } from '../state/look';
 
 export const MODEL_FILES = [
   'tb_tower_glass',
@@ -88,6 +89,8 @@ const CORE_MODEL_FILES: readonly string[] = MODEL_FILES.filter((f) => !lazyFile(
 export const CREW_FILES = ['mechanic', 'navigator', 'salvager', 'fisher', 'lookout', 'defender'] as const;
 /** Scavenger cast (creative/3d-characters): the captain, Driftholm's townsfolk and the Rustfang raiders. */
 export const CHARACTER_FILES = ['tb_captain', 'tb_npc_trader', 'tb_npc_elder', 'tb_npc_dockhand', 'tb_raider'] as const;
+/** Jury-Rigged cast (creative/3d-characters/jury_*, docs/jury-rigged): fetched only on a `?look=jury` visit. */
+export const JURY_CHARACTER_FILES = ['tb_jury_captain', 'tb_jury_raider'] as const;
 
 const gltfs = new Map<string, GLTF>();
 const partCache = new Map<string, { geo: THREE.BufferGeometry; glow: THREE.BufferGeometry | null } | null>();
@@ -153,7 +156,7 @@ let crewPromise: Promise<void> | null = null;
 export function loadCrew() {
   if (!crewPromise) {
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
-    crewPromise = Promise.all([...CREW_FILES.map((r) => `tb_crew_${r}`), ...CHARACTER_FILES].map((n) => loadOne(loader, n))).then(() => undefined);
+    crewPromise = Promise.all([...CREW_FILES.map((r) => `tb_crew_${r}`), ...CHARACTER_FILES, ...(jury() ? JURY_CHARACTER_FILES : [])].map((n) => loadOne(loader, n))).then(() => undefined);
   }
   return crewPromise;
 }
@@ -515,6 +518,21 @@ export function tintedPart(file: string, base: string, a: THREE.ColorRepresentat
 }
 
 const skinMats = new Map<THREE.Material, THREE.Material>();
+const juryMats = new Map<THREE.Material, THREE.Material>();
+const ACCENT_LINEAR = Object.values(PLASTIC_ACCENTS).map((h) => new THREE.Color(h));
+/** Jury-Rigged characters: mark vertices painted in a style.ts plastic accent so the shader treats them as plastic. */
+function tagAccents(geo: THREE.BufferGeometry) {
+  const c = geo.attributes.color;
+  const n = c.count;
+  const a = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const r = c.getX(i), g = c.getY(i), b = c.getZ(i);
+    if (ACCENT_LINEAR.some((k) => Math.abs(k.r - r) < 0.06 && Math.abs(k.g - g) < 0.06 && Math.abs(k.b - b) < 0.06)) a[i] = 1;
+  }
+  geo.setAttribute('accent', new THREE.BufferAttribute(a, 1));
+}
+/** The raw GLB of a loaded file (measurement scripts only, docs/jury-rigged). */
+export const gltfOf = (file: string) => gltfs.get(file) ?? null;
 /** A rigged crew member (MeshCraft survivor, Mixamo-named bones) with its own mixer and actions. */
 export function crewModel(role: string) {
   return characterModel(`tb_crew_${role}`);
@@ -528,20 +546,23 @@ export function characterModel(file: string): Character | null {
   if (!g) return null;
   const root = SkeletonUtils.clone(g.scene);
   mergeSkinned(root);
-  const shapeByLight = FORM_SHADED_CHARACTERS.includes(file);
+  const shapeByLight = FORM_SHADED_CHARACTERS.includes(file) || file.startsWith('tb_jury_');
+  const plastic = file.startsWith('tb_jury_');
   root.traverse((o) => {
     const m = o as THREE.Mesh;
     if (!m.isMesh) return;
+    if (plastic && m.geometry.attributes.color && !m.geometry.attributes.accent) tagAccents(m.geometry);
     // style.ts CHARACTER_FORM, once per geometry (clones share the GLB's geometry unless mergeSkinned rebuilt it)
     if (shapeByLight && m.geometry.attributes.color && !formShaded.has(m.geometry)) {
       formShaded.add(m.geometry);
       formShade(m.geometry, CHARACTER_FORM);
     }
     const src = m.material as THREE.MeshStandardMaterial;
-    let tm = skinMats.get(src);
+    const acc = !!m.geometry.attributes.accent;
+    let tm = acc ? juryMats.get(src) : skinMats.get(src);
     if (!tm) {
-      tm = weather(new THREE.MeshToonMaterial({ vertexColors: !!m.geometry.attributes.color, color: m.geometry.attributes.color ? 0xffffff : src.color, gradientMap: toonGradient() }), 0.45);
-      skinMats.set(src, tm);
+      tm = weather(new THREE.MeshToonMaterial({ vertexColors: !!m.geometry.attributes.color, color: m.geometry.attributes.color ? 0xffffff : src.color, gradientMap: toonGradient() }), 0.45, false, acc);
+      (acc ? juryMats : skinMats).set(src, tm);
     }
     m.material = tm;
     m.castShadow = true;

@@ -10,10 +10,10 @@ import { Ocean } from '../world/ocean';
 import { Sky } from '../world/sky';
 import { Atmosphere } from '../world/atmosphere';
 import { DrownedWorld } from '../world/drowned';
-import { loadModels, loadModelFiles, modelRequested, loadCrew, model, loadReport, characterModel } from '../world/assets';
+import { loadModels, loadModelFiles, modelRequested, loadCrew, model, loadReport, characterModel, gltfOf } from '../world/assets';
 import { oceanState } from '../world/ocean';
 import { Salvage } from './salvage';
-import { Raiders } from './raiders';
+import { Raiders, ZONES as RAIDER_ZONE_LIST } from './raiders';
 import { Environment } from '../world/environment';
 import { heightAt, isReef, swellFactor, findShore, nearestIsland } from '../world/terrain';
 import { swayUniforms } from '../world/materials';
@@ -52,6 +52,8 @@ import { progressJobs, claimJobs, type JobEvent } from './dockJobs';
 import { completedSets, bonusText, TIER_LABEL, tierOf } from '../data/loot';
 import { clockRate } from './trip';
 import { tripLength, squallLevel, squallDamage, tripLeft, tripPhase, holdValue, keepsOnSink, SQUALL_WARN, type TripPhase } from './trip';
+import { LOOK, jury } from '../state/look';
+import { TOLL, jawboat } from '../world/jury';
 
 type Mode = 'sail' | 'foot';
 
@@ -77,7 +79,7 @@ const _white = new THREE.Color(1, 1, 1);
 const _shade = new THREE.Color();
 
 export class Game implements GameAPI {
-  store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades(), experiments: pageExperiments(), fresh: pageFresh() });
+  store = new Store({ preview: pagePreviewShip(), upgrades: pagePreviewUpgrades(), experiments: pageExperiments(), fresh: pageFresh(), look: LOOK });
   ui: UI;
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();
@@ -227,6 +229,10 @@ export class Game implements GameAPI {
     this.env = new Environment(this.scene);
     await this.progress(0.62, 'Drowning the cities…');
     this.drowned = new DrownedWorld(this.scene);
+    // measurement hooks for docs/jury-rigged (scripts/jury-shots.mjs, scripts/jury-measure.mjs): look visits only
+    if (jury()) (window as unknown as { __jury: unknown }).__jury = { THREE, assets: { characterModel, model, gltfOf }, grade: gradeUniforms, jury: { jawboat } };
+    // ?look=jury: the Rustfang Toll's two drum rafts are solid (src/world/jury.ts tollGate, rafts at local x = ±6)
+    if (jury()) for (const sx of [-1, 1]) this.drowned.colliders.push({ x: TOLL.x + sx * 6 * Math.cos(TOLL.ry), z: TOLL.z - sx * 6 * Math.sin(TOLL.ry), r: 2.4 });
     await this.progress(0.74, 'Brewing storms…');
     this.sky = new Sky(this.scene, this.atmo);
     this.atmo.onThunder = (d) => setTimeout(() => audio.thunder(1 - d * 0.6), d * 1400);
@@ -289,9 +295,10 @@ export class Game implements GameAPI {
 
   /** The scavenger cast has streamed in: the captain, the townsfolk and the raider crews come alive. */
   private onCharacters() {
-    const cap = characterModel('tb_captain');
+    const jc = jury() ? characterModel('tb_jury_captain') : null;
+    const cap = jc ?? characterModel('tb_captain');
     if (cap) {
-      this.captain.useCharacter(cap);
+      this.captain.useCharacter(cap, !!jc);
       heroize(cap.root, OUTLINE.captain);
       this.captain.onStep = (side, run) => this.footfall(side, run);
     }
@@ -2080,7 +2087,7 @@ export class Game implements GameAPI {
       settlements: SETTLEMENTS.map((s) => ({ x: s.x, z: s.z, name: s.name, visited: d.settlementsVisited.includes(s.id) })),
       castaways: CASTAWAYS.filter((c) => !d.castaways.includes(c.id) && (this.store.hasRole('navigator') || this.store.stats.radar > 0)).map((c) => ({ x: c.x, z: c.z })),
       structures: STRUCTURES.map((s) => ({ x: s.x, z: s.z, kind: s.kind })),
-      raiders: RAIDER_ZONES.map((r) => ({ x: r.x, z: r.z, r: r.r, name: r.name })),
+      raiders: RAIDER_ZONE_LIST.map((r) => ({ x: r.x, z: r.z, r: r.r, name: r.name })),
       pois: POIS,
       pins: d.pinned.map((id) => RUMOUR_MAP[id]).filter(Boolean).map((r) => ({ x: r.x, z: r.z, name: r.label })),
     };

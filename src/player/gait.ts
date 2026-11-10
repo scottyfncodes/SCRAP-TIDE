@@ -53,6 +53,14 @@ export interface GaitParams {
   elbowSwing: number;
   /** forearms swing in toward the midline (run) */
   armInward: number;
+  /**
+   * Toe-off hinge. Unset (the original cast): the foot rocks about the ground point under the ball, so the toe joint,
+   * which sits a few cm above the sole, travels with the roll. true (retune(), the Jury-Rigged captain): it hinges on
+   * the toe joint itself, as a foot does at the ball, so the joint and the flat toes stay planted while the heel rises.
+   */
+  toeHinge?: boolean;
+  /** keys baked per stride (default 40). The hinged toe-off needs more so the last stance key doesn't blend into swing. */
+  keys?: number;
 }
 
 /** Brisk walk: ~1.4 m/s at the captain's in-game scale. */
@@ -70,6 +78,38 @@ export const RUN: GaitParams = {
   toeOut: 0.06, pelvisYaw: 0.16, pelvisRoll: 0.06, sway: 0.012, chestYaw: 0.2, armFwd: 0.78, armBack: 0.62,
   armAbduct: 0.16, elbow: 1.45, elbowSwing: 0.25, armInward: 0.32,
 };
+
+/**
+ * Retune a gait for a rig with different proportions (the Jury-Rigged 5.5-head cast, docs/jury-rigged): every length
+ * scales with leg length, so the feet still plant (IK reads the rig's own bones) and the stride shortens. At the same
+ * ground speed a shorter stride means a quicker cadence, which is most of what makes short legs read as short.
+ * `expr` scales the expressive swings (pelvis roll, arm swing, bounce) for a livelier walk. `strideScale` (default: the
+ * leg scale) sets the stride: the walk's pelvis bob comes from an inverted pendulum, so a stride cut as hard as the leg
+ * flattens it (0.9 cm on the 5.5-head captain); √legScale keeps a 2–5 cm bob and still a quicker step than today.
+ */
+export function retune(g: GaitParams, legScale: number, hipHeight: number, width = 1, expr = 1, strideScale = legScale): GaitParams {
+  return {
+    ...g,
+    toeHinge: true,
+    keys: 96,
+    name: g.name,
+    speed: g.speed * strideScale,
+    hipHeight,
+    stanceShift: g.stanceShift * legScale,
+    swingLift: g.swingLift * legScale,
+    heelKick: g.heelKick * legScale,
+    footHalfWidth: g.footHalfWidth * width,
+    sway: g.sway * legScale * expr,
+    pelvisRoll: g.pelvisRoll * expr,
+    pelvisYaw: g.pelvisYaw * expr,
+    leanBounce: g.leanBounce * legScale * expr,
+    armFwd: g.armFwd * expr,
+    armBack: g.armBack * expr,
+  };
+}
+
+/** Rest leg length (thigh + shin) of the original 7.3-head survivor rig, which WALK and RUN were tuned on. */
+export const BASE_LEG = 0.82;
 
 const BONES = ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head', 'LeftShoulder', 'LeftArm', 'LeftForeArm', 'LeftHand', 'RightShoulder',
   'RightArm', 'RightForeArm', 'RightHand', 'LeftUpLeg', 'LeftLeg', 'LeftFoot', 'LeftToeBase', 'RightUpLeg', 'RightLeg', 'RightFoot', 'RightToeBase'] as const;
@@ -158,7 +198,8 @@ export class GaitSolver {
   private hipY: Float32Array;
   constructor(readonly rest: RigRest, readonly g: GaitParams, private readonly samples = 96) {
     const r = rest;
-    this.ball = V(0, -r.ankleH, r.p.LeftToeBase.z - r.p.LeftFoot.z);
+    // the toe-off pivot: the ground under the ball (original cast) or the toe joint itself (GaitParams.toeHinge)
+    this.ball = V(0, g.toeHinge ? r.p.LeftToeBase.y - r.p.LeftFoot.y : -r.ankleH, r.p.LeftToeBase.z - r.p.LeftFoot.z);
     this.heel = V(0, -r.ankleH, -0.055);
     this.reach = (r.thigh + r.shin) * 0.997;
     this.hipY = this.solveHipHeight();
@@ -366,7 +407,7 @@ export class GaitSolver {
 }
 
 /** Bake one cycle into an AnimationClip on this rig (local bone quaternions + the Hips position). */
-export function buildGaitClip(rest: RigRest, g: GaitParams, frames = 40): THREE.AnimationClip {
+export function buildGaitClip(rest: RigRest, g: GaitParams, frames = g.keys ?? 40): THREE.AnimationClip {
   const solver = new GaitSolver(rest, g);
   const times: number[] = [];
   const qv = {} as Record<BoneId, number[]>;

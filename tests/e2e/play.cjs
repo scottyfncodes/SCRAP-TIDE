@@ -65,6 +65,36 @@ const check = (name, ok, detail = '') => {
   const waitGame = (target) => page.waitForFunction((t) => window.__game.renderT >= t, target, { timeout: 240000, polling: 100 })
     .catch(() => {});
   const gameT = () => g(() => window.__game.renderT);
+  // Dock at Driftholm's pier tip, waiting on the game instead of the clock. On a slow software renderer the action list
+  // only refreshes on the next game frame, so a DOCK click after a fixed delay could find the old HARBOR button, return
+  // false and never dock (the intermittent Daily Tide / dock-job / banking failures in CI). Wait for DOCK to be offered,
+  // click it (late cards are tapped away by click()), confirm the boat docked, and try again from the start if not.
+  const dockAtPier = async () => {
+    const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
+      await page.waitForFunction(() => [...document.querySelectorAll('.actions .act')].some((b) => /^⚓ DOCK$/.test(b.textContent)), null, { timeout: 60000, polling: 100 }).catch(() => {});
+      if (await click(/^⚓ DOCK$/)) {
+        // the dock itself runs behind a 0.6 s fade (wall-clock timers)
+        if (await page.waitForFunction(() => window.__game.boat.docked, null, { timeout: 60000, polling: 100 }).then(() => true, () => false)) return true;
+      }
+    }
+    return false;
+  };
+  // Click a panel control, tapping away any reveal card that lands on top of it first (the same retry click() does for
+  // the action buttons): a renown or milestone card can arrive between opening a panel and the click.
+  const clickClear = async (selector) => {
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (await page.$('.reveal')) await dismiss();
+      try {
+        await page.click(selector, { timeout: 5000 });
+        return true;
+      } catch (e) {
+        if (!/intercepts pointer events|Timeout|detached/.test(String(e))) throw e;
+      }
+    }
+    return false;
+  };
   const playFor = async (sec) => waitGame((await gameT()) + sec);
   const joy = (x, y) => g(([x, y]) => Object.assign(window.__game.ui.joy, { x, y, active: x !== 0 || y !== 0 }), [x, y]);
 
@@ -390,10 +420,8 @@ const check = (name, ok, detail = '') => {
     await page.screenshot({ path: `${out}/loop_squall.png` });
     // bank at the pier
     const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
-    await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
-    await page.waitForTimeout(600);
     const before = await g(() => ({ banked: window.__game.store.data.loop.tripsBanked, cargo: window.__game.store.data.cargo.length }));
-    await click(/^⚓ DOCK$/);
+    await dockAtPier();
     await page.waitForTimeout(1500);
     await dismiss();
     const bank = await g(() => { const d = window.__game.store.data; return { cargo: d.cargo.length, scrap: d.vault.find((v) => v.id === 'scrap_metal')?.n ?? 0, banked: d.loop.tripsBanked, tripOn: d.trip.on, squall: window.__game.atmo.squall }; });
@@ -474,10 +502,7 @@ const check = (name, ok, detail = '') => {
     // shop effect lines
     const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
     await g(() => { const d = window.__game.store.data; d.jobs.board[0].progress = d.jobs.board[0].n; d.jobs.board[0].done = true; window.__job = { gold: d.gold, done: d.jobs.done, id: d.jobs.board[0].id }; });
-    await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
-    await page.waitForTimeout(600);
-    await click(/^⚓ DOCK$/);
-    await page.waitForFunction(() => window.__game.boat.docked, null, { timeout: 60000, polling: 100 }).catch(() => {}); // docking runs behind a fade
+    await dockAtPier();
     await page.waitForTimeout(1800);
     await dismiss();
     const job = await g(() => { const d = window.__game.store.data; return { paid: d.gold > window.__job.gold, done: d.jobs.done, fresh: d.jobs.board[0].id !== window.__job.id, n: d.jobs.board.length }; });
@@ -518,9 +543,12 @@ const check = (name, ok, detail = '') => {
       // tripped by the dock fade's timing on a slow renderer
       await g(() => { const G = window.__game; G.ui.closePanel(); G.events.clear(); G.dockPose(); G.store.data.trip.on = false; });
       await dismiss();
-      await g(() => window.__game.ui.openPanel('harbor'));
-      await page.waitForSelector('.daily-btn', { timeout: 5000 });
-      await page.click('.daily-btn');
+      for (let attempt = 0; attempt < 3; attempt++) {
+        // a card tapped away can take the harbour panel with it: reopen it if so
+        if (!(await page.$('.daily-btn'))) await g(() => window.__game.ui.openPanel('harbor'));
+        await page.waitForSelector('.daily-btn', { timeout: 5000 }).catch(() => {});
+        if (await clickClear('.daily-btn')) break;
+      }
       await page.waitForTimeout(500);
       const st = await g(() => ({ active: window.__game.store.data.daily.active, docked: window.__game.boat.docked }));
       if (!st.active) console.log('daily did not start:', JSON.stringify(st));
@@ -529,11 +557,8 @@ const check = (name, ok, detail = '') => {
     const a = await dailyRun();
     const active = await g(() => window.__game.store.data.daily.active);
     await g(() => { const G = window.__game; G.store.addCargo('gold_watch', 2); });
-    await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
-    await page.waitForTimeout(600);
-    await click(/^⚓ DOCK$/);
+    await dockAtPier();
     // other cards (a milestone, the Captain's Log) can be queued in front of the Daily Tide card: tap them away
-    await page.waitForFunction(() => window.__game.boat.docked, null, { timeout: 60000, polling: 100 }).catch(() => {});
     for (let k = 0; k < 40 && !(await page.$('.daily-end')); k++) {
       await page.waitForTimeout(500);
       const other = await page.$('.reveal:not(.daily-end) .r-ok');

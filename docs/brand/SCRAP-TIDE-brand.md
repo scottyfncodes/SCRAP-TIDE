@@ -18,6 +18,10 @@ Personality: resourceful, rugged, adventurous, slightly irreverent, unmistakably
 | Sun Gold | `#E5C65E` | Primary actions, waypoint, compass, the wordmark's tide-stain, golden-hour sunlight |
 | Living green | `#57E05F` | Plants and only plants (unchanged from the Waterworld pass) |
 
+World assets may also use five **sun-faded plastic accents** (approved Nov 2026) on small salvage, within a ~10 %
+budget per frame: Pool Blue `#5A9FBF`, Cone Orange `#D9733A`, Buoy Red `#C2443A`, Laundry Pink `#D69A94`, Bleach White
+`#EDE6D6`. Never green, never Sun Gold. See `docs/art-direction/STYLE-GUIDE.md` §5a.
+
 They are a foundation, not a cage: derived tints (bleached bone `#ECE0C2`, abyss near-black `#081C26`) round them out.
 In code: `src/ui/brand.ts` (`PALETTE`) and the `:root` tokens in `src/ui/styles.css`.
 
@@ -34,6 +38,10 @@ No pirate fonts, skulls or heavy distressing.
 The app icon (patchwork sail, `public/icons/`) is unchanged; it already fits the palette.
 
 ## World
+
+Design language: **Jury-Rigged** (STYLE-GUIDE §10) under the Beautiful Ruin direction: exaggerated, functional
+silhouettes, ~5.5-head people, factions that read by construction, and humour from how survivors repurposed things.
+In preview behind `?look=jury` (`docs/jury-rigged/`).
 
 World art (characters, buildings, props, vessels) follows **stylized, not cartoon-outlined**: no universal
 outline; form from geometry, material, colour and light. See `docs/art-direction/STYLE-GUIDE.md` and

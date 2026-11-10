@@ -61,6 +61,29 @@ export const WORLD_PALETTE = {
 } as const;
 
 /**
+ * Jury-Rigged sun-faded plastic accents (approved Nov 2026, docs/art-direction/STYLE-GUIDE.md §5a). The one place
+ * new hues are allowed: small, hand-sized salvage (floats, jugs, crates, sail patches, signage) covering at most
+ * ~10 % of a frame. Never green (living things only) and never Sun Gold (interactive things only): tests/jury.test.ts
+ * checks both. Geometry painted with these is tagged with an `accent` vertex attribute so the weathering shader
+ * treats it as plastic (PLASTIC below).
+ */
+export const PLASTIC_ACCENTS = {
+  poolBlue: '#5a9fbf',
+  coneOrange: '#d9733a',
+  buoyRed: '#c2443a',
+  laundryPink: '#d69a94',
+  bleachWhite: '#ede6d6',
+} as const;
+export const ACCENT_BUDGET = 0.1;
+
+/**
+ * How the weathering shader treats accent-tagged plastic (materials.ts weather, `accent` attribute): plastic fades in
+ * the sun but less than paint (keep is the share of the authored saturation that survives, vs 0.62 for everything
+ * else), it does not rust, and it holds less grime.
+ */
+export const PLASTIC = { keep: 0.84, grime: 0.45, rust: 0 } as const;
+
+/**
  * Baked form shading (assets.ts formShade): ambient occlusion in the vertex colours, so a building or prop is defined
  * by light instead of lines. Contact darkening toward the base, soft darkening under overhangs (down-facing faces),
  * a sun-bleached lift on top faces, and near-black vertex colours lifted to WORLD_PALETTE.opening.
