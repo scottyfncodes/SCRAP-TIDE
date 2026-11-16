@@ -27,11 +27,14 @@ In code: `src/ui/brand.ts` (`PALETTE`) and the `:root` tokens in `src/ui/styles.
 
 ## Wordmark
 
-`creative/branding/wordmark_scrap-tide_v1.svg` (self-contained, font embedded), PNGs beside it. In the game it is
-`wordmarkSVG()` in `src/ui/brand.ts`, used on the loading screen and the title screen.
+`creative/branding/wordmark_scrap-tide_v1.svg` (self-contained, font embedded), PNGs beside it (transparent, and on
+Abyss Blue). In the game it is `wordmarkSVG()` in `src/ui/brand.ts`, used on the loading screen and the title screen;
+the SVG file is that function's output with the font embedded: regenerate it (and its PNGs) whenever the function
+changes.
 
 Stencil lettering of a salvage crate with the tide risen over its foot: above a hand-drawn waterline the letters are
-Bleached Sand, below it Sea Glass, and a Sun Gold tide-stain runs along the line, over an Oxide Rust drop shadow. The
+Bleached Sand, below it Sea Glass, and a Sun Gold tide-stain runs along the line, over a deep Abyss (`#081C26`) drop
+shadow (no rust: a brown shadow read as stray slabs beside the letters). The
 waterline is a colour change, not a cut, so it reads as plain "SCRAP TIDE" at phone-loading-screen size.
 No pirate fonts, skulls or heavy distressing.
 
