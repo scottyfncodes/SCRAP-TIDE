@@ -196,7 +196,7 @@ export class UI {
           <div class="status"><div class="gauge hull"><i></i><span>HULL</span></div><div class="gauge fuel"><i></i><span>FUEL</span></div></div>
           <div class="trip" style="display:none"><span class="t-hold" title="What the hold is worth: it only counts once you dock"><small>CARGO</small>≈<b>0</b>g</span><span class="t-dock" title="Nearest dock"><small>DOCK</small><svg viewBox="0 0 10 10"><path d="M5 0 L9 9 L5 7 L1 9Z"/></svg><b>0</b>m</span><span class="t-bar"><i></i></span><span class="t-clock"><small>SQUALL</small><b></b></span></div>
         </div>
-        <div class="quest"><div class="q-label">Objective</div><div class="q-text"></div><div class="q-need"></div><div class="q-hint"></div><button class="q-side"><span class="qs-tag"></span><span class="qs-text"></span></button></div>
+        <div class="quest" role="button" tabindex="0" aria-expanded="false"><div class="q-head"><span class="q-label"><span class="ql-long"></span><span class="ql-n"></span></span><span class="q-text"></span></div><div class="q-row"><div class="q-need"></div><button class="q-side"><span class="qs-tag"></span><span class="qs-text"></span></button></div><div class="q-hint"></div></div>
       </div>
       <div class="hud-right">
         <div class="nav-btns">
@@ -209,7 +209,14 @@ export class UI {
     this.goldEl = top.querySelector('.gold')!;
     this.cargoEl = top.querySelector('.cargo')!;
     this.questEl = top.querySelector('.quest')!;
-    this.questEl.addEventListener('click', () => this.questEl.classList.toggle('open'));
+    // the objective rides as a two-line slip; a tap unfolds the whole card (every material, the hint, the side lead)
+    this.questEl.addEventListener('click', () => this.questEl.setAttribute('aria-expanded', String(this.questEl.classList.toggle('open'))));
+    this.questEl.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target === this.questEl) {
+        e.preventDefault();
+        this.questEl.click();
+      }
+    });
     this.questEl.querySelector('.q-side')!.addEventListener('click', (e) => {
       e.stopPropagation();
       audio.ui();
@@ -404,10 +411,13 @@ export class UI {
     const needs = s.data.quest === 'free' ? goalNeeds(s, gid) : null;
     const done = !!needs && needs.every((n) => n.have >= n.need);
     const needHTML = !needs ? '' : done ? `<span class="qn done-all">${goalProgressText(s, gid)}</span>`
-      : needs.map((n) => (n.have >= n.need ? `<span class="qn met">✓ ${n.name}</span>` : `<span class="qn">${n.name} <b>${Math.min(n.have, n.need)}/${n.need}</b></span>`)).join('');
+      : needs.map((n) => (n.have >= n.need ? `<span class="qn met">✓ ${n.name}</span>` : `<span class="qn">${n.name} <b>${Math.min(n.have, n.need)}/${n.need}</b></span>`)).join('')
+        // folded, the met needs are one tick count rather than a name each
+        + (needs.some((n) => n.have >= n.need) ? `<span class="qn met-sum" aria-hidden="true">✓${needs.filter((n) => n.have >= n.need).length}</span>` : '');
     const qn = this.questEl.querySelector('.q-need') as HTMLElement;
     if (qn.innerHTML !== needHTML) qn.innerHTML = needHTML;
     qn.style.display = needHTML ? '' : 'none';
+    let rowShown = !!needHTML;
     // the second road: one optional lead beside the main goal, tap to follow it instead
     const side = s.data.quest === 'free' ? this.game.sideLead() : null;
     const qs = this.questEl.querySelector('.q-side') as HTMLElement;
@@ -419,8 +429,15 @@ export class UI {
     }
     qs.setAttribute('aria-label', side ? `${s.data.followSide ? 'Following side lead' : 'Side lead, tap to follow'}: ${side.label}` : '');
     qs.style.display = side ? '' : 'none';
+    rowShown ||= !!side;
+    (this.questEl.querySelector('.q-row') as HTMLElement).style.display = rowShown ? '' : 'none';
     qs.classList.toggle('on', !!side && s.data.followSide);
-    this.questEl.querySelector('.q-label')!.textContent = s.data.quest === 'free' ? `Captain’s Log · ${s.data.goal + 1}/${GOALS.length}` : `First Voyage · ${s.questIndex() + 1}/${FIRST_VOYAGE.length - 1}`;
+    const free = s.data.quest === 'free';
+    const ql = this.questEl.querySelector('.ql-long')!, qnum = this.questEl.querySelector('.ql-n')!;
+    const long = free ? 'Captain’s Log · ' : 'First Voyage · ';
+    const num = free ? `${s.data.goal + 1}/${GOALS.length}` : `${s.questIndex() + 1}/${FIRST_VOYAGE.length - 1}`;
+    if (ql.textContent !== long) ql.textContent = long;
+    if (qnum.textContent !== num) qnum.textContent = num;
   }
 
   setHUDVisible(v: boolean) {
