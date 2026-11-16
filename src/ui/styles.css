@@ -90,6 +90,11 @@ body { background: transparent; }
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .02 0 0 0 0 .07 0 0 0 0 .1 0 0 0 1.8 -.8'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: .32;
 }
+/* iOS keeps the page out of a Home Screen app's status-bar strip and paints it with the root background only (set to
+   the world's top edge colour by the game). The veil fades that same colour down over the top of the world (under
+   the HUD), so the strip runs into the page without a seam. No colour set (any other screen): it is invisible. */
+.edge-veil { position: absolute; top: 0; left: 0; right: 0; height: 44px; z-index: 2; pointer-events: none;
+  background: linear-gradient(var(--edge-top, transparent), transparent); }
 #ui { position: absolute; top: 0; left: 0; right: 0; height: 100%; height: 100dvh; pointer-events: none; z-index: 2; }
 #ui > * { pointer-events: auto; }
 button { font-family: var(--label); cursor: pointer; border: none; color: inherit; }
@@ -542,7 +547,7 @@ body.calm .narr-who i { animation: none; }
 .empty { text-align: center; padding: 20px; font-family: var(--label); font-weight: 700; color: var(--ink-soft); }
 
 /* title */
-.title-screen { position: absolute; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; padding: 0 16px calc(var(--safe-b) + 7vh); background: linear-gradient(180deg, rgba(6,22,30,.35) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 45%, rgba(6,22,30,.82)); animation: fadein .8s; }
+.title-screen { position: absolute; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; padding: 0 16px calc(var(--safe-b) + 7vh); background: linear-gradient(180deg, rgba(6,22,30,0) 0, rgba(6,22,30,.35) 56px, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 45%, rgba(6,22,30,.82)); animation: fadein .8s; }
 .title-screen .ts-inner { text-align: center; width: 100%; }
 .title-screen .ts-kicker { font-family: var(--mono); font-size: 12px; letter-spacing: 3px; color: #e5c65e; text-transform: uppercase; text-shadow: 0 1px 2px #000, 0 0 8px rgba(0,0,0,.9); background: rgba(8,28,38,.55); display: inline-block; padding: 2px 8px; }
 .title-screen .ts-logo { font-size: inherit; line-height: 1;

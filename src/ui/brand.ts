@@ -36,16 +36,22 @@ function waterline() {
 }
 
 let uid = 0;
-/** The SCRAP TIDE wordmark as an inline SVG string. `title` is the accessible name. */
+/**
+ * The SCRAP TIDE wordmark as an inline SVG string. `title` is the accessible name.
+ *
+ * The lettering is laid out ONCE (a <text> in <defs>) and every layer (shadow, face, sea, the glyph clip) is a
+ * <use> of it. Safari lays out each textLength-pinned <text> on its own, and did not always agree with itself: the
+ * shadow copy came out wider than the face and stood off the S and the E like stray slabs.
+ */
 export function wordmarkSVG(opts: { title?: string; className?: string } = {}) {
   const id = `stw${++uid}`;
   const wave = waterline();
-  const text = (fill: string, dy = 0, extra = '') =>
-    `<text x="${W / 2}" y="${BASE + dy}" text-anchor="middle" textLength="${W - 24}" lengthAdjust="spacingAndGlyphs" font-family="'Saira Stencil One', Impact, sans-serif" font-size="128" fill="${fill}" ${extra}>SCRAP TIDE</text>`;
+  const use = (fill: string, dy = 0, extra = '') => `<use href="#${id}-t" y="${dy}" fill="${fill}" ${extra}/>`;
   return `<svg class="${opts.className ?? 'wordmark'}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.title ?? 'SCRAP TIDE'}" xmlns="http://www.w3.org/2000/svg">
   <defs>
+    <text id="${id}-t" x="${W / 2}" y="${BASE}" text-anchor="middle" textLength="${W - 24}" lengthAdjust="spacingAndGlyphs" font-family="'Saira Stencil One', Impact, sans-serif" font-size="128">SCRAP TIDE</text>
     <clipPath id="${id}-below"><path d="${wave} L${W + 10} ${H} L-10 ${H} Z"/></clipPath>
-    <clipPath id="${id}-glyphs">${text('#000')}</clipPath>
+    <clipPath id="${id}-glyphs"><use href="#${id}-t"/></clipPath>
     <linearGradient id="${id}-face" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="${PALETTE.bone}"/><stop offset="1" stop-color="${PALETTE.sand}"/>
     </linearGradient>
@@ -53,10 +59,10 @@ export function wordmarkSVG(opts: { title?: string; className?: string } = {}) {
       <stop offset="0" stop-color="#2fb3bf"/><stop offset="1" stop-color="${PALETTE.seaGlass}"/>
     </linearGradient>
   </defs>
-  ${text(PALETTE.deep, 7, 'opacity=".55"')}
-  ${text('#5E2A19', 4)}
-  ${text(`url(#${id}-face)`)}
-  <g clip-path="url(#${id}-below)">${text(`url(#${id}-sea)`)}</g>
+  ${use(PALETTE.deep, 7, 'opacity=".5"')}
+  ${use(PALETTE.deep, 3.5)}
+  ${use(`url(#${id}-face)`)}
+  <g clip-path="url(#${id}-below)">${use(`url(#${id}-sea)`)}</g>
   <g clip-path="url(#${id}-glyphs)"><path d="${wave}" fill="none" stroke="${PALETTE.gold}" stroke-width="3.2" stroke-linecap="round"/></g>
 </svg>`;
 }

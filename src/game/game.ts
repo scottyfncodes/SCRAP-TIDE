@@ -428,13 +428,19 @@ export class Game implements GameAPI {
         b += px[from + i * 4 + 2];
       }
       const mix = (c: number, to: number) => Math.round(c / 3 + (to - c / 3) * grain);
-      return `rgb(${mix(r, 128)},${mix(g, 122)},${mix(b, 130)})`;
+      return `rgb(${mix(r, 5)},${mix(g, 24)},${mix(b, 34)})`;
     };
-    const top = avg(0, 0), bottom = avg(12, 0); // the dark-speck grain barely moves either edge (measured)
+    // neither the lens vignette (#app::after: it starts well inside the edge's middle) nor the dark-speck grain
+    // measurably moves these edges (measured against the composited screen)
+    const top = avg(0, 0), bottom = avg(12, 0);
     const css = `linear-gradient(${top} 50%, ${bottom} 50%) center / 100% 300% no-repeat, ${bottom}`;
     if (css === this.edgeCss) return;
     this.edgeCss = css;
-    document.documentElement.style.background = css;
+    const root = document.documentElement;
+    root.style.background = css;
+    // the strip's own colour, faded down over the top of the screen (.edge-veil): the strip and the first rows of
+    // the page are then one CSS colour, so no seam shows whatever the sky, the overlays or the colour management do
+    root.style.setProperty('--edge-top', top);
   }
 
   private resize() {
