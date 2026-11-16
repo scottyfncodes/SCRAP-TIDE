@@ -77,8 +77,8 @@ const check = (name, ok, detail = '') => {
     const pier = await g(() => ({ x: window.__game.env.pierTip.x, z: window.__game.env.pierTip.z }));
     for (let attempt = 0; attempt < 3; attempt++) {
       await teleport({ x: pier.x + 4, z: pier.z - 6, h: Math.PI });
-      await page.waitForFunction(() => [...document.querySelectorAll('.actions .act')].some((b) => /^⚓ DOCK$/.test(b.textContent)), null, { timeout: 60000, polling: 100 }).catch(() => {});
-      if (await click(/^⚓ DOCK$/)) {
+      await page.waitForFunction(() => [...document.querySelectorAll('.actions .act')].some((b) => /^DOCK$/.test(b.textContent)), null, { timeout: 60000, polling: 100 }).catch(() => {});
+      if (await click(/^DOCK$/)) {
         // the dock itself runs behind a 0.6 s fade (wall-clock timers)
         if (await page.waitForFunction(() => window.__game.boat.docked, null, { timeout: 60000, polling: 100 }).then(() => true, () => false)) return true;
       }

@@ -201,7 +201,7 @@ async function playOnce(runNo) {
 
   // ── 4. back to the harbour
   const reachedPier = await sailTo([{ x: 50, z: 128 }, { x: 6, z: 128 }, { x: pier.x, z: pier.z, r: 6 }], {
-    label: 'home', maxS: 240, until: async (s) => s.acts.some((a) => /^⚓ DOCK$/.test(a)),
+    label: 'home', maxS: 240, until: async (s) => s.acts.some((a) => /^DOCK$/.test(a)),
   });
   for (let i = 0; i < 20 && (await st()).speed > 2; i++) await step(0.25);
   s = await event('DOCK offered at the Driftholm pier');

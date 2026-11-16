@@ -24,6 +24,7 @@ import { audio } from '../audio/audio';
 import { SAIL_LABEL, type PointOfSail } from '../game/pointOfSail';
 import { pack } from '../audio/pack';
 import { wordmarkSVG } from './brand';
+import { glyph, type Glyph } from './glyphs';
 import { wheelSVG } from './helmWheel';
 import { PERFECT_SHARE, pullGrade } from '../game/haul';
 import { clockText } from '../game/trip';
@@ -77,6 +78,8 @@ export interface StatusInfo {
 export interface Action {
   id: string;
   label: string;
+  /** the mark drawn before the label (src/ui/glyphs.ts) */
+  icon?: Glyph;
   primary?: boolean;
   glow?: boolean;
   disabled?: boolean;
@@ -296,7 +299,7 @@ export class UI {
     this.digEl = el(`<div class="dig-meter" style="opacity:0"><div class="dm-text"></div><div class="dm-bar"><div class="dm-fill"></div></div></div>`);
     this.bannerEl = el(`<div class="region-banner"><div class="rb-inner"><div class="rb-title"></div><div class="rb-sub"></div></div></div>`);
     this.fadeEl = el(`<div class="fade"></div>`);
-    this.engineEl = el(`<button class="engine-btn none"><b>⚙</b>ENGINE</button>`);
+    this.engineEl = el(`<button class="engine-btn none">${glyph('gear')}ENGINE</button>`);
     this.engineEl.addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       audio.unlock();
@@ -323,7 +326,7 @@ export class UI {
       }
     });
     top.querySelector('.hud-right')!.append(this.radarEl, this.compassEl);
-    // the helm instruments: one bottom-left cluster (wind dial + speed, and the engine toggle); actions bottom-right
+    // the helm instruments: one cluster left of the wheel (wind dial + speed, and the engine toggle); actions bottom-right
     const helm = el(`<div class="helm"><div class="helm-row"></div></div>`);
     helm.firstElementChild!.append(this.speedEl, this.engineEl);
     // the wheel sits dead centre at the bottom; instruments to its left, the action plate to its right
@@ -429,7 +432,7 @@ export class UI {
     this.lastActionsKey = key;
     this.actionsEl.innerHTML = '';
     list.forEach((a, i) => {
-      const b = el(`<button class="act ${i > 0 ? 'secondary' : ''} ${a.glow ? 'glow' : ''} ${a.disabled ? 'disabled' : ''}"><span class="act-l">${a.label}</span>${a.note ? ` <small class="act-note">${a.note}</small>` : ''}</button>`);
+      const b = el(`<button class="act ${i > 0 ? 'secondary' : ''} ${a.glow ? 'glow' : ''} ${a.disabled ? 'disabled' : ''}"><span class="act-l">${a.icon ? glyph(a.icon) : ''}${a.label}</span>${a.note ? ` <small class="act-note">${a.note}</small>` : ''}</button>`);
       b.addEventListener('click', (e) => {
         e.stopPropagation();
         audio.unlock();
@@ -562,7 +565,7 @@ export class UI {
         <div class="r-kicker">Daily Tide · ${date}</div>
         <div class="r-name">${sc.sunk ? 'Swamped' : `${sc.total} points`}${best ? ' <span class="best">new best</span>' : ''}</div>
         <table class="d-score">${row('Hold banked', `${sc.banked}g`)}${row('Perfect pulls', `${sc.perfects} × 10`)}${row('Sea events beaten', `${sc.events} × 25`)}${row('Legendary finds', `${sc.legendary} × 50`)}${sc.sunk ? row('Swamped', 'score 0') : ''}<tr class="tot"><td>Total</td><td>${sc.total}</td></tr></table>
-        <div class="d-streak">🔥 <b>${streak}</b>-day streak</div>
+        <div class="d-streak">${glyph('flame')}<b>${streak}</b>-day streak</div>
         <pre class="d-share">${share}</pre>
         <div class="d-btns"><button class="btn ghost r-ok">Done</button><button class="btn d-copy">Share result</button></div>
         <div class="note">A new Daily Tide every day at 00:00 UTC. Free play is always open.</div></div></div>`);
@@ -712,7 +715,7 @@ export class UI {
     return new Promise((resolve) => {
       this.panelOpen = true;
       this.lastPerfects = 0;
-      const wrap = el(`<div class="winch-wrap"><div class="winch"><h3>${o.crane ? '🏗 ' : ''}${o.title}</h3><div class="w-sub">${o.sub}</div>
+      const wrap = el(`<div class="winch-wrap"><div class="winch"><h3>${o.crane ? glyph('crane') : ''}${o.title}</h3><div class="w-sub">${o.sub}</div>
         <div class="w-track"><div class="w-zone"><div class="w-perfect"></div></div><div class="w-needle"></div></div>
         <div class="w-pips">${'<i></i>'.repeat(o.pulls)}</div>
         <button class="act w-reel">${o.crane ? 'LIFT!' : 'REEL IN!'}</button><div class="w-msg">Tap in the green. Gold centre = bonus loot</div>
@@ -1151,11 +1154,11 @@ export class UI {
     // dock contracts (loop pass Phase 2): three rotating jobs, paid when you dock, refilled straight away
     const today = this.game.today();
     const best = s.data.daily.best[today];
-    html += `<button class="act daily-btn">🌊 DAILY TIDE · ${today}<small>${best !== undefined ? `today's best ${best} · ` : ''}🔥 ${s.data.daily.last && s.data.daily.last !== today ? s.data.daily.streak : s.data.daily.streak || 0}-day streak · same sea for everyone</small></button>`;
+    html += `<button class="act daily-btn"><span>${glyph('wave')}DAILY TIDE · ${today}</span><small>${best !== undefined ? `today's best ${best} · ` : ''}${s.data.daily.last && s.data.daily.last !== today ? s.data.daily.streak : s.data.daily.streak || 0}-day streak · same sea for everyone</small></button>`;
     html += `<div class="section-title">Dock board <small>${s.data.jobs.done} done · paid on docking</small></div>`;
     for (const j of s.data.jobs.board) {
       const prog = j.kind === 'bank' ? `${Math.min(j.progress, j.n)}/${j.n}g` : `${Math.min(j.progress, j.n)}/${j.n}`;
-      html += `<div class="row job dock ${j.done ? 'done-job' : ''}"><div class="r-main"><div class="r-title">${jobText(j, (id) => item(id).name)}</div><div class="jobbar"><i style="width:${Math.min(100, (j.progress / j.n) * 100)}%"></i></div></div><b style="font-size:13px;white-space:nowrap">${j.done ? '✔ ' : ''}${prog} · ${j.reward}g</b></div>`;
+      html += `<div class="row job dock ${j.done ? 'done-job' : ''}"><div class="r-main"><div class="r-title">${glyph('anchor')}${jobText(j, (id) => item(id).name)}</div><div class="jobbar"><i style="width:${Math.min(100, (j.progress / j.n) * 100)}%"></i></div></div><b style="font-size:13px;white-space:nowrap">${j.done ? '✔ ' : ''}${prog} · ${j.reward}g</b></div>`;
     }
     html += `<div class="section-title">Work board · ${rank.name}${disc < 1 ? ` · ${Math.round((1 - disc) * 100)}% off here` : ''}</div>`;
     for (const { a, c } of here) {
@@ -1182,13 +1185,13 @@ export class UI {
       }
     }
     html += `<div class="section-title">Services</div><div class="svc">
-      ${sett.services.includes('fuel') ? `<button class="btn fuelb" ${st.engine ? '' : 'disabled'}>⛽ Fill tank · ${+(sett.fuelPrice * disc).toFixed(1)}g/unit</button>` : ''}
-      ${sett.services.includes('repair') ? `<button class="btn ghost repb" ${s.data.hull >= st.hullMax - 0.5 ? 'disabled' : ''}>🔧 Repair hull · ${Math.ceil((st.hullMax - s.data.hull) * 0.6 * disc)}g</button>` : ''}
-      ${sett.services.includes('workbench') ? '<button class="btn ghost wbb">🛠 Workbench</button>' : ''}
-      ${sett.services.includes('recruit') ? `<button class="btn ghost crb">👥 Crew board${recruitable.length ? ` (${recruitable.length})` : ''}</button>` : ''}
+      ${sett.services.includes('fuel') ? `<button class="btn fuelb" ${st.engine ? '' : 'disabled'}>${glyph('fuel')}Fill tank · ${+(sett.fuelPrice * disc).toFixed(1)}g/unit</button>` : ''}
+      ${sett.services.includes('repair') ? `<button class="btn ghost repb" ${s.data.hull >= st.hullMax - 0.5 ? 'disabled' : ''}>${glyph('wrench')}Repair hull · ${Math.ceil((st.hullMax - s.data.hull) * 0.6 * disc)}g</button>` : ''}
+      ${sett.services.includes('workbench') ? `<button class="btn ghost wbb">${glyph('hammer')}Workbench</button>` : ''}
+      ${sett.services.includes('recruit') ? `<button class="btn ghost crb">${glyph('crew')}Crew board${recruitable.length ? ` (${recruitable.length})` : ''}</button>` : ''}
     </div>`;
     html += `<div class="note">${home ? `Vault: ${vaultCount} items stored · ` : ''}${s.discoveryCount}/${CATALOG_ITEMS.length} discoveries · crew ${s.data.crew.length}/${st.berths}</div>
-      <button class="act setsail">⛵ Cast off</button>`;
+      <button class="act setsail">${glyph('sail')}Cast off</button>`;
     body.innerHTML = html;
     body.querySelectorAll<HTMLElement>('.npc').forEach((n) => n.addEventListener('click', () => {
       audio.ui();
@@ -1392,7 +1395,7 @@ export class UI {
       for (const r of open) {
         const pinned = s.data.pinned.includes(r.id);
         const far = !canReach(r.region, reach);
-        const row = el(`<div class="row rumour${pinned ? ' pinned' : ''}"><div class="r-main"><div class="r-title">${pinned ? '📌 ' : ''}${r.label}</div><div class="r-sub">“${r.text}”</div>${far ? `<div class="r-sub"><b>${r.region === 'stormwall' ? 'Needs a hull that survives the Stormwall' : 'Needs a boat that can cross the open swell'}</b></div>` : ''}</div>
+        const row = el(`<div class="row rumour${pinned ? ' pinned' : ''}"><div class="r-main"><div class="r-title">${pinned ? glyph('pin') : ''}${r.label}</div><div class="r-sub">“${r.text}”</div>${far ? `<div class="r-sub"><b>${r.region === 'stormwall' ? 'Needs a hull that survives the Stormwall' : 'Needs a boat that can cross the open swell'}</b></div>` : ''}</div>
           <button class="btn ${pinned ? 'ghost' : ''}">${pinned ? 'Unpin' : 'Pin it'}</button></div>`);
         row.querySelector('button')!.addEventListener('click', () => {
           this.game.pinRumour(r.id);
@@ -1518,7 +1521,7 @@ export class UI {
         body.innerHTML = `<div class="statgrid"><div class="stat"><b>${st.speed.toFixed(1)}</b><span>sail speed</span></div><div class="stat"><b>${st.engine || '—'}</b><span>engine</span></div><div class="stat"><b>${st.cargo}</b><span>cargo slots</span></div>
           <div class="stat"><b>${Math.round(s.data.hull)}/${st.hullMax}</b><span>hull</span></div><div class="stat"><b>${Math.round(s.data.fuel)}/${st.fuelCap}</b><span>fuel</span></div><div class="stat"><b>${st.armor ? Math.round(st.armor * 100) + '%' : '—'}</b><span>armour</span></div>
           <div class="stat"><b>${st.reef ? 'Yes' : 'No'}</b><span>reef-safe</span></div><div class="stat"><b>${st.crossSwell ? 'Yes' : 'No'}</b><span>open swell</span></div><div class="stat"><b>${st.crossStorm ? 'Yes' : 'No'}</b><span>Stormwall</span></div></div>
-          <div class="svc"><button class="btn rf" ${s.countOwned('fuel_can') && s.data.fuel < st.fuelCap - 2 ? '' : 'disabled'}>⛽ Pour fuel cans (${s.countOwned('fuel_can')})</button><button class="btn ghost pk" ${s.countOwned('hull_patch') && s.data.hull < st.hullMax ? '' : 'disabled'}>🩹 Patch hull (${s.countOwned('hull_patch')})</button></div>`;
+          <div class="svc"><button class="btn rf" ${s.countOwned('fuel_can') && s.data.fuel < st.fuelCap - 2 ? '' : 'disabled'}>${glyph('fuel')}Pour fuel cans (${s.countOwned('fuel_can')})</button><button class="btn ghost pk" ${s.countOwned('hull_patch') && s.data.hull < st.hullMax ? '' : 'disabled'}>${glyph('patch')}Patch hull (${s.countOwned('hull_patch')})</button></div>`;
         const stage = refitStage(s.data.upgrades.length);
         const next = REFIT_STAGES.find((r) => r.min > s.data.upgrades.length);
         const title = renownTitle(s.data);
@@ -1619,7 +1622,7 @@ export class UI {
         const isl = disc ? disc.where : '';
         body.append(el(`<div class="detail" style="--c:${RARITY_COLOR[d.rarity]}"><div class="d-icon">${iconSVG(d.id, { size: 84 })}</div><div style="flex:1"><h3>${d.name}</h3>
           <span class="rar" style="background:${TIER_COLOR[tierOf(d.id)]};color:#14110d">${TIER_LABEL[tierOf(d.id)]}</span> <span class="rar" style="background:${RARITY_COLOR[d.rarity]}">${RARITY_LABEL[d.rarity]}</span>${SETS.filter((st) => st.items.includes(d.id)).map((st) => ` <span class="rar" style="background:#2b2f36">⚑ ${st.name}</span>`).join('')}
-          <p>${d.desc}</p><div class="meta"><span>\u{1F4CD} ${isl}</span><span>\u{1F4C5} ${new Date(disc.first).toLocaleDateString()}</span><span>Found ×${disc.count}</span><span>Owned ×${s.countOwned(d.id)}</span><span>${CATEGORY_LABEL[d.category]}</span><span>Value ${d.value}g</span>${d.displayable ? '<span>✨ Displayable</span>' : ''}</div></div></div>`));
+          <p>${d.desc}</p><div class="meta"><span>${glyph('pin')}${isl}</span><span>${glyph('calendar')}${new Date(disc.first).toLocaleDateString()}</span><span>Found ×${disc.count}</span><span>Owned ×${s.countOwned(d.id)}</span><span>${CATEGORY_LABEL[d.category]}</span><span>Value ${d.value}g</span>${d.displayable ? `<span>${glyph('display')}Displayable</span>` : ''}</div></div></div>`));
       }
       const groups = tab === 'all' ? cats : [tab as Category];
       for (const c of groups) {
@@ -1666,7 +1669,7 @@ export class UI {
     let tab = focus ?? s.data.activeMap ?? owned[0]?.id ?? 'world';
     if (tab !== 'world' && !owned.find((m) => m.id === tab)) tab = 'world';
     const render = () => {
-      this.setTabs(tabs, [...owned.map((m) => ({ id: m.id, label: (s.data.mapsCompleted.includes(m.id) ? '✔ ' : '') + m.name })), { id: 'world', label: '\u{1F30D} World Chart' }], tab, (t) => {
+      this.setTabs(tabs, [...owned.map((m) => ({ id: m.id, label: (s.data.mapsCompleted.includes(m.id) ? '✔ ' : '') + m.name })), { id: 'world', label: `${glyph('globe')}World Chart` }], tab, (t) => {
         tab = t;
         render();
       });
@@ -1730,8 +1733,8 @@ export class UI {
     body.innerHTML = `
       <div class="setting-row">Sound effects <input type="range" min="0" max="1" step="0.05" value="${s.data.settings.sfx}" class="sfx"></div>
       <div class="setting-row">Music <input type="range" min="0" max="1" step="0.05" value="${s.data.settings.music}" class="mus"></div>
-      <div class="setting-row">Vibration <input type="checkbox" class="hap" ${s.data.settings.haptics ? 'checked' : ''} style="width:26px;height:26px"></div>
-      <div class="setting-row">Calm effects <span class="note" style="flex:1;margin:0 8px;text-align:left">no screen shake, softer flashes</span><input type="checkbox" class="calm" ${s.data.settings.calm ? 'checked' : ''} style="width:26px;height:26px"></div>
+      <div class="setting-row">Vibration <input type="checkbox" class="hap" ${s.data.settings.haptics ? 'checked' : ''}></div>
+      <div class="setting-row">Calm effects <span class="note" style="flex:1;margin:0 8px;text-align:left">no screen shake, softer flashes</span><input type="checkbox" class="calm" ${s.data.settings.calm ? 'checked' : ''}></div>
       <div class="section-title">Progress</div>
       <div class="statgrid"><div class="stat"><b>${s.discoveryCount}</b><span>discoveries</span></div><div class="stat"><b>${s.data.stats.goldEarned}</b><span>gold earned</span></div><div class="stat"><b>${Math.round(s.data.stats.distance)}</b><span>meters sailed</span></div>
       <div class="stat"><b>${s.data.hauls}</b><span>salvage hauls</span></div><div class="stat"><b>${s.data.upgrades.length}</b><span>upgrades</span></div><div class="stat"><b>${s.data.chestsOpened}</b><span>chests opened</span></div></div>

@@ -51,6 +51,7 @@ async function boot() {
         ? `Art-direction preview (docs/jury-rigged). Nothing from this visit is saved.`
         : `Previewing the ${VESSELS[game.store.preview].name}. Nothing from this visit is saved.`;
     document.body.append(tag);
+    document.body.classList.add('sandbox'); // the tag takes the STEER label's place under the wheel
   }
   loading.classList.add('done');
   setTimeout(() => loading.remove(), 900);

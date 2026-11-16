@@ -263,7 +263,7 @@ export class ZoomableMap {
       this.set(this.zoomAbout(this.v, this.v.zoom * Math.exp(-e.deltaY * 0.0022), p.x, p.y));
       this.onView?.(this.v);
     }, { passive: false });
-    // iOS Safari's own pinch gesture (the page is already user-scalable=no; this keeps it off the map too)
+    // iOS Safari's own pinch gesture (touch-action already keeps the page from zooming; this keeps it off the map too)
     c.addEventListener('gesturestart', stop as EventListener);
     c.addEventListener('dblclick', stop);
     c.addEventListener('contextmenu', stop);
