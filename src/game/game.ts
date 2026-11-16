@@ -242,10 +242,11 @@ export class Game implements GameAPI {
     this.env = new Environment(this.scene);
     await this.progress(0.62, 'Drowning the cities…');
     this.drowned = new DrownedWorld(this.scene);
+    this.ocean.hazardLines(this.drowned.hazards.list, this.scene);
     // measurement hooks for docs/jury-rigged (scripts/jury-shots.mjs, scripts/jury-measure.mjs): look visits only
     if (jury()) (window as unknown as { __jury: unknown }).__jury = { THREE, assets: { characterModel, model, gltfOf }, grade: gradeUniforms, jury: { jawboat } };
     // ?look=jury: the Rustfang Toll's two drum rafts are solid (src/world/jury.ts tollGate, rafts at local x = ±6)
-    if (jury()) for (const sx of [-1, 1]) this.drowned.colliders.push({ x: TOLL.x + sx * 6 * Math.cos(TOLL.ry), z: TOLL.z - sx * 6 * Math.sin(TOLL.ry), r: 2.4 });
+    if (jury()) for (const sx of [-1, 1]) this.drowned.addSolidCircle(TOLL.x + sx * 6 * Math.cos(TOLL.ry), TOLL.z - sx * 6 * Math.sin(TOLL.ry), 2.4);
     await this.progress(0.74, 'Brewing storms…');
     this.sky = new Sky(this.scene, this.atmo);
     this.atmo.onThunder = (d) => setTimeout(() => audio.thunder(1 - d * 0.6), d * 1400);
@@ -1572,6 +1573,112 @@ export class Game implements GameAPI {
   }
 
   /** Storms batter the hull; a Mechanic patches it at sea. */
+  /** the hull is in contact with drowned steel (and for how much longer a touch counts as the same one) */
+  private touchT = 0;
+  private hullC = { depth: 0, nx: 0, nz: 0 };
+
+  /**
+   * Where the hull is, in the boat's own frame (a: metres forward, l: metres to starboard): circles down the
+   * waterline (bow, middle, stern; each float of a twin hull) the size of the hull you see, plus small ones out
+   * where fenders, floats or outriggers stand proud of it. Measured from the model once per refit.
+   */
+  private hullShape: { of: unknown; pts: { a: number; l: number; r: number }[] } | null = null;
+  hullSamples() {
+    if (this.hullShape?.of === this.ship) return this.hullShape.pts;
+    const wl = this.ship.waterline;
+    const r = Math.max(0.45, wl.halfBeam);
+    const reach = Math.max(0, wl.halfLen - r * 0.9);
+    const n = Math.max(1, Math.ceil(reach / (r * 0.9)));
+    const lat = wl.twin ? [-wl.twin, wl.twin] : [0];
+    const pts: { a: number; l: number; r: number }[] = [];
+    for (let i = -n; i <= n; i++) for (const l of lat) pts.push({ a: (reach * i) / n, l, r });
+    // the waterline's real half-width, slice by slice, from the boat's own geometry near the water
+    const g = this.ship.group;
+    g.updateMatrixWorld(true);
+    const inv = g.matrixWorld.clone().invert();
+    const v = new THREE.Vector3(), m = new THREE.Matrix4();
+    const width = new Map<number, number>();
+    g.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh || (o as THREE.SkinnedMesh).isSkinnedMesh || !mesh.geometry?.attributes.position) return;
+      const p = mesh.geometry.attributes.position as THREE.BufferAttribute;
+      m.multiplyMatrices(inv, mesh.matrixWorld);
+      for (let i = 0; i < p.count; i++) {
+        v.fromBufferAttribute(p, i).applyMatrix4(m);
+        if (v.y < -0.3 || v.y > 0.6) continue;
+        const k = Math.round(v.z * 2);
+        width.set(k, Math.max(width.get(k) ?? 0, Math.abs(v.x)));
+      }
+    });
+    const main = (wl.twin || 0) + r;
+    const fr = 0.35;
+    for (const [k, w] of width) {
+      if (w < main + 0.15) continue;
+      for (const sx of [-1, 1]) pts.push({ a: k / 2, l: sx * (w - fr), r: fr });
+    }
+    this.hullShape = { of: this.ship, pts };
+    return pts;
+  }
+
+  /**
+   * Hitting what you can see. Drowned steel is solid exactly where its outline meets the water
+   * (src/world/hazards.ts). Running into it pushes the hull back out along the surface, so you slide along it; only
+   * the part of your speed aimed straight at it counts: a glancing scrape costs nothing, a square-on hit at speed
+   * cracks planks.
+   */
+  private hullAgainstSteel(dt: number, px: number, pz: number, blocked: (x: number, z: number) => string | null) {
+    const b = this.boat;
+    const fx = Math.sin(b.heading), fz = Math.cos(b.heading);
+    const pts = this.hullSamples();
+    const c = this.hullC;
+    let hit = false, hx = 0, hz = 0, square = -1;
+    for (let iter = 0; iter < 3; iter++) {
+      let moved = false;
+      for (const { a, l, r } of pts) {
+        const sx = b.x + fx * a + fz * l, sz = b.z + fz * a - fx * l;
+        if (!this.drowned.hazards.overlap(sx, sz, r, c)) continue;
+        b.x += c.nx * c.depth;
+        b.z += c.nz * c.depth;
+        moved = true;
+        hit = true;
+        const sq = -(fx * c.nx + fz * c.nz);
+        if (sq > square) {
+          square = sq;
+          hx = sx - c.nx * r;
+          hz = sz - c.nz * r;
+        }
+      }
+      if (!moved) break;
+    }
+    // pushed somewhere else that is closed (land, the pier): stay where she was
+    if (hit && blocked(b.x, b.z)) {
+      b.x = px;
+      b.z = pz;
+    }
+    if (!hit) {
+      this.touchT = Math.max(0, this.touchT - dt);
+      return;
+    }
+    const sq = clamp(square, 0, 1);
+    const into = b.speed * sq; // the speed aimed straight at the steel, m/s
+    const fresh = this.touchT <= 0;
+    this.touchT = 0.5;
+    if (fresh && into > 2.4) {
+      this.damage((into - 1.4) * 1.8, 'Crunch! You hit drowned steel.');
+      audio.clunk();
+      this.foam.emit(new THREE.Vector3(hx, 0.4, hz), 20, '#ffffff', 2, 3, 1, 6, 0.8);
+      this.haptic(40);
+      b.speed *= 0.35;
+    } else if (fresh && b.speed > 1.2) {
+      audio.creak();
+      this.foam.emit(new THREE.Vector3(hx, 0.3, hz), 8, '#ffffff', 1.2, 2, 0.8, 4, 0.6);
+      this.haptic(12);
+      this.say('scrape', 'Just a scrape: glancing blows slide off. Only a square-on hit at speed cracks planks.', 900); // taught once a session, not every brush
+    }
+    // grinding straight into it stops you; brushing along it keeps most of your way on
+    b.speed *= Math.exp(-dt * 9 * sq);
+  }
+
   private updateHull(dt: number) {
     const s = this.store.data, st = this.store.stats;
     const b = this.boat;
@@ -2816,16 +2923,16 @@ export class Game implements GameAPI {
       if (!st.crossStorm && this.atmo.wallAt(x, z) > 0.55) return 'wall';
       if (Math.hypot(x, z) > WORLD.size / 2 - 40) return 'edge';
       for (const r of this.env.boatRects) if (x > r.x0 - 0.8 && x < r.x1 + 0.8 && z > r.z0 - 0.8 && z < r.z1 + 0.8) return 'pier';
-      const br = this.ship.beam * 0.8;
-      for (const c of this.drowned.colliders) if (Math.hypot(x - c.x, z - c.z) < c.r + br) return 'wreck';
       return null;
     };
     if (!b.docked) {
       const why = blocked(nx, nz);
       if (!why) {
         this.store.data.stats.distance += Math.hypot(nx - b.x, nz - b.z);
+        const px = b.x, pz = b.z;
         b.x = nx;
         b.z = nz;
+        this.hullAgainstSteel(dt, px, pz, blocked);
       } else {
         // try sliding along the obstacle
         if (!blocked(nx, b.z)) b.x = nx;
@@ -2847,12 +2954,6 @@ export class Game implements GameAPI {
             this.say('wall', 'The Stormwall throws you back. Only the Ironwake Expedition Cat can survive inside it.', 6, { color: '#ff6b4a' });
             if (this.store.hasRole('mechanic')) pack.say('juno_hull', 60);
             audio.splash(true);
-          } else if (why === 'wreck') {
-            if (b.speed > 3) {
-              this.damage(b.speed * 1.4, 'Crunch! You hit drowned steel.');
-              audio.clunk();
-              this.foam.emit(new THREE.Vector3(nx, 0.4, nz), 20, '#ffffff', 2, 3, 1, 6, 0.8);
-            }
           }
           this.haptic(25);
         }
@@ -2979,7 +3080,7 @@ export class Game implements GameAPI {
       this.proxTimer = 0.5;
       let bell = Infinity, wreck = Infinity;
       for (const p of this.drowned.bells) bell = Math.min(bell, Math.hypot(p.x - b.x, p.z - b.z));
-      for (const c of this.drowned.colliders) wreck = Math.min(wreck, Math.hypot(c.x - b.x, c.z - b.z) - c.r);
+      wreck = this.drowned.hazards.clearance(b.x, b.z, 40);
       audio.proximity(bell, wreck);
     }
     audio.ambience(dt, b.speed, false, Math.max(swellFactor(b.x, b.z), this.atmo.storm), this.currentRegion, this.atmo.storm);
