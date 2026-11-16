@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { paint, xf, merge, vcMat } from '../world/materials';
 import { part, type Character } from '../world/assets';
 import { SeatRider, type SeatMotion } from './ride';
+import { HelmPoser, type HelmTargets } from './helm';
 import { WALK, RUN, captureRest, buildGaitClip, strideAt, retune, BASE_LEG, type GaitParams } from './gait';
 
 const CLIP_FOR: Record<string, string> = { idle: 'Idle', sit: 'Sit', dig: 'Dig', cheer: 'Cheer' };
@@ -41,6 +42,10 @@ export class Captain {
   seat: SeatMotion | null = null;
   seatAmount = 1;
   private rider: SeatRider | null = null;
+  /** at the helm: this frame's body targets in the captain root's frame (set by the game while aboard) */
+  helm: HelmTargets | null = null;
+  private poser: HelmPoser | null = null;
+  private helmW = 0;
   private charY = 0;
   /** current walk↔run mix (0..1), for footstep weight */
   runMix = 0;
@@ -58,6 +63,8 @@ export class Captain {
     this.charY = c.root.position.y;
     const rider = new SeatRider(c.root);
     this.rider = rider.ok ? rider : null;
+    const poser = new HelmPoser(c.root); // read from the bind pose, before any clip plays
+    this.poser = poser.ok ? poser : null;
     c.root.scale.setScalar(stylised ? 1.16 : 1.08);
     this.root.add(c.root);
     // a salvaged shovel in the right hand, shown while digging
@@ -139,7 +146,9 @@ export class Captain {
       }
       rate = 12;
     } else {
-      const a = c.actions[CLIP_FOR[this.pose === 'walk' ? 'idle' : this.pose]] ?? c.actions.Idle;
+      // at the helm the body is posed over Idle (player/helm.ts); the stock Sit clip is the fallback
+      const helming = this.pose === 'sit' && !!this.helm && !!this.poser;
+      const a = c.actions[CLIP_FOR[this.pose === 'walk' || helming ? 'idle' : this.pose]] ?? c.actions.Idle;
       if (a) {
         // restart one-shot style clips when they come in from nothing
         if ((this.weights.get(a) ?? 0) < 0.02 && this.pose !== 'idle') a.reset().play();
@@ -175,11 +184,16 @@ export class Captain {
     this.lean.x += (accLean - this.lean.x) * lk;
     this.lean.y += (turnLean - this.lean.y) * lk;
     c.root.rotation.set(this.lean.x, 0, this.lean.y);
-    this.rider?.undo(); // last frame's balance layer comes off before the clips write this frame's pose
+    this.poser?.undo(); // last frame's helm pose and balance layer come off before the clips write this frame's
+    this.rider?.undo();
     c.mixer.update(dt);
     const riding = this.pose === 'sit' && !!this.seat && !!this.rider;
     if (riding) this.rider!.update(dt, this.seat!, this.seatAmount);
     c.root.position.y = this.charY + (riding ? this.rider!.dropY : 0);
+    // hands on the helm, feet on the boards (eased in as they take the seat; gone the moment they step ashore)
+    const helm = this.pose === 'sit' && this.helm && this.poser ? this.helm : null;
+    this.helmW = helm ? Math.min(1, this.helmW + dt * 3) : 0;
+    if (helm) this.poser!.apply(this.root, helm, this.helmW * this.helmW * (3 - 2 * this.helmW));
   }
 
   constructor() {

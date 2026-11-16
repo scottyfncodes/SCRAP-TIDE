@@ -5,7 +5,8 @@ import { buntingGeometry, pennantCount } from './bunting';
 import { COSMETIC_MAP, type VesselId } from '../data/ship';
 import { item } from '../data/items';
 import type { Store } from '../state/store';
-import { model, crewModel, part, glowMat, kitGeo, sceneModel, tintModel, cullModel, offsetModel, nodeOrigin, bakeModel, tintedPart, type Tint } from '../world/assets';
+import { model, crewModel, part, glowMat, kitGeo, sceneModel, tintModel, cullModel, extractModel, offsetModel, nodeOrigin, bakeModel, tintedPart, type Tint } from '../world/assets';
+import type { HelmStation } from '../player/helm';
 
 // ship fittings modelled in MeshCraft (creative/3d-finds/fittings_kit): anchor, paddle, the skiff's rudder and mast, trophies
 const FITTINGS = 'tb_fittings_kit';
@@ -38,9 +39,10 @@ const SLOOP_FLAG_MATERIAL = 'GC_Cloth_0a2142'; // the model's masthead pennant (
 // The outrigger floats + cross-beams, modelled for the sloop in MeshCraft (creative/3d-sloop/outriggers), in the same frame.
 const OUTRIGGER_FILE = 'tb_sloop_outriggers';
 // Captain at the helm: in the cockpit between the cabin's after wall (z -3.7) and the transom, beside the tiller.
-const SLOOP_HELM = new THREE.Vector3(-0.55, 0, -4.3);
-// ...and with the ship's wheel fitted: standing to port of the wheel, clear of its rim, facing forward
-const SLOOP_WHEEL_HELM = new THREE.Vector3(-0.98, 0, -4.55);
+// Seated on an upturned crate to starboard of it, left hand on the tiller.
+const SLOOP_HELM = new THREE.Vector3(-0.33, 0, -4.3);
+// ...and with the ship's wheel fitted: standing to starboard of the wheel, clear of its rim, left hand on a spoke
+const SLOOP_WHEEL_HELM = new THREE.Vector3(-0.92, 0, -4.6);
 // the model's stern lantern hangs 3 cm in front of the wheel hub; with the wheel fitted it moves onto the starboard rail
 const SLOOP_LANTERN = 'GC_Plain_ff9f2e_e2';
 const SLOOP_LANTERN_SHIFT = new THREE.Vector3(1.25, -0.69, -0.1);
@@ -500,7 +502,11 @@ export interface ShipParts {
   flag: THREE.Mesh | null;
   anchor: THREE.Object3D;
   rope: THREE.Mesh;
-  seat: THREE.Vector3; // where the captain sits
+  seat: THREE.Vector3; // the captain's root at the helm (the boards under the pelvis)
+  /** the helm station: where the captain's pelvis, feet and hands go, and what they steer with (player/helm.ts) */
+  helm: HelmStation;
+  /** the tiller, when it is a part of its own: swung about its pivot as she turns (null: a wheel, or a fixed tiller) */
+  tiller: THREE.Object3D | null;
   wake: THREE.Vector3; // stern point
   length: number;
   beam: number;
@@ -728,8 +734,107 @@ export function buildShip(store: Store): ShipParts {
     // the skiff's rudder: a cut-down steel sign on a pipe stock, bigger with the Ash Rudder
     parts.push(kitGeo(FITTINGS, 'skiff_rudder', 0, h.sheer, -h.L / 2, 0, bigRudder ? 1.35 : 1)!.geo);
   } else if (!glb || codeRudder) parts.push(paint(xf(new THREE.BoxGeometry(0.07, 0.75 * rs, 0.42 * rs), 0, h.sheer - 0.55 * rs, -h.L / 2 - 0.16 * rs), bigRudder ? '#d9c08c' : woodDark));
-  if (!iron && (!glb || codeRudder)) parts.push(paint(xf(new THREE.CylinderGeometry(0.03 * rs, 0.03 * rs, 0.9 * rs, 5), 0, h.sheer + 0.12, -h.L / 2 + 0.25 * rs, Math.PI / 2 - 0.25, 0, 0), bigRudder ? '#c9a074' : woodDark));
-  if (!iron && bigRudder && (!glb || codeRudder)) parts.push(paint(xf(new THREE.SphereGeometry(0.06 * rs, 6, 4), 0, h.sheer + 0.24, -h.L / 2 + 0.7 * rs), '#d4a64a'));
+  // (no fixed tiller any more: the skiff's is a part of its own, below, and swings in the captain's hand; the decked
+  // code-built hulls steer by the stern wheel the captain now stands at)
+
+  // ── the helm station (player/helm.ts): where the captain's pelvis, feet and hands go on this boat ──
+  const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
+  const at = (dx: number, dy2: number, dz: number) => V(seat.x + dx, seat.y + dy2, seat.z + dz);
+  let helm: HelmStation;
+  let tiller: THREE.Object3D | null = null;
+  /** a pipe or pole between two points, for the code-built tiller */
+  const rod = (a: THREE.Vector3, b: THREE.Vector3, r: number, color: string) => {
+    const d = b.clone().sub(a);
+    const g = new THREE.CylinderGeometry(r, r, d.length(), 6);
+    g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), d.clone().normalize()));
+    const m = a.clone().add(b).multiplyScalar(0.5);
+    g.translate(m.x, m.y, m.z);
+    return paint(g, color);
+  };
+  if (vessel === 'dinghy') {
+    // Seated in the stern (the model's car seat), right hand on a bent-pipe tiller that comes round the seat back
+    // from the rudder stock; left foot braced forward, left hand on the knee.
+    const low = skiff ? 0 : -0.26; // the code-built skiff has a low thwart instead of the car seat
+    const pivot = V(0, seat.y + 0.47 + low, -h.L / 2 - 0.05);
+    const grip = at(-0.36, 0.59 + low, -0.04);
+    const elbow = V(-0.36, 0.1, 0.33), tip = V(grip.x - pivot.x, grip.y - pivot.y, grip.z - pivot.z + 0.1);
+    const pipe = bigRudder ? '#c9a074' : '#6d6a66';
+    const tm = new THREE.Mesh(
+      merge([
+        rod(V(0, -0.3, 0), V(0, 0.02, 0), 0.028, '#4a4f57'),
+        rod(V(0, 0, 0), elbow, 0.024, pipe),
+        rod(elbow, tip, 0.024, pipe),
+        rod(tip.clone().add(V(0, 0, -0.26)), tip.clone().add(V(0, 0, 0.01)), 0.034, '#7a2a22'), // rag-wrapped grip
+        paint(xf(new THREE.SphereGeometry(0.04, 6, 4), tip.x, tip.y, tip.z + 0.02), bigRudder ? '#d4a64a' : '#1b1b1f'),
+      ]),
+      vcMat()
+    );
+    tm.position.copy(pivot);
+    tm.castShadow = true;
+    group.add(tm);
+    tiller = tm;
+    helm = {
+      stance: 'sit', seat, hips: at(0, 0.47 + low, -0.1), yaw: 0, footL: at(0.27, 0, 0.38), footR: at(-0.2, 0, 0.2),
+      tiller: { hand: 'R', pivot, grip, swing: 0.14 }, restL: at(0.16, 0.52 + low, 0.16), restR: at(-0.2, 0.5 + low, 0.2),
+    };
+  } else if (glb && !fitted.rudder_ash) {
+    // Trimaran, tiller: seated on an upturned crate to starboard of it, left hand on the tiller. The model's tiller
+    // is lifted out as its own part so it swings; the crate is welded scrap like the rest of her.
+    const geo = extractModel(glb.root, SLOOP_TILLER_WOOD, 'tiller', isTiller);
+    let pivot = V(0, glb.deckY + 0.4, -4.72), grip = V(0, glb.deckY + 0.62, -4.12);
+    if (geo) {
+      geo.computeBoundingBox();
+      const bb = geo.boundingBox!, pos = geo.attributes.position;
+      let yA = 0, nA = 0, yF = 0, nF = 0;
+      for (let i = 0; i < pos.count; i++) {
+        if (pos.getZ(i) < bb.min.z + 0.12) (yA += pos.getY(i)), nA++;
+        if (pos.getZ(i) > bb.max.z - 0.12) (yF += pos.getY(i)), nF++;
+      }
+      yA /= nA || 1;
+      yF /= nF || 1;
+      pivot = V(0, yA, bb.min.z + 0.05);
+      // hold it where the hand falls: a forearm's length ahead of the seat, wherever that is along the tiller
+      const k = THREE.MathUtils.clamp((seat.z + 0.16 - bb.min.z) / (bb.max.z - bb.min.z || 1), 0.2, 0.95);
+      grip = V(0, yA + (yF - yA) * k + 0.02, bb.min.z + (bb.max.z - bb.min.z) * k);
+      geo.translate(-pivot.x, -pivot.y, -pivot.z);
+      const tm = new THREE.Mesh(geo, vcMat({ side: THREE.DoubleSide }));
+      tm.position.copy(pivot);
+      tm.castShadow = true;
+      group.add(tm);
+      tiller = tm;
+    }
+    const cy = glb.deckY;
+    parts.push(paint(xf(new THREE.BoxGeometry(0.46, 0.4, 0.4), seat.x, cy + 0.2, seat.z - 0.08), '#8a6a44', 0.06));
+    parts.push(paint(xf(new THREE.BoxGeometry(0.5, 0.04, 0.44), seat.x, cy + 0.42, seat.z - 0.08), '#6e4b2a'));
+    for (const sx of [-1, 1]) parts.push(paint(xf(new THREE.BoxGeometry(0.04, 0.42, 0.05), seat.x + sx * 0.2, cy + 0.2, seat.z + 0.13), '#5a3d22'));
+    parts.push(paint(xf(new THREE.BoxGeometry(0.34, 0.05, 0.3), seat.x, cy + 0.465, seat.z - 0.08), '#7a2a22', 0.04)); // a folded tarp to sit on
+    helm = {
+      stance: 'sit', seat, hips: at(0, 0.54, -0.05), yaw: 0, footL: at(0.13, 0.05, 0.4), footR: at(-0.13, 0.05, 0.3),
+      tiller: { hand: 'L', pivot, grip, swing: tiller ? 0.17 : 0 }, restL: at(0.14, 0.56, 0.2), restR: at(-0.13, 0.57, 0.22),
+    };
+  } else if (glb) {
+    // Trimaran, ship's wheel: there is no room between the wheel and the transom, so the captain stands beside it,
+    // turned a little toward it, left hand on the rim and the right thumb hooked in the belt.
+    helm = {
+      stance: 'stand', seat, hips: at(0, 0.86, 0), yaw: 0.3, footL: at(0.13, 0.05, 0.1), footR: at(-0.12, 0.05, -0.08),
+      wheel: { hub: V(0, glb.deckY + 1.05, -4.72), radius: 0.52, left: -1.25, turn: 0.4 }, restL: at(0.2, 0.9, 0.05), restR: at(-0.22, 0.9, 0.06),
+    };
+  } else if (iron) {
+    // Ironwake: standing aft of the helm console on the port side of the bridge deck, both hands on the wheel
+    seat.set(1.3, seat.y, -5.76);
+    helm = {
+      stance: 'stand', seat, hips: at(0, 0.86, 0), yaw: 0, footL: at(0.15, 0.05, 0.05), footR: at(-0.15, 0.05, -0.06),
+      wheel: { hub: V(1.3, seat.y + 1.45, -5.32), radius: 0.4, left: 2.25, right: -2.25, turn: 0.45 }, restL: at(0.22, 0.9, 0.05), restR: at(-0.22, 0.9, 0.05),
+    };
+  } else {
+    // code-built decked hulls (the Salt Brig; the stand-ins): standing behind the stern wheel, both hands on it
+    const wz = -4.2;
+    seat.set(0, seat.y, wz - 0.42);
+    helm = {
+      stance: 'stand', seat, hips: at(0, 0.86, 0), yaw: 0, footL: at(0.15, 0.05, 0.05), footR: at(-0.15, 0.05, -0.06),
+      wheel: { hub: V(0, seat.y + 0.95, wz), radius: 0.45, left: 1.95, right: -1.95, turn: 0.5 }, restL: at(0.22, 0.9, 0.05), restR: at(-0.22, 0.9, 0.05),
+    };
+  }
 
   // storage upgrades
   if (store.has('cargo_crate') && !fitted.cargo_crate) {
@@ -1160,6 +1265,8 @@ export function buildShip(store: Store): ShipParts {
     anchor,
     rope,
     seat,
+    helm,
+    tiller,
     wake: new THREE.Vector3(0, 0, -h.L / 2),
     length: h.L,
     beam,
