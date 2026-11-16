@@ -60,7 +60,7 @@ export interface QuestStep {
 export const FIRST_VOYAGE: QuestStep[] = [
   // loop pass (Phase 1): the first haul comes first, in sight of the pier, then home to bank it and buy a part.
   // Turtle Atoll and the bottle follow with a better boat.
-  { id: 'leave_dock', text: 'Cast off from Driftholm', hint: 'Drag the wheel (bottom-left) toward where you want to go. The drowned tower east of the pier is worth a look.' },
+  { id: 'leave_dock', text: 'Cast off from Driftholm', hint: 'Drag the wheel at the bottom of the screen toward where you want to go. The drowned tower east of the pier is worth a look.' },
   { id: 'first_haul', text: 'Salvage the Sunken Tower', hint: 'Steer to the gold marker, slow down beside the tower and tap SALVAGE.' },
   { id: 'bank_haul', text: 'Bank it: dock at the pier', hint: 'Loot only counts once you dock. Steer back to the raft pier and tap DOCK.' },
   { id: 'upgrade', text: 'Sell to Pip, refit with Marlo', hint: 'Sell your haul, then pick your first part: Marlo fits it at his welcome price.' },

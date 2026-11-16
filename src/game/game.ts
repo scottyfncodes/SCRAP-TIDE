@@ -330,7 +330,7 @@ export class Game implements GameAPI {
     audio.unlock();
     setTimeout(() => pack.prefetch(), 4000);
     if (this.store.isNew) {
-      this.ui.revealInfo('Driftholm · Year 61 After the Water', 'Wake up, Captain!', 'The sea took the cities, the roads and the mountains. It left you a patchwork skiff, fifteen gold and a head full of stories.<br><br>Old Wren is waiting at the end of the pier, lantern up: <i>“A bottle washed up on Turtle Atoll, the gulls say. Bring me what’s inside. Don’t read it first.” …“Read it first.”</i><br><br><b>Drag the wheel</b> (bottom-left) toward where you want to sail.', 'Let’s go');
+      this.ui.revealInfo('Driftholm · Year 61 After the Water', 'Wake up, Captain!', 'The sea took the cities, the roads and the mountains. It left you a patchwork skiff, fifteen gold and a head full of stories.<br><br>Old Wren is waiting at the end of the pier, lantern up: <i>“A bottle washed up on Turtle Atoll, the gulls say. Bring me what’s inside. Don’t read it first.” …“Read it first.”</i><br><br><b>Drag the wheel</b> at the bottom of the screen toward where you want to sail.', 'Let’s go');
       this.store.isNew = false;
       this.store.saveNow();
     } else {
@@ -2084,14 +2084,14 @@ export class Game implements GameAPI {
       if (v.thrown > 0) return [{ id: 'respawn', label: '↩ RESPAWN AT BOAT', glow: true }];
       // the column grows upward from the thumb: RETURN at the bottom, then BOOST, then GRAB
       acts.push({ id: 'return_runner', label: `↩ RETURN${v.carried.length ? ` · ${v.carried.length}/${v.runner.cargo}` : ''}`, glow: v.carried.length >= v.runner.cargo });
-      if (v.runner.boost) acts.push({ id: 'boost', label: v.boostCool > 0 ? '⚡ BOOST…' : '⚡ BOOST', disabled: v.boostCool > 0 });
+      if (v.runner.boost) acts.push({ id: 'boost', icon: 'bolt', label: v.boostCool > 0 ? 'BOOST…' : 'BOOST', disabled: v.boostCool > 0 });
       const near = this.salvage.runnerSite();
       if (near) acts.push({ id: 'runner_haul', label: `\u{1FA9D} GRAB ${near.name.replace(/^(Rare|Legendary) Wreck: /, '').toUpperCase()}`, glow: v.room() > 0, disabled: v.room() <= 0 || v.rSpeed > 6 });
       // the boat's turret still harpoons raiders closing on her
-      if (this.store.stats.harpoon && !this.harpoonBusy && this.raiderRun.nearest(this.store.stats.harpoon * 1.4)) acts.push({ id: 'harpoon', label: '🎯 HARPOON RAIDER' });
+      if (this.store.stats.harpoon && !this.harpoonBusy && this.raiderRun.nearest(this.store.stats.harpoon * 1.4)) acts.push({ id: 'harpoon', icon: 'harpoon', label: 'HARPOON RAIDER' });
     } else if (v.active === 'balloon') {
-      acts.push({ id: 'land', label: v.lifting ? '⬇ LAND (bring her in)' : '⬇ LAND' });
-      if (v.winchTarget()) acts.push({ id: 'winch', label: '🪝 WINCH LIFT', glow: true });
+      acts.push({ id: 'land', icon: 'down', label: v.lifting ? 'LAND (bring her in)' : 'LAND' });
+      if (v.winchTarget()) acts.push({ id: 'winch', icon: 'hook', label: 'WINCH LIFT', glow: true });
     }
     return acts;
   }
@@ -2747,7 +2747,7 @@ export class Game implements GameAPI {
       if (b.docked) {
         b.docked = false;
         this.tripStart();
-        this.ui.toast('Cast off! ⚓', { life: 1.6 });
+        this.ui.toast('Cast off!', { life: 1.6 });
         audio.splash();
       }
       if (b.anchored) {
@@ -2984,20 +2984,20 @@ export class Game implements GameAPI {
     const q = this.store.data.quest;
     if (b.docked) {
       const sett = SETTLEMENT_MAP[b.dockedAt];
-      acts.push({ id: 'harbor', label: `⚓ ${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['upgrade', 'return_harbor', 'bank_haul'].includes(q) });
+      acts.push({ id: 'harbor', icon: 'anchor', label: `${sett && sett.id !== 'driftholm' ? sett.name.toUpperCase() : 'HARBOR'}`, glow: ['upgrade', 'return_harbor', 'bank_haul'].includes(q) });
     } else {
       const pierD = Math.hypot(b.x - this.env.pierTip.x, b.z - this.env.pierTip.z);
-      if (pierD < 18) acts.push({ id: 'dock', label: '⚓ DOCK', glow: true });
+      if (pierD < 18) acts.push({ id: 'dock', icon: 'anchor', label: 'DOCK', glow: true });
       for (const st2 of SETTLEMENTS) {
         if (st2.id === 'driftholm') continue;
-        if (Math.hypot(b.x - st2.x, b.z - st2.z) < st2.dockR + this.ship.beam) acts.push({ id: `dock:${st2.id}`, label: `⚓ DOCK AT ${st2.name.toUpperCase()}`, glow: true });
+        if (Math.hypot(b.x - st2.x, b.z - st2.z) < st2.dockR + this.ship.beam) acts.push({ id: `dock:${st2.id}`, icon: 'anchor', label: `DOCK AT ${st2.name.toUpperCase()}`, glow: true });
       }
       // the vehicles (loop pass Phase 4): one button out, one button back
-      if (this.vehicles.canLaunchRunner()) acts.push({ id: 'launch_runner', label: '🚤 LAUNCH RUNNER' });
-      if (this.vehicles.canLaunchBalloon()) acts.push({ id: 'go_up', label: '🎈 GO UP' });
+      if (this.vehicles.canLaunchRunner()) acts.push({ id: 'launch_runner', icon: 'runner', label: 'LAUNCH RUNNER' });
+      if (this.vehicles.canLaunchBalloon()) acts.push({ id: 'go_up', icon: 'balloon', label: 'GO UP' });
       // the harpoon (loop pass Phase 1): a timing ring at a chasing raider, or a drifting cache out of hook reach
       const riderNear = this.raiderRun.nearest(st.harpoon * 1.4);
-      if (st.harpoon && !this.harpoonBusy && (this.raiders.inRange() || riderNear || this.harpoonCache())) acts.push({ id: 'harpoon', label: this.raiders.inRange() || riderNear ? '🎯 HARPOON RAIDER' : '🎯 HARPOON CACHE', glow: true });
+      if (st.harpoon && !this.harpoonBusy && (this.raiders.inRange() || riderNear || this.harpoonCache())) acts.push({ id: 'harpoon', icon: 'harpoon', label: this.raiders.inRange() || riderNear ? 'HARPOON RAIDER' : 'HARPOON CACHE', glow: true });
       const site = this.salvage.siteInReach();
       if (site && !b.anchored) {
         const ready = this.salvage.ready(site);
@@ -3026,7 +3026,7 @@ export class Game implements GameAPI {
         if (this.shoreCache) acts.push({ id: 'ashore', label: '\u{1F3DD} GO ASHORE', glow: q === 'ashore' && b.anchored });
         acts.push({ id: 'raise', label: 'RAISE ANCHOR' });
       } else if (pierD >= 18 && (this.shoreCache || depth < 10)) {
-        acts.push({ id: 'anchor', label: '⚓ ANCHOR', glow: q === 'ashore' && b.speed < 3.2, disabled: b.speed > 3.2 || depth > 10 });
+        acts.push({ id: 'anchor', icon: 'anchor', label: 'ANCHOR', glow: q === 'ashore' && b.speed < 3.2, disabled: b.speed > 3.2 || depth > 10 });
       }
     }
     this.ui.setActions(acts);
@@ -3154,9 +3154,9 @@ export class Game implements GameAPI {
     const find = this.nearestFind();
     const q = this.store.data.quest;
     if (find) acts.push({ id: 'search', label: find.def.kind === 'plant' ? '\u{1F331} TAKE IT ABOARD' : find.def.requiresUpgrade ? (this.store.has(find.def.requiresUpgrade) ? '\u{1F526} LIGHT IT UP' : '\u{1F526} LOOK INSIDE') : `\u{1F50D} ${find.def.kind === 'bottle' ? 'OPEN BOTTLE' : 'SEARCH'}`, glow: true });
-    acts.push({ id: 'dig', label: '⛏ DIG', glow: q === 'dig_x' && best < 2.6 });
+    acts.push({ id: 'dig', icon: 'shovel', label: 'DIG', glow: q === 'dig_x' && best < 2.6 });
     const boatD = Math.hypot(f.landX - f.x, f.landZ - f.z);
-    if (boatD < 7) acts.push({ id: 'board', label: '⛵ BOARD', glow: q === 'return_harbor' });
+    if (boatD < 7) acts.push({ id: 'board', icon: 'sail', label: 'BOARD', glow: q === 'return_harbor' });
     this.ui.setActions(acts);
   }
 

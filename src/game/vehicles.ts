@@ -14,6 +14,7 @@
 // it back to the boat.
 //
 // Pure rules (cargo transfer, crash drop, the raiders' steal, balloon sight) are exported for the tests.
+import { glyph, type Glyph } from '../ui/glyphs';
 import * as THREE from 'three';
 import type { Game } from './game';
 import { runnerStats } from '../data/ship';
@@ -345,7 +346,7 @@ export class Vehicles {
     this.tether.visible = true;
     audio.burner(true);
     g.haptic(30);
-    this.setHold({ label: '🔥 HOLD TO BURN', on: () => (this.burning = true), off: () => (this.burning = false) });
+    this.setHold({ icon: 'flame', label: 'HOLD TO BURN', on: () => (this.burning = true), off: () => (this.burning = false) });
     if (!g.store.data.flags.includes('balloon_tip')) {
       g.store.data.flags.push('balloon_tip');
       g.ui.toast('Hold BURN to climb, let go to sink. Everything you see from up high goes on your radar.', { color: '#f0c445', life: 4.5 });
@@ -371,13 +372,13 @@ export class Vehicles {
   }
 
   /** The hold button (burner, boost) under the right thumb. */
-  setHold(o: { label: string; on: () => void; off: () => void } | null) {
+  setHold(o: { icon?: Glyph; label: string; on: () => void; off: () => void } | null) {
     this.holdBtn?.remove();
     this.holdBtn = null;
     if (!o) return;
     const b = document.createElement('button');
     b.className = 'hold-btn';
-    b.textContent = o.label;
+    b.innerHTML = (o.icon ? glyph(o.icon) : '') + o.label;
     b.addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       b.setPointerCapture(e.pointerId);

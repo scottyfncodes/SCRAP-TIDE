@@ -4,6 +4,11 @@
   "attribution": null,
   "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-drowned, creative/3d-characters; docs/drowned-world/PRODUCTION-REPORT.md)"
  },
+ "tb_balloon.glb": {
+  "license": "LicenseRef-Project-Owned",
+  "attribution": null,
+  "source": "Procedural Blender/MeshCraft model made for this project (creative/3d-vehicles: build_balloon.py, build_wave_runner.py)"
+ },
  "tb_boat_kit.glb": {
   "license": "LicenseRef-Project-Owned",
   "attribution": null,
@@ -88,6 +93,16 @@
   "license": "LicenseRef-Project-Owned",
   "attribution": null,
   "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-drowned, creative/3d-characters; docs/drowned-world/PRODUCTION-REPORT.md)"
+ },
+ "tb_jury_captain.glb": {
+  "license": "LicenseRef-Project-Owned",
+  "attribution": null,
+  "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-characters/scripts/survivors.py JURY pass; docs/jury-rigged)"
+ },
+ "tb_jury_raider.glb": {
+  "license": "LicenseRef-Project-Owned",
+  "attribution": null,
+  "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-characters/scripts/survivors.py JURY pass; docs/jury-rigged)"
  },
  "tb_landmark_kit.glb": {
   "license": "LicenseRef-Project-Owned",
@@ -274,14 +289,9 @@
   "attribution": null,
   "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-drowned, creative/3d-characters; docs/drowned-world/PRODUCTION-REPORT.md)"
  },
- "tb_jury_captain.glb": {
+ "tb_waverunner.glb": {
   "license": "LicenseRef-Project-Owned",
   "attribution": null,
-  "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-characters/scripts/survivors.py JURY pass; docs/jury-rigged)"
- },
- "tb_jury_raider.glb": {
-  "license": "LicenseRef-Project-Owned",
-  "attribution": null,
-  "source": "Procedural Blender/MeshCraft models made for this project (creative/3d-characters/scripts/survivors.py JURY pass; docs/jury-rigged)"
+  "source": "Procedural Blender/MeshCraft model made for this project (creative/3d-vehicles: build_balloon.py, build_wave_runner.py)"
  }
 }
