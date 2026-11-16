@@ -69,7 +69,7 @@ export const CONTRACTS: ContractDef[] = [
     text: 'The flare eats crude and the lower deck’s running thin. Six barrels. I pay in plate, not promises.',
     need: { item: 'crude_oil', n: 6 }, reward: { mats: [{ id: 'alloy_plate', n: 2 }], standing: 2 }, target: at(site('sv_rig')) },
   { id: 'c_dace_raider', giver: 'dace', port: 'helios', kind: 'repel', title: 'Rustfang excepted',
-    text: 'Rustfang skiffs have been sniffing round my barges. Put a harpoon in one. Then we’ll talk about a second flare.',
+    text: 'Rustfang runners have been sniffing round my barges. Put a harpoon in one. Then we’ll talk about a second flare.',
     need: { repel: 1 }, reward: { gold: 120, standing: 3, growth: 'helios_flare' }, target: { x: 270, z: 640 } },
   { id: 'c_vik_parts', giver: 'vik', port: 'helios', kind: 'deliver', title: 'Proper parts',
     text: 'Two sets of engine parts. Rebuilt, not salvaged. Yes, I can tell.',

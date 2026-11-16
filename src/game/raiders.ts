@@ -1,10 +1,12 @@
-// Rustfang raiders: scrap skiffs that patrol hostile waters, chase, ram and steal cargo.
+// Rustfang raiders: riders on wave runners (world/raiderRunner.ts) that patrol hostile waters, chase, ram and steal
+// cargo.
 // The Harpoon Turret (and a Defender) drives them off; twin diesels outrun them.
 import * as THREE from 'three';
 import type { Game } from './game';
 import { RAIDER_ZONES, type RaiderZone } from '../data/world';
 import { item } from '../data/items';
-import { model, characterModel, type Character } from '../world/assets';
+import { characterModel, type Character } from '../world/assets';
+import { buildRaiderRunner, mountRider, poseRaider, runnerReady, type RaiderRunner } from '../world/raiderRunner';
 import { batchCrew, releaseBoat } from '../world/crewBatch';
 import { angleDiff, clamp } from '../core/noise';
 import { audio } from '../audio/audio';
@@ -28,7 +30,15 @@ interface Raider {
   ph: number;
   crew: Character[];
   attacking: boolean;
+  /** the wave runner and its rider (null on the Jury-Rigged look's jawboats) */
+  run: RaiderRunner | null;
+  /** smoothed turn -1..1 (+ = to port) and the bank it leans to */
+  turn: number;
+  hop: number;
 }
+
+/** Rustfang runners are a size up on yours: the bad guys should read from across the water. */
+const RUNNER_SCALE = 1.2;
 
 export class Raiders {
   list: Raider[] = [];
@@ -59,11 +69,11 @@ export class Raiders {
 
   private spawn(z: RaiderZone) {
     for (let i = 0; i < z.count; i++) {
-      const obj = jury()
-        ? jawboat(i + 1)
-        : model('tb_raider_skiff', 'raider_body', { shadows: true }) ?? new THREE.Mesh(new THREE.BoxGeometry(2.4, 1, 6), new THREE.MeshToonMaterial({ color: 0x6b2e14 }));
       const a = (i / z.count) * Math.PI * 2;
-      const r: Raider = { obj, x: z.x + Math.cos(a) * z.r * 0.5, z: z.z + Math.sin(a) * z.r * 0.5, heading: a, speed: 4, state: 'patrol', timer: 0, zone: z, ph: a, crew: [], attacking: false };
+      const run = jury() ? null : buildRaiderRunner(a);
+      const obj = run ? run.obj : jawboat(i + 1);
+      if (run) obj.scale.setScalar(RUNNER_SCALE);
+      const r: Raider = { obj, x: z.x + Math.cos(a) * z.r * 0.5, z: z.z + Math.sin(a) * z.r * 0.5, heading: a, speed: 4, state: 'patrol', timer: 0, zone: z, ph: a, crew: [], attacking: false, run, turn: 0, hop: 0 };
       this.crewUp(r);
       this.g.scene.add(obj);
       this.list.push(r);
@@ -71,10 +81,22 @@ export class Raiders {
     this.spawned.add(z.id);
   }
 
-  /** Rustfang crew on deck (GITCRAFT survivor rig): one at the bow with a leaf-spring machete, one at the tiller. */
+  /** The rider (GITCRAFT survivor rig) astride the runner; on the Jury-Rigged look, the jawboat's crew on deck. */
   crewUp(r: Raider) {
+    if (r.run) {
+      // a runner spawned before its model arrived was the stand-in hull: swap it for the real thing
+      if (!r.run.model && runnerReady()) {
+        this.g.scene.remove(r.obj);
+        r.run = buildRaiderRunner(r.ph);
+        r.obj = r.run.obj;
+        r.obj.scale.setScalar(RUNNER_SCALE);
+        this.g.scene.add(r.obj);
+      }
+      mountRider(r.run);
+      return;
+    }
     if (r.crew.length) return;
-    const spots = jury() ? JAWBOAT_CREW : ([[1.1, 0], [-1.7, 0.4]] as const).map(([z, ry]) => ({ x: z > 0 ? 0.15 : -0.2, y: 0.62, z, ry }));
+    const spots = JAWBOAT_CREW;
     for (const p of spots) {
       const c = (jury() && characterModel('tb_jury_raider')) || characterModel('tb_raider');
       if (!c) return;
@@ -91,7 +113,7 @@ export class Raiders {
     if (jury()) batchCrew(r.obj, r.crew);
   }
 
-  /** Characters stream in after the title: give skiffs already on the water their crews. */
+  /** Characters stream in after the title: give runners already on the water their riders. */
   onCharacters() {
     for (const r of this.list) this.crewUp(r);
   }
@@ -111,7 +133,7 @@ export class Raiders {
     const px = g.mode === 'sail' ? b.x : g.foot.x, pz = g.mode === 'sail' ? b.z : g.foot.z;
     for (const z of ZONES) {
       const d = Math.hypot(px - z.x, pz - z.z);
-      // the ledger read out on the flare deck: Rustfang pulls its skiffs out of Old Meridian (PR 2.4)
+      // the ledger read out on the flare deck: Rustfang pulls its riders out of Old Meridian (PR 2.4)
       if (z.id === 'rz_meridian' && g.store.data.flags.includes('ledger_confront')) {
         if (this.spawned.has(z.id)) this.despawn(z);
         continue;
@@ -142,6 +164,7 @@ export class Raiders {
         }
       }
       if (dToP < 260) for (const c of r.crew) c.mixer.update(dt);
+      const h0 = r.heading;
       const zoneD = Math.hypot(px - r.zone.x, pz - r.zone.z);
       const chaseR = r.zone.r * (defender ? 0.6 : 1);
       if (r.state === 'flee' && r.timer <= 0) r.state = 'patrol';
@@ -149,7 +172,7 @@ export class Raiders {
         r.state = 'chase';
         if (!g.store.data.flags.includes('met_raiders')) {
           g.store.data.flags.push('met_raiders');
-          g.ui.revealInfo('Rustfang Raiders', 'Scrap skiffs, closing fast', 'They ram boats and steal cargo. Outrun them with an engine, or fit a <b>Harpoon Turret</b> at Rig Helios to drive them off.', 'Hold on');
+          g.ui.revealInfo('Rustfang Raiders', 'Wave runners, closing fast', 'Rustfang riders on scrap jet skis. They ram boats and snatch cargo. Outrun them with an engine, or fit a <b>Harpoon Turret</b> at Rig Helios to drive them off.', 'Hold on');
         } else {
           g.crewBark('raiders', {}, { prefer: 'lookout', force: true, cool: 30 });
           if (g.store.hasRole('lookout')) pack.say('kai_raiders', 30);
@@ -164,6 +187,13 @@ export class Raiders {
         tx = px + Math.sin(b.heading) * b.speed * 0.8;
         tz = pz + Math.cos(b.heading) * b.speed * 0.8;
         sp = r.zone.speed;
+        if (r.run && dToP > 30) {
+          // runners don't come in straight: they slalom across your wake until the last run-in
+          const w = Math.sin(g.renderT * 0.9 + r.ph * 3) * Math.min(14, dToP * 0.22);
+          const dx = tx - r.x, dz = tz - r.z, d = Math.hypot(dx, dz) || 1;
+          tx += (dz / d) * w;
+          tz -= (dx / d) * w;
+        }
       } else if (r.state === 'flee') {
         tx = r.x + (r.x - px);
         tz = r.z + (r.z - pz);
@@ -175,7 +205,8 @@ export class Raiders {
         sp = 4.5;
       }
       const want = Math.atan2(tx - r.x, tz - r.z);
-      r.heading += clamp(angleDiff(r.heading, want), -1.6 * dt, 1.6 * dt);
+      const agile = r.run ? 2.4 : 1.6; // a runner turns inside any hull
+      r.heading += clamp(angleDiff(r.heading, want), -agile * dt, agile * dt);
       r.speed += (sp - r.speed) * Math.min(1, dt * 0.8);
       let nx = r.x + Math.sin(r.heading) * r.speed * dt, nz = r.z + Math.cos(r.heading) * r.speed * dt;
       if (g.drowned.colliders.some((c) => Math.hypot(nx - c.x, nz - c.z) < c.r + 2)) {
@@ -186,9 +217,21 @@ export class Raiders {
       r.x = nx;
       r.z = nz;
       const w = g.ocean.sample(r.x, r.z, g.renderT);
-      r.obj.position.set(r.x, w.y + 0.05, r.z);
-      r.obj.rotation.set(-w.dz * 0.6, r.heading, w.dx * 0.6, 'YXZ');
-      if (r.speed > 3 && Math.random() < 0.4) g.foam.emit(new THREE.Vector3(r.x - Math.sin(r.heading) * 3, w.y + 0.2, r.z - Math.cos(r.heading) * 3), 1, '#ffffff', 0.8, 0.8, 1.2, 1, 0.6);
+      if (r.run) {
+        // a wave runner planes: nose up with speed, banked hard into its turns, slapping from crest to crest
+        const k = clamp(r.speed / r.zone.speed, 0, 1.1);
+        const rate = dt > 0 ? angleDiff(h0, r.heading) / dt : 0;
+        r.turn += (clamp(rate / 1.6, -1, 1) - r.turn) * Math.min(1, dt * 6);
+        r.hop += (Math.max(0, Math.sin(g.renderT * (2.2 + k * 2.6) + r.ph * 5)) * 0.16 * k - r.hop) * Math.min(1, dt * 10);
+        r.obj.position.set(r.x, w.y + 0.02 + r.hop, r.z);
+        r.obj.rotation.set(-w.dz * 0.5 - 0.1 * k - r.hop * 0.5, r.heading, w.dx * 0.5 - r.turn * 0.5 * k, 'YXZ');
+        if (dToP < 300) poseRaider(r.run, dt, r.turn, Math.min(1, k), attack);
+        if (r.speed > 3 && Math.random() < 0.7) g.foam.emit(new THREE.Vector3(r.x - Math.sin(r.heading) * 1.9, w.y + 0.25, r.z - Math.cos(r.heading) * 1.9), 1 + (k > 0.7 ? 1 : 0), '#ffffff', 0.9, 1.4 + k * 2.2, 1.1, 1.5, 0.6);
+      } else {
+        r.obj.position.set(r.x, w.y + 0.05, r.z);
+        r.obj.rotation.set(-w.dz * 0.6, r.heading, w.dx * 0.6, 'YXZ');
+        if (r.speed > 3 && Math.random() < 0.4) g.foam.emit(new THREE.Vector3(r.x - Math.sin(r.heading) * 3, w.y + 0.2, r.z - Math.cos(r.heading) * 3), 1, '#ffffff', 0.8, 0.8, 1.2, 1, 0.6);
+      }
       if (r.state !== 'chase') continue;
       // harpoon / defender drive them off
       const range = st.harpoon || (defender ? 14 : 0);
@@ -262,8 +305,8 @@ export class Raiders {
       g.hitStop(90);
       g.kick(0.2);
       g.haptic([30, 30, 70]);
-      g.ui.stamp('PERFECT SHOT!', 'Tore a crate off her deck');
-      const n = g.gain(Math.random() < 0.5 ? 'engine_parts' : 'alloy_plate', 1, 'a Rustfang skiff', { reveal: 'none' }) + g.gain('scrap_metal', 2, 'Rustfang flotsam', { reveal: 'none' });
+      g.ui.stamp('PERFECT SHOT!', 'Tore the loot off his runner');
+      const n = g.gain(Math.random() < 0.5 ? 'engine_parts' : 'alloy_plate', 1, 'a Rustfang runner', { reveal: 'none' }) + g.gain('scrap_metal', 2, 'Rustfang flotsam', { reveal: 'none' });
       if (n) g.ui.toast(`+${n} salvage torn off the raider`, { icon: 'scrap_metal', color: '#f0c445', life: 2.5 });
     } else if (Math.random() < 0.5) {
       const n = g.gain('scrap_metal', 1 + Math.floor(Math.random() * 2), 'Rustfang flotsam', { reveal: 'none' });

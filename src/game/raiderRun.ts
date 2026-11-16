@@ -1,10 +1,11 @@
 // The raider event (loop pass Phase 4, added to the Phase 3 event pool): Rustfang riders on wave runners circle the
 // boat and dart in to snatch from the hold. Ram them with your own Wave Runner, harpoon them, or outrun them under
-// engine. Readable on a phone: three bright rust-red riders on a ring around you, each with a lit lamp, and a stamp
-// when one gets away with something.
+// engine. They are the same Rustfang runners that patrol the raider waters (world/raiderRunner.ts): rust red and soot
+// black, spiked, a red rag on a whip aerial and a lit lamp, the rider swinging a blade on the run-in.
 import * as THREE from 'three';
 import type { Game } from './game';
-import { sceneModel } from '../world/assets';
+import { buildRaiderRunner, poseRaider, mountRider, type RaiderRunner } from '../world/raiderRunner';
+import { angleDiff, clamp } from '../core/noise';
 import { item } from '../data/items';
 import { raiderSteal } from './vehicles';
 import { audio } from '../audio/audio';
@@ -18,34 +19,9 @@ export interface Rider {
   t: number;
   obj: THREE.Object3D;
   stole: boolean;
-}
-
-/** One rider of the raider event: the runner model, recoloured rust-red, with a rider block and a lit lamp. */
-function riderMesh(): THREE.Object3D {
-  const g = new THREE.Group();
-  const m = sceneModel('tb_waverunner', { shadows: true });
-  if (m) {
-    m.traverse((o) => {
-      const mesh = o as THREE.Mesh;
-      if (mesh.isMesh && !mesh.userData.glow) mesh.material = new THREE.MeshToonMaterial({ color: 0x8e2f1c });
-    });
-    const sled = m.getObjectByName('waverunner_sled');
-    if (sled) sled.visible = false;
-    g.add(m);
-  } else {
-    const hull = new THREE.Mesh(new THREE.CapsuleGeometry(0.4, 1.8, 4, 8), new THREE.MeshToonMaterial({ color: 0x8e2f1c }));
-    hull.rotation.x = Math.PI / 2;
-    hull.scale.set(1, 1, 0.55);
-    hull.position.y = 0.15;
-    g.add(hull);
-  }
-  const rider = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.6, 3, 6), new THREE.MeshToonMaterial({ color: 0x2b2f36 }));
-  rider.position.set(0, 1.05, -0.35);
-  g.add(rider);
-  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), new THREE.MeshBasicMaterial({ color: 0xff7a3a }));
-  lamp.position.set(0, 1.6, -0.35);
-  g.add(lamp);
-  return g;
+  run: RaiderRunner;
+  heading: number;
+  turn: number;
 }
 
 export class RaiderRun {
@@ -68,9 +44,11 @@ export class RaiderRun {
     this.dartTimer = 4;
     for (let i = 0; i < 3; i++) {
       const ang = (i / 3) * Math.PI * 2;
-      const obj = riderMesh();
+      const run = buildRaiderRunner(ang);
+      const obj = run.obj;
+      obj.scale.setScalar(1.2);
       const r = 70;
-      const rd: Rider = { x: b.x + Math.cos(ang) * r, z: b.z + Math.sin(ang) * r, ang, r, state: 'circle', t: 0, obj, stole: false };
+      const rd: Rider = { x: b.x + Math.cos(ang) * r, z: b.z + Math.sin(ang) * r, ang, r, state: 'circle', t: 0, obj, stole: false, run, heading: ang, turn: 0 };
       obj.position.set(rd.x, 0, rd.z);
       g.scene.add(obj);
       this.riders.push(rd);
@@ -178,9 +156,16 @@ export class RaiderRun {
       r.x += (dx / d) * Math.min(d, speed * dt);
       r.z += (dz / d) * Math.min(d, speed * dt);
       const w = g.ocean.sample(r.x, r.z, g.renderT);
-      r.obj.position.set(r.x, w.y + 0.05, r.z);
-      r.obj.rotation.set(-w.dz * 0.4, Math.atan2(dx, dz), w.dx * 0.4, 'YXZ');
-      if (Math.random() < dt * 8) g.wakeFoam.emit(new THREE.Vector3(r.x, w.y + 0.2, r.z), 1, '#ffffff', 0.8, 0.8, 0.9, 1, 0.5);
+      // the runner turns toward where it is going (not snapping), banks into it and planes nose-up
+      const want = Math.atan2(dx, dz), h0 = r.heading;
+      r.heading += clamp(angleDiff(r.heading, want), -4 * dt, 4 * dt);
+      r.turn += (clamp((dt > 0 ? angleDiff(h0, r.heading) / dt : 0) / 1.6, -1, 1) - r.turn) * Math.min(1, dt * 6);
+      const hop = Math.max(0, Math.sin(this.t * 4.6 + r.ang * 3)) * 0.14;
+      r.obj.position.set(r.x, w.y + 0.02 + hop, r.z);
+      r.obj.rotation.set(-w.dz * 0.4 - 0.1 - hop * 0.5, r.heading, w.dx * 0.4 - r.turn * 0.5, 'YXZ');
+      mountRider(r.run);
+      poseRaider(r.run, dt, r.turn, 1, r.state === 'dart');
+      if (Math.random() < dt * 14) g.wakeFoam.emit(new THREE.Vector3(r.x - Math.sin(r.heading) * 1.9, w.y + 0.25, r.z - Math.cos(r.heading) * 1.9), 1, '#ffffff', 0.9, 3, 1, 1.5, 0.6);
       // rammed by your Wave Runner
       if (v.active === 'runner' && v.thrown <= 0 && v.rSpeed > 9 && Math.hypot(v.rx - r.x, v.rz - r.z) < 2.6) this.knockOut(r, 'Rammed');
     }

@@ -83,7 +83,7 @@ export const CHARACTERS: CharacterDef[] = [
       L('join', 'Eleven days on that raft. I saw you coming from six miles out.'),
       L('storm', 'Storm ahead, Captain. Go round, or brace.'),
       L('storm', 'Storm on us! Hold her steady, she’ll take a beating.'),
-      L('raiders', 'Rustfang skiffs! Coming in hard!'),
+      L('raiders', 'Rustfang runners! Coming in hard!'),
       L('green', 'Is that… green? Captain, that thing is alive.'),
       L('haul', 'Counted the bubbles. Eleven. Something big came up.'),
       L('region', 'Open swell. I can see twelve miles and none of it is land.', 'emerald'),
@@ -236,7 +236,7 @@ export const CHARACTERS: CharacterDef[] = [
       L('dock', 'The flare’s burned forty years. It goes out, the Reach goes dark.'),
       L('dock', 'Crude’s running thin on the lower deck. Bring me barrels and I’ll make it worth your while.'),
       L('dock', 'Water costs more than diesel out here. Don’t spill either.'),
-      L('dock', 'Heard you put a harpoon in a Rustfang skiff. The rig remembers favours.', 'repelled'),
+      L('dock', 'Heard you put a harpoon in a Rustfang runner. The rig remembers favours.', 'repelled'),
     ],
   },
   {
