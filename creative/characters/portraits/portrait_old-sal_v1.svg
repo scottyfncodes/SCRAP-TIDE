@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512">
+<rect width="64" height="64" fill="#8fb0ad"/><path d="M0 0h64L0 46z" fill="#a6c2bf"/>
+<path d="M10 64l1-22 4-16 8-11 9-6 9 6 8 11 4 16 1 22z" fill="#c98350"/><path d="M32 9l9 6 8 11 4 16 1 22H32z" fill="#a5653a"/>
+<path d="M17 40l2-13 6-8 7-3 7 3 6 8 2 13-3 10-12 5-12-5z" fill="#6b4f41"/><path d="M32 16l7 3 6 8 2 13-3 10-12 5z" fill="#553c31"/>
+<path d="M12.5 38.5l4.5-1 .3 3-4.8 1z" fill="#d9d2c0"/>
+<path d="M20 30l4-6h16l4 6v9l-4 8-8 3.5-8-3.5-4-8z" fill="#c08a66"/>
+<path d="M36 24h4l4 6v9l-4 8-8 3.5 4-13z" fill="#9c6a4c"/>
+<path d="M21.5 36.5l5 .5-2.5 4z" fill="#cc8a6a"/><path d="M42.5 36.5l-5 .5 2.5 4z" fill="#a26347"/>
+<path d="M32 31l3.2 7.5-3.2 1.2z" fill="#8f5d42"/>
+<path d="M21 31l3-7h7l-5 2.5-2.5 6z" fill="#dcd6c5"/><path d="M43 31l-3-7h-7l5 2.5 2.5 6z" fill="#aea791"/>
+<path d="M23.5 29.3l6-1.8v1.8l-6 1.8z" fill="#6b5a4c"/><path d="M40.5 30.6l-6-.4v1.8l6 .4z" fill="#54463b"/>
+<circle cx="26.7" cy="33.8" r="1.6" fill="#2b1c15"/><path d="M35 33.4h4.6l-.4 1.4h-3.8z" fill="#2b1c15"/>
+<path d="M26.5 42.5l5.5 1.3 5.5-1.3-.5 1.6-5 1.3-5-1.3z" fill="#5a3326"/>
+<path d="M27 52.5h1.7l.3 7h-2.2z" fill="#e6dfcc"/><path d="M35.3 52.5H37l.2 6h-2.2z" fill="#bdb49d"/>
+</svg>

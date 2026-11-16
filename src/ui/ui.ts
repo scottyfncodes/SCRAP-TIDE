@@ -112,14 +112,14 @@ function costHTML(store: Store, c: Cost) {
 }
 
 const NPCS = {
-  pip: { name: 'Pip Farthing', role: 'Trader', color: '#f4d06f', face: '\u{1F9D0}' },
-  marlo: { name: 'Marlo Keelhart', role: 'Shipwright & Mechanic', color: '#9ec5e8', face: '\u{1F9D4}' },
-  wren: { name: 'Old Wren', role: 'Charts & Rumours', color: '#a8d5ba', face: '\u{1F475}' },
-  odessa: { name: 'Odessa Brightly', role: 'Paint, Sails & Curios', color: '#f2b5c4', face: '\u{1F469}‍\u{1F3A8}' },
-  sal: { name: 'Old Sal', role: 'Fish Trader', color: '#9fd8c8', face: '\u{1F3A3}' },
-  nori: { name: 'Nori Kettle', role: 'Raft-wright', color: '#d8c49f', face: '\u{1F6E0}' },
-  dace: { name: 'Foreman Dace', role: 'Rig Trader', color: '#f2b825', face: '\u{1F477}' },
-  vik: { name: 'Vik Ashby', role: 'Rig Mechanic', color: '#ff9f45', face: '\u{1F527}' },
+  pip: { name: 'Pip Farthing', role: 'Trader' },
+  marlo: { name: 'Marlo Keelhart', role: 'Shipwright & Mechanic' },
+  wren: { name: 'Old Wren', role: 'Charts & Rumours' },
+  odessa: { name: 'Odessa Brightly', role: 'Paint, Sails & Curios' },
+  sal: { name: 'Old Sal', role: 'Fish Trader' },
+  nori: { name: 'Nori Kettle', role: 'Raft-wright' },
+  dace: { name: 'Foreman Dace', role: 'Rig Trader' },
+  vik: { name: 'Vik Ashby', role: 'Rig Mechanic' },
 };
 const SETTLEMENT_NPCS: Record<string, { trader: keyof typeof NPCS; wright: keyof typeof NPCS }> = {
   driftholm: { trader: 'pip', wright: 'marlo' },
@@ -1277,8 +1277,7 @@ export class UI {
 
   private npcCard(id: keyof typeof NPCS, go: string, line: string) {
     const n = NPCS[id];
-    const art = portraitSVG(id); // drawn portraits replace the emoji faces one character at a time
-    return `<button class="npc" data-go="${go}">${art ? `<div class="avatar art">${art}</div>` : `<div class="avatar" style="background:${n.color}">${n.face}</div>`}<div><div class="n-role">${n.role}</div><div class="n-name">${n.name}</div><div class="n-line">${line}</div></div></button>`;
+    return `<button class="npc" data-go="${go}"><div class="avatar">${portraitSVG(id)}</div><div><div class="n-role">${n.role}</div><div class="n-name">${n.name}</div><div class="n-line">${line}</div></div></button>`;
   }
 
   private backBtn(body: HTMLElement) {

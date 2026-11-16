@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512">
+<rect width="64" height="64" fill="#c7a6a0"/><path d="M0 0h64L0 46z" fill="#d8bbb5"/>
+<path d="M4 64l8-11 13-5h14l13 5 8 11z" fill="#cdbf9d"/><path d="M32 48h7l13 5 8 11H32z" fill="#a89b7c"/>
+<path d="M14 56.5l6-1.5 2 4-5.5 2z" fill="#b2493b"/>
+<path d="M27 42h10v8H27z" fill="#5e3a2a"/>
+<circle cx="19.5" cy="38.5" r="3.3" fill="none" stroke="#b88c3c" stroke-width="1.4"/><circle cx="44.5" cy="38.5" r="3.3" fill="none" stroke="#8f6a2a" stroke-width="1.4"/>
+<path d="M21 26l4-4h14l4 4 .5 9-4 9-7.5 4-7.5-4-4-9z" fill="#7a4c35"/>
+<path d="M35 22h4l4 4 .5 9-4 9-7.5 4 3.5-13z" fill="#5c3727"/>
+<path d="M32 30.5l3 8-3 1.1z" fill="#4a2b1e"/>
+<path d="M22.5 38.8l4.8-1.600.5 1.6-4.8 1.8z" fill="#b2493b"/>
+<path d="M24 28.3l6.5-2.300.3 1.8-6.3 2.5z" fill="#2a1711"/><path d="M40.5 29.3l-6.5-.6v1.8l6.500.8z" fill="#1e100b"/>
+<path d="M24.2 32.5l3.1-1.7 3.2 1.5-3.2-.4z" fill="#5f8f94"/><path d="M39.8 33l-3.1-1.2-3.2 1 3.2-.1z" fill="#4a7378"/>
+<path d="M24.5 33.3l2.8-.9 3 1-3 1z" fill="#1c0f0a"/><path d="M39.5 33.7l-2.8-.7-3 .8 3 1z" fill="#1c0f0a"/>
+<path d="M28 43l4 1 4.5-2.2-.7 2.3-3.8 1.7-3.6-.9z" fill="#a8443a"/>
+<path d="M19 27l-1-9 4-8 8-4.5h6l8 4.5 4 8-1 9-5-4.5H24z" fill="#9a6a78"/>
+<path d="M32 5.5h4l8 4.5 4 8-1 9-5-4.5H32z" fill="#7a5060"/>
+<path d="M19.5 20.5l14-13.5 3.500.8L20.5 24z" fill="#b98893"/><path d="M34 22.5l11.5-10.5 1.5 3.5-9 7z" fill="#8b5d6c"/>
+<path d="M28.5 6l3.5-3.5 4.5 1-1.5 3.5z" fill="#b98893"/>
+</svg>
