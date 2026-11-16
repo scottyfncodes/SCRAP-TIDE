@@ -40,6 +40,9 @@
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-l: env(safe-area-inset-left, 0px);
   --safe-r: env(safe-area-inset-right, 0px);
+  /* how far the HUD sits from the screen edges: a hair off the system strips where a phone has them, 8 / 14 px where not */
+  --edge-t: max(8px, calc(var(--safe-t) + 4px));
+  --edge-b: max(14px, calc(var(--safe-b) + 8px));
   --stick: 140px; /* the helm wheel's size: centred at the bottom, everything beside it sized from it */
   --display: 'Saira Stencil One', 'Impact', sans-serif;
   --label: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
@@ -63,14 +66,20 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
   margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-  /* sea-coloured, not near-black: if any strip of page ever shows past the canvas it reads as water, not a hole */
-  background: var(--abyss); color: var(--ink); font-family: var(--body);
+  color: var(--ink); font-family: var(--body);
   overscroll-behavior: none; touch-action: none; user-select: none; -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
+/* sea-coloured, not near-black: if any strip of page ever shows past the canvas it reads as water, not a hole. Only
+   the root paints it (the game copies the world's edge colours onto it on iPhone); a body background would cover that
+   copy with a flat band in the status-bar and home-indicator strips. */
+html { background: var(--abyss); }
+body { background: transparent; }
 /* The world fills the LARGE viewport, so it runs behind Safari's toolbars and the iOS 26 Home Screen status/home areas
-   instead of stopping short and leaving a dead band at the bottom. The HUD (#ui) stays in the visible viewport. */
-#app { position: fixed; top: 0; left: 0; right: 0; height: 100vh; height: 100lvh; touch-action: none; }
+   instead of stopping short and leaving a dead band at the bottom. The HUD (#ui) stays in the visible viewport.
+   Absolute, NOT fixed: iOS 26 keeps fixed layers out of the status-bar and home-indicator strips of a Home Screen app
+   (it paints them with a page colour instead), while ordinary page content is drawn right under them. */
+#app { position: absolute; top: 0; left: 0; right: 0; height: 100vh; height: 100lvh; touch-action: none; }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 /* lens grime: a static vignette and grain over the world (no blend modes: cheap on iOS). The grain is dark specks
    only, on the noise's peaks: a light grey grain lifted the blacks and took a third of the colour out of everything */
@@ -108,7 +117,7 @@ button { font-family: var(--label); cursor: pointer; border: none; color: inheri
 /* Top HUD (mobile HUD pass): left = one status plate + the objective slip; right = navigation (Maps, the Menu tray),
    the radar scope and the treasure compass. Everything sits in normal flow, so nothing can overlap as content grows. */
 .hud-top {
-  position: absolute; top: calc(var(--safe-t) + 8px); left: calc(var(--safe-l) + 8px); right: calc(var(--safe-r) + 8px);
+  position: absolute; top: var(--edge-t); left: calc(var(--safe-l) + 8px); right: calc(var(--safe-r) + 8px);
   display: flex; gap: 8px; align-items: flex-start; pointer-events: none;
 }
 .hud-left { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; pointer-events: none; }
@@ -136,34 +145,60 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 .cargo-pill.over::after { content: 'OVER'; margin-left: 1px; padding: 2px 4px 1px; border-radius: 2px; background: var(--red); color: #fff;
   font: 700 12px/1 var(--label); letter-spacing: .8px; }
 
+/* The objective (compact pass): folded, it is a two-line slip: the step number and the goal on one line, what is
+   still missing and the side lead on the next. A tap unfolds the whole card: every material by name, the hint and the
+   side lead on its own row. */
 .quest {
-  position: relative; max-width: min(100%, 360px);
-  /* the objective: a sun-bleached painted tag (sheet aluminium, a strip of tape for the label), not a parchment slip */
+  position: relative; max-width: min(100%, 340px);
+  /* the objective: a sun-bleached painted tag (sheet aluminium), oxide edge on the left */
   background: var(--scratches), linear-gradient(180deg, #e3dccb, #c9c1ab);
-  border-radius: 3px; padding: 5px 11px 6px 12px; border: 1px solid #6f6a5c; border-left: 4px solid var(--oxide);
-  box-shadow: 0 4px 12px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 0 rgba(0,0,0,.12); font-family: var(--label); font-size: 15px; font-weight: 700; color: var(--ink);
-  text-align: left; line-height: 1.15; cursor: pointer;
+  border-radius: 3px; padding: 4px 9px 5px 9px; border: 1px solid #6f6a5c; border-left: 3px solid var(--oxide);
+  box-shadow: 0 3px 10px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 0 rgba(0,0,0,.12); font-family: var(--label); font-size: 14.5px; font-weight: 700; color: var(--ink);
+  text-align: left; line-height: 1.15; cursor: pointer; outline: none;
 }
-.quest .q-label { display: inline-block; font-family: var(--label); font-size: 12px; font-weight: 700; letter-spacing: 1.2px; color: #6a2a16; text-transform: uppercase; line-height: 1.2;
-  background: rgba(160,77,48,.13); padding: 0 5px; margin-left: -5px; border-radius: 1px; }
-.quest .q-need { display: flex; flex-wrap: wrap; gap: 3px 4px; margin-top: 4px; }
+.quest:focus-visible { box-shadow: 0 0 0 2px var(--hazard), 0 3px 10px rgba(0,0,0,.3); }
+.quest .q-head { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+.quest .q-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quest .q-label { flex: none; font: 400 11.5px/1.2 var(--mono); letter-spacing: .3px; color: #6a2a16; text-transform: uppercase;
+  background: rgba(160,77,48,.14); padding: 1px 4px 0; border-radius: 2px; }
+.quest .q-label .ql-long { display: none; font-family: var(--label); font-weight: 700; letter-spacing: 1.1px; }
+.quest .q-row { display: flex; align-items: center; gap: 6px; margin-top: 3px; min-width: 0; }
+.quest .q-need { display: flex; flex-wrap: nowrap; gap: 3px 4px; flex: none; min-width: 0; }
 /* one chip per material: wraps whole, so a line never ends on a dangling separator */
-.quest .qn { display: inline-flex; align-items: baseline; gap: 4px; padding: 2px 6px 1px; border-radius: 2px; background: rgba(122,48,24,.1);
+.quest .qn { display: inline-flex; align-items: baseline; gap: 4px; padding: 1px 5px 0; border-radius: 2px; background: rgba(122,48,24,.1);
   border: 1px solid rgba(122,48,24,.28); font: 600 12.5px/1.2 var(--label); letter-spacing: .2px; color: #5a2512; white-space: nowrap; }
 .quest .qn b { font: 400 12px/1 var(--mono); color: #8a2c12; }
-.quest .qn.met { background: none; border-color: transparent; padding-left: 2px; padding-right: 2px; color: #4f6a5c; }
-.quest .qn.done-all { white-space: normal; background: rgba(229,198,94,.3); border-color: var(--hazard-dk); color: var(--ink); }
-.quest .q-hint { font-family: var(--body); font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-top: 3px; display: none; }
-.quest.open .q-hint { display: block; }
+.quest .qn.met { display: none; background: none; border-color: transparent; padding-left: 2px; padding-right: 2px; color: #4f6a5c; }
+.quest .qn.met-sum { background: none; border-color: transparent; padding: 1px 1px 0; color: #4f6a5c; font-weight: 700; }
+.quest .qn.done-all { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: block; background: rgba(229,198,94,.3); border-color: var(--hazard-dk); color: var(--ink); }
+.quest .q-need:has(.done-all) { flex: 0 1 auto; }
+.quest .q-hint { font-family: var(--body); font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-top: 4px; display: none; line-height: 1.25; }
+/* the side lead: folded, a tag and its name squeezed onto the needs line; unfolded, its own row */
 .quest .q-side {
-  display: flex; align-items: center; gap: 7px; width: 100%; margin-top: 5px; min-height: 30px; padding: 0 2px; border: 0; border-top: 1px solid rgba(111,106,92,.35);
-  border-radius: 0; background: none; font: 600 13px/1.15 var(--label); letter-spacing: .2px; color: var(--ink-soft); text-align: left;
+  position: relative; display: flex; align-items: center; gap: 5px; flex: 1 1 auto; min-width: 0; min-height: 22px; padding: 0 0 0 7px; border: 0;
+  border-left: 1px solid rgba(111,106,92,.4); border-radius: 0; background: none; font: 600 12.5px/1.15 var(--label); letter-spacing: .2px; color: var(--ink-soft); text-align: left;
 }
-.quest .q-side .qs-tag { flex: none; padding: 2px 5px 1px; border-radius: 2px; border: 1px solid #8a8370; font: 700 12px/1 var(--label); letter-spacing: 1px; color: #5e594c; }
+.quest .q-need[style*="none"] + .q-side { border-left: 0; padding-left: 0; }
+/* a full 44 px touch target without making the slip taller */
+.quest .q-side::before { content: ''; position: absolute; left: 0; right: -9px; top: -11px; bottom: -11px; }
+.quest .q-side .qs-tag { flex: none; padding: 2px 4px 1px; border-radius: 2px; border: 1px solid #8a8370; font: 700 11px/1 var(--label); letter-spacing: .9px; color: #5e594c; }
 .quest .q-side .qs-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .quest .q-side .qs-text::after { content: ' ›'; color: #8a8370; }
 .quest .q-side.on { color: var(--ink); }
 .quest .q-side.on .qs-tag { background: var(--hazard); border-color: var(--hazard-dk); color: #1b170c; }
+/* unfolded: the full card */
+.quest.open { max-width: min(100%, 360px); }
+.quest.open .q-text { white-space: normal; }
+.quest.open .q-label .ql-long { display: inline; }
+.quest.open .q-head { flex-direction: column; align-items: flex-start; gap: 2px; }
+.quest.open .q-row { flex-wrap: wrap; align-items: stretch; }
+.quest.open .q-need { flex-wrap: wrap; flex: 1 1 100%; }
+.quest.open .qn.met { display: inline-flex; }
+.quest.open .qn.met-sum { display: none; }
+.quest.open .qn.done-all { white-space: normal; }
+.quest.open .q-hint { display: block; }
+.quest.open .q-side { flex: 1 1 100%; min-height: 30px; margin-top: 2px; padding: 0 2px; border-left: 0; border-top: 1px solid rgba(111,106,92,.35); font-size: 13px; }
+.quest.open .q-side::before { top: -7px; bottom: -7px; }
 .row.rumour.pinned { border-color: var(--hazard); }
 .quest.pulse { animation: qpulse 1.2s ease 2; }
 @keyframes qpulse { 50% { box-shadow: 0 0 0 3px rgba(229,198,94,.7), 0 2px 6px rgba(0,0,0,.3); } }
@@ -207,11 +242,11 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 
 /* steering wheel */
 /* the helm: one thumb zone, bottom-left. Instruments + engine ride above the wheel. */
-.helm { position: absolute; left: calc(var(--safe-l) + 12px); bottom: calc(var(--safe-b) + 22px); display: flex; flex-direction: column; align-items: flex-start; gap: 10px; pointer-events: none; }
+.helm { position: absolute; left: calc(var(--safe-l) + 12px); bottom: var(--edge-b); display: flex; flex-direction: column; align-items: flex-start; gap: 10px; pointer-events: none; }
 .helm-row { display: flex; align-items: center; gap: 8px; pointer-events: none; }
 .helm-row > button { pointer-events: auto; }
 .stick {
-  position: absolute; left: 50%; bottom: calc(var(--safe-b) + 22px); margin-left: calc(var(--stick) / -2); flex: none;
+  position: absolute; left: 50%; bottom: var(--edge-b); margin-left: calc(var(--stick) / -2); flex: none;
   width: var(--stick); height: var(--stick); border-radius: 50%; touch-action: none; pointer-events: auto;
 }
 .stick .wheel { position: absolute; inset: 0; transition: transform .05s; filter: drop-shadow(0 4px 6px rgba(0,0,0,.5)); }
@@ -233,7 +268,7 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 
 /* action plates: Sun Gold enamel on a brass bezel (HUD facelift: no hazard stripes) */
 .actions {
-  position: absolute; right: calc(var(--safe-r) + 12px); bottom: calc(var(--safe-b) + 22px);
+  position: absolute; right: calc(var(--safe-r) + 12px); bottom: var(--edge-b);
   display: flex; flex-direction: column-reverse; gap: 8px; align-items: flex-end;
   /* the half of the screen right of the wheel, less a gap and the edge margin */
   max-width: calc(50vw - var(--stick) / 2 - var(--safe-r) - 24px);
@@ -577,7 +612,11 @@ body.calm .tape.playing::before { animation: none; }
 @media (min-width: 700px) {
   .hud-left { flex-direction: row; align-items: flex-start; gap: 8px; }
   .hud-left .quest { margin: 0 auto; flex: 0 1 400px; text-align: center; }
-  .quest .q-side { text-align: center; }
+  .quest .q-head, .quest .q-row { justify-content: center; }
+  .quest .q-side { flex: 0 1 auto; text-align: center; }
+  .quest.open .q-head { align-items: center; }
+  .quest.open .q-need { justify-content: center; }
+  .quest.open .q-side { justify-content: center; }
 }
 
 #ui > .fade { pointer-events: none; }
