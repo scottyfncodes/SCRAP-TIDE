@@ -21,6 +21,7 @@ import { pagePreviewShip, pagePreviewUpgrades } from '../state/preview';
 import { pageExperiments, pageFresh } from '../state/experiments';
 import { buildShip, animateShip, sloopUpgradeFiles, type ShipParts } from '../ship/shipModel';
 import { Captain } from '../player/captain';
+import { helmTargets, tillerAngle, newTargets } from '../player/helm';
 import { audio } from '../audio/audio';
 import { pack, VOICE_LINES, type VoiceId } from '../audio/pack';
 import { FlipFX } from './flipfx';
@@ -46,6 +47,7 @@ import { Wrecks, type Wreck } from './wrecks';
 import { SeaEvents } from './seaEvents';
 import { Vehicles } from './vehicles';
 import { RaiderRun } from './raiderRun';
+import { Narrator } from './narration';
 import { pagePreviewVehicle } from '../state/preview';
 import { dailyPlan, dayKey, scoreDaily, nextStreak, shareText, type SeaEventKind } from './daily';
 import { progressJobs, claimJobs, type JobEvent } from './dockJobs';
@@ -105,6 +107,8 @@ export class Game implements GameAPI {
   events!: SeaEvents;
   vehicles!: Vehicles;
   raiderRun!: RaiderRun;
+  /** Old Wren on the radio: context and how-to-play, voiced and captioned (game/narration.ts) */
+  narr = new Narrator(this);
   /** Phase 4 hook: the raider wave-runner event. */
   raiderEvent?: (a: any) => void;
   /** The last big hit was taken by the armour's once-a-trip shield. */
@@ -219,6 +223,7 @@ export class Game implements GameAPI {
     this.ui.onAction = (id) => this.action(id);
     this.store.on(() => {});
     audio.setVolumes(this.store.data.settings.sfx, this.store.data.settings.music);
+    pack.setTape(this.store.data.settings.tape ?? 'auto');
     window.addEventListener('resize', () => this.resize());
     // iOS changes the large viewport without always firing resize (toolbars, Home Screen launch): watch the canvas too
     if ('ResizeObserver' in window) new ResizeObserver(() => this.resize()).observe(this.renderer.domElement);
@@ -329,6 +334,7 @@ export class Game implements GameAPI {
     this.camYaw = this.boat.heading; // play starts with the camera behind the boat, as before
     audio.unlock();
     setTimeout(() => pack.prefetch(), 4000);
+    this.narr.begin(this.store.isNew);
     if (this.store.isNew) {
       this.ui.revealInfo('Driftholm · Year 61 After the Water', 'Wake up, Captain!', 'The sea took the cities, the roads and the mountains. It left you a patchwork skiff, fifteen gold and a head full of stories.<br><br>Old Wren is waiting at the end of the pier, lantern up: <i>“A bottle washed up on Turtle Atoll, the gulls say. Bring me what’s inside. Don’t read it first.” …“Read it first.”</i><br><br><b>Drag the wheel</b> at the bottom of the screen toward where you want to sail.', 'Let’s go');
       this.store.isNew = false;
@@ -2576,6 +2582,7 @@ export class Game implements GameAPI {
       this.vehicles.update(dt);
     }
     this.raiders.update(dt);
+    this.narr.update(dt, { luff: this.luff, region: this.currentRegion, night: this.atmo.night, storm: this.atmo.storm, danger: this.raiders.danger, winch: this.ui.winchOpen, engine: this.engineOn });
     for (const c of this.ship.crew) c.mixer.update(dt);
     for (const [id, o] of this.castawayObjs) {
       const cw = CASTAWAYS.find((c) => c.id === id)!;
@@ -2651,6 +2658,8 @@ export class Game implements GameAPI {
 
   // ── people move with the boat (HUD facelift pass): nobody stands like a post on a rolling deck ──
   private sway = { y: 0, vy: 0, heading: 0, turn: 0, speed: 0, accel: 0 };
+  private helmSteer = 0;
+  private helmNow = newTargets();
   /**
    * The crew on deck and the captain at the helm ride the boat's motion like people keeping their balance: they lean
    * against the roll and pitch (staying nearer upright than the hull), dip at the knees when she drops into a trough,
@@ -2909,6 +2918,11 @@ export class Game implements GameAPI {
     this.captain.root.position.copy(seat);
     this.captain.root.rotation.y = b.heading;
     this.swayAboard(dt); // sets how the seat moves before the captain balances on it
+    // hands on the helm: the tiller (or the hands on the wheel rim) follows the turn she is making
+    const steer = clamp(this.sway.turn / 0.55, -1, 1);
+    this.helmSteer += (steer - this.helmSteer) * (1 - Math.exp(-dt * 7));
+    if (this.ship.tiller) this.ship.tiller.rotation.y = tillerAngle(this.ship.helm, this.helmSteer);
+    this.captain.helm = helmTargets(this.ship.helm, this.helmSteer, this.captain.root.scale.x, this.helmNow, this.shipRoot.rotation.z, this.sway.vy, this.t);
     this.captain.update(dt, 0);
 
     const wl = this.ship.waterline;
@@ -2969,7 +2983,7 @@ export class Game implements GameAPI {
       audio.proximity(bell, wreck);
     }
     audio.ambience(dt, b.speed, false, Math.max(swellFactor(b.x, b.z), this.atmo.storm), this.currentRegion, this.atmo.storm);
-    pack.music(this.currentRegion, this.raiders.danger);
+    pack.music(this.currentRegion, Math.max(this.raiders.danger, this.raiderRun.active ? 0.8 : 0), this.atmo.night, this.atmo.storm);
     this.ui.setSpeed(this.started ? b.speed * 1.4 : null, -angleDiff(this.camYaw, WORLD.wind.dir), eff, motoring, {
       heading: -angleDiff(this.camYaw, b.heading),
       point: pointOfSail(offWind(b.heading, WORLD.wind.dir)),

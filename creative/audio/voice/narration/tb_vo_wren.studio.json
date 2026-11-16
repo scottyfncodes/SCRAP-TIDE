@@ -1,0 +1,1222 @@
+{
+ "department": "audiocraft",
+ "action": "voice",
+ "studio": "1.0.0",
+ "status": "ok",
+ "out_dir": "/home/user/SCRAP-TIDE/creative/audio/voice/narration",
+ "request": {
+  "name": "tb_vo_wren",
+  "out_dir": "/home/user/SCRAP-TIDE/creative/audio/voice/narration",
+  "cast": {
+   "wren": "bf_emma",
+   "kai": "am_puck"
+  },
+  "lang": "en-gb",
+  "speed": 0.94,
+  "formats": [
+   "wav"
+  ],
+  "seed": 61,
+  "tags": [
+   "scrap-tide",
+   "voice",
+   "narration"
+  ],
+  "lines": [
+   {
+    "id": "wren_intro",
+    "character": "wren",
+    "text": "The sea rose, and it never went back. The cities are under your keel now. What's left of us lives on what floats."
+   },
+   {
+    "id": "wren_intro2",
+    "character": "wren",
+    "text": "I'm Wren. I draw the charts here in Driftholm. Take the radio, Captain. I'll be in your ear until you stop needing me."
+   },
+   {
+    "id": "wren_steer",
+    "character": "wren",
+    "text": "Thumb on the wheel, and drag it toward where you want to go. She'll come round. The gold arrow points at your next job."
+   },
+   {
+    "id": "wren_tower",
+    "character": "wren",
+    "text": "That tower was offices, once. Slow down beside the buoy, and tap Salvage."
+   },
+   {
+    "id": "wren_winch",
+    "character": "wren",
+    "text": "Watch the needle. Reel in when it crosses the green. Catch the gold centre, and the sea gives a little extra."
+   },
+   {
+    "id": "wren_bank",
+    "character": "wren",
+    "text": "Good. Now, nothing you haul is yours until it's on the dock. Come home and tie up."
+   },
+   {
+    "id": "wren_refit",
+    "character": "wren",
+    "text": "Sell what you don't need to Pip. Then see Marlo. Every part he fits, you'll see it on the boat."
+   },
+   {
+    "id": "wren_turtle",
+    "character": "wren",
+    "text": "Now, the errand. A bottle washed up on Turtle Atoll, to the west. Follow the gold arrow. Don't read what's inside."
+   },
+   {
+    "id": "wren_anchor",
+    "character": "wren",
+    "text": "Shallow water. Let go of the wheel, drop the anchor, and go ashore."
+   },
+   {
+    "id": "wren_walk",
+    "character": "wren",
+    "text": "Same thumb, same wheel. It moves your feet now. Walk the beach, and look for the glint."
+   },
+   {
+    "id": "wren_map",
+    "character": "wren",
+    "text": "You read it. Good. The landmarks on that map are real. Stand where it says, and dig."
+   },
+   {
+    "id": "wren_home",
+    "character": "wren",
+    "text": "Bring it home, Captain. And watch the sky. Squalls come up fast out here."
+   },
+   {
+    "id": "wren_log",
+    "character": "wren",
+    "text": "That's your first voyage done. From here, the Captain's Log tells you what's next. Salvage. Refit. Push further out."
+   },
+   {
+    "id": "wren_wind",
+    "character": "wren",
+    "text": "Feel her slow down? You're pointing into the wind. Turn away a little, and the sail fills again."
+   },
+   {
+    "id": "wren_hold",
+    "character": "wren",
+    "text": "Your hold is full. Take it home and bank it, before the sea takes it back."
+   },
+   {
+    "id": "wren_hull",
+    "character": "wren",
+    "text": "She's taking water. Patch her from the Ship screen, or limp home to Marlo."
+   },
+   {
+    "id": "wren_engine",
+    "character": "wren",
+    "text": "An engine. Tap the engine button to run it. It's fast, and it's thirsty."
+   },
+   {
+    "id": "wren_fuel",
+    "character": "wren",
+    "text": "Fuel's low. Sail when the wind lets you. Save the engine for when it won't."
+   },
+   {
+    "id": "wren_night",
+    "character": "wren",
+    "text": "Dark comes quick out here. Your lookout dial still shows the way home."
+   },
+   {
+    "id": "wren_storm",
+    "character": "wren",
+    "text": "Storm cell. Go round it if you can. If you can't, hold on, and mind your hull."
+   },
+   {
+    "id": "wren_raiders",
+    "character": "wren",
+    "text": "Rustfang. They ride wave runners, and they take what they like. Outrun them under engine, or fit a harpoon and teach them manners."
+   },
+   {
+    "id": "wren_reach",
+    "character": "wren",
+    "text": "The Sunken Reach. A whole city under you. Richer salvage out here, and worse company."
+   },
+   {
+    "id": "wren_wall",
+    "character": "wren",
+    "text": "The Stormwall. Nobody I know has come back from it. Be the first."
+   },
+   {
+    "id": "wren_crew",
+    "character": "wren",
+    "text": "Crew aren't passengers. Each one does a job you'd only do badly. Find more of them."
+   },
+   {
+    "id": "wren_green",
+    "character": "wren",
+    "text": "Is that green? Keep it alive, Captain. That is the rarest thing left in the world."
+   },
+   {
+    "id": "wren_trimaran",
+    "character": "wren",
+    "text": "Three hulls. She'll take the open swell now. Rig Helios is west, past the edge of my chart."
+   },
+   {
+    "id": "wren_back",
+    "character": "wren",
+    "text": "Still floating, Captain. Good. Your log has the next job."
+   },
+   {
+    "id": "kai_raiders",
+    "character": "kai",
+    "text": "Rustfang runners! Coming in hard!",
+    "lang": "en-us",
+    "speed": 1
+   }
+  ],
+  "voice": "am_adam"
+ },
+ "created": "2026-11-16T03:36:56+00:00",
+ "seconds": 51.94,
+ "outputs": [
+  {
+   "path": "wren_intro.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 6.3371,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "00bdd1202d12716e793521d8b5bd9a86dac91132c43a25739500feb9e38a1a56",
+   "bytes": 558980
+  },
+  {
+   "path": "wren_intro_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "fd5018ef53c2c68e857b7a02369646c31856684f1d7fcdd0c8064c1c68e433dd",
+   "bytes": 3807
+  },
+  {
+   "path": "wren_intro2.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 6.7797,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "9f772e36556030336e12618347026c8d9e4328f6f5f890d1c4c452906deb07b5",
+   "bytes": 598012
+  },
+  {
+   "path": "wren_intro2_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "8cd11c3f54b97562140dceb117fcba04b27f20fa60a7ce163a3ab7e26c239603",
+   "bytes": 3868
+  },
+  {
+   "path": "wren_steer.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 6.4,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "1a294744479834ddb796ae0e883a2e7f62fb8efcca4e6cab63732d44c0b177e7",
+   "bytes": 564524
+  },
+  {
+   "path": "wren_steer_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "51f3443c0e6a705b7a9f19a08a4f16a8a907f3cdb620e3be5cebaa946444e3e1",
+   "bytes": 3545
+  },
+  {
+   "path": "wren_tower.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.328,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "91c0815570d3d39ba4d0c9143788d3c71319f5e3ce2c4df00b2c03ce57ce18c1",
+   "bytes": 381776
+  },
+  {
+   "path": "wren_tower_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "38fefe98bd901fbc9c0cd207572056527e12f9383d2de4192ae97199fad29e16",
+   "bytes": 3589
+  },
+  {
+   "path": "wren_winch.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 6.0945,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "c818eaccff163fcda9c34ba00ce501e858520ad15c3d1a5cc2752182e4b95b22",
+   "bytes": 537576
+  },
+  {
+   "path": "wren_winch_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "27ba8d881d4f6cc8e0df01d6c4fb3e5a870768c7479791c0eb9cafe7629542cd",
+   "bytes": 3589
+  },
+  {
+   "path": "wren_bank.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.3632,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "fe89ecb6e6775baff959412683e9ff784bebfbceab91a52e5f416ccdcedda86d",
+   "bytes": 384876
+  },
+  {
+   "path": "wren_bank_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "1db49aed26adfdee3a2a52fd64f54f78a6c73d97d8c0b5d4e3bcd2191a83b2db",
+   "bytes": 3715
+  },
+  {
+   "path": "wren_refit.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 5.2365,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "af1eeff53a32b31d5374b3cbd427428f46351154104db1bb321e07ce824e255f",
+   "bytes": 461906
+  },
+  {
+   "path": "wren_refit_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "6efb282fa8436ae919e290d2dc5c894f3e0d1964147302ae540ed8b883e6567c",
+   "bytes": 3454
+  },
+  {
+   "path": "wren_turtle.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 6.5311,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "542d918b05b7023d2723bc10a7c8e7e07d2f723cb0de32a477ca70a91458acd7",
+   "bytes": 576086
+  },
+  {
+   "path": "wren_turtle_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "59ccf351432b74b56c47023b13c08bc98fe743ecb50365f75b3bbd9f8a773eae",
+   "bytes": 3791
+  },
+  {
+   "path": "wren_anchor.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.5946,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "d476764c6e7a9b80d70911aa890fa6a8ff2f7ce2543418e63921a791f6845b26",
+   "bytes": 317084
+  },
+  {
+   "path": "wren_anchor_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "2e86bb0839aca3c816f9318be5501cb9f45b74b509e77989e88aaa9b043b1766",
+   "bytes": 3698
+  },
+  {
+   "path": "wren_walk.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.6651,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "cfd17f296437438f6ed00a69615c4791d1c627851472747e9c0cbd049cd29312",
+   "bytes": 411506
+  },
+  {
+   "path": "wren_walk_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "5f11176d3d1221e04dbf917dc5c5b9f46bb8c6e882b72bc417d1a95c805ed7a6",
+   "bytes": 3738
+  },
+  {
+   "path": "wren_map.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.4488,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "2a85d3120710462ccaa556631bcf045a10f8592e2859201158a8c66363f8f723",
+   "bytes": 392430
+  },
+  {
+   "path": "wren_map_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "c6dec2024be49cdab7bdc3d3bb55afc3fd28d5d342063dec5ac46f66ac0c046f",
+   "bytes": 3808
+  },
+  {
+   "path": "wren_home.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.1528,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "5450a2e9a3aee8979497ac329b2f8ca3f52ec5e0fd95da51d0522e87dea753fd",
+   "bytes": 366318
+  },
+  {
+   "path": "wren_home_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "353cd60c8aa4e7ce884b8d4d2c45c82357c9401dff3749125e49a2df2dff5d17",
+   "bytes": 3744
+  },
+  {
+   "path": "wren_log.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 6.3896,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "1714b9b340b4f0fa020ad5629f82481a7cab5ba88b2810fc6ecb7caa51c72412",
+   "bytes": 563608
+  },
+  {
+   "path": "wren_log_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "5acd3c04c773b55e34cb36be4d72d4ca832c121a2440df2d4c869b3e50d04426",
+   "bytes": 3817
+  },
+  {
+   "path": "wren_wind.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.8544,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "4ae292f84b963e6a89096ac7cb9b0793334a33a6e4acb0510973486bfd38edda",
+   "bytes": 428204
+  },
+  {
+   "path": "wren_wind_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "0336f679f3fe4495f09775de48700d1c4090bba87d3186b13df4eb820aecee6b",
+   "bytes": 3811
+  },
+  {
+   "path": "wren_hold.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.9871,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "fcda4c33a202162bd3b48969ac9b26e2bb363075284ad03d2208d3e1d1f4ee96",
+   "bytes": 351704
+  },
+  {
+   "path": "wren_hold_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "6b455bcb467e0ac6fb2b05ea4cc1c07d507404ba74ca4e79975434bc186c4e46",
+   "bytes": 3719
+  },
+  {
+   "path": "wren_hull.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.1266,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "b375909392e9811b4c5af8fdec6e3a0a427b69beb4a9ec65630dde0e99434076",
+   "bytes": 364010
+  },
+  {
+   "path": "wren_hull_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "16a3bb111216294586c5d7923634cf966126acc85ce9237735a1e6a8c8fe5fbd",
+   "bytes": 3390
+  },
+  {
+   "path": "wren_engine.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.1516,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "fc918ad92092debe95db37ac227848623bf82775dac9d26ac9f75246a3140469",
+   "bytes": 366218
+  },
+  {
+   "path": "wren_engine_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "e7ec95528beffb443331201064892c1ed769d4c22ae252a0cb1ac1711ad850fe",
+   "bytes": 3715
+  },
+  {
+   "path": "wren_fuel.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.2548,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "78f7586efc0b236e838b40928fc414754784a9a59f5dc55d36aa96d06f02de34",
+   "bytes": 375314
+  },
+  {
+   "path": "wren_fuel_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "fa68d54ab7f768628c6ce09278fc7681a957958030a8157d546502b3b1382d20",
+   "bytes": 3661
+  },
+  {
+   "path": "wren_night.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.9349,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "fbd4075a951924a00648f5fa4b8f298324c93e2306d29740fa039e332507a2b6",
+   "bytes": 347098
+  },
+  {
+   "path": "wren_night_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "3600ad845993f456530d2de61c3a569eaefdc1b38ec82f04a54f134e60de46ab",
+   "bytes": 3630
+  },
+  {
+   "path": "wren_storm.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.2702,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "3ee2bedf6df22675c284293e11df83c1a1aeaa97d6d3958ee3a9b7d2a955d9fa",
+   "bytes": 376678
+  },
+  {
+   "path": "wren_storm_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "b31bbc4379eb1c8115fbe230cd7f7a3900b9c83574f3db6f356ebdd383b95aac",
+   "bytes": 3806
+  },
+  {
+   "path": "wren_raiders.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 7.141,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "aaf5b92088e360407d6ae129a0fc8b0e7b2541cadea3765aa6ea7e9c136e5270",
+   "bytes": 629882
+  },
+  {
+   "path": "wren_raiders_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "96e2d7f14d1ebda477b98e4cfb784d1aeb686a55f3ebb0efe0bc4568b7f7a8f5",
+   "bytes": 3656
+  },
+  {
+   "path": "wren_reach.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.941,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "da161b120e43d9ddbbd49a32cc0e71aa15657ad1e3a8e755a514bb1607a88a16",
+   "bytes": 435844
+  },
+  {
+   "path": "wren_reach_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "056a1c983e1ea04d7b10a26e12eac0212fe4dcf65dc216864d1d79fb09ce8d3b",
+   "bytes": 3690
+  },
+  {
+   "path": "wren_wall.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.3411,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "c37a7e0f15369a9e7530bc124b36b0a09cc3f72d1fd68400e879a517634c79d9",
+   "bytes": 294726
+  },
+  {
+   "path": "wren_wall_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "c37a91b192ae4c6dd6dff61f619a3532b4e3e64b8201f0093a38346cd7e0bbf9",
+   "bytes": 3695
+  },
+  {
+   "path": "wren_crew.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.7916,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "069721fb8e00118839ad8052bfd82bdf93c51cc115686e73a4b94e1b421d0ae3",
+   "bytes": 422666
+  },
+  {
+   "path": "wren_crew_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "72004c1b70658d12b6df92a32565a74d86d5f8a77748971c95b20b48feed8686",
+   "bytes": 3606
+  },
+  {
+   "path": "wren_green.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 4.6615,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "cc60c962f43ff0de04e84c654a2c9e09f00addf174e8e7d37954afdcdc85f00e",
+   "bytes": 411184
+  },
+  {
+   "path": "wren_green_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "e3335fc115e9364cf67388e1055e7c0c586eecc1e6369fe9cdf55b52cad2d7da",
+   "bytes": 3793
+  },
+  {
+   "path": "wren_trimaran.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 5.4934,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "c8862c2639de32cca18c3b38811e5188df2aeb45bb35770bef2f34de37ae3cfb",
+   "bytes": 484564
+  },
+  {
+   "path": "wren_trimaran_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "84f07bdc574f6419ac70396dd713fdfcd43685ef25f28b6cb7331940d0352852",
+   "bytes": 3704
+  },
+  {
+   "path": "wren_back.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 3.3479,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "138c50ec563a5147eab4dfb05f421a750c4f9039c491f6b2078491756dce3f89",
+   "bytes": 295330
+  },
+  {
+   "path": "wren_back_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "0d7be0cb8296bc69a2820fde8463402694e3534ab8b86519129533364450bf9a",
+   "bytes": 3872
+  },
+  {
+   "path": "kai_raiders.wav",
+   "role": "dialogue",
+   "format": "wav",
+   "ok": true,
+   "seconds": 1.6311,
+   "sample_rate": 44100,
+   "channels": 1,
+   "bits": 16,
+   "sha256": "3c35ef3fa87005e1ad1d85487f623ada6694f5bc7c8e64d9bf8b4834ee9ab8ac",
+   "bytes": 143908
+  },
+  {
+   "path": "kai_raiders_waveform.png",
+   "role": "preview",
+   "format": "png",
+   "ok": true,
+   "width": 800,
+   "height": 160,
+   "mode": "RGB",
+   "sha256": "e52b477d40b7b6bb25e0e7e1809d34f15321671725fe4b9d818bd9f69b741e7c",
+   "bytes": 3646
+  },
+  {
+   "path": "tb_vo_wren.dialogue.json",
+   "role": "manifest",
+   "format": "json",
+   "ok": true,
+   "keys": [
+    "engine",
+    "lines"
+   ],
+   "sha256": "6d61076b0ee57935f87b84187faab1014c5c98b0e645dc790479ff41dcc4333b",
+   "bytes": 6472
+  }
+ ],
+ "checks": [
+  {
+   "name": "wren_intro: speech present and plausibly paced",
+   "ok": true,
+   "detail": "6.34 s, 17.8 chars/s"
+  },
+  {
+   "name": "wren_intro2: speech present and plausibly paced",
+   "ok": true,
+   "detail": "6.78 s, 17.4 chars/s"
+  },
+  {
+   "name": "wren_steer: speech present and plausibly paced",
+   "ok": true,
+   "detail": "6.40 s, 18.6 chars/s"
+  },
+  {
+   "name": "wren_tower: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.33 s, 16.9 chars/s"
+  },
+  {
+   "name": "wren_winch: speech present and plausibly paced",
+   "ok": true,
+   "detail": "6.09 s, 17.9 chars/s"
+  },
+  {
+   "name": "wren_bank: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.36 s, 18.8 chars/s"
+  },
+  {
+   "name": "wren_refit: speech present and plausibly paced",
+   "ok": true,
+   "detail": "5.24 s, 18.1 chars/s"
+  },
+  {
+   "name": "wren_turtle: speech present and plausibly paced",
+   "ok": true,
+   "detail": "6.53 s, 17.5 chars/s"
+  },
+  {
+   "name": "wren_anchor: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.59 s, 18.6 chars/s"
+  },
+  {
+   "name": "wren_walk: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.67 s, 18.6 chars/s"
+  },
+  {
+   "name": "wren_map: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.45 s, 18.9 chars/s"
+  },
+  {
+   "name": "wren_home: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.15 s, 17.6 chars/s"
+  },
+  {
+   "name": "wren_log: speech present and plausibly paced",
+   "ok": true,
+   "detail": "6.39 s, 18.2 chars/s"
+  },
+  {
+   "name": "wren_wind: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.85 s, 19.8 chars/s"
+  },
+  {
+   "name": "wren_hold: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.99 s, 18.6 chars/s"
+  },
+  {
+   "name": "wren_hull: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.13 s, 17.9 chars/s"
+  },
+  {
+   "name": "wren_engine: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.15 s, 17.3 chars/s"
+  },
+  {
+   "name": "wren_fuel: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.25 s, 17.6 chars/s"
+  },
+  {
+   "name": "wren_night: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.93 s, 17.8 chars/s"
+  },
+  {
+   "name": "wren_storm: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.27 s, 18.3 chars/s"
+  },
+  {
+   "name": "wren_raiders: speech present and plausibly paced",
+   "ok": true,
+   "detail": "7.14 s, 18.2 chars/s"
+  },
+  {
+   "name": "wren_reach: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.94 s, 17.2 chars/s"
+  },
+  {
+   "name": "wren_wall: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.34 s, 19.5 chars/s"
+  },
+  {
+   "name": "wren_crew: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.79 s, 17.3 chars/s"
+  },
+  {
+   "name": "wren_green: speech present and plausibly paced",
+   "ok": true,
+   "detail": "4.66 s, 17.6 chars/s"
+  },
+  {
+   "name": "wren_trimaran: speech present and plausibly paced",
+   "ok": true,
+   "detail": "5.49 s, 16.6 chars/s"
+  },
+  {
+   "name": "wren_back: speech present and plausibly paced",
+   "ok": true,
+   "detail": "3.35 s, 17.0 chars/s"
+  },
+  {
+   "name": "kai_raiders: speech present and plausibly paced",
+   "ok": true,
+   "detail": "1.63 s, 20.2 chars/s"
+  }
+ ],
+ "tools": {
+  "kokoro": {
+   "name": "Kokoro-82M v1.0 via kokoro-onnx 0.6.1 + onnxruntime",
+   "license": "Apache-2.0 (weights), MIT (kokoro-onnx, onnxruntime); phonemizer + espeak-ng are GPL-3.0",
+   "version": "kokoro-v1.0.int8"
+  },
+  "ffmpeg": {
+   "name": "FFmpeg",
+   "license": "LGPL-2.1+ (this Ubuntu build is configured --enable-gpl: GPL-2.0+)",
+   "version": "system"
+  }
+ },
+ "output_license": "Generated by GITCRAFT from no third-party samples; owned by the requesting project (Kokoro voice output: Apache-2.0 model, no restriction on generated audio)",
+ "attribution": null,
+ "stages": [
+  {
+   "stage": "synthesised",
+   "seconds": 49.62,
+   "lines": 28
+  }
+ ],
+ "notes": [],
+ "script": [
+  {
+   "id": "wren_intro",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "The sea rose, and it never went back. The cities are under your keel now. What's left of us lives on what floats.",
+   "file": "wren_intro.wav",
+   "seconds": 6.337
+  },
+  {
+   "id": "wren_intro2",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "I'm Wren. I draw the charts here in Driftholm. Take the radio, Captain. I'll be in your ear until you stop needing me.",
+   "file": "wren_intro2.wav",
+   "seconds": 6.78
+  },
+  {
+   "id": "wren_steer",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Thumb on the wheel, and drag it toward where you want to go. She'll come round. The gold arrow points at your next job.",
+   "file": "wren_steer.wav",
+   "seconds": 6.4
+  },
+  {
+   "id": "wren_tower",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "That tower was offices, once. Slow down beside the buoy, and tap Salvage.",
+   "file": "wren_tower.wav",
+   "seconds": 4.328
+  },
+  {
+   "id": "wren_winch",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Watch the needle. Reel in when it crosses the green. Catch the gold centre, and the sea gives a little extra.",
+   "file": "wren_winch.wav",
+   "seconds": 6.094
+  },
+  {
+   "id": "wren_bank",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Good. Now, nothing you haul is yours until it's on the dock. Come home and tie up.",
+   "file": "wren_bank.wav",
+   "seconds": 4.363
+  },
+  {
+   "id": "wren_refit",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Sell what you don't need to Pip. Then see Marlo. Every part he fits, you'll see it on the boat.",
+   "file": "wren_refit.wav",
+   "seconds": 5.237
+  },
+  {
+   "id": "wren_turtle",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Now, the errand. A bottle washed up on Turtle Atoll, to the west. Follow the gold arrow. Don't read what's inside.",
+   "file": "wren_turtle.wav",
+   "seconds": 6.531
+  },
+  {
+   "id": "wren_anchor",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Shallow water. Let go of the wheel, drop the anchor, and go ashore.",
+   "file": "wren_anchor.wav",
+   "seconds": 3.595
+  },
+  {
+   "id": "wren_walk",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Same thumb, same wheel. It moves your feet now. Walk the beach, and look for the glint.",
+   "file": "wren_walk.wav",
+   "seconds": 4.665
+  },
+  {
+   "id": "wren_map",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "You read it. Good. The landmarks on that map are real. Stand where it says, and dig.",
+   "file": "wren_map.wav",
+   "seconds": 4.449
+  },
+  {
+   "id": "wren_home",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Bring it home, Captain. And watch the sky. Squalls come up fast out here.",
+   "file": "wren_home.wav",
+   "seconds": 4.153
+  },
+  {
+   "id": "wren_log",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "That's your first voyage done. From here, the Captain's Log tells you what's next. Salvage. Refit. Push further out.",
+   "file": "wren_log.wav",
+   "seconds": 6.39
+  },
+  {
+   "id": "wren_wind",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Feel her slow down? You're pointing into the wind. Turn away a little, and the sail fills again.",
+   "file": "wren_wind.wav",
+   "seconds": 4.854
+  },
+  {
+   "id": "wren_hold",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Your hold is full. Take it home and bank it, before the sea takes it back.",
+   "file": "wren_hold.wav",
+   "seconds": 3.987
+  },
+  {
+   "id": "wren_hull",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "She's taking water. Patch her from the Ship screen, or limp home to Marlo.",
+   "file": "wren_hull.wav",
+   "seconds": 4.127
+  },
+  {
+   "id": "wren_engine",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "An engine. Tap the engine button to run it. It's fast, and it's thirsty.",
+   "file": "wren_engine.wav",
+   "seconds": 4.152
+  },
+  {
+   "id": "wren_fuel",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Fuel's low. Sail when the wind lets you. Save the engine for when it won't.",
+   "file": "wren_fuel.wav",
+   "seconds": 4.255
+  },
+  {
+   "id": "wren_night",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Dark comes quick out here. Your lookout dial still shows the way home.",
+   "file": "wren_night.wav",
+   "seconds": 3.935
+  },
+  {
+   "id": "wren_storm",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Storm cell. Go round it if you can. If you can't, hold on, and mind your hull.",
+   "file": "wren_storm.wav",
+   "seconds": 4.27
+  },
+  {
+   "id": "wren_raiders",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Rustfang. They ride wave runners, and they take what they like. Outrun them under engine, or fit a harpoon and teach them manners.",
+   "file": "wren_raiders.wav",
+   "seconds": 7.141
+  },
+  {
+   "id": "wren_reach",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "The Sunken Reach. A whole city under you. Richer salvage out here, and worse company.",
+   "file": "wren_reach.wav",
+   "seconds": 4.941
+  },
+  {
+   "id": "wren_wall",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "The Stormwall. Nobody I know has come back from it. Be the first.",
+   "file": "wren_wall.wav",
+   "seconds": 3.341
+  },
+  {
+   "id": "wren_crew",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Crew aren't passengers. Each one does a job you'd only do badly. Find more of them.",
+   "file": "wren_crew.wav",
+   "seconds": 4.792
+  },
+  {
+   "id": "wren_green",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Is that green? Keep it alive, Captain. That is the rarest thing left in the world.",
+   "file": "wren_green.wav",
+   "seconds": 4.661
+  },
+  {
+   "id": "wren_trimaran",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Three hulls. She'll take the open swell now. Rig Helios is west, past the edge of my chart.",
+   "file": "wren_trimaran.wav",
+   "seconds": 5.493
+  },
+  {
+   "id": "wren_back",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Still floating, Captain. Good. Your log has the next job.",
+   "file": "wren_back.wav",
+   "seconds": 3.348
+  },
+  {
+   "id": "kai_raiders",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Rustfang runners! Coming in hard!",
+   "file": "kai_raiders.wav",
+   "seconds": 1.631
+  }
+ ],
+ "measured": null
+}

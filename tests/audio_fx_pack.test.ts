@@ -1,7 +1,7 @@
 // GITCRAFT Studio pass: the lazy audio pack and the flipbook effects.
 import { describe, it, expect } from 'vitest';
 import { existsSync, readdirSync, statSync } from 'node:fs';
-import { audioExt, themeMix, VOICE_LINES } from '../src/audio/pack';
+import { audioExt, themeMix, VOICE_LINES, TAPES, autoTape, tapePool } from '../src/audio/pack';
 import { FX_BUDGET, fxQualityFromUrl } from '../src/game/flipfx';
 import { CREW } from '../src/data/crew';
 
@@ -19,9 +19,37 @@ describe('audio pack', () => {
     ];
     for (const n of need) for (const ext of ['ogg', 'm4a']) expect(existsSync(`${AUDIO}/${n}.${ext}`), `${n}.${ext}`).toBe(true);
   });
-  it('stays under the 3 MB budget (both formats together)', () => {
-    const bytes = files(AUDIO).reduce((a, f) => a + statSync(f).size, 0);
-    expect(bytes).toBeLessThan(3 * 1024 * 1024);
+  it('stays inside its budgets: the always-on pack, and each music tape on its own', () => {
+    // sounds, stingers, every voice line and the theme: what any player can end up downloading in one format
+    const size = (list: string[]) => list.reduce((a, f) => a + statSync(f).size, 0);
+    const all = files(AUDIO), tapes = all.filter((f) => f.includes('/tb_tape_'));
+    for (const ext of ['ogg', 'm4a']) expect(size(all.filter((f) => !tapes.includes(f) && f.endsWith(ext))), `core .${ext}`).toBeLessThan(2.5 * 1024 * 1024);
+    // a tape is five stems, fetched only while it is the one playing
+    for (const t of TAPES.filter((x) => x.file !== 'tb_theme'))
+      for (const ext of ['ogg', 'm4a']) expect(size(tapes.filter((f) => f.includes(`${t.file}_`) && f.endsWith(ext))), `${t.id} .${ext}`).toBeLessThan(1.2 * 1024 * 1024);
+  });
+  it('every tape on the shelf ships all five stems in both formats', () => {
+    for (const t of TAPES) for (const s of ['pad', 'bass', 'arp', 'lead', 'drums']) for (const ext of ['ogg', 'm4a']) expect(existsSync(`${AUDIO}/music/${t.file}_${s}.${ext}`), `${t.file}_${s}.${ext}`).toBe(true);
+    expect(new Set(TAPES.map((t) => t.id)).size).toBe(TAPES.length);
+    expect(TAPES.length).toBeGreaterThanOrEqual(6);
+  });
+  it('AUTO opens on a tape that suits the water, lets it play, then moves along the pool', () => {
+    const day = { region: 'shallows', night: 0, storm: 0 }, night = { region: 'shallows', night: 1, storm: 0 }, storm = { region: 'emerald', night: 0, storm: 1 };
+    expect(autoTape(day, null, 0)).toBe(tapePool(day)[0]);
+    expect(autoTape(day, 'drowned', 1.5)).toBe('drowned'); // mid-run: leave it alone
+    expect(autoTape(day, 'drowned', 3)).toBe(tapePool(day)[1]); // three times through: next tape
+    expect(autoTape(night, 'fairwind', 0.4)).toBe('fairwind'); // night fell mid-loop: the loop plays out
+    expect(tapePool(night)).toContain(autoTape(night, 'fairwind', 1));
+    expect(tapePool(storm)).toContain(autoTape(storm, 'slackwater', 2));
+    for (const sea of [day, night, storm, { region: 'harbor', night: 0, storm: 0 }, { region: 'stormwall', night: 0, storm: 0 }]) {
+      // every pool is real tapes, and cycling it visits all of them
+      const pool = tapePool(sea);
+      for (const id of pool) expect(TAPES.some((t) => t.id === id), id).toBe(true);
+      let cur = autoTape(sea, null, 0);
+      const seen = new Set([cur]);
+      for (let i = 0; i < pool.length; i++) seen.add((cur = autoTape(sea, cur, 3)));
+      expect(seen.size).toBe(pool.length);
+    }
   });
   it('picks OGG where the browser can decode Vorbis and AAC on iPhone Safari', () => {
     expect(audioExt(() => 'probably')).toBe('ogg');
@@ -42,7 +70,7 @@ describe('audio pack', () => {
     for (const id of ['kai', 'tomas', 'ines', 'bram', 'juno']) expect(VOICE_LINES, id).toHaveProperty(`${id}_joined`);
     for (const k of Object.keys(VOICE_LINES)) {
       const who = k.split('_')[0];
-      expect(['dockhand', 'raider', ...CREW.map((c) => c.id)], k).toContain(who);
+      expect(['dockhand', 'raider', 'wren', ...CREW.map((c) => c.id)], k).toContain(who);
     }
   });
 });

@@ -1,0 +1,229 @@
+{
+ "lines": [
+  {
+   "id": "wren_intro",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "The sea rose, and it never went back. The cities are under your keel now. What's left of us lives on what floats.",
+   "file": "wren_intro.wav",
+   "seconds": 6.337
+  },
+  {
+   "id": "wren_intro2",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "I'm Wren. I draw the charts here in Driftholm. Take the radio, Captain. I'll be in your ear until you stop needing me.",
+   "file": "wren_intro2.wav",
+   "seconds": 6.78
+  },
+  {
+   "id": "wren_steer",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Thumb on the wheel, and drag it toward where you want to go. She'll come round. The gold arrow points at your next job.",
+   "file": "wren_steer.wav",
+   "seconds": 6.4
+  },
+  {
+   "id": "wren_tower",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "That tower was offices, once. Slow down beside the buoy, and tap Salvage.",
+   "file": "wren_tower.wav",
+   "seconds": 4.328
+  },
+  {
+   "id": "wren_winch",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Watch the needle. Reel in when it crosses the green. Catch the gold centre, and the sea gives a little extra.",
+   "file": "wren_winch.wav",
+   "seconds": 6.094
+  },
+  {
+   "id": "wren_bank",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Good. Now, nothing you haul is yours until it's on the dock. Come home and tie up.",
+   "file": "wren_bank.wav",
+   "seconds": 4.363
+  },
+  {
+   "id": "wren_refit",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Sell what you don't need to Pip. Then see Marlo. Every part he fits, you'll see it on the boat.",
+   "file": "wren_refit.wav",
+   "seconds": 5.237
+  },
+  {
+   "id": "wren_turtle",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Now, the errand. A bottle washed up on Turtle Atoll, to the west. Follow the gold arrow. Don't read what's inside.",
+   "file": "wren_turtle.wav",
+   "seconds": 6.531
+  },
+  {
+   "id": "wren_anchor",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Shallow water. Let go of the wheel, drop the anchor, and go ashore.",
+   "file": "wren_anchor.wav",
+   "seconds": 3.595
+  },
+  {
+   "id": "wren_walk",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Same thumb, same wheel. It moves your feet now. Walk the beach, and look for the glint.",
+   "file": "wren_walk.wav",
+   "seconds": 4.665
+  },
+  {
+   "id": "wren_map",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "You read it. Good. The landmarks on that map are real. Stand where it says, and dig.",
+   "file": "wren_map.wav",
+   "seconds": 4.449
+  },
+  {
+   "id": "wren_home",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Bring it home, Captain. And watch the sky. Squalls come up fast out here.",
+   "file": "wren_home.wav",
+   "seconds": 4.153
+  },
+  {
+   "id": "wren_log",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "That's your first voyage done. From here, the Captain's Log tells you what's next. Salvage. Refit. Push further out.",
+   "file": "wren_log.wav",
+   "seconds": 6.39
+  },
+  {
+   "id": "wren_wind",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Feel her slow down? You're pointing into the wind. Turn away a little, and the sail fills again.",
+   "file": "wren_wind.wav",
+   "seconds": 4.854
+  },
+  {
+   "id": "wren_hold",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Your hold is full. Take it home and bank it, before the sea takes it back.",
+   "file": "wren_hold.wav",
+   "seconds": 3.987
+  },
+  {
+   "id": "wren_hull",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "She's taking water. Patch her from the Ship screen, or limp home to Marlo.",
+   "file": "wren_hull.wav",
+   "seconds": 4.127
+  },
+  {
+   "id": "wren_engine",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "An engine. Tap the engine button to run it. It's fast, and it's thirsty.",
+   "file": "wren_engine.wav",
+   "seconds": 4.152
+  },
+  {
+   "id": "wren_fuel",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Fuel's low. Sail when the wind lets you. Save the engine for when it won't.",
+   "file": "wren_fuel.wav",
+   "seconds": 4.255
+  },
+  {
+   "id": "wren_night",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Dark comes quick out here. Your lookout dial still shows the way home.",
+   "file": "wren_night.wav",
+   "seconds": 3.935
+  },
+  {
+   "id": "wren_storm",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Storm cell. Go round it if you can. If you can't, hold on, and mind your hull.",
+   "file": "wren_storm.wav",
+   "seconds": 4.27
+  },
+  {
+   "id": "wren_raiders",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Rustfang. They ride wave runners, and they take what they like. Outrun them under engine, or fit a harpoon and teach them manners.",
+   "file": "wren_raiders.wav",
+   "seconds": 7.141
+  },
+  {
+   "id": "wren_reach",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "The Sunken Reach. A whole city under you. Richer salvage out here, and worse company.",
+   "file": "wren_reach.wav",
+   "seconds": 4.941
+  },
+  {
+   "id": "wren_wall",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "The Stormwall. Nobody I know has come back from it. Be the first.",
+   "file": "wren_wall.wav",
+   "seconds": 3.341
+  },
+  {
+   "id": "wren_crew",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Crew aren't passengers. Each one does a job you'd only do badly. Find more of them.",
+   "file": "wren_crew.wav",
+   "seconds": 4.792
+  },
+  {
+   "id": "wren_green",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Is that green? Keep it alive, Captain. That is the rarest thing left in the world.",
+   "file": "wren_green.wav",
+   "seconds": 4.661
+  },
+  {
+   "id": "wren_trimaran",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Three hulls. She'll take the open swell now. Rig Helios is west, past the edge of my chart.",
+   "file": "wren_trimaran.wav",
+   "seconds": 5.493
+  },
+  {
+   "id": "wren_back",
+   "character": "wren",
+   "voice": "bf_emma",
+   "text": "Still floating, Captain. Good. Your log has the next job.",
+   "file": "wren_back.wav",
+   "seconds": 3.348
+  },
+  {
+   "id": "kai_raiders",
+   "character": "kai",
+   "voice": "am_puck",
+   "text": "Rustfang runners! Coming in hard!",
+   "file": "kai_raiders.wav",
+   "seconds": 1.631
+  }
+ ],
+ "engine": "Kokoro-82M v1.0 (kokoro-onnx, int8)"
+}

@@ -22,10 +22,10 @@ let chartView: { cx: number; cz: number; zoom: number } | null = null;
 import type { Store } from '../state/store';
 import { audio } from '../audio/audio';
 import { SAIL_LABEL, type PointOfSail } from '../game/pointOfSail';
-import { pack } from '../audio/pack';
+import { pack, TAPES } from '../audio/pack';
 import { wordmarkSVG } from './brand';
 import { glyph, type Glyph } from './glyphs';
-import { portraitSVG } from './portraits';
+import { portraitSVG, type PortraitId } from './portraits';
 import { wheelSVG } from './helmWheel';
 import { PERFECT_SHARE, pullGrade } from '../game/haul';
 import { clockText } from '../game/trip';
@@ -711,10 +711,13 @@ export class UI {
   /** Winch mini-game: tap REEL while the needle is in the green. Resolves hits (0..pulls), or -1 if cancelled. */
   /** Perfect pulls in the last winch game (read by Salvage after it resolves). */
   lastPerfects = 0;
+  /** the winch mini-game is up (the narrator explains it the first time) */
+  winchOpen = false;
 
   openWinch(o: { title: string; sub: string; window: number; speed: number; pulls: number; crane?: boolean; perfectShare?: number }): Promise<number> {
     return new Promise((resolve) => {
       this.panelOpen = true;
+      this.winchOpen = true;
       this.lastPerfects = 0;
       const wrap = el(`<div class="winch-wrap"><div class="winch"><h3>${o.crane ? glyph('crane') : ''}${o.title}</h3><div class="w-sub">${o.sub}</div>
         <div class="w-track"><div class="w-zone"><div class="w-perfect"></div></div><div class="w-needle"></div></div>
@@ -750,6 +753,7 @@ export class UI {
         cancelAnimationFrame(raf);
         wrap.remove();
         this.panelOpen = false;
+        this.winchOpen = false;
         this.lastPerfects = v < 0 ? 0 : perfects;
         resolve(v);
       };
@@ -850,6 +854,27 @@ export class UI {
     await new Promise((r) => setTimeout(r, 120));
     this.fadeEl.classList.remove('on');
   }
+
+  /** Is a card, sheet or mini-game up? (the narration caption moves clear of it) */
+  get modalOpen() {
+    return this.revealOpen || this.panelOpen;
+  }
+
+  /**
+   * A character speaks: their portrait, name and the line, up for `life` seconds (one at a time; a new line replaces
+   * the last). Used by the narrator (game/narration.ts); the voice itself plays through the audio pack.
+   */
+  caption(who: { name: string; tag: string; portrait: PortraitId }, text: string, life: number) {
+    this.captionEl?.remove();
+    const c = el(`<div class="narr${this.modalOpen ? ' over' : ''}" style="--life:${life.toFixed(2)}s" role="status" aria-live="polite"><div class="narr-face">${portraitSVG(who.portrait)}</div><div class="narr-body"><div class="narr-who">${who.name} <span>${who.tag}</span><i></i><i></i><i></i></div><div class="narr-text">${text}</div></div></div>`);
+    this.root.append(c);
+    this.captionEl = c;
+    setTimeout(() => {
+      c.remove();
+      if (this.captionEl === c) this.captionEl = null;
+    }, life * 1000 + 450);
+  }
+  private captionEl: HTMLElement | null = null;
 
   toast(text: string, opts: { icon?: string; color?: string; life?: number } = {}) {
     const t = el(`<div class="toast" style="--c:${opts.color ?? '#f4c542'};--life:${opts.life ?? 2.6}s">${opts.icon ? iconSVG(opts.icon, { size: 28 }) : ''}<span>${text}</span></div>`);
@@ -1731,9 +1756,15 @@ export class UI {
   settingsPanel() {
     const s = this.store;
     const { body } = this.openSheet('Settings', `Last saved ${s.lastSaved ? new Date(s.lastSaved).toLocaleTimeString() : 'just now'}${s.storageOk ? '' : ' · ⚠ storage unavailable'}`);
+    const cur = TAPES.some((t) => t.id === s.data.settings.tape) ? s.data.settings.tape : 'auto';
     body.innerHTML = `
       <div class="setting-row">Sound effects <input type="range" min="0" max="1" step="0.05" value="${s.data.settings.sfx}" class="sfx"></div>
       <div class="setting-row">Music <input type="range" min="0" max="1" step="0.05" value="${s.data.settings.music}" class="mus"></div>
+      <div class="tapes" role="radiogroup" aria-label="Music tape">
+        <button class="tape${cur === 'auto' ? ' on' : ''}" data-tape="auto" role="radio" aria-checked="${cur === 'auto'}"><b>Auto</b><span>The sea picks the tape: day, night, storm, harbour</span></button>
+        ${TAPES.map((t) => `<button class="tape${cur === t.id ? ' on' : ''}" data-tape="${t.id}" role="radio" aria-checked="${cur === t.id}"><b>${t.name}</b><span>${t.note}</span></button>`).join('')}
+      </div>
+      <div class="setting-row">Wren’s radio guide <span class="note" style="flex:1;margin:0 8px;text-align:left">voice and captions</span><input type="checkbox" class="narrate" ${s.data.settings.narration !== false ? 'checked' : ''}></div>
       <div class="setting-row">Vibration <input type="checkbox" class="hap" ${s.data.settings.haptics ? 'checked' : ''}></div>
       <div class="setting-row">Calm effects <span class="note" style="flex:1;margin:0 8px;text-align:left">no screen shake, softer flashes</span><input type="checkbox" class="calm" ${s.data.settings.calm ? 'checked' : ''}></div>
       <div class="section-title">Progress</div>
@@ -1748,7 +1779,27 @@ export class UI {
     const mus = body.querySelector('.mus') as HTMLInputElement;
     const hap = body.querySelector('.hap') as HTMLInputElement;
     const calm = body.querySelector('.calm') as HTMLInputElement;
+    const narrate = body.querySelector('.narrate') as HTMLInputElement;
+    const tapes = [...body.querySelectorAll('.tape')] as HTMLButtonElement[];
+    const mark = () => {
+      const now = pack.playing;
+      for (const b of tapes) b.classList.toggle('playing', b.dataset.tape === now);
+    };
+    mark();
+    for (const b of tapes)
+      b.addEventListener('click', () => {
+        s.data.settings.tape = b.dataset.tape!;
+        pack.setTape(b.dataset.tape!);
+        for (const o of tapes) {
+          o.classList.toggle('on', o === b);
+          o.setAttribute('aria-checked', String(o === b));
+        }
+        audio.ui();
+        s.commit();
+        setTimeout(mark, 4200); // once the new tape has faded in
+      });
     const apply = () => {
+      s.data.settings.narration = narrate.checked;
       s.data.settings.calm = calm.checked;
       this.applyCalm();
       s.data.settings.sfx = +sfx.value;
@@ -1761,6 +1812,7 @@ export class UI {
     mus.addEventListener('input', apply);
     hap.addEventListener('change', apply);
     calm.addEventListener('change', apply);
+    narrate.addEventListener('change', apply);
     body.querySelector('.save')!.addEventListener('click', () => {
       s.saveNow();
       this.toast('Progress saved ✔', { color: '#4f9a95' });
