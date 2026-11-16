@@ -25,6 +25,7 @@ import { SAIL_LABEL, type PointOfSail } from '../game/pointOfSail';
 import { pack } from '../audio/pack';
 import { wordmarkSVG } from './brand';
 import { glyph, type Glyph } from './glyphs';
+import { portraitSVG } from './portraits';
 import { wheelSVG } from './helmWheel';
 import { PERFECT_SHARE, pullGrade } from '../game/haul';
 import { clockText } from '../game/trip';
@@ -1276,7 +1277,8 @@ export class UI {
 
   private npcCard(id: keyof typeof NPCS, go: string, line: string) {
     const n = NPCS[id];
-    return `<button class="npc" data-go="${go}"><div class="avatar" style="background:${n.color}">${n.face}</div><div><div class="n-role">${n.role}</div><div class="n-name">${n.name}</div><div class="n-line">${line}</div></div></button>`;
+    const art = portraitSVG(id); // drawn portraits replace the emoji faces one character at a time
+    return `<button class="npc" data-go="${go}">${art ? `<div class="avatar art">${art}</div>` : `<div class="avatar" style="background:${n.color}">${n.face}</div>`}<div><div class="n-role">${n.role}</div><div class="n-name">${n.name}</div><div class="n-line">${line}</div></div></button>`;
   }
 
   private backBtn(body: HTMLElement) {
