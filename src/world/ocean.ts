@@ -4,7 +4,8 @@
 // wind-driven spindrift streaks, a live wake trail, storm swell and day/night lighting.
 import * as THREE from 'three';
 import { heightAt, isReef, swellFactor } from './terrain';
-import { WORLD, STRUCTURES } from '../data/world';
+import { WORLD } from '../data/world';
+import type { Hazard } from './hazards';
 import { smoothstep } from '../core/noise';
 
 const DEPTH_RES = 512;
@@ -48,14 +49,8 @@ function buildDepthTexture() {
       const depth = Math.max(0, -h);
       const k = (j * DEPTH_RES + i) * 4;
       data[k] = Math.min(255, Math.round(Math.sqrt(Math.min(1, depth / 22)) * 255));
-      let ring = isReef(x, z) ? 255 : 0;
-      // surf where drowned structures break the surface (foam band drawn by the shader, no extra geometry)
-      for (const st of STRUCTURES) {
-        const rr = st.r * (st.kind === 'container' ? 0.9 : 0.85);
-        const d = Math.hypot(x - st.x, z - st.z);
-        if (d < rr * 1.25 && d > rr * 0.55) ring = Math.max(ring, 170);
-      }
-      data[k + 1] = ring;
+      // reef breakers (drowned structures get their own waterline foam: Ocean.hazardLines)
+      data[k + 1] = isReef(x, z) ? 255 : 0;
       data[k + 2] = Math.round(swellFactor(x, z) * 255);
       data[k + 3] = h > 0 ? 255 : 0;
     }
@@ -322,6 +317,78 @@ void main() {
 }
 `;
 
+// Waterline foam round every solid thing in the sea, drawn on the exact outline the hull collides with
+// (src/world/hazards.ts): a crisp scum line where steel meets water, lace lapping a couple of metres out from it,
+// riding the same swell as the sea. It brightens as your boat comes close, so you can read the gap you are threading.
+const lineVert = /* glsl */ `
+uniform float uTime;
+uniform float uStorm;
+uniform sampler2D uDepth;
+uniform vec3 uWorld;
+attribute vec2 aRing; // x: 0 on the outline .. 1 at the foam's outer edge; y: metres round the outline
+varying vec2 vRing;
+varying vec3 vWorld;
+${waveGLSL}
+void main() {
+  vec4 wp = modelMatrix * vec4(position, 1.0);
+  vec2 duv = (wp.xz - uWorld.xy) / uWorld.z;
+  vec4 dt = texture2D(uDepth, duv);
+  float depth = dt.r * dt.r * 22.0;
+  float amp = (0.22 + 0.78 * smoothstep(0.5, 10.0, depth)) * (1.0 + dt.b * 1.6) * (1.0 + uStorm * 2.4);
+  vec2 p = wp.xz;
+  float h = 0.0;
+  vec2 disp = vec2(0.0);
+  for (int i = 0; i < 4; i++) {
+    vec2 d = WD[i].xy; float k = WD[i].z; float w = WD[i].w;
+    float a = WA[i].x * amp;
+    float ph = k * dot(d, p) - w * uTime;
+    h += a * sin(ph);
+    disp += d * (WA[i].y * a * cos(ph) * 0.8);
+  }
+  wp.xz += disp;
+  wp.y += h + 0.05;
+  vRing = aRing;
+  vWorld = wp.xyz;
+  gl_Position = projectionMatrix * viewMatrix * wp;
+}
+`;
+const lineFrag = /* glsl */ `
+uniform float uTime;
+uniform vec3 uSkyColor;
+uniform vec3 uAmbient;
+uniform vec4 uHull;
+uniform vec3 uFogColor;
+uniform float uFogNear;
+uniform float uFogFar;
+varying vec2 vRing;
+varying vec3 vWorld;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+void main() {
+  float e = vRing.x;
+  float near = 1.0 - smoothstep(5.0, 30.0, distance(vWorld.xz, uHull.xy));
+  float n = noise(vWorld.xz * 1.6 + vec2(uTime * 0.5, -uTime * 0.3)) * 0.65 + noise(vWorld.xz * 4.3 - uTime * 0.4) * 0.35;
+  // the scum line where steel meets water: frayed, never a drawn stroke; firmer as you come close
+  float line = (1.0 - smoothstep(0.03, 0.14 + 0.06 * near, e)) * smoothstep(0.22, 0.6, n + 0.25 * near);
+  // lace lapping out from it: a slow surge travels round the outline, torn by noise
+  float surge = 0.5 + 0.5 * sin(vRing.y * 0.9 - uTime * 1.6 + 2.0 * sin(vRing.y * 0.23 + uTime * 0.5));
+  float reach = mix(0.35, 0.9, surge) * mix(0.7, 1.0, near);
+  float lace = smoothstep(0.32, 0.56, (1.0 - smoothstep(0.0, reach, e)) * n);
+  float a = max(line * 0.8, lace * 0.6) * mix(0.5, 1.0, near);
+  vec3 col = mix(vec3(0.78, 0.76, 0.68), uSkyColor, 0.18) * (uAmbient * 0.6 + 0.4);
+  float fog = smoothstep(uFogNear, uFogFar, length(cameraPosition - vWorld));
+  col = mix(col, uFogColor, fog);
+  a *= 1.0 - fog;
+  if (a < 0.01) discard;
+  gl_FragColor = vec4(col, a);
+  #include <colorspace_fragment>
+}
+`;
+
 export class Ocean {
   mesh: THREE.Mesh;
   uniforms: Record<string, THREE.IUniform>;
@@ -392,6 +459,56 @@ export class Ocean {
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x050a0b }));
     floor.position.y = -21;
     scene.add(floor);
+  }
+
+  /** The waterline foam round every hazard (see lineVert): one mesh, built once the drowned world is placed. */
+  hazardLines(list: Hazard[], scene: THREE.Scene) {
+    const OUT = 2.4, IN = 0.25; // foam reaches 2.4 m out; a hair inward so the swell's sideways sway never opens a gap
+    const pos: number[] = [], ring: number[] = [], idx: number[] = [];
+    for (const h of list) {
+      const p = h.pts, n = p.length / 2;
+      if (n < 3) continue;
+      const base = pos.length / 3;
+      let run = 0;
+      for (let i = 0; i <= n; i++) {
+        const k = i % n, a = (k - 1 + n) % n, c = (k + 1) % n;
+        const x = p[k * 2], z = p[k * 2 + 1];
+        if (i > 0) run += Math.hypot(x - p[((i - 1) % n) * 2], z - p[((i - 1) % n) * 2 + 1]);
+        // the corner's outward direction: the mean of its two edges' normals, held to a sane mitre
+        const e0x = x - p[a * 2], e0z = z - p[a * 2 + 1], e1x = p[c * 2] - x, e1z = p[c * 2 + 1] - z;
+        const l0 = Math.hypot(e0x, e0z) || 1, l1 = Math.hypot(e1x, e1z) || 1;
+        let nx = e0z / l0 + e1z / l1, nz = -e0x / l0 - e1x / l1;
+        const nl = Math.hypot(nx, nz) || 1;
+        nx /= nl;
+        nz /= nl;
+        const cosHalf = Math.max(0.5, nx * (e1z / l1) + nz * (-e1x / l1));
+        const m = 1 / cosHalf;
+        pos.push(x - nx * IN, 0, z - nz * IN, x + nx * OUT * m, 0, z + nz * OUT * m);
+        ring.push(0, run, 1, run);
+        if (i > 0) {
+          const v = base + i * 2;
+          idx.push(v - 2, v - 1, v, v - 1, v + 1, v);
+        }
+      }
+    }
+    if (!idx.length) return;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('aRing', new THREE.Float32BufferAttribute(ring, 2));
+    geo.setIndex(idx);
+    const u = this.uniforms;
+    const mat = new THREE.ShaderMaterial({
+      uniforms: { uTime: u.uTime, uStorm: u.uStorm, uDepth: u.uDepth, uWorld: u.uWorld, uSkyColor: u.uSkyColor, uAmbient: u.uAmbient, uHull: u.uHull, uFogColor: u.uFogColor, uFogNear: u.uFogNear, uFogFar: u.uFogFar },
+      vertexShader: lineVert,
+      fragmentShader: lineFrag,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.renderOrder = 2;
+    mesh.frustumCulled = false;
+    scene.add(mesh);
   }
 
   /**

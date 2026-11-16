@@ -27,6 +27,8 @@ import { angleDiff, clamp } from '../core/noise';
 import { audio } from '../audio/audio';
 import { pack } from '../audio/pack';
 
+const HIT = { depth: 0, nx: 0, nz: 0 };
+
 export type Load = { id: string; n: number };
 
 /** Unload the runner's loads into the boat's hold. `room(id)` is how many fit. Returns what moved and what's left. */
@@ -502,7 +504,7 @@ export class Vehicles {
     // move, and crash into land or wrecks at speed
     const nx = this.rx + Math.sin(this.rHeading) * this.rSpeed * dt, nz = this.rz + Math.cos(this.rHeading) * this.rSpeed * dt;
     const ground = heightAt(nx, nz);
-    const hitObj = g.drowned.colliders.some((c) => Math.hypot(c.x - nx, c.z - nz) < c.r + 0.8);
+    const hitObj = g.drowned.hazards.overlap(nx, nz, 0.8, HIT);
     if (ground > -0.25 || hitObj) {
       if (isCrash(this.rSpeed, hitObj ? 'object' : 'land')) this.crash(hitObj ? 'Hit a wreck at full tilt' : 'Ran aground at speed');
       else this.rSpeed = 0;

@@ -9,6 +9,7 @@ import { RNG } from '../core/noise';
 import { Shanty } from './shanty';
 import { inkWorld } from './hero';
 import { heightAt } from './terrain';
+import { HazardField, footprints, circleHazard } from './hazards';
 
 export interface Circle { x: number; z: number; r: number }
 
@@ -33,7 +34,10 @@ function fallback(kind: StructureDef['kind']) {
 }
 
 export class DrownedWorld {
+  /** rough keep-out circles: where not to spawn things, and how the raiders steer clear */
   colliders: Circle[] = [];
+  /** what a hull actually hits: every solid piece's own outline at the waterline (src/world/hazards.ts) */
+  hazards = new HazardField();
   animators: ((t: number, dt: number) => void)[] = [];
   glows: THREE.Object3D[] = [];
   siteMarkers = new Map<string, THREE.Object3D>();
@@ -102,7 +106,10 @@ export class DrownedWorld {
         obj.rotation.x = Math.sin(t * 0.6 + ph) * 0.04;
       });
     }
-    if (s.r) this.colliders.push({ x: s.x, z: s.z, r: s.r });
+    if (s.r) {
+      this.colliders.push({ x: s.x, z: s.z, r: s.r });
+      this.solidObject(obj);
+    }
     if (s.kind === 'oil_rig') {
       // the flare still burns: flicker its glow
       const flare = obj.children.find((c) => c.userData.glow);
@@ -116,6 +123,7 @@ export class DrownedWorld {
       const m = new THREE.Mesh(paint(xf(new THREE.BoxGeometry(7, 2.4, 7), 0, 1.2, 0), '#8a5a34'), vcMat());
       this.add(m, x, y, z, rot);
       this.colliders.push({ x, z, r: 4.5 });
+      this.solidObject(m);
       return m;
     }
     this.add(obj, x, y, z, rot);
@@ -138,7 +146,10 @@ export class DrownedWorld {
         obj.rotation.z = Math.sin(t * 0.7 + ph) * 0.015;
       });
     }
-    if (y < 2) this.colliders.push({ x, z, r: 4.6 });
+    if (y < 2) {
+      this.colliders.push({ x, z, r: 4.6 });
+      this.solidObject(obj);
+    }
     return obj;
   }
 
@@ -197,7 +208,7 @@ export class DrownedWorld {
     this.kitPiece('tb_atoll_kit', 'watchtower', -68, 167, 0.6, 1, true);
     this.kitPiece('tb_atoll_kit', 'watchtower', 72, 168, -0.5, 1, true);
     // the town's landmark: a supertanker's propeller, stood on end in the shallows, a lookout shack on its hub
-    this.kitPiece('tb_atoll_kit', 'propeller', -30, 158, 0.25, 1, false);
+    this.kitPiece('tb_atoll_kit', 'propeller', -30, 158, 0.25, 1, false, 0, true);
     this.colliders.push({ x: -30, z: 158, r: 7 });
   }
 
@@ -205,7 +216,7 @@ export class DrownedWorld {
    * Place one kit node; walls add a chain of colliders along their length. Boats bob on their own; everything else
    * (walls, towers, tanks, stalls: heavy, moored, effectively still) is merged into its settlement's static batch.
    */
-  private kitPiece(file: string, node: string, x: number, z: number, rot = 0, scale = 1, _bob = true, y = 0) {
+  private kitPiece(file: string, node: string, x: number, z: number, rot = 0, scale = 1, _bob = true, y = 0, solid = false) {
     const bob = node === 'scrap_boat';
     let obj: THREE.Object3D | null = null;
     if (bob) {
@@ -220,6 +231,7 @@ export class DrownedWorld {
       if (!b) this.batches.set(this.batch, (b = { geos: [], glows: [], x: 0, z: 0, n: 0 }));
       b.geos.push(k.geo);
       if (k.glow) b.glows.push(k.glow);
+      if (node !== 'propeller' || solid) this.solidGeos([k.geo]);
       b.x += x;
       b.z += z;
       b.n++;
@@ -257,7 +269,32 @@ export class DrownedWorld {
     b.x += x;
     b.z += z;
     b.n++;
-    if (r) this.colliders.push({ x, z, r: r * scale });
+    if (r) {
+      this.colliders.push({ x, z, r: r * scale });
+      this.solidGeos(t.geos);
+    }
+  }
+
+  /** A placed object becomes solid where its geometry meets the water. */
+  private solidObject(obj: THREE.Object3D) {
+    obj.updateMatrixWorld(true);
+    const parts: { geo: THREE.BufferGeometry; matrix: THREE.Matrix4 | null }[] = [];
+    obj.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.isMesh && !o.userData.glow && m.geometry) parts.push({ geo: m.geometry, matrix: m.matrixWorld });
+    });
+    for (const h of footprints(parts)) this.hazards.add(h);
+  }
+
+  /** World-space geometry (merged kit pieces, salvage architecture) becomes solid where it meets the water. */
+  private solidGeos(geos: THREE.BufferGeometry[]) {
+    for (const h of footprints(geos.map((geo) => ({ geo, matrix: null })))) this.hazards.add(h);
+  }
+
+  /** A round solid with no model to slice (a prop the game places itself). */
+  addSolidCircle(x: number, z: number, r: number) {
+    this.colliders.push({ x, z, r });
+    this.hazards.add(circleHazard(x, z, r));
   }
 
   private flushBatches() {
