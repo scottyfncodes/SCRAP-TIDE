@@ -1,16 +1,6 @@
-# Harbor portrait pass (in review)
+# Harbor portrait pass
 
-The eight harbor characters were platform emoji in a coloured ring. This pass replaces them with drawn portraits.
-**Two are drawn so far**, chosen to test the system at its extremes before the other six: **Pip Farthing** and
-**Marlo Keelhart**.
-
-| | Pip Farthing, trader | Marlo Keelhart, shipwright |
-|---|---|---|
-| Silhouette | wide bowler brim, round head, wing moustache | flat-topped welding mask, square head, beard to the frame |
-| Value | pale skin and white hair on warm sand | dark skin and rust beard on bleached blue |
-| Expression | one eye squeezed shut, open grin | brows down, mouth turned down |
-| Salvage | jar-lid monocle on a wire, an old-world coin as a medal | flipped-up welding mask, road-sign shoulder plate |
-| Accent | Laundry Pink band, Cone Orange patch | Buoy Red plate |
+The eight harbor characters were platform emoji in a coloured ring. They are now drawn portraits.
 
 ## Direction: cut-plate portraits
 
@@ -22,40 +12,62 @@ portraits are the same people drawn the same way, in 2D:
 - **Minimal faces.** Brows, a nose plane, an eye shape, a beard or moustache mass. Expression comes from the tilt of
   those few shapes.
 - **Silhouette first.** Each character is recognisable from headgear and hair alone at 56 px.
-- **One piece of salvage each**, saying what they do: Pip's jar-lid monocle on a wire and the old-world coin he wears
-  like a medal.
-- **Weathered, not filthy.** Sun-leathered skin, a dented and patched hat, a faded rag band. No skulls, no spikes.
-- **Palette.** Muted world tones, plus one sun-faded plastic accent per character (Pip: Laundry Pink hat band, Cone
-  Orange patch). Never living green. The backdrop is the character's own card colour, sun-bleached.
-- **Framing.** Drawn on a 64-unit sheet and cropped tight, so the hat brim breaks the ring and the face fills it.
+- **One piece of salvage each**, saying what they do.
+- **Weathered, not filthy.** No skulls, spikes, pirate dress or generic wasteland costume.
+- **Palette.** Muted world tones, plus one sun-faded accent per character. Never living green. The backdrop is the
+  character's own colour, sun-bleached.
+- **Framing.** Drawn on a 64-unit sheet and cropped tight, so headgear breaks the ring and the face fills it.
 
-## Evaluation of the pair (measured in the built game, Driftholm harbor)
+## The cast
 
-- **Told apart without names: yes.** They differ in outline, in value (one light on warm, one dark on cool) and in
-  expression, and still do in greyscale (`screens/pair_sizes.png`, bottom row).
-- **Personality at 56 px: yes, with one weak spot.** Pip's wink and grin and Marlo's scowl both survive at true size
-  (`screens/pair_actual-56px.png`, left columns are 1:1). The weak spot: Marlo's mask window and rust drips are too
-  small to read as what they are at 56 px; the mask reads as "steel headgear", which is enough, but not as "welder".
-- **Native to the 3D world: yes.** Same facets, same lit/shadow split, same muted palette, no outline.
-- **Subordinate to the card's information: yes.** The avatar is unchanged at 56 px: 8.7 % of the card at 402 px wide
-  and 11.2 % at 320 px, against 40–45 % for the name and line. In the blur test (`screens/cards_squint-test.png`) the
-  name is still the darkest, strongest shape on every card. The portraits are heavier than the emoji they replace
-  (Marlo most, being a dark mass), so the remaining six should stay at or below Marlo's weight.
+| | Port | Silhouette | Expression | Salvage | Accent |
+|---|---|---|---|---|---|
+| **Pip Farthing**, trader | Driftholm | wide bowler brim, wing moustache | wink and open grin | jar-lid monocle on a wire, a coin worn as a medal | Laundry Pink band |
+| **Marlo Keelhart**, shipwright | Driftholm | flat-topped welding mask, beard to the frame | brows down, mouth down | flipped-up welding mask, road-sign shoulder plate | Buoy Red plate |
+| **Old Wren**, cartographer | Driftholm | white topknot with a rod through it, long face | heavy lids, half a smile | brass chart divider through her hair, a rolled chart | Pool Blue scarf |
+| **Odessa Brightly**, paint and curios | Driftholm | tall headwrap, hoops | one brow up, chin up, smirk | washer-hoop earrings, her own paint on her cheek | Buoy Red paint |
+| **Old Sal**, fish trader | Rooftop Hollow | peaked hood filling the frame | one brow asking, one eye decided | survival-suit hood | Cone Orange hood |
+| **Nori Kettle**, raft-wright | Rooftop Hollow | choppy mop, ears out, rope coil at the shoulder | wide eyes, brows up and in | rope coil, rag headband | Laundry Pink rag |
+| **Foreman Dace**, rig trader | Rig Helios | hard-hat dome, ear defenders, square shoulders | level brows, flat mouth | hard hat, ear defenders, reflective collar | Bleach White hat |
+| **Vik Ashby**, rig mechanic | Rig Helios | swept quiff, spanner over the shoulder | cocked brow, gap-toothed grin | spanner, collar-up coveralls | Pool Blue coveralls |
+
+## Validation (measured in the built game)
+
+- **All eight at true 56 px, 402 and 320 viewports, and greyscale:** `screens/eight_actual-56px.png` (cropped from the
+  real harbor panels, enlarged 3× without smoothing). Rows: 402 px viewport, 320 px viewport, greyscale.
+- **Told apart without names:** yes, in colour and in greyscale. No two share a silhouette.
+- **Names and information stay dominant:** the avatar is 56 × 56 on every card at both widths: 9–11 % of the card,
+  against 36–45 % for the name and line. In the blur test (`screens/cards_all-eight_squint-test.png`) the name is the
+  darkest, strongest shape on all eight cards.
+- **None heavier than Marlo:** mean brightness inside the ring at true size (0–255, lower is heavier): Marlo 116,
+  Sal 135, Odessa 135, Dace 137, Pip 138, Wren 149, Vik 149, Nori 154.
+- **Weight:** 1.2–2.0 KB per portrait, 12.7 KB for all eight uncompressed, about 5.9 KB gzipped as a module. Inline
+  SVG in `src/ui/portraits.ts`: no download, no new dependency, no change to `package.json`.
+- **No emoji left on the cards**, and no page errors in any of the three harbors at either width.
+
+### What is weaker
+
+- **Old Wren is the quietest of the eight.** Her stillness is the character, but at 56 px the chart divider reads as
+  "a rod through her hair", not specifically as a divider, and the rolled chart is lost at the edge of the ring.
+- **Small salvage is lost at 56 px by design:** Pip's coin, Marlo's shoulder plate, Sal's drawcords and Vik's oil
+  smudge only show when enlarged. Each character is carried by silhouette and expression instead.
+- **No harbor shows all eight.** Driftholm has four, Rooftop Hollow two, Rig Helios two, so the eight are shown
+  together as a sheet and in place as three harbor screens.
 
 ## How it ships
 
-`src/ui/portraits.ts` holds each portrait as inline SVG (about 2 KB each). Nothing is downloaded, nothing blurs at
-3× density, and a character without a portrait yet falls back to their old emoji. The standalone SVG and the editable
-VectorCraft source are in `creative/characters/portraits/` and `creative/characters/source/`.
+`src/ui/portraits.ts` holds each portrait as inline SVG. `npcCard` in `src/ui/ui.ts` draws it inside the existing
+56 px ring; the card layout is unchanged. Standalone SVGs are in `creative/characters/portraits/`, editable VectorCraft
+sources in `creative/characters/source/`.
 
 ## Screens
 
-- `screens/harbor_iphone17.png`: Driftholm at 402×874, 3× density
-- `screens/harbor_narrow-320.png`: the same at 320×568
-- `screens/pair_actual-56px.png`: both avatars cropped from the harbor at true 56 px (402 and 320 viewports), and enlarged
-- `screens/pair_sizes.png`: the pair large, at 112 px, at 56 px, and in greyscale
-- `screens/cards_squint-test.png`: the cards sharp and blurred, to see what the eye lands on
-- `screens/cards_narrow-320.png`: two drawn cards above an unchanged emoji card on the narrow phone
+- `screens/eight_actual-56px.png`: all eight at true size, both viewports, and greyscale
+- `screens/eight_sizes.png`: all eight at 112 px, 56 px, greyscale and on dark steel
+- `screens/eight_large.png`: all eight enlarged
+- `screens/harbors_402.png`, `screens/harbors_320.png`: Driftholm, Rooftop Hollow and Rig Helios side by side
+- `screens/harbor_driftholm_402.png`, `harbor_hollow_402.png`, `harbor_helios_402.png`: each harbor at 402×874, 3×
+- `screens/cards_all-eight_squint-test.png`: every card sharp and blurred
 
 ## Trade-offs
 
@@ -64,4 +76,4 @@ VectorCraft source are in `creative/characters/portraits/` and `creative/charact
 - **Eight hand-drawn faces.** Each one is drawn, not generated from the 3D models, which share three body types
   between them and would not tell eight people apart.
 - **The old 2D cast art** (`creative/characters/char_*.svg`) is from the storybook-pirate era: bold outlines, bright
-  primaries. Pip keeps what made him Pip there (bowler, monocle, white moustache) and drops the style.
+  primaries. The characters keep what made them themselves there and drop the style.
