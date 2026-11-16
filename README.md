@@ -21,7 +21,7 @@ harbour, and build it, upgrade by upgrade, into an expedition boat that can pier
 - **The Drift** (start): silted, oil-streaked shallows over a drowned county. The Sunken Tower, the Box Yard, Rooftop Hollow (a fishing
   community on a drowned apartment roof), Turtle Atoll, Lantern Rock, Gull Shoal and the wreck of the *Wren*.
 - **The Sunken Reach** (needs the Scrap Trimaran to cross the open swell): Old Meridian's drowned towers, Rig Helios (an oil
-  platform turned market), Canopy Rise, and the Rustfang tanker graveyard, where raiders hunt.
+  platform turned market), Canopy Rise, and the Rustfang tanker graveyard, where raiders on wave runners hunt.
 - **The Stormwall** (needs the Ironwake Expedition Cat): a storm that never ends, and the Meridian Spire inside it.
 
 **The boat is the game.** 3 vessels (Patchwork Skiff → Scrap Trimaran → Ironwake twin-hull) and 13 upgrade slots: sails,
@@ -71,10 +71,12 @@ the Discovery Catalog (now 36 entries), milestones and cosmetics. Saves from v1 
 | Drowned structures and raft-towns | `src/world/drowned.ts` |
 | Boat builder (GITCRAFT hulls for all three vessels, MeshCraft boat kit + fittings, crew) | `src/ship/shipModel.ts` |
 | Salvage and raiders | `src/game/salvage.ts`, `src/game/raiders.ts` |
+| At the helm: the captain posed with IK on the tiller or wheel of each boat; the same poser seats the Rustfang riders (`docs/helm-pass/`) | `src/player/helm.ts`, `src/world/raiderRunner.ts` |
+| Old Wren on the radio: voiced, captioned context and how-to-play | `src/game/narration.ts` |
 | Game loop | `src/game/game.ts` |
 | UI: HUD, radar, winch, settlements, workbench, crew | `src/ui/ui.ts` |
 | Procedural WebAudio (howling wind, groaning steel, bell buoys, hull strikes, engine, rain, thunder, rigging, winch…) | `src/audio/audio.ts` |
-| Voice lines, adaptive drowned-world theme, stingers, impact layers (GITCRAFT AudioCraft; lazy-loaded OGG / AAC, 0.9–1.2 MB) | `src/audio/pack.ts`, `public/audio/`, `creative/audio/` |
+| Voice lines, seven adaptive music tapes (Auto or your pick in Settings), stingers, impact layers (GITCRAFT AudioCraft; lazy-loaded OGG / AAC, one tape at a time) | `src/audio/pack.ts`, `public/audio/`, `creative/audio/` |
 | Captain's procedural Walk/Run: IK-planted feet, pendulum/flight pelvis, counter-rotation, phase-locked to ground speed; momentum, lean, footsteps (`docs/expedition-pass/`) | `src/player/gait.ts`, `src/player/captain.ts` |
 | Pinch-to-zoom world chart and treasure maps (real coastlines from the heightfield, collision-free labels, scale bar) | `src/ui/mapView.ts`, `src/ui/mapArt.ts` |
 | Flipbook effects: salvage/harpoon splashes, sparks, lightning, engine smoke, bow-slam spray, storm rain sheets (GITCRAFT FXCraft; `?fx=low` / `?fx=high`) | `src/game/flipfx.ts`, `public/fx/` |
