@@ -1,0 +1,60 @@
+{
+ "title": "tb_tape_salvageday",
+ "tempo": 108,
+ "bars": 16,
+ "key": "C",
+ "scale": "mixolydian",
+ "chords_degrees": [
+  0,
+  3,
+  0,
+  4,
+  0,
+  3,
+  0,
+  4,
+  0,
+  3,
+  0,
+  4,
+  0,
+  3,
+  0,
+  4
+ ],
+ "sample_rate": 44100,
+ "loop": {
+  "start": 0,
+  "end": 1568000,
+  "seconds": 35.5556
+ },
+ "stems": {
+  "bass": "stems/tb_tape_salvageday_bass.wav",
+  "pad": "stems/tb_tape_salvageday_pad.wav",
+  "lead": "stems/tb_tape_salvageday_lead.wav",
+  "arp": "stems/tb_tape_salvageday_arp.wav",
+  "drums": "stems/tb_tape_salvageday_drums.wav"
+ },
+ "intensity_levels": {
+  "low": [
+   "pad",
+   "bass"
+  ],
+  "mid": [
+   "pad",
+   "bass",
+   "drums",
+   "arp"
+  ],
+  "high": [
+   "bass",
+   "pad",
+   "lead",
+   "arp",
+   "drums"
+  ]
+ },
+ "mix": "tb_tape_salvageday.wav",
+ "midi": "tb_tape_salvageday.mid",
+ "usage": "Start every stem together on one AudioContext clock (loop=true, loopEnd=loop.seconds); fade stem gains to the level's set."
+}

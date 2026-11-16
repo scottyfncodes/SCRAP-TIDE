@@ -156,7 +156,8 @@ let crewPromise: Promise<void> | null = null;
 export function loadCrew() {
   if (!crewPromise) {
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
-    crewPromise = Promise.all([...CREW_FILES.map((r) => `tb_crew_${r}`), ...CHARACTER_FILES, ...(jury() ? JURY_CHARACTER_FILES : [])].map((n) => loadOne(loader, n))).then(() => undefined);
+    // (the Rustfang raiders ride wave runners: their model comes with the cast, whoever owns one)
+    crewPromise = Promise.all([loadModelFiles(['tb_waverunner']), ...[...CREW_FILES.map((r) => `tb_crew_${r}`), ...CHARACTER_FILES, ...(jury() ? JURY_CHARACTER_FILES : [])].map((n) => loadOne(loader, n))]).then(() => undefined);
   }
   return crewPromise;
 }
@@ -431,6 +432,45 @@ export function cullModel(root: THREE.Object3D, material: string, tag: string, c
     m.userData.srcGeometry = geo;
     m.visible = geo.attributes.position.count > 0;
   });
+}
+
+/**
+ * Lift the faces of one material whose centre (in `root`'s space) passes `cut` out of a sceneModel() clone, as their
+ * own geometry in `root`'s space (position, normal, colour), and drop them from the model: a part that has to move on
+ * its own, like the Trimaran's tiller. Null when nothing matched. Call before any tint of that material.
+ */
+export function extractModel(root: THREE.Object3D, material: string, tag: string, cut: (c: THREE.Vector3) => boolean): THREE.BufferGeometry | null {
+  root.updateMatrixWorld(true);
+  const toRoot = root.matrixWorld.clone().invert();
+  const P: number[] = [], N: number[] = [], C: number[] = [];
+  const c = new THREE.Vector3(), v = new THREE.Vector3(), tri = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || m.userData.srcMaterial !== material) return;
+    const g = m.geometry.index ? m.geometry.toNonIndexed() : m.geometry;
+    const pos = g.attributes.position, nor = g.attributes.normal, col = g.attributes.color;
+    const mtx = new THREE.Matrix4().multiplyMatrices(toRoot, m.matrixWorld);
+    const nm = new THREE.Matrix3().getNormalMatrix(mtx);
+    for (let f = 0; f < pos.count; f += 3) {
+      c.set(0, 0, 0);
+      for (let k = 0; k < 3; k++) c.add(tri[k].fromBufferAttribute(pos, f + k).applyMatrix4(mtx));
+      if (!cut(c.multiplyScalar(1 / 3))) continue;
+      for (let k = 0; k < 3; k++) {
+        P.push(tri[k].x, tri[k].y, tri[k].z);
+        if (nor) v.fromBufferAttribute(nor, f + k).applyMatrix3(nm).normalize();
+        else v.set(0, 1, 0);
+        N.push(v.x, v.y, v.z);
+        C.push(col ? col.getX(f + k) : 1, col ? col.getY(f + k) : 1, col ? col.getZ(f + k) : 1);
+      }
+    }
+  });
+  if (!P.length) return null;
+  cullModel(root, material, tag, cut);
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.Float32BufferAttribute(P, 3));
+  out.setAttribute('normal', new THREE.Float32BufferAttribute(N, 3));
+  out.setAttribute('color', new THREE.Float32BufferAttribute(C, 3));
+  return out;
 }
 
 /** Where node `name` of `file` sits in the file's space (a moving part's pivot), or null. */

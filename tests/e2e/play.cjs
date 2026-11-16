@@ -281,10 +281,27 @@ const check = (name, ok, detail = '') => {
     const G = window.__game;
     const cap = G.captain.char;
     return { captain: !!cap, clips: cap ? Object.keys(cap.actions).sort().join(',') : '', standIn: G.captain.body.visible, folk: G.env.folk.length,
-      raiders: G.raiders.list.map((r) => r.crew.length) };
+      raiders: G.raiders.list.map((r) => (r.run && r.run.model && r.run.rider ? 1 : 0)) };
   });
-  check('the rigged survivor cast replaces the block figures (captain, townsfolk, raider crews)',
-    cast.captain && !cast.standIn && /Dig/.test(cast.clips) && /Sit/.test(cast.clips) && cast.folk >= 8 && cast.raiders.every((n) => n === 2), JSON.stringify(cast));
+  check('the rigged survivor cast replaces the block figures (captain, townsfolk, a raider astride every wave runner)',
+    cast.captain && !cast.standIn && /Dig/.test(cast.clips) && /Sit/.test(cast.clips) && cast.folk >= 8 && cast.raiders.every((n) => n === 1), JSON.stringify(cast));
+  // at the helm: the captain's steering hand is on the tiller (or the wheel rim), not on their knees
+  const helm = await g(async () => {
+    const G = window.__game;
+    const st = G.ship.helm;
+    const t0 = G.renderT;
+    while (G.renderT < t0 + 1.2) await new Promise((r) => setTimeout(r, 100)); // game time for the pose to ease in
+    G.shipRoot.updateMatrixWorld(true);
+    const inv = G.shipRoot.matrixWorld.clone().invert();
+    const at = (bone) => { let o = null; G.captain.char.root.traverse((b) => { if (b.name.endsWith(bone)) o = b; }); return o.getWorldPosition(G.captain.root.position.clone()).applyMatrix4(inv); };
+    const hand = st.tiller ? (st.tiller.hand === 'L' ? 'LeftHand' : 'RightHand') : st.wheel.left !== undefined ? 'LeftHand' : 'RightHand';
+    const h = at(hand);
+    let off;
+    if (st.tiller) off = Math.abs(h.distanceTo(st.tiller.pivot) - st.tiller.grip.distanceTo(st.tiller.pivot));
+    else off = Math.abs(Math.hypot(h.x - st.wheel.hub.x, h.y - st.wheel.hub.y) - st.wheel.radius);
+    return { mode: G.mode, stance: st.stance, off: +off.toFixed(3), tiller: !!G.ship.tiller, feetApart: +at('LeftFoot').distanceTo(at('RightFoot')).toFixed(2) };
+  });
+  check('the captain holds the helm: steering hand on the tiller or wheel, feet planted apart', helm.mode !== 'sail' || (helm.off < 0.06 && helm.feetApart > 0.2), JSON.stringify(helm));
   const alg = await g(() => {
     const G = window.__game;
     G.store.data.cargo = [];

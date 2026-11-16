@@ -53,7 +53,7 @@ export interface SaveData {
   flags: string[];
   stats: { goldEarned: number; digs: number; distance: number; trips: number };
   ship: { x: number; z: number; heading: number; anchored: boolean; docked: boolean; dockedAt: string };
-  settings: { sfx: number; music: number; haptics: boolean; calm: boolean };
+  settings: { sfx: number; music: number; haptics: boolean; calm: boolean; /** Old Wren's radio guide (voice + captions) */ narration: boolean; /** the music tape playing: 'auto' follows the sea */ tape: string };
   // v2: the drowned world
   fuel: number;
   hull: number;
@@ -119,7 +119,7 @@ export function freshSave(): SaveData {
     flags: [],
     stats: { goldEarned: 0, digs: 0, distance: 0, trips: 0 },
     ship: { x: WORLD.spawn.x, z: WORLD.spawn.z, heading: WORLD.spawn.heading, anchored: false, docked: true, dockedAt: 'driftholm' },
-    settings: { sfx: 0.8, music: 0.5, haptics: true, calm: prefersReducedMotion() },
+    settings: { sfx: 0.8, music: 0.5, haptics: true, calm: prefersReducedMotion(), narration: true, tape: 'auto' },
     fuel: 30,
     hull: 60,
     crew: [],

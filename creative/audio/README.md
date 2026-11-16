@@ -31,3 +31,12 @@ for iPhone Safari, encoded with FFmpeg. Pack: 0.84 MB OGG / 1.10 MB AAC; a playe
 | Fishing | `tomas_catch` (at most every 3 min) |
 
 One voice at a time, per-line cooldowns, and the music ducks under speech. Nothing loads while SFX/MUSIC is at 0.
+
+## Helm pass (2026-11-16): Wren's narration and six more tapes
+
+| Folder | What | Tool call |
+|---|---|---|
+| `voice/narration/` | 27 lines for Old Wren (`bf_emma`, en-gb, speed 0.94) and the re-voiced `kai_raiders` ("Rustfang runners!"). Script and timings in `tb_vo_wren.dialogue.json`. Shipped like the rest: 110 Hz high-pass, light compression, -16 LUFS, 24 kHz mono OGG q-1 + AAC 32 kb/s. | `audiocraft_voice` |
+| `music/tapes/<tape>/` | Fair Wind (adventure, G, 96), Slack Water (calm, F, 66), Rust & Diesel (tense, E, 104), The Long Dark (sad, A, 60), Salvage Day (playful, C, 108), Ironwake (heroic, D, 92): 12 to 16 bars, 5 sample-aligned stems each. Kept here: the MIDI, the layer manifest and the `.studio.json` request (mood, key, tempo, bars, seed), which regenerates the stems exactly; the WAV stems themselves (125 MB) are not committed. Shipped at 24 kHz mono, OGG q0 + AAC 40 kb/s. | `audiocraft_music` |
+
+`src/game/narration.ts` plays the narration; `src/audio/pack.ts` (`TAPES`, `autoTape`) plays the tapes.

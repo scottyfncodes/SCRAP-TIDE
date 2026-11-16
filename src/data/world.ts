@@ -466,7 +466,7 @@ export const CASTAWAYS: CastawayDef[] = [
   { id: 'cw_bram', crew: 'bram', x: 455, z: -390, text: 'Someone is shouting from a raft tied to a drowned lamppost.' },
 ];
 
-/** Hostile waters: Rustfang raider skiffs patrol these zones. */
+/** Hostile waters: Rustfang raiders on wave runners patrol these zones. */
 export interface RaiderZone { id: string; name: string; x: number; z: number; r: number; count: number; speed: number }
 export const RAIDER_ZONES: RaiderZone[] = [
   { id: 'rz_graveyard', name: 'Rustfang Graveyard', x: 270, z: 640, r: 230, count: 3, speed: 9.5 },

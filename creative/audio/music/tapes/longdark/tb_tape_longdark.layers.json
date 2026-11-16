@@ -1,0 +1,56 @@
+{
+ "title": "tb_tape_longdark",
+ "tempo": 60,
+ "bars": 12,
+ "key": "A",
+ "scale": "minor",
+ "chords_degrees": [
+  0,
+  5,
+  2,
+  6,
+  0,
+  5,
+  2,
+  6,
+  0,
+  5,
+  2,
+  6
+ ],
+ "sample_rate": 44100,
+ "loop": {
+  "start": 0,
+  "end": 2116800,
+  "seconds": 48.0
+ },
+ "stems": {
+  "bass": "stems/tb_tape_longdark_bass.wav",
+  "pad": "stems/tb_tape_longdark_pad.wav",
+  "lead": "stems/tb_tape_longdark_lead.wav",
+  "arp": "stems/tb_tape_longdark_arp.wav",
+  "drums": "stems/tb_tape_longdark_drums.wav"
+ },
+ "intensity_levels": {
+  "low": [
+   "pad",
+   "bass"
+  ],
+  "mid": [
+   "pad",
+   "bass",
+   "drums",
+   "arp"
+  ],
+  "high": [
+   "bass",
+   "pad",
+   "lead",
+   "arp",
+   "drums"
+  ]
+ },
+ "mix": "tb_tape_longdark.wav",
+ "midi": "tb_tape_longdark.mid",
+ "usage": "Start every stem together on one AudioContext clock (loop=true, loopEnd=loop.seconds); fade stem gains to the level's set."
+}

@@ -15,7 +15,7 @@ export const VOICE_LINES = {
   dockhand_stormwall: 'Nobody comes back from the Stormwall, Captain. Not in a boat like that.',
   kai_joined: 'Eleven days on that raft. I saw you coming from six miles out.',
   kai_storm: 'Storm ahead, Captain. Go round, or brace.',
-  kai_raiders: 'Rustfang skiffs! Coming in hard!',
+  kai_raiders: 'Rustfang runners! Coming in hard!',
   kai_green: 'Is that… green? Captain, that thing is alive.',
   tomas_joined: "Forty years on that roof. Take me where the fish haven't heard of me.",
   tomas_catch: 'Silverfin on the line. We eat tonight.',
@@ -31,6 +31,34 @@ export const VOICE_LINES = {
   raider_threat: 'Cut your engine, and hand over the hold!',
   raider_taunt: "Nice boat. It's ours now.",
   raider_flee: "Fall back! They've got a harpoon!",
+  // ── Old Wren on the radio (game/narration.ts): the world, and how to work a boat in it ──
+  wren_intro: "The sea rose, and it never went back. The cities are under your keel now. What's left of us lives on what floats.",
+  wren_intro2: "I'm Wren. I draw the charts here in Driftholm. Take the radio, Captain. I'll be in your ear until you stop needing me.",
+  wren_steer: "Thumb on the wheel, and drag it toward where you want to go. She'll come round. The gold arrow points at your next job.",
+  wren_tower: 'That tower was offices, once. Slow down beside the buoy, and tap Salvage.',
+  wren_winch: 'Watch the needle. Reel in when it crosses the green. Catch the gold centre, and the sea gives a little extra.',
+  wren_bank: "Good. Now, nothing you haul is yours until it's on the dock. Come home and tie up.",
+  wren_refit: "Sell what you don't need to Pip. Then see Marlo. Every part he fits, you'll see it on the boat.",
+  wren_turtle: "Now, the errand. A bottle washed up on Turtle Atoll, to the west. Follow the gold arrow. Don't read what's inside.",
+  wren_anchor: 'Shallow water. Let go of the wheel, drop the anchor, and go ashore.',
+  wren_walk: 'Same thumb, same wheel. It moves your feet now. Walk the beach, and look for the glint.',
+  wren_map: 'You read it. Good. The landmarks on that map are real. Stand where it says, and dig.',
+  wren_home: 'Bring it home, Captain. And watch the sky. Squalls come up fast out here.',
+  wren_log: "That's your first voyage done. From here, the Captain's Log tells you what's next. Salvage. Refit. Push further out.",
+  wren_wind: "Feel her slow down? You're pointing into the wind. Turn away a little, and the sail fills again.",
+  wren_hold: 'Your hold is full. Take it home and bank it, before the sea takes it back.',
+  wren_hull: "She's taking water. Patch her from the Ship screen, or limp home to Marlo.",
+  wren_engine: "An engine. Tap the engine button to run it. It's fast, and it's thirsty.",
+  wren_fuel: "Fuel's low. Sail when the wind lets you. Save the engine for when it won't.",
+  wren_night: 'Dark comes quick out here. Your lookout dial still shows the way home.',
+  wren_storm: "Storm cell. Go round it if you can. If you can't, hold on, and mind your hull.",
+  wren_raiders: 'Rustfang. They ride wave runners, and they take what they like. Outrun them under engine, or fit a harpoon and teach them manners.',
+  wren_reach: 'The Sunken Reach. A whole city under you. Richer salvage out here, and worse company.',
+  wren_wall: 'The Stormwall. Nobody I know has come back from it. Be the first.',
+  wren_crew: "Crew aren't passengers. Each one does a job you'd only do badly. Find more of them.",
+  wren_green: 'Is that green? Keep it alive, Captain. That is the rarest thing left in the world.',
+  wren_trimaran: "Three hulls. She'll take the open swell now. Rig Helios is west, past the edge of my chart.",
+  wren_back: 'Still floating, Captain. Good. Your log has the next job.',
 } as const;
 export type VoiceId = keyof typeof VOICE_LINES;
 export type Stinger = 'salvage' | 'discovery' | 'upgrade' | 'crew';
@@ -40,7 +68,6 @@ export type SfxLayer = keyof typeof SFX;
 /** Theme stems (sample-aligned, 25.26 s loop in D dorian) and how loud each is per region / danger. */
 const STEMS = ['pad', 'bass', 'arp', 'lead', 'drums'] as const;
 type Stem = (typeof STEMS)[number];
-const LOOP_S = 25.2632;
 const MIX: Record<string, Partial<Record<Stem, number>>> = {
   shallows: { pad: 0.75, bass: 0.55 }, // the Drift: just the bed
   harbor: { pad: 0.6, lead: 0.25 },
@@ -48,6 +75,43 @@ const MIX: Record<string, Partial<Record<Stem, number>>> = {
   stormwall: { pad: 0.9, bass: 0.8, arp: 0.25, lead: 0.5, drums: 0.25 },
 };
 const DANGER: Partial<Record<Stem, number>> = { drums: 0.85, arp: 0.6, lead: 0.55, bass: 0.85 }; // raider combat
+
+/**
+ * The tape shelf: every piece is five sample-aligned stems (GITCRAFT AudioCraft, creative/audio/music), so the same
+ * region and raider-danger mix plays over whichever tape is on. Only the tape that is playing is ever downloaded.
+ */
+export const TAPES = [
+  { id: 'drowned', name: 'Drowned World', note: 'The theme. Slow and deep', file: 'tb_theme', loop: 25.2632 },
+  { id: 'fairwind', name: 'Fair Wind', note: 'A running sea, bright', file: 'tb_tape_fairwind', loop: 40 },
+  { id: 'slackwater', name: 'Slack Water', note: 'Calm, for the long hauls', file: 'tb_tape_slackwater', loop: 43.6364 },
+  { id: 'salvageday', name: 'Salvage Day', note: 'A good haul. Light on its feet', file: 'tb_tape_salvageday', loop: 35.5556 },
+  { id: 'ironwake', name: 'Ironwake', note: 'Big water, bigger boat', file: 'tb_tape_ironwake', loop: 41.7391 },
+  { id: 'longdark', name: 'The Long Dark', note: 'Night watch. Low and far from home', file: 'tb_tape_longdark', loop: 48 },
+  { id: 'rustdiesel', name: 'Rust & Diesel', note: 'Trouble on the water', file: 'tb_tape_rustdiesel', loop: 36.9231 },
+] as const;
+export type TapeId = (typeof TAPES)[number]['id'];
+const TAPE_MAP = Object.fromEntries(TAPES.map((t) => [t.id, t])) as Record<TapeId, (typeof TAPES)[number]>;
+
+/** The tapes that suit the water you are in (first = the one to open on). */
+export function tapePool(sea: { region: string; night: number; storm: number }): TapeId[] {
+  if (sea.storm > 0.5 || sea.region === 'stormwall') return ['rustdiesel', 'ironwake'];
+  if (sea.night > 0.6) return ['longdark', 'slackwater', 'drowned'];
+  if (sea.region === 'emerald') return ['ironwake', 'fairwind', 'drowned'];
+  if (sea.region === 'harbor') return ['slackwater', 'salvageday', 'drowned'];
+  return ['drowned', 'fairwind', 'salvageday', 'slackwater'];
+}
+
+/**
+ * AUTO: which tape should be on. A tape that suits the water plays three times through, then the next in the pool
+ * takes over; one that no longer suits (night fell, a storm came up) plays its loop out first. Pure, so it is tested.
+ */
+export function autoTape(sea: { region: string; night: number; storm: number }, playing: TapeId | null, loopsPlayed: number): TapeId {
+  const pool = tapePool(sea);
+  if (!playing) return pool[0];
+  const i = pool.indexOf(playing);
+  if (i < 0) return loopsPlayed >= 1 ? pool[0] : playing;
+  return loopsPlayed >= 3 ? pool[(i + 1) % pool.length] : playing;
+}
 
 /** Pick the format once: OGG Vorbis if the browser says it can, AAC otherwise (iPhone Safari). */
 export function audioExt(canPlay: (t: string) => string = (t) => document.createElement('audio').canPlayType(t)): 'ogg' | 'm4a' {
@@ -123,19 +187,49 @@ class AudioPack {
   /** A character speaks (one line at a time; the same line not again within `cooldown` s). Music ducks under it. */
   say(id: VoiceId, cooldown = 30) {
     const ctx = this.ready();
-    if (!ctx || audio.sfxVol <= 0 || this.speaking) return;
+    if (!ctx || audio.sfxVol <= 0 || this.busy) return;
     const now = ctx.currentTime;
     if (now - (this.lastSaid.get(id) ?? -1e9) < cooldown) return;
     this.lastSaid.set(id, now);
     this.load(`vo/${id}`).then((buf) => {
-      if (!buf || this.speaking) return;
+      if (!buf || this.busy) return;
       const s = this.play(buf, this.voiceBus!);
       this.speaking = s;
+      this.speakEnd = performance.now() + buf.duration * 1000 + 600;
       this.duck(true);
       s.onended = () => {
-        this.speaking = null;
+        if (this.speaking === s) this.speaking = null;
         this.duck(false);
       };
+    });
+  }
+
+  /** Is a voice line playing right now? */
+  get busy() {
+    // by the clock as well as the 'ended' event: a stalled audio device must not leave a line "playing" forever
+    if (this.speaking && performance.now() > this.speakEnd) this.speaking = null;
+    return !!this.speaking;
+  }
+  private speakEnd = 0;
+
+  /**
+   * The narrator speaks: like say(), without a cooldown, and it resolves with the line's length in seconds once it
+   * starts (0 if sound is off, the file is missing or someone else is mid-line), so a caption can stay up as long.
+   */
+  speak(id: VoiceId): Promise<number> {
+    const ctx = this.ready();
+    if (!ctx || audio.sfxVol <= 0 || this.busy) return Promise.resolve(0);
+    return this.load(`vo/${id}`).then((buf) => {
+      if (!buf || this.busy) return 0;
+      const s = this.play(buf, this.voiceBus!);
+      this.speaking = s;
+      this.speakEnd = performance.now() + buf.duration * 1000 + 600;
+      this.duck(true);
+      s.onended = () => {
+        if (this.speaking === s) this.speaking = null;
+        this.duck(false);
+      };
+      return buf.duration;
     });
   }
 
@@ -207,44 +301,96 @@ class AudioPack {
     this.themeBus.gain.setTargetAtTime(on ? 0.45 : 1, audio.ctx.currentTime, on ? 0.08 : 0.6);
   }
 
-  /** Start the theme (all stems on one clock). Skipped while MUSIC is at 0; retried when it comes back up. */
-  private startTheme() {
+  /** The tape the player chose in Settings ('auto': the sea picks, see autoTape). */
+  tape: TapeId | 'auto' = 'auto';
+  /** the tape on the deck right now (null until the first one has loaded) */
+  playing: TapeId | null = null;
+  private deckAt = 0;
+  private sea = { night: 0, storm: 0 };
+
+  /** Choose a tape (Settings). It crossfades in on the next frame. */
+  setTape(id: string) {
+    this.tape = id === 'auto' || TAPES.some((t) => t.id === id) ? (id as TapeId | 'auto') : 'auto';
+  }
+
+  /** Put a tape on: all five stems on one clock, faded in over the outgoing tape. Skipped while MUSIC is at 0. */
+  private startTape(id: TapeId) {
     const ctx = this.ready();
     if (!ctx || this.themeLoading || audio.musicVol <= 0) return;
+    const tape = TAPE_MAP[id];
     this.themeLoading = true;
-    Promise.all(STEMS.map((s) => this.load(`music/tb_theme_${s}`))).then((bufs) => {
-      if (bufs.some((b) => !b)) return; // keep the synth phrases
-      this.themeBus = ctx.createGain();
-      this.themeBus.gain.value = 1;
-      this.themeBus.connect(audio.musicBus);
-      const at = ctx.currentTime + 0.1;
+    Promise.all(STEMS.map((s) => this.load(`music/${tape.file}_${s}`))).then((bufs) => {
+      this.themeLoading = false;
+      if (bufs.some((b) => !b)) {
+        this.failed.add(id); // keep what is playing (or the synth phrases); don't ask for this tape again
+        return;
+      }
+      const old = this.themeBus;
+      const bus = ctx.createGain();
+      const at = ctx.currentTime + 0.1, fade = old ? 3.5 : 4;
+      bus.gain.setValueAtTime(old ? 0 : 1, at);
+      if (old) {
+        bus.gain.linearRampToValueAtTime(1, at + fade);
+        old.gain.cancelScheduledValues(at);
+        old.gain.setValueAtTime(old.gain.value, at);
+        old.gain.linearRampToValueAtTime(0, at + fade);
+        const stale = this.sources;
+        setTimeout(() => {
+          for (const src of stale) {
+            try {
+              src.stop();
+            } catch {
+              /* already stopped */
+            }
+          }
+          old.disconnect();
+        }, (fade + 0.4) * 1000);
+      }
+      bus.connect(audio.musicBus);
+      this.themeBus = bus;
+      this.sources = [];
+      this.stemGain.clear();
       const mix = themeMix(this.region, this.danger);
       STEMS.forEach((s, i) => {
         const src = ctx.createBufferSource();
         src.buffer = bufs[i]!;
         src.loop = true;
-        src.loopEnd = Math.min(LOOP_S, bufs[i]!.duration); // ignore any encoder padding
+        src.loopEnd = Math.min(tape.loop, bufs[i]!.duration); // ignore any encoder padding
         const g = ctx.createGain();
-        g.gain.setValueAtTime(0, at);
-        g.gain.linearRampToValueAtTime(mix[s], at + 4);
-        src.connect(g).connect(this.themeBus!);
+        g.gain.setValueAtTime(old ? mix[s] : 0, at);
+        if (!old) g.gain.linearRampToValueAtTime(mix[s], at + fade);
+        src.connect(g).connect(bus);
         src.start(at);
+        this.sources.push(src);
         this.stemGain.set(s, g);
       });
+      this.playing = id;
+      this.deckAt = at;
       audio.themeOn = true;
     });
   }
+  private sources: AudioBufferSourceNode[] = [];
+  private failed = new Set<TapeId>();
 
-  /** Called every frame: region and raider danger (0..1) steer the stem mix. */
-  music(region: string, danger: number) {
-    if (!audio.ctx) return;
-    if (!this.themeLoading) this.startTheme();
+  /** Called every frame: region and raider danger (0..1) steer the stem mix; night and storm help pick the tape. */
+  music(region: string, danger: number, night = 0, storm = 0) {
+    const ctx = audio.ctx;
+    if (!ctx) return;
+    this.sea.night = night;
+    this.sea.storm = storm;
+    if (!this.themeLoading) {
+      const played = this.playing ? (ctx.currentTime - this.deckAt) / TAPE_MAP[this.playing].loop : 0;
+      let want: TapeId = this.tape === 'auto' ? autoTape({ region, night, storm }, this.playing, played) : this.tape;
+      if (this.failed.has(want)) want = this.playing ?? 'drowned';
+      // never swap tapes mid-chase: the fight keeps the tune it started with
+      if (want !== this.playing && !(this.playing && danger > 0.2 && this.tape === 'auto') && !this.failed.has(want)) this.startTape(want);
+    }
     if (region === this.region && Math.abs(danger - this.danger) < 0.05) return;
     this.region = region;
     this.danger = danger;
     if (!this.stemGain.size) return;
     const mix = themeMix(region, danger);
-    const t = audio.ctx.currentTime;
+    const t = ctx.currentTime;
     for (const [s, g] of this.stemGain) g.gain.setTargetAtTime(mix[s], t, danger > 0.5 ? 0.6 : 2.5);
   }
 }

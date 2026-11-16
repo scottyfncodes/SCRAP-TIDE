@@ -326,6 +326,29 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 @keyframes tin { from { transform: translateX(-8px); opacity: 0; } }
 @keyframes tout { to { transform: translateY(-6px); opacity: 0; } }
 
+/* narration: a voice on the radio. Portrait, name, the line; a hairline runs down as the line plays */
+.narr { position: absolute; top: calc(var(--safe-t) + 160px); left: calc(var(--safe-l) + 10px); right: calc(var(--safe-r) + 10px); max-width: 440px; margin: 0 auto; z-index: 32;
+  display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px 10px 8px; pointer-events: none; color: var(--bone);
+  background: var(--scratches), linear-gradient(180deg, rgba(23,59,74,.95), rgba(8,28,38,.96)); border: 1px solid var(--plate-edge); border-left: 4px solid var(--sun-gold); border-radius: 3px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.45); overflow: hidden;
+  animation: narrin .28s cubic-bezier(.2,.9,.3,1), narrout .4s ease forwards; animation-delay: 0s, var(--life, 4s); }
+.narr.over { top: calc(var(--safe-t) + 64px); }
+.narr::after { content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--sun-gold); opacity: .7; transform-origin: left; animation: narrbar var(--life, 4s) linear forwards; }
+.narr-face { flex: none; width: 46px; height: 46px; border-radius: 50%; overflow: hidden; border: 2px solid var(--bone-2); box-shadow: 0 0 0 1px rgba(0,0,0,.5); background: #b9995c; }
+.narr-face svg { display: block; width: 100%; height: 100%; }
+.narr-body { min-width: 0; flex: 1; }
+.narr-who { display: flex; align-items: baseline; gap: 6px; font: 700 13px/1.1 var(--label); letter-spacing: 1.4px; text-transform: uppercase; color: var(--sun-gold); }
+.narr-who span { font: 400 11px/1 var(--mono); letter-spacing: .4px; text-transform: none; color: var(--bone-dim); margin-right: auto; }
+.narr-who i { align-self: flex-end; width: 3px; border-radius: 1px; background: var(--sun-gold); animation: narrsig .7s ease-in-out infinite alternate; margin-left: -3px; }
+.narr-who i:nth-of-type(1) { height: 5px; } .narr-who i:nth-of-type(2) { height: 9px; animation-delay: .18s; } .narr-who i:nth-of-type(3) { height: 7px; animation-delay: .36s; }
+.narr-text { margin-top: 4px; font: 500 15.5px/1.32 var(--body); color: var(--bone); text-wrap: pretty; }
+@keyframes narrin { from { transform: translateY(-10px); opacity: 0; } }
+@keyframes narrout { to { transform: translateY(-6px); opacity: 0; } }
+@keyframes narrbar { to { transform: scaleX(0); } }
+@keyframes narrsig { from { transform: scaleY(.45); opacity: .6; } to { transform: scaleY(1); opacity: 1; } }
+body.calm .narr-who i { animation: none; }
+@media (min-aspect-ratio: 4/3) { .narr, .narr.over { top: auto; bottom: calc(var(--safe-b) + 176px); max-width: 520px; } }
+
 /* hull-strike flash */
 .hit-flash { position: absolute; inset: 0; pointer-events: none; z-index: 4; opacity: 0;
   background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(197,55,31,.55) 100%); }
@@ -497,6 +520,21 @@ button.chip:active { border-color: var(--line); color: var(--hazard); }
 .fade.on { opacity: 1; }
 
 .setting-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-family: var(--label); font-weight: 700; font-size: 16px; }
+.tapes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 2px 0 12px; }
+.tape { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 7px 10px 8px 26px; text-align: left; border-radius: 3px;
+  background: linear-gradient(180deg, #e9e6da, #cfcdbf); border: 1px solid var(--paper-edge); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 2px 0 rgba(0,0,0,.14); color: var(--ink); }
+.tape[data-tape=auto], .tape:last-child:nth-child(even) { grid-column: 1 / -1; min-height: 46px; }
+.tape b { font: 700 15px/1.1 var(--label); letter-spacing: .5px; text-transform: uppercase; }
+.tape span { font: 500 12px/1.25 var(--body); color: var(--ink-soft); }
+/* a cassette's two reels, drawn on the spine */
+.tape::before { content: ''; position: absolute; left: 8px; top: 50%; width: 9px; height: 9px; margin-top: -5px; border-radius: 50%; border: 2px solid var(--paper-edge); background: #f3f1e8; }
+.tape.on { background: linear-gradient(180deg, #23505f, #12303b); border-color: #0b222b; color: var(--bone); box-shadow: inset 0 0 0 1px rgba(229,198,94,.55), 0 2px 0 rgba(0,0,0,.3); }
+.tape.on span { color: var(--bone-2); }
+.tape.on::before { border-color: var(--sun-gold); background: var(--oil); }
+.tape.playing::before { animation: reel 2.4s linear infinite; border-style: dashed; }
+.tape:active { transform: translateY(1px); }
+@keyframes reel { to { transform: rotate(360deg); } }
+body.calm .tape.playing::before { animation: none; }
 .setting-row input[type=range] { flex: 1; accent-color: var(--rust); height: 30px; }
 .setting-row input[type=checkbox] { flex: none; width: 28px; height: 28px; margin: 0 0 0 auto; accent-color: var(--copper-dk); }
 .setting-row .note + input[type=checkbox] { margin-left: 0; }
