@@ -14,7 +14,7 @@ Personality: resourceful, rugged, adventurous, slightly irreverent, unmistakably
 | Abyss Blue | `#10384A` | Deep water, HUD plates, night sky, panel headers, loading screen |
 | Sea Glass | `#168D9C` | Shallows and crest glow, "ready / good" states, progress, the tide in the wordmark |
 | Bleached Sand | `#D7B87B` | Journal pages, horizon haze, letter faces, rag pennants |
-| Oxide Rust | `#A04D30` | Labels, warnings that aren't emergencies, sunsets, the wordmark's shadow |
+| Oxide Rust | `#A04D30` | Labels, warnings that aren't emergencies, sunsets (not the wordmark: its shadow is the deep abyss plate) |
 | Sun Gold | `#E5C65E` | Primary actions, waypoint, compass, the wordmark's tide-stain, golden-hour sunlight |
 | Living green | `#57E05F` | Plants and only plants (unchanged from the Waterworld pass) |
 
