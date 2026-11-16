@@ -1,7 +1,16 @@
-# Harbor portrait pass (prototype)
+# Harbor portrait pass (in review)
 
 The eight harbor characters were platform emoji in a coloured ring. This pass replaces them with drawn portraits.
-**Only Pip Farthing is drawn so far**: one prototype to approve before the other seven.
+**Two are drawn so far**, chosen to test the system at its extremes before the other six: **Pip Farthing** and
+**Marlo Keelhart**.
+
+| | Pip Farthing, trader | Marlo Keelhart, shipwright |
+|---|---|---|
+| Silhouette | wide bowler brim, round head, wing moustache | flat-topped welding mask, square head, beard to the frame |
+| Value | pale skin and white hair on warm sand | dark skin and rust beard on bleached blue |
+| Expression | one eye squeezed shut, open grin | brows down, mouth turned down |
+| Salvage | jar-lid monocle on a wire, an old-world coin as a medal | flipped-up welding mask, road-sign shoulder plate |
+| Accent | Laundry Pink band, Cone Orange patch | Buoy Red plate |
 
 ## Direction: cut-plate portraits
 
@@ -20,9 +29,22 @@ portraits are the same people drawn the same way, in 2D:
   Orange patch). Never living green. The backdrop is the character's own card colour, sun-bleached.
 - **Framing.** Drawn on a 64-unit sheet and cropped tight, so the hat brim breaks the ring and the face fills it.
 
+## Evaluation of the pair (measured in the built game, Driftholm harbor)
+
+- **Told apart without names: yes.** They differ in outline, in value (one light on warm, one dark on cool) and in
+  expression, and still do in greyscale (`screens/pair_sizes.png`, bottom row).
+- **Personality at 56 px: yes, with one weak spot.** Pip's wink and grin and Marlo's scowl both survive at true size
+  (`screens/pair_actual-56px.png`, left columns are 1:1). The weak spot: Marlo's mask window and rust drips are too
+  small to read as what they are at 56 px; the mask reads as "steel headgear", which is enough, but not as "welder".
+- **Native to the 3D world: yes.** Same facets, same lit/shadow split, same muted palette, no outline.
+- **Subordinate to the card's information: yes.** The avatar is unchanged at 56 px: 8.7 % of the card at 402 px wide
+  and 11.2 % at 320 px, against 40–45 % for the name and line. In the blur test (`screens/cards_squint-test.png`) the
+  name is still the darkest, strongest shape on every card. The portraits are heavier than the emoji they replace
+  (Marlo most, being a dark mass), so the remaining six should stay at or below Marlo's weight.
+
 ## How it ships
 
-`src/ui/portraits.ts` holds each portrait as inline SVG (Pip is about 2 KB). Nothing is downloaded, nothing blurs at
+`src/ui/portraits.ts` holds each portrait as inline SVG (about 2 KB each). Nothing is downloaded, nothing blurs at
 3× density, and a character without a portrait yet falls back to their old emoji. The standalone SVG and the editable
 VectorCraft source are in `creative/characters/portraits/` and `creative/characters/source/`.
 
@@ -30,8 +52,10 @@ VectorCraft source are in `creative/characters/portraits/` and `creative/charact
 
 - `screens/harbor_iphone17.png`: Driftholm at 402×874, 3× density
 - `screens/harbor_narrow-320.png`: the same at 320×568
-- `screens/card_before-after.png`: the new portrait above an unchanged emoji card
-- `screens/pip_sizes.png`: the portrait large, at 112 px, at 56 px, and on dark steel
+- `screens/pair_actual-56px.png`: both avatars cropped from the harbor at true 56 px (402 and 320 viewports), and enlarged
+- `screens/pair_sizes.png`: the pair large, at 112 px, at 56 px, and in greyscale
+- `screens/cards_squint-test.png`: the cards sharp and blurred, to see what the eye lands on
+- `screens/cards_narrow-320.png`: two drawn cards above an unchanged emoji card on the narrow phone
 
 ## Trade-offs
 
