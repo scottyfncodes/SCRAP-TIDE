@@ -27,10 +27,14 @@ In code: `src/ui/brand.ts` (`PALETTE`) and the `:root` tokens in `src/ui/styles.
 
 ## Wordmark
 
-`creative/branding/wordmark_scrap-tide_v1.svg` (self-contained, font embedded), PNGs beside it (transparent, and on
-Abyss Blue). In the game it is `wordmarkSVG()` in `src/ui/brand.ts`, used on the loading screen and the title screen;
-the SVG file is that function's output with the font embedded: regenerate it (and its PNGs) whenever the function
-changes.
+`creative/branding/wordmark_scrap-tide_v1.svg` (self-contained), PNGs beside it (transparent, and on Abyss Blue). In
+the game it is `wordmarkSVG()` in `src/ui/brand.ts`, used on the loading screen and the title screen; the SVG file is
+that function's output: regenerate it (and its PNGs) whenever the function changes.
+
+The lettering is Saira Stencil One converted to outlines (`src/ui/wordmarkPath.ts`, made by
+`scripts/wordmark-outline.py`), not live text. Live SVG text needed a `textLength` stretch to fit, which Safari does
+not reliably apply: on iPhone the letters came out at their natural width, about 17% wider, first as brown slabs
+beside the face, then cut off at the S and the E. Outlines render identically everywhere.
 
 Stencil lettering of a salvage crate with the tide risen over its foot: above a hand-drawn waterline the letters are
 Bleached Sand, below it Sea Glass, and a Sun Gold tide-stain runs along the line, over a deep Abyss (`#081C26`) drop

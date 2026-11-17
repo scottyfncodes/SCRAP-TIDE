@@ -5,8 +5,11 @@
 // line. It reads as plain "SCRAP TIDE" at 120 px wide (the waterline is a colour change, not a cut), so it holds at
 // the small sizes of a phone's loading screen. No pirate type, no skulls, no heavy distressing: one idea, cleanly.
 //
-// Inline SVG with the self-hosted Saira Stencil One (public/fonts), textLength-pinned so the lockup's proportions
-// never depend on the font's metrics or on the fallback while it loads.
+// The lettering is Saira Stencil One as fixed outlines (src/ui/wordmarkPath.ts, made by scripts/wordmark-outline.py),
+// not live <text>: Safari does not reliably honour the textLength stretch the text needed, and outlines render
+// identically everywhere, with no font to wait for.
+
+import { WORDMARK_D } from './wordmarkPath';
 
 export const PALETTE = {
   abyss: '#10384A',
@@ -20,7 +23,7 @@ export const PALETTE = {
   deep: '#081C26',
 } as const;
 
-const W = 640, H = 150, BASE = 124, WATER = 101;
+const W = 640, H = 150, WATER = 101;
 
 /** The waterline: a slow, slightly irregular swell (a hand-drawn line, not a perfect sine). */
 function waterline() {
@@ -39,19 +42,18 @@ let uid = 0;
 /**
  * The SCRAP TIDE wordmark as an inline SVG string. `title` is the accessible name.
  *
- * The lettering is laid out ONCE (a <text> in <defs>) and every layer (shadow, face, sea, the glyph clip) is a
- * <use> of it. Safari lays out each textLength-pinned <text> on its own, and did not always agree with itself: the
- * shadow copy came out wider than the face and stood off the S and the E like stray slabs.
+ * Every layer (shadow, face, sea) is a <use> of one outlined path, so they line up exactly; the gold tide-stain is
+ * clipped to the same outlines.
  */
 export function wordmarkSVG(opts: { title?: string; className?: string } = {}) {
   const id = `stw${++uid}`;
   const wave = waterline();
-  const use = (fill: string, dy = 0, extra = '') => `<use href="#${id}-t" y="${dy}" fill="${fill}" ${extra}/>`;
-  return `<svg class="${opts.className ?? 'wordmark'}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.title ?? 'SCRAP TIDE'}" xmlns="http://www.w3.org/2000/svg">
+  const use = (fill: string, dy = 0, extra = '') => `<use href="#${id}-t" xlink:href="#${id}-t" y="${dy}" fill="${fill}" ${extra}/>`;
+  return `<svg class="${opts.className ?? 'wordmark'}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.title ?? 'SCRAP TIDE'}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    <text id="${id}-t" x="${W / 2}" y="${BASE}" text-anchor="middle" textLength="${W - 24}" lengthAdjust="spacingAndGlyphs" font-family="'Saira Stencil One', Impact, sans-serif" font-size="128">SCRAP TIDE</text>
+    <path id="${id}-t" d="${WORDMARK_D}"/>
     <clipPath id="${id}-below"><path d="${wave} L${W + 10} ${H} L-10 ${H} Z"/></clipPath>
-    <clipPath id="${id}-glyphs"><use href="#${id}-t"/></clipPath>
+    <clipPath id="${id}-glyphs"><path d="${WORDMARK_D}"/></clipPath>
     <linearGradient id="${id}-face" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="${PALETTE.bone}"/><stop offset="1" stop-color="${PALETTE.sand}"/>
     </linearGradient>
